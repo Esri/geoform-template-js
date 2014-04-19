@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Safari iOS - apps only -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- Chrome for Android - NEW! -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <title>Bootstrap Map JS - Grid</title>
+    <!-- Bootstrap core CSS -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <!-- Bootstrap-map-js -->
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.9/js/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
+    <style type="text/css">
+        #mapDiv {
+            min-height: 50px;
+        }
+    </style>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../docs-assets/js/html5shiv.js"></script>
+      <script src="../../docs-assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="container main">
+        <div class="page-header hidden-xs">
+            <h2>Grid Layouts</h2>
+            <p class="lead">Use different grid layouts with a responsive map.</p>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 bg-none">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h5>Top 12</h5>
+                    </div>
+                </div>
+                <div class="row row-map">
+                    <div class="col-xs-12 col-sm-4">
+                        <h5>Left 4 (not fixed)</h5>
+                    </div>
+                    <div class="col-xs-12 col-sm-8 no-col-padding">
+                        <!-- Bootstrap-map-js -->
+                        <div id="mapDiv"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <h5>Bottom 4</h5>
+                    </div>
+                    <div class="col-xs-4">
+                        <h5>Bottom 4</h5>
+                    </div>
+                    <div class="col-xs-4">
+                        <h5>Bottom 4</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- col for tabs -->
+    </div>
+    <!-- row for tabs -->
+    </div>
+    <!-- /container -->
+    <script type="text/javascript">
+        var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+        var dojoConfig = {
+            //The location.pathname.replace() logic below may look confusing but all its doing is
+            // enabling us to load the api from a CDN and load local modules from the correct location.
+            packages: [{
+                name: "application",
+                location: package_path + '/js'
+            }, {
+                name: "config",
+                location: package_path + '/config'
+            }, {
+                name: "arcgis_templates",
+                location: package_path + '/..'
+            }]
+        };
+    </script>
+    <!-- Bootstrap-map-js -->
+    <script src="//js.arcgis.com/3.9compact"></script>
+    <script>
+        require(["esri/map", "application/bootstrapmap", "dojo/on", "dojo/domReady!"],
+            function(Map, BootstrapMap, on) {
+                var map;
+                function showMap(div, responsive, fillPage) {
+                    if (map) {
+                        map.destroy();
+                        BootstrapMap.destroy(map);
+                    }
+                    if (responsive) {
+                        map = BootstrapMap.create(div, {
+                            basemap: "national-geographic",
+                            center: [-122.45, 37.77],
+                            zoom: 12,
+                            scrollWheelZoom: false
+                        });
+                    } else {
+                        map = new Map(div, {
+                            basemap: "national-geographic",
+                            center: [-122.45, 37.77],
+                            zoom: 12,
+                            smartNavigation: false
+                        });
+                        on(map, "load", function() {
+                            map.disableScrollWheelZoom();
+                        });
+                    }
+                }
+                showMap("mapDiv", true);
+            });
+    </script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</body>
+</html>
