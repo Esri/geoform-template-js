@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="Keywords" content="Public Information Map, Map, Esri">
     <meta name="description" content="">
     <meta name="author" content="">
+    <!-- Facebook -->
+    <meta property="og:title" content="">
+    <meta property="og:image" content="images/item.png">
+    <meta property="og:site_name" content="esri">
     <!-- Safari iOS - apps only -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -20,50 +26,50 @@
     <!-- Bootstrap-map-js -->
     <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.9/js/esri/css/esri.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
-    <style type="text/css">
-        #mapDiv {
-            min-height: 50px;
-        }
-    </style>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="../../docs-assets/js/html5shiv.js"></script>
-      <script src="../../docs-assets/js/respond.min.js"></script>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
     <![endif]-->
 </head>
+
 <body>
-    <div class="container main">
-        <div class="page-header hidden-xs">
-            <h2>Grid Layouts</h2>
-            <p class="lead">Use different grid layouts with a responsive map.</p>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="page-header">
+                    <h2>GeoForm</h2>
+                    <p class="lead">Use different grid layouts with a responsive map.</p>
+                </div>
+            </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 bg-none">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <h5>Top 12</h5>
+            <div class="col-xs-12 col-sm-4">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
                     </div>
-                </div>
-                <div class="row row-map">
-                    <div class="col-xs-12 col-sm-4">
-                        <h5>Left 4 (not fixed)</h5>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
                     </div>
-                    <div class="col-xs-12 col-sm-8 no-col-padding">
-                        <!-- Bootstrap-map-js -->
-                        <div id="mapDiv"></div>
+                    <div class="form-group">
+                        <label for="exampleInputFile">File input</label>
+                        <input type="file" id="exampleInputFile">
+                        <p class="help-block">Example block-level help text here.</p>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-4">
-                        <h5>Bottom 4</h5>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox">Check me out
+                        </label>
                     </div>
-                    <div class="col-xs-4">
-                        <h5>Bottom 4</h5>
-                    </div>
-                    <div class="col-xs-4">
-                        <h5>Bottom 4</h5>
-                    </div>
-                </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+            </div>
+            <div class="col-xs-12 col-sm-8 no-col-padding">
+                <!-- Bootstrap-map-js -->
+                <div id="mapDiv"></div>
             </div>
         </div>
         <!-- col for tabs -->
@@ -74,7 +80,7 @@
     <script type="text/javascript">
         var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
         var dojoConfig = {
-            //The location.pathname.replace() logic below may look confusing but all its doing is
+            // The locationPath logic below may look confusing but all its doing is
             // enabling us to load the api from a CDN and load local modules from the correct location.
             packages: [{
                 name: "application",
@@ -88,38 +94,30 @@
             }]
         };
     </script>
-    <!-- Bootstrap-map-js -->
-    <script src="//js.arcgis.com/3.9compact"></script>
-    <script>
-        require(["esri/map", "application/bootstrapmap", "dojo/on", "dojo/domReady!"],
-            function(Map, BootstrapMap, on) {
-                var map;
-                function showMap(div, responsive, fillPage) {
-                    if (map) {
-                        map.destroy();
-                        BootstrapMap.destroy(map);
-                    }
-                    if (responsive) {
-                        map = BootstrapMap.create(div, {
-                            basemap: "national-geographic",
-                            center: [-122.45, 37.77],
-                            zoom: 12,
-                            scrollWheelZoom: false
-                        });
-                    } else {
-                        map = new Map(div, {
-                            basemap: "national-geographic",
-                            center: [-122.45, 37.77],
-                            zoom: 12,
-                            smartNavigation: false
-                        });
-                        on(map, "load", function() {
-                            map.disableScrollWheelZoom();
-                        });
-                    }
-                }
-                showMap("mapDiv", true);
+    <script type="text/javascript" src="//js.arcgis.com/3.9/"></script>
+    <script type="text/javascript">
+        require([
+            "application/template",
+            "application/main"
+        ], function(
+            Template,
+            Main
+        ){
+            // create the template. This will take care of all the logic required for template applications
+            var myTemplate = new Template();
+            // create my main application. Start placing your logic in the main.js file.
+            var myApp = new Main();
+            // start template
+            myTemplate.startup().then(function(config) {
+                // The config object contains the following properties: helper services, (optionally)
+                // i18n, appid, webmap and any custom values defined by the application.
+                // In this example we have one called theme.
+                myApp.startup(config);
+            }, function(error) {
+                // something went wrong. Let's report it.
+                myApp.reportError(error);
             });
+        });
     </script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -127,4 +125,5 @@
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>
