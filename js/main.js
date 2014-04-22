@@ -8,7 +8,6 @@ define([
     "dojo/dom",
     "dojo/dom-class",
     "dojo/on",
-    "application/bootstrapmap",
     "dojo/domReady!"
 ], function (
     ready,
@@ -17,8 +16,7 @@ define([
     arcgisUtils,
     dom,
     domClass,
-    on,
-    bootstrapmap
+    on
 ) {
     return declare(null, {
         config: {},
@@ -80,7 +78,6 @@ define([
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
                 this.map = response.map;
-                var bsm = new bootstrapmap(this.map);
                 // make sure map is loaded
                 if (this.map.loaded) {
                     // do something with the map
