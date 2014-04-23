@@ -35,7 +35,7 @@ function (
             this._mapDiv = dom.byId(this._mapDivId);
             this._mapStyle = style.get(this._mapDiv);
             this._handles = [];
-            this._setMapDiv(true);
+            //this._setMapDiv(true);
             this._bindEvents();
         },
         destroy: function () {
@@ -92,30 +92,6 @@ function (
             } else {
                 this._handles.push(on(this._map, "load", lang.hitch(this, setInfoWin)));
             }
-            // Debounce window resize
-            var debounce = function (func, threshold, execAsap) {
-                var timeout;
-                return function debounced() {
-                    var obj = this,
-                        args = arguments;
-
-                    function delayed() {
-                        if (!execAsap) {
-                            func.apply(obj, args);
-                        }
-                        timeout = null;
-                    }
-                    if (timeout) {
-                        clearTimeout(timeout);
-                    } else if (execAsap) {
-                        func.apply(obj, args);
-                    }
-                    timeout = setTimeout(delayed, threshold || 100);
-                };
-            };
-            // Responsive resize
-            var resizeWin = debounce(this._setMapDiv, 100, false);
-            this._handles.push(on(window, "resize", lang.hitch(this, resizeWin)));
             // Auto-center map
             var recenter = function () {
                 this._map.__resizeCenter = this._map.extent.getCenter();
@@ -146,95 +122,6 @@ function (
                 function () {
                     this._map.infoWindow.hide();
                 }));
-        },
-        _getMapDivVisibility: function () {
-            return this._mapDiv.clientHeight > 0 || this._mapDiv.clientWidth > 0;
-        },
-        _checkVisibility: function () {
-            var visible = this._getMapDivVisibility();
-            if (this._visible !== visible) {
-                if (visible) {
-                    this._setMapDiv(true);
-                }
-            }
-        },
-        _controlVisibilityTimer: function (runTimer) {
-            if (runTimer) {
-                // Start a visibility change timer
-                this._visibilityTimer = setInterval(lang.hitch(this, function () {
-                    this._checkVisibility();
-                }), 200);
-            } else {
-                // Stop timer we have checking for visibility change
-                if (this._visibilityTimer) {
-                    clearInterval(this._visibilityTimer);
-                    this._visibilityTimer = null;
-                }
-            }
-        },
-        _setMapDiv: function (forceResize) {
-            if (!this._mapDivId) {
-                return;
-            }
-            // Get map visibility
-            var visible = this._getMapDivVisibility();
-            if (this._visible !== visible) {
-                this._visible = visible;
-                this._controlVisibilityTimer(!visible);
-            }
-            // Fill page with the map or match row height
-            if (this._visible) {
-                var windowH = window.innerHeight;
-                var bodyH = document.body.clientHeight;
-                var room = windowH - bodyH;
-                var mapH = this._calcMapHeight();
-                var colH = this._calcColumnHeight(mapH);
-                var mh1 = mapH + room;
-                var mh2 = 0;
-                var inCol = false;
-                // Resize to neighboring column or fill page
-                if (mapH < colH) {
-                    mh2 = (room > 0) ? colH + room : colH;
-                    inCol = true;
-                } else {
-                    mh2 = (mh1 < colH) ? colH : mh1;
-                    inCol = false;
-                }
-                // Expand map height
-                style.set(this._mapDivId, {
-                    "height": mh2 + "px",
-                    "width": "100%"
-                });
-                // Force resize and reposition
-                if (this._map && forceResize && this._visible) {
-                    this._map.resize();
-                    this._map.reposition();
-                }
-                //console.log("Win:" + windowH + " Body:" + bodyH + " Room:" + room + " OldMap:" + mapH + " Map+Room:" + mh1 + " NewMap:" + mh2 + " ColH:" + colH + " inCol:" + inCol);
-            }
-        },
-        _calcMapHeight: function () {
-            var s = this._mapStyle;
-            var p = parseInt(s.paddingTop) + parseInt(s.paddingBottom);
-            var g = parseInt(s.marginTop) + parseInt(s.marginBottom);
-            var bodyH = parseInt(s.borderTopWidth) + parseInt(s.borderBottomWidth);
-            var h = p + g + bodyH + this._mapDiv.clientHeight;
-            return h;
-        },
-        _calcColumnHeight: function () {
-            var colH = 0;
-            var cols = query(this._mapDiv).closest(".row").children("[class*='col']");
-            if (cols.length) {
-                for (var i = 0; i < cols.length; i++) {
-                    var col = cols[i];
-                    // Avoid the map in column calculations
-                    var containsMap = query("#" + this._mapDivId, col).length > 0;
-                    if ((col.clientHeight > colH) && !containsMap) {
-                        colH = col.clientHeight;
-                    }
-                }
-            }
-            return colH;
         },
         _repositionInfoWin: function (graphicCenterPt) {
             // Determine the upper right, and center, coordinates of the map
