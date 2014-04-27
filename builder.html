@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="Keywords" content="Public Information Map, Map, Esri">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Facebook -->
+    <meta property="og:title" content="">
+    <meta property="og:image" content="images/item.png">
+    <meta property="og:site_name" content="esri">
+    <!-- Safari iOS - apps only -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- Chrome for Android - NEW! -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <title>Bootstrap Map JS - Grid</title>
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <!-- Bootstrap-map-js -->
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.9/js/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                
+                
+                
+                <div class="page-header">
+                    <h2>GeoForm Builder</h2>
+                    <p class="lead">Lorem ipsum dolor sit amet, et viderer adipisci duo. Libris consectetuer id mei, an cum regione mentitum, choro oblique dissentiunt id usu. Te veri illud corpora sit, saepe mucius minimum vim ut, per no fabulas perfecto theophrastus. Eu convenire scripserit has, cibo sale erant te has.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-sm-3">
+                <ul class="nav nav-pills nav-stacked">
+                    <li class="active"><a href="#">Webmap</a></li>
+                    <li><a href="#">Layer</a></li>
+                    <li><a href="#">Details</a></li>
+                    <li><a href="#">Fields</a></li>
+                    <li><a href="#">Style</a></li>
+                    <li><a href="#">Publish</a></li>
+                </ul>
+            </div>
+            <div class="col-xs-8 col-sm-9">
+                
+                <div>
+                    <h2>Choose a Webmap</h2>
+                    <img class="img-thumbnail" src="http://placehold.it/200x133" /><br>
+                    <button type="button" class="btn btn-default">Select Webmap</button>
+                    <p class="text-right"><button type="button" class="btn btn-primary">Next</button></p>
+                </div>
+                
+                
+                <div>
+                    <h2>Select Editable Layer</h2>
+                    <form role="form">
+                    <div class="form-group">
+                    <label for="">Layer</label>
+                    <select class="form-control">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                    </div>
+                    </form>
+                    
+                    
+                    <p class="text-right"><button type="button" class="btn btn-primary">Next</button></p>
+                </div>
+                
+                
+                <div>
+                    <h2>Form Details</h2>
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="">Title</label>
+                            <input type="text" class="form-control" id="" placeholder="My Form">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Logo Image</label>
+                            <input type="text" class="form-control" id="" placeholder="http://www.mysite.com/myimage.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Description</label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                    </form>
+                    <p class="text-right"><button type="button" class="btn btn-primary">Next</button></p>
+                </div>
+                
+                
+                <div>
+                    <h2>Select Form Fields</h2>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Display</th>
+                                <th>Field</th>
+                                <th>Label</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><input type="checkbox"></td>
+                                <td>OBJECTID</td>
+                                <td><input class="form-control" type="text" value="" placeholder="" /></td>
+                                <td>
+                                    <select class="form-control">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+                                </td>
+                                <td><input class="form-control" type="text" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><input checked type="checkbox"></td>
+                                <td>FIELD_NAME</td>
+                                <td><input class="form-control" type="text" value="" placeholder="" /></td>
+                                <td>
+                                    <select class="form-control">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+                                </td>
+                                <td><input class="form-control" type="text" value="" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="text-right"><button type="button" class="btn btn-primary">Next</button></p>
+                </div>
+                
+                <div>
+                    <h2>Select Form Theme</h2>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                        Option one is this and that&mdash;be sure to include why it's great
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                        Option two can be something else and selecting it will deselect option one
+                      </label>
+                    </div>
+                    <p class="text-right"><button type="button" class="btn btn-primary">Next</button></p>
+                </div>
+                
+                
+                <div>
+                    <h2>Preview &amp; Save</h2>
+                    
+                    <h3>Preview</h3>
+                    <iframe class="preview-frame" src="index.html" frameborder="0"></iframe>
+                    <p><button type="button" class="btn btn-default">Preview</button> in a new window.</p>
+                    
+                    <h3>Finished</h3>
+                    <p class="text-right"><button type="button" class="btn btn-primary">Save</button></p>
+                </div>
+                
+                
+            </div>
+        </div>
+        <!-- col for tabs -->
+    </div>
+    <!-- row for tabs -->
+    </div>
+    <!-- /container -->
+    <script type="text/javascript">
+        var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+        var dojoConfig = {
+            // The locationPath logic below may look confusing but all its doing is
+            // enabling us to load the api from a CDN and load local modules from the correct location.
+            packages: [{
+                name: "application",
+                location: package_path + '/js'
+            }, {
+                name: "config",
+                location: package_path + '/config'
+            }, {
+                name: "arcgis_templates",
+                location: package_path + '/..'
+            }]
+        };
+    </script>
+    <script type="text/javascript" src="//js.arcgis.com/3.9/"></script>
+    <script type="text/javascript">
+        require([
+            "application/template",
+            "application/main"
+        ], function(
+            Template,
+            Main
+        ){
+            // create the template. This will take care of all the logic required for template applications
+            var myTemplate = new Template();
+            // create my main application. Start placing your logic in the main.js file.
+            var myApp = new Main();
+            // start template
+            myTemplate.startup().then(function(config) {
+                // The config object contains the following properties: helper services, (optionally)
+                // i18n, appid, webmap and any custom values defined by the application.
+                // In this example we have one called theme.
+                myApp.startup(config);
+            }, function(error) {
+                // something went wrong. Let's report it.
+                myApp.reportError(error);
+            });
+        });
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
