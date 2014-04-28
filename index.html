@@ -2,129 +2,246 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="Keywords" content="Public Information Map, Map, Esri">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- Facebook -->
-    <meta property="og:title" content="">
-    <meta property="og:image" content="images/item.png">
-    <meta property="og:site_name" content="esri">
-    <!-- Safari iOS - apps only -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <!-- Chrome for Android - NEW! -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="shortcut icon" href="images/favicon.ico">
-    <title>Bootstrap Map JS - Grid</title>
-    <!-- Bootstrap core CSS -->
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <!-- Bootstrap-map-js -->
-    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.9/js/esri/css/esri.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="Keywords" content="Public Information Map, Map, Esri">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <!-- Facebook -->
+  <meta property="og:title" content="">
+  <meta property="og:image" content="images/item.png">
+  <meta property="og:site_name" content="esri">
+  <!-- Safari iOS - apps only -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <!-- Chrome for Android - NEW! -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="shortcut icon" href="images/favicon.ico">
+  <title>User Form</title>
+  <!-- Bootstrap core CSS -->
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <!-- Bootstrap-map-js -->
+  <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.9/js/esri/css/esri.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
+  <link rel="stylesheet" type="text/css" href="css/datepicker.css">
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
     <script src="js/html5shiv.min.js"></script>
     <script src="js/respond.min.js"></script>
     <![endif]-->
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="page-header">
-                    <h2>GeoForm</h2>
-                    <p class="lead">Use different grid layouts with a responsive map.</p>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="page-header">
+          <div class="media">
+            <a class="pull-left" href="#">
+              <img src="http://placehold.it/140x140" alt="Logo" class="img-circle">
+            </a>
+            <div class="media-body">
+              <h2>Lorem ipsum dolor sit amet</h2>
+              <p class="lead">Lorem ipsum dolor sit amet, condimentum neque, quisque lacinia duis, tristique vitae pellentesque maecenas, fringilla orci etiam lobortis vestibulum interdum congue.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-7">
+        <form role="form">
+
+
+          <div class="form-group">
+            <label for="">Text</label>
+            <input type="text" class="form-control" id="" placeholder="">
+            <p class="help-block">Example block-level help text here.</p>
+          </div>
+
+
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+            <p class="help-block">Example block-level help text here.</p>
+          </div>
+          <div class="form-group">
+            <label for="">Menu</label>
+            <select class="form-control">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+            <p class="help-block">Example block-level help text here.</p>
+          </div>
+
+          <div class="form-group">
+            <label for="">Date</label>
+            <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+              <input class="span2 datepicker" size="16" type="text" value="12-02-2012">
+              <span class="add-on">
+                <i class="icon-th"></i>
+              </span>
+              <p class="help-block">Example block-level help text here.</p>
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>Option one is this and that&mdash;be sure to include why it's great
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">Option two can be something else and selecting it will deselect option one
+              </label>
+            </div>
+            <p class="help-block">Example block-level help text here.</p>
+          </div>
+
+          <div class="form-group">
+            <label for="">Text Area</label>
+            <textarea class="form-control" rows="3"></textarea>
+            <p class="help-block">Example block-level help text here.</p>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox">Checkbox
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputFile">File input</label>
+            <input type="file" id="exampleInputFile">
+            <p class="help-block">Example block-level help text here.</p>
+          </div>
+        </form>
+
+
+
+
+      </div>
+      <div class="col-xs-12 col-sm-5">
+        <div class="panel panel-default">
+          <div class="panel-heading">Select Location</div>
+          <div class="panel-body">
+            <ul class="nav nav-pills">
+              <li class="active">
+                <a href="#mylocation" data-toggle="tab">My Location</a>
+              </li>
+              <li>
+                <a href="#address" data-toggle="tab">Address</a>
+              </li>
+              <li>
+                <a href="#coordinates" data-toggle="tab">Coordinates</a>
+              </li>
+            </ul>
+
+
+            <form role="form" style="padding:20px 0;">
+              <div class="tab-content">
+                <div id="mylocation" class="tab-pane active">
+                  <p>
+                    <button type="button" class="btn btn-default">Find My Location</button>
+                  </p>
                 </div>
-            </div>
+                <div id="address" class="tab-pane">
+                  <div class="form-group">
+                    <input class="form-control" type="text" placeholder="Enter Address" />
+                  </div>
+                </div>
+                <div id="coordinates" class="tab-pane">
+                  <div class="form-group">
+                    <input class="form-control" type="text" placeholder="Enter Coordinates" />
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
         </div>
-        <div class="row">
-            <div class="col-xs-12 col-sm-4">
-                <form role="form">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputFile">File input</label>
-                        <input type="file" id="exampleInputFile">
-                        <p class="help-block">Example block-level help text here.</p>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox">Check me out
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>
-            </div>
-            <div class="col-xs-12 col-sm-8 no-col-padding">
-                <!-- Bootstrap-map-js -->
-                <div id="mapDiv"></div>
-            </div>
-        </div>
-        <!-- col for tabs -->
+
+
+
+
+        <!-- Bootstrap-map-js -->
+        <div id="mapDiv"></div>
+      </div>
     </div>
-    <!-- row for tabs -->
+    <div class="row">
+      <div class="col-xs-12">
+        <form role="form">
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-default">Clear</button>
+          </div>
+        </form>
+      </div>
+
     </div>
-    <!-- /container -->
-    <script type="text/javascript">
-        var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-        var dojoConfig = {
-            // The locationPath logic below may look confusing but all its doing is
-            // enabling us to load the api from a CDN and load local modules from the correct location.
-            packages: [{
-                name: "application",
-                location: package_path + '/js'
-            }, {
-                name: "config",
-                location: package_path + '/config'
-            }, {
-                name: "arcgis_templates",
-                location: package_path + '/..'
-            }]
-        };
-    </script>
-    <script type="text/javascript" src="//js.arcgis.com/3.9/"></script>
-    <script type="text/javascript">
-        require([
-            "application/template",
-            "application/main"
-        ], function(
-            Template,
-            Main
-        ){
-            // create the template. This will take care of all the logic required for template applications
-            var myTemplate = new Template();
-            // create my main application. Start placing your logic in the main.js file.
-            var myApp = new Main();
-            // start template
-            myTemplate.startup().then(function(config) {
-                // The config object contains the following properties: helper services, (optionally)
-                // i18n, appid, webmap and any custom values defined by the application.
-                // In this example we have one called theme.
-                myApp.startup(config);
-            }, function(error) {
-                // something went wrong. Let's report it.
-                myApp.reportError(error);
-            });
-        });
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <!-- col for tabs -->
+  </div>
+  <!-- row for tabs -->
+  </div>
+  <!-- /container -->
+  <script type="text/javascript">
+    var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+    var dojoConfig = {
+      // The locationPath logic below may look confusing but all its doing is
+      // enabling us to load the api from a CDN and load local modules from the correct location.
+      packages: [{
+        name: "application",
+        location: package_path + '/js'
+      }, {
+        name: "config",
+        location: package_path + '/config'
+      }, {
+        name: "arcgis_templates",
+        location: package_path + '/..'
+      }]
+    };
+  </script>
+  <script type="text/javascript" src="//js.arcgis.com/3.9/"></script>
+  <script type="text/javascript">
+    require([
+      "application/template",
+      "application/main"
+    ], function(
+      Template,
+      Main
+    ) {
+      // create the template. This will take care of all the logic required for template applications
+      var myTemplate = new Template();
+      // create my main application. Start placing your logic in the main.js file.
+      var myApp = new Main();
+      // start template
+      myTemplate.startup().then(function(config) {
+        // The config object contains the following properties: helper services, (optionally)
+        // i18n, appid, webmap and any custom values defined by the application.
+        // In this example we have one called theme.
+        myApp.startup(config);
+      }, function(error) {
+        // something went wrong. Let's report it.
+        myApp.reportError(error);
+      });
+    });
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="js/bootstrap-datepicker.js"></script>
 </body>
 
 </html>

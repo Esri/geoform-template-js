@@ -104,6 +104,10 @@ function (
                 setTimeout(lang.hitch(this, timer), this._delay);
             };
             this._handles.push(on(this._map, "resize", lang.hitch(this, recenter)));
+            var winResize = on(window, 'resize', lang.hitch(this, function(){
+              this._map.resize();
+            }));
+            this._handles.push(winResize);
         },
         _setTouchBehavior: function () {
             // Add desireable touch behaviors here

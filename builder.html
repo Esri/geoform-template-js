@@ -19,7 +19,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
   <link rel="shortcut icon" href="images/favicon.ico">
-  <title>Bootstrap Map JS - Grid</title>
+  <title>Form Builder</title>
   <!-- Bootstrap core CSS -->
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -53,7 +53,7 @@
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
+        <ul class="tab-links nav navbar-nav navbar-right">
           <li class="active">
             <a href="#webmap" data-toggle="tab">Webmap</a>
           </li>
@@ -92,7 +92,7 @@
     </div>
     <div class="row">
       <div class="hidden-xs col-sm-3">
-        <ul class="nav nav-pills nav-stacked">
+        <ul class="tab-links nav nav-pills nav-stacked">
           <li class="active">
             <a href="#webmap" data-toggle="tab">Webmap</a>
           </li>
@@ -126,7 +126,7 @@
             <br />
             <button type="button" class="btn btn-default">Select Webmap</button>
             <p class="text-right">
-              <a href="#layer" data-toggle="tab" class="btn btn-primary">Next</a>
+              <a href="#" class="btn btn-primary nexttab">Next</a>
             </p>
           </div>
 
@@ -149,8 +149,8 @@
 
 
             <p class="text-right">
-              <a href="#webmap" data-toggle="tab" class="btn btn-default">Previous</a>
-              <a href="#details" data-toggle="tab" class="btn btn-primary">Next</a>
+              <a href="#" class="btn btn-default prevtab">Previous</a>
+              <a href="#" class="btn btn-primary nexttab">Next</a>
             </p>
           </div>
 
@@ -172,8 +172,8 @@
               </div>
             </form>
             <p class="text-right">
-              <a href="#layer" data-toggle="tab" class="btn btn-default">Previous</a>
-              <a href="#fields" data-toggle="tab" class="btn btn-primary">Next</a>
+              <a href="#" class="btn btn-default prevtab">Previous</a>
+              <a href="#" class="btn btn-primary nexttab">Next</a>
             </p>
           </div>
 
@@ -235,8 +235,8 @@
               </tbody>
             </table>
             <p class="text-right">
-              <a href="#details" data-toggle="tab" class="btn btn-default">Previous</a>
-              <a href="#style" data-toggle="tab" class="btn btn-primary">Next</a>
+              <a href="#" class="btn btn-default prevtab">Previous</a>
+              <a href="#" class="btn btn-primary nexttab">Next</a>
             </p>
           </div>
 
@@ -257,8 +257,8 @@
               </label>
             </div>
             <p class="text-right">
-              <a href="#fields" data-toggle="tab" class="btn btn-default">Previous</a>
-              <a href="#preview" data-toggle="tab" class="btn btn-primary">Next</a>
+              <a href="#" class="btn btn-default prevtab">Previous</a>
+              <a href="#" class="btn btn-primary nexttab">Next</a>
             </p>
           </div>
 
@@ -272,8 +272,8 @@
 
 
             <p class="text-right">
-              <a href="#style" data-toggle="tab" class="btn btn-default">Previous</a>
-              <a href="#save" data-toggle="tab" class="btn btn-primary">Next</a>
+              <a href="#" class="btn btn-default prevtab">Previous</a>
+              <a href="#" class="btn btn-primary nexttab">Next</a>
             </p>
           </div>
 
@@ -282,7 +282,7 @@
             <h2>Save Application</h2>
             <p class="">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Save</button>
-              <a href="#preview" data-toggle="tab" class="btn btn-default">Previous</a>
+              <a href="#" class="btn btn-default prevtab">Previous</a>
             </p>
           </div>
         </div>
@@ -314,8 +314,6 @@
       </div>
     </div>
   </div>
-
-
   <script type="text/javascript">
     var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
     var dojoConfig = {
@@ -333,34 +331,19 @@
       }]
     };
   </script>
-  <script type="text/javascript" src="//js.arcgis.com/3.9/"></script>
-  <script type="text/javascript">
-    require([
-      "application/template",
-      "application/main"
-    ], function(
-      Template,
-      Main
-    ) {
-      // create the template. This will take care of all the logic required for template applications
-      var myTemplate = new Template();
-      // create my main application. Start placing your logic in the main.js file.
-      var myApp = new Main();
-      // start template
-      myTemplate.startup().then(function(config) {
-        // The config object contains the following properties: helper services, (optionally)
-        // i18n, appid, webmap and any custom values defined by the application.
-        // In this example we have one called theme.
-        myApp.startup(config);
-      }, function(error) {
-        // something went wrong. Let's report it.
-        myApp.reportError(error);
-      });
-    });
-  </script>
+  <script type="text/javascript" src="//js.arcgis.com/3.9compact/"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <!-- Latest compiled and minified JavaScript -->
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    require([
+      "application/builder"
+    ], function(
+      Builder
+    ) {
+      var myBuilder = new Builder();
+    });
+  </script>
 </body>
 
 </html>

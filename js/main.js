@@ -8,6 +8,7 @@ define([
     "dojo/dom",
     "dojo/dom-class",
     "dojo/on",
+    "application/bootstrapmap",
     "dojo/domReady!"
 ], function (
     ready,
@@ -16,7 +17,8 @@ define([
     arcgisUtils,
     dom,
     domClass,
-    on
+    on,
+    bootstrapmap
 ) {
     return declare(null, {
         config: {},
@@ -60,6 +62,14 @@ define([
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
             // your code here!
+          
+          
+          
+            $( document ).ready(function() {
+              $('.datepicker').datepicker();
+            });
+          
+          
         },
         // create a map based on the input web map id
         _createWebMap: function (itemInfo) {
@@ -78,6 +88,10 @@ define([
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
                 this.map = response.map;
+              
+                var bsm = new bootstrapmap(this.map);
+              
+              
                 // make sure map is loaded
                 if (this.map.loaded) {
                     // do something with the map
