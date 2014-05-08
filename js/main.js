@@ -9,6 +9,14 @@ define([
     "dojo/dom-class",
     "dojo/on",
     "application/bootstrapmap",
+
+    "esri/toolbars/edit",
+    "esri/layers/FeatureLayer",
+    "edit/offlineFeaturesManager",
+    "edit/editsStore",
+    "esri/dijit/editing/Editor",
+    "esri/dijit/editing/TemplatePicker",
+
     "dojo/domReady!"
 ], function (
     ready,
@@ -18,7 +26,10 @@ define([
     dom,
     domClass,
     on,
-    bootstrapmap
+    bootstrapmap,
+    Edit, FeatureLayer,
+    OfflineFeaturesManager, editsStore,
+    Editor, TemplatePicker
 ) {
     return declare(null, {
         config: {},
@@ -62,8 +73,48 @@ define([
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
             // your code here!
-          
-          
+            function updateConnectivityIndicator()
+            {
+                switch( offlineFeaturesManager.getOnlineStatus() )
+                {
+                    case offlineFeaturesManager.OFFLINE:
+                        console.log('offline');
+                        break;
+                    case offlineFeaturesManager.ONLINE:
+                        console.log('online');
+                        break;
+                    case offlineFeaturesManager.RECONNECTING:
+                        console.log('reconnecting');
+                        break;
+                }
+            }
+            
+            function goOnline()
+            {
+                offlineFeaturesManager.goOnline(function()
+                {
+                    
+                    updateConnectivityIndicator();
+                });
+                updateConnectivityIndicator();
+            }
+
+            function goOffline()
+            {
+                offlineFeaturesManager.goOffline();
+            }
+ 
+            var offlineFeaturesManager = new OfflineFeaturesManager();
+            offlineFeaturesManager.on(offlineFeaturesManager.events.EDITS_ENQUEUED, updateStatus);
+            offlineFeaturesManager.on(offlineFeaturesManager.events.EDITS_SENT, updateStatus);
+            offlineFeaturesManager.on(offlineFeaturesManager.events.ALL_EDITS_SENT, updateStatus);
+            updateConnectivityIndicator();
+            updateStorageInfo();
+
+            Offline.check();
+            Offline.on('up', goOnline );
+            Offline.on('down', goOffline );
+            
           
             $( document ).ready(function() {
               $('.datepicker').datepicker();
