@@ -9,14 +9,12 @@ define([
     "dojo/dom-class",
     "dojo/on",
     "application/bootstrapmap",
-
     "esri/toolbars/edit",
     "esri/layers/FeatureLayer",
     "edit/offlineFeaturesManager",
     "edit/editsStore",
     "esri/dijit/editing/Editor",
     "esri/dijit/editing/TemplatePicker",
-
     "dojo/domReady!"
 ], function (
     ready,
@@ -105,12 +103,12 @@ define([
             }
  
             var offlineFeaturesManager = new OfflineFeaturesManager();
-            offlineFeaturesManager.on(offlineFeaturesManager.events.EDITS_ENQUEUED, updateStatus);
+            /*offlineFeaturesManager.on(offlineFeaturesManager.events.EDITS_ENQUEUED, updateStatus);
             offlineFeaturesManager.on(offlineFeaturesManager.events.EDITS_SENT, updateStatus);
             offlineFeaturesManager.on(offlineFeaturesManager.events.ALL_EDITS_SENT, updateStatus);
+            */
             updateConnectivityIndicator();
-            updateStorageInfo();
-
+      
             Offline.check();
             Offline.on('up', goOnline );
             Offline.on('down', goOffline );
