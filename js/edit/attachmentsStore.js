@@ -1,7 +1,8 @@
-"use strict";
+/*global IDBKeyRange,indexedDB */
 
 define([], function()
 {
+    "use strict";
 	var AttachmentsStore = function()
 	{
         this._db = null;
@@ -322,7 +323,7 @@ define([], function()
 
         this._createLocalURL = function(attachmentFile)
         {
-            return window.URL.createObjectURL(attachmentFile)
+            return window.URL.createObjectURL(attachmentFile);
         };
 
         this._revokeLocalURL = function(attachment)

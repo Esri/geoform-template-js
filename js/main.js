@@ -9,13 +9,7 @@ define([
     "dojo/dom-class",
     "dojo/on",
     "application/bootstrapmap",
-    "esri/toolbars/edit",
-    "esri/layers/FeatureLayer",
-    "edit/offlineFeaturesManager",
-    "edit/editsStore",
-    "esri/dijit/editing/Editor",
-    "esri/dijit/editing/TemplatePicker",
-    "dojo/_base/array",
+    "application/OfflineSupport",
     "dojo/domReady!"
 ], function (
     ready,
@@ -26,10 +20,7 @@ define([
     domClass,
     on,
     bootstrapmap,
-    Edit, FeatureLayer,
-    OfflineFeaturesManager, editsStore,
-    Editor, TemplatePicker,
-    array
+    OfflineSupport
 ) {
     return declare(null, {
         config: {},
@@ -73,164 +64,13 @@ define([
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
             // your code here!
-            function updateConnectivityIndicator()
-            {
-                switch( offlineFeaturesManager.getOnlineStatus() )
-                {
-                    case offlineFeaturesManager.OFFLINE:
-                        console.log('offline');
-                        break;
-                    case offlineFeaturesManager.ONLINE:
-                        console.log('online');
-                        break;
-                    case offlineFeaturesManager.RECONNECTING:
-                        console.log('reconnecting');
-                        break;
-                }
-            }
-            
-            function goOnline()
-            {
-                offlineFeaturesManager.goOnline(function()
-                {
-                    
-                    updateConnectivityIndicator();
-                });
-                updateConnectivityIndicator();
-            }
-
-            function goOffline()
-            {
-                offlineFeaturesManager.goOffline();
-            }
- 
-            var offlineFeaturesManager = new OfflineFeaturesManager();
-         
-            
-            updateConnectivityIndicator();
-      
-            Offline.check();
-            Offline.on('up', goOnline );
-            Offline.on('down', goOffline );
             
             
             
             
-            
-            //this.map.on('layer-add-result', initEditor);
-
-		var fsUrl = "http://services2.arcgis.com/CQWCKwrSm5dkM28A/arcgis/rest/services/Military/FeatureServer/1";
-
-			var layer = new FeatureLayer(fsUrl, {
-				mode: FeatureLayer.MODE_SNAPSHOT,
-				outFields: ['*']
-			});
-		      
-		
-
-		this.map.addLayer(layer);
-        on.once(layer, 'load', initEditor); 
-        //initEditor(layer);
-
-		//////////////////////////////////////
-
-        var that = this;
-		function initEditor(evt)
-		{
-            var layer = evt.layer;
-            //console.log(evt);
-			try {
-			
-				/* extend layer with offline detection functionality */
-		
-                
-					
-					offlineFeaturesManager.extend(layer);
-					
-                
-               
-				/* handle errors that happen while storing offline edits */
-				offlineFeaturesManager.on(offlineFeaturesManager.events.EDITS_ENQUEUED, function(results)
-				{
-					var errors = Array.prototype.concat(
-						results.addResults.filter(function(r){ return !r.success }),
-						results.updateResults.filter(function(r){ return !r.success }),
-						results.deleteResults.filter(function(r){ return !r.success }) 
-					);
-
-					if( errors.length )
-					{
-                        console.log(errors);
-						//var messages = errors.map(function(e){ return e.error.message });
-						//alert("Error editing features: " + messages.join('\n'));
-					}
-				});
-			}
-			catch(err)
-			{
-				console.log(err);
-			}
-
-			try {
-                
-				/* template picker */
-				//var templateLayers = evt.layers.map(function(result){return result.layer;});
-				
-                var templatePicker = new TemplatePicker({
-					featureLayers: [layer],
-					grouping: true,
-					rows: "auto",
-					columns: 3,
-				}, "templateDiv");
-				templatePicker.startup();
-
-				/* editor */
-				//var layers = evt.layers.map(function(result){return {featureLayer: result.layer};});
-				var settings = {
-					map: that.map,
-					templatePicker: templatePicker,
-					layerInfos: [{featureLayer:layer}],
-					toolbarVisible: true,
-					enableUndoRedo: true,
-					maxUndoRedoOperations: 15,
-					createOptions: {
-						polylineDrawTools: [ 
-							Editor.CREATE_TOOL_FREEHAND_POLYLINE,
-							Editor.CREATE_TOOL_POLYLINE ],
-						polygonDrawTools: [
-							Editor.CREATE_TOOL_FREEHAND_POLYGON,
-							Editor.CREATE_TOOL_POLYGON,
-							Editor.CREATE_TOOL_RECTANGLE ]
-					},
-					toolbarOptions: {
-						reshapeVisible: false
-					}
-				};
-
-				editor = new Editor({ settings: settings }, 'editorDiv');
-				editor.startup();
-
-				console.log("ok!");
-			}
-			catch(err)
-			{
-				console.log(err);
-			}
-
-			try {
-				if( Offline.state === 'up' )
-				{
-					// if we have pending edits from previous executions and we are online, then try to replay them
-					goOnline();
-				}
-			} 
-			catch(err)
-			{
-				console.log(err);
-			}
-		}
-            
-            
+            OfflineSupport({
+                map: this.map
+            });
             
             
           
