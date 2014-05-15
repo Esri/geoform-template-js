@@ -4,43 +4,36 @@ define([
     "dojo/_base/lang",
     "dojo/_base/array",
     "dojo/on",
+    "dojo/dom-construct",
     "esri/toolbars/edit",
-    "esri/layers/FeatureLayer",
     "edit/offlineFeaturesManager",
     "edit/editsStore",
-    "esri/dijit/editing/Editor",
-    "esri/dijit/editing/TemplatePicker"
+    "esri/dijit/editing/Editor"
 ], function (
     declare,
     lang,
     array,
     on,
+    domConstruct,
     Edit,
-    FeatureLayer,
     OfflineFeaturesManager,
     editsStore,
-    Editor,
-    TemplatePicker
+    Editor
 ) {
     return declare(null, {
-        
         // create class
         constructor: function (options) {
-            
+            // save defaults
             this.defaults = options;
-            
             // create offline manager
             this.offlineFeaturesManager = new OfflineFeaturesManager();
-            
-            // add layer
-            var fsUrl = "http://services2.arcgis.com/CQWCKwrSm5dkM28A/arcgis/rest/services/Military/FeatureServer/1";
-            var layer = new FeatureLayer(fsUrl, {
-                mode: FeatureLayer.MODE_SNAPSHOT,
-                outFields: ['*']
-            });
-            this.defaults.map.addLayer(layer);
-            on.once(layer, 'load', lang.hitch(this, this.initEditor));
-
+            // once layer is loaded
+            if(this.defaults.layer.loaded){
+                this.initEditor();
+            }
+            else{
+                on.once(this.defaults.layer, 'load', lang.hitch(this, this.initEditor));   
+            }
             // update indicator and check status
             this.updateConnectivityIndicator();
             Offline.check();
@@ -65,104 +58,61 @@ define([
 
         // now online
         goOnline: function () {
+            // go online and then update status
             this.offlineFeaturesManager.goOnline(lang.hitch(this, function () {
                 this.updateConnectivityIndicator();
             }));
+            // update status
             this.updateConnectivityIndicator();
         },
 
         // now offline
         goOffline: function () {
+            // go offline
             this.offlineFeaturesManager.goOffline();
         },
 
         // setup editing
-        initEditor: function (evt) {
-            var layer = evt.layer;
- 
-                /* extend layer with offline detection functionality */
-    
-       
-                this.offlineFeaturesManager.extend(layer);
-                
-            
-                /* handle errors that happen while storing offline edits */
-                this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, function (results) {
-                    var errors = Array.prototype.concat(
-                        results.addResults.filter(function (r) {
-                            return !r.success;
-                        }),
-                        results.updateResults.filter(function (r) {
-                            return !r.success;
-                        }),
-                        results.deleteResults.filter(function (r) {
-                            return !r.success;
-                        })
-                    );
-
-                    if (errors.length) {
-                        console.log(errors);
-                    }
-                });
-         
-
-            
-
-                /* template picker */
-            
-                // var templateLayers = array.map(evt.layers, function(result){return result.layer;});
-            
-      
-                var templatePicker = new TemplatePicker({
-                    featureLayers: [layer],
-                    grouping: true,
-                    rows: "auto",
-                    columns: 3,
-                }, "templateDiv");
-                templatePicker.startup();
-
-                /* editor */
-                //var layers = evt.layers.map(function(result){return {featureLayer: result.layer};});
-         
-                var settings = {
-                    map: this.defaults.map,
-                    templatePicker: templatePicker,
-                    layerInfos: [{
-                        featureLayer: layer
-                    }],
-                    toolbarVisible: true,
-                    enableUndoRedo: true,
-                    maxUndoRedoOperations: 15,
-                    createOptions: {
-                        polylineDrawTools: [
-                           Editor.CREATE_TOOL_FREEHAND_POLYLINE,
-                           Editor.CREATE_TOOL_POLYLINE
-                        ],
-                        polygonDrawTools: [
-                           Editor.CREATE_TOOL_FREEHAND_POLYGON,
-                           Editor.CREATE_TOOL_POLYGON,
-                           Editor.CREATE_TOOL_RECTANGLE
-                        ]
-                    },
-                    toolbarOptions: {
-                        reshapeVisible: false
-                    }
-                };
-
-                var editor = new Editor({
-                    settings: settings
-                }, 'editorDiv');
-            
-                editor.startup();
-
-                console.log("ok!");
-       
-           
-                if (Offline.state === 'up') {
-                    // if we have pending edits from previous executions and we are online, then try to replay them
-                    this.goOnline();
+        initEditor: function () {
+            /* extend layer with offline detection functionality */
+            this.offlineFeaturesManager.extend(this.defaults.layer);
+            /* handle errors that happen while storing offline edits */
+            this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, function (results) {
+                var errors = Array.prototype.concat(
+                    results.addResults.filter(function (r) {
+                        return !r.success;
+                    }),
+                    results.updateResults.filter(function (r) {
+                        return !r.success;
+                    }),
+                    results.deleteResults.filter(function (r) {
+                        return !r.success;
+                    })
+                );
+                // log errors  
+                if (errors.length) {
+                    console.log(errors);
                 }
-           
+            });
+            // editor settings
+            var settings = {
+                map: this.defaults.map,
+                layerInfos: [{
+                    featureLayer: this.defaults.layer
+                }]
+            };
+            // create editor
+            var editor = new Editor({
+                settings: settings
+            }, domConstruct.create('div'));
+            // start editor
+            editor.startup();
+            // if online
+            if (Offline.state === 'up') {
+                // if we have pending edits from previous executions and we are online, then try to replay them
+                this.goOnline();
+            }
+
         }
     });
 });

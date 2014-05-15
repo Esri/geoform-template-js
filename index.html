@@ -30,12 +30,11 @@
   <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.9/js/esri/css/esri.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
   <link rel="stylesheet" type="text/css" href="css/datepicker.css">
-  <link rel="stylesheet" type="text/css" href="css/offline-theme-default.css">
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
     <script src="js/html5shiv.min.js"></script>
     <script src="js/respond.min.js"></script>
-    <![endif]-->
+  <![endif]-->
 </head>
 
 <body>
@@ -179,8 +178,7 @@
 
         <!-- Bootstrap-map-js -->
         <div id="mapDiv"></div>
-          <div id="editorDiv"></div>
-		<div id="templateDiv"></div>
+
       </div>
     </div>
     <div class="row">
@@ -221,6 +219,18 @@
   </script>
   <script type="text/javascript" src="//js.arcgis.com/3.9/"></script>
   <script type="text/javascript" src="js/edit/offline.min.js"></script>
+    <script>
+        Offline.options = {
+            checks: {
+                image: {
+                    url: function() {
+                        return 'http://esri.github.io/offline-editor-js/tiny-image.png?_=' + (Math.floor(Math.random() * 1000000000));
+                    }
+                },
+                active: 'image'
+            }
+        }
+    </script>
   <script type="text/javascript" src="js/edit/IndexedDBShim.min.js"></script>
   <script type="text/javascript">
     require([

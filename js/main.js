@@ -1,4 +1,4 @@
-/*global define,document */
+/*global $,define,document */
 /*jslint sloppy:true,nomen:true */
 define([
     "dojo/ready",
@@ -10,6 +10,7 @@ define([
     "dojo/on",
     "application/bootstrapmap",
     "application/OfflineSupport",
+    "esri/layers/FeatureLayer",
     "dojo/domReady!"
 ], function (
     ready,
@@ -20,7 +21,8 @@ define([
     domClass,
     on,
     bootstrapmap,
-    OfflineSupport
+    OfflineSupport,
+    FeatureLayer
 ) {
     return declare(null, {
         config: {},
@@ -66,14 +68,23 @@ define([
             // your code here!
             
             
+            // add layer
+            var fsUrl = "http://services2.arcgis.com/CQWCKwrSm5dkM28A/arcgis/rest/services/Military/FeatureServer/1";
+            var layer = new FeatureLayer(fsUrl, {
+                mode: FeatureLayer.MODE_SNAPSHOT,
+                outFields: ['*']
+            });
+            this.map.addLayer(layer);
             
             
-            OfflineSupport({
-                map: this.map
+            // support basic offline editing
+            var handleOffline = new OfflineSupport({
+                map: this.map,
+                layer: layer
             });
             
             
-          
+            // jquery ready
             $( document ).ready(function() {
               $('.datepicker').datepicker();
             });
