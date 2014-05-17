@@ -68,20 +68,17 @@ define([
             // your code here!
             
             
-            // add layer
-            var fsUrl = "http://services2.arcgis.com/CQWCKwrSm5dkM28A/arcgis/rest/services/Military/FeatureServer/1";
-            var layer = new FeatureLayer(fsUrl, {
-                mode: FeatureLayer.MODE_SNAPSHOT,
-                outFields: ['*']
-            });
-            this.map.addLayer(layer);
+            // get editable layer
+            var layer = this.map.getLayer(this.config.form_layer.id);
+            if(layer){
+                // support basic offline editing
+                var handleOffline = new OfflineSupport({
+                    map: this.map,
+                    layer: layer
+                });
+            }
             
-            
-            // support basic offline editing
-            var handleOffline = new OfflineSupport({
-                map: this.map,
-                layer: layer
-            });
+            var fields = layer.fields;
             
             
             // jquery ready
