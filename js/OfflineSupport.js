@@ -4,21 +4,24 @@ define([
     "dojo/_base/lang",
     "dojo/_base/array",
     "dojo/on",
+    "dojo/dom",
     "dojo/dom-construct",
     "esri/toolbars/edit",
     "edit/offlineFeaturesManager",
     "edit/editsStore",
-    "esri/dijit/editing/Editor"
+    "esri/dijit/editing/Editor",
+    "dojo/i18n!application/nls/resources"
 ], function (
     declare,
     lang,
     array,
     on,
-    domConstruct,
+    dom, domConstruct,
     Edit,
     OfflineFeaturesManager,
     editsStore,
-    Editor
+    Editor,
+    i18n
 ) {
     return declare(null, {
         // create class
@@ -43,18 +46,22 @@ define([
 
         // update online status
         updateConnectivityIndicator: function () {
+            var node = dom.byId('onlineStatus');
+            var html = '';
             switch (this.offlineFeaturesManager.getOnlineStatus()) {
             case this.offlineFeaturesManager.OFFLINE:
-                console.log('offline');
+                html += '<div class="alert alert-danger"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.offline + '</div>';
                 break;
             case this.offlineFeaturesManager.ONLINE:
-                console.log('online');
+                html += '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> ' + i18n.onlineStatus.online + '</div>';
                 break;
             case this.offlineFeaturesManager.RECONNECTING:
-                console.log('reconnecting');
+                html += '<div class="alert alert-warning"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.reconnecting + '</div>';
                 break;
             }
-            
+            if(node){
+                node.innerHTML = html;
+            }
         },
 
         // now online
