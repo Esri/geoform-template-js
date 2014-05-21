@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="Keywords" content="Public Information Map, Map, Esri">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="Keywords" content="GeoForm, GeoForm Template, Template, Map, Esri">
+    <meta name="description" content="GeoForm is a configurable template for form based data editing of a Feature Service. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the Web Map and editable Feature Services.">
+    <meta name="author" content="esri">
     <!-- Facebook -->
-    <meta property="og:title" content="">
+    <meta property="og:title" content="GeoForm">
     <meta property="og:image" content="images/item.png">
     <meta property="og:site_name" content="esri">
     <!-- Safari iOS - apps only -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <!-- Chrome for Android - NEW! -->
+    <!-- Chrome for Android -->
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <link rel="shortcut icon" href="images/favicon.ico">
-    <title>User Form</title>
+    <title>GeoForm</title>
     <!-- Bootstrap core CSS -->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -27,7 +26,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <!-- Bootstrap-map-js -->
-    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.9/js/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.10/js/esri/css/esri.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
     <link rel="stylesheet" type="text/css" href="css/datepicker.css">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -36,7 +35,6 @@
     <script src="js/respond.min.js"></script>
   <![endif]-->
 </head>
-
 <body>
 
     <div class="container">
@@ -46,7 +44,7 @@
                 <div class="page-header">
                     <div class="media">
                         <a class="pull-left" href="#">
-                            <img src="http://placehold.it/140x140" alt="Logo" class="img-circle">
+                            <img src="//placehold.it/140x140" alt="Logo" class="img-circle">
                         </a>
                         <div class="media-body">
                             <h2>Lorem ipsum dolor sit amet</h2>
@@ -173,15 +171,7 @@
                                 </div>
                             </div>
                         </form>
-
-
-
-
-
-
-                <!-- Bootstrap-map-js -->
                 <div id="mapDiv"></div>
-
             </div>
         </div>
         <div class="row">
@@ -226,20 +216,9 @@
       }]
         };
     </script>
-    <script type="text/javascript" src="//js.arcgis.com/3.9/"></script>
+    <script type="text/javascript" src="//jsdev.arcgis.com/3.10/"></script>
     <script type="text/javascript" src="js/edit/offline.min.js"></script>
-    <script>
-        Offline.options = {
-            checks: {
-                image: {
-                    url: function () {
-                        return 'http://esri.github.io/offline-editor-js/tiny-image.png?_=' + (Math.floor(Math.random() * 1000000000));
-                    }
-                },
-                active: 'image'
-            }
-        }
-    </script>
+    <script type="text/javascript" src="js/edit/offlineOptions.js"></script>
     <script type="text/javascript" src="js/edit/IndexedDBShim.min.js"></script>
     <script type="text/javascript">
         require([
@@ -265,10 +244,9 @@
             });
         });
     </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="js/bootstrap-datepicker.js"></script>
 </body>
-
 </html>
