@@ -2,19 +2,20 @@
 
 ![App](http://driskull.github.io/geoform-template-js/images/item.png)
 
-GeoForm is a configurable template for form based data editing of a Feature Service. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the Web Map and editable Feature Services. This will geo-enable data and support workflows by lowering the barrier of entry for completing simple tasks. This template can be used to  gather input from outside of an organization and collect valuable content for collaboration.
+GeoForm is a configurable template for form based data editing of a [Feature Service](http://resources.arcgis.com/en/help/main/10.1/index.html#//0154000002w8000000). This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the [Web Map](http://resources.arcgis.com/en/help/main/10.1/index.html#//00sp0000001z000000) and editable Feature Services. This will geo-enable data and support workflows by lowering the barrier of entry for completing simple tasks. This template can be used to  gather input from outside of an organization and collect valuable content for collaboration.
 
-[View it live](http://driskull.github.io/geoform-template-js/)
+[Live Demo](http://driskull.github.io/geoform-template-js/)
+[Builder Live Demo](http://driskull.github.io/geoform-template-js/?edit=true)
 
-* *Map:* Choose the web map used in your application.
-* *Title:* Customize the title of the application.
-* *Logo:* Choose a logo to display in the application.
-* *Description:* Describe the form.
-* *Editable Layer:* Choose the editable Feature Service used for collecting the input data.
-* *Fields:* Select which fields to display and collect data within the form.
-* *Color Scheme:* Choose the color scheme of the application.
-* *Mobile:* A responsive web application that adapts to a resolution using Twitter’s Bootstrap framework.
-* *Share:* Enable sharing using Twitter or Facebook or email.
+* **Map:** Choose the web map used in your application.
+* **Title:** Customize the title of the application.
+* **Logo:** Choose a logo to display in the application.
+* **Description:** Describe the form.
+* **Editable Layer:** Choose the editable Feature Service used for collecting the input data.
+* **Fields:** Select which fields to display and collect data within the form.
+* **Color Scheme:** Choose the color scheme of the application.
+* **Mobile:** A responsive web application that adapts to a resolution using Twitter’s Bootstrap framework.
+* **Share:** Enable sharing using Twitter or Facebook or email.
 
 The GeoForm template can be accessed via the ArcGIS template gallery or item details. The application source code can be downloaded for further customization and hosted on your own web server.
 
@@ -40,7 +41,7 @@ If you are not using ArcGIS Online applications, you can configure this template
 
 ## Bootstrap
 
-This application uses Twitter's [Bootstrap](http://getbootstrap.com/) framework for layout, styling, components and themes. [Bootstrap Github](https://github.com/twbs/bootstrap).
+This application uses the [Bootstrap](http://getbootstrap.com/) framework for CSS, layout, components and theming. [Bootstrap](https://github.com/twbs/bootstrap) on GitHub.
 
 ## Bootstrap Map
 
