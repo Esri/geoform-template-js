@@ -1,5 +1,4 @@
 /*global IDBKeyRange,indexedDB */
-
 define([], function()
 {
     "use strict";
