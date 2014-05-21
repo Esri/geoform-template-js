@@ -4,9 +4,8 @@
 
 GeoForm is a configurable template for form based data editing of a [Feature Service](http://resources.arcgis.com/en/help/main/10.1/index.html#//0154000002w8000000). This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the [Web Map](http://resources.arcgis.com/en/help/main/10.1/index.html#//00sp0000001z000000) and editable Feature Services. This will geo-enable data and support workflows by lowering the barrier of entry for completing simple tasks. This template can be used to  gather input from outside of an organization and collect valuable content for collaboration.
 
-[Live Demo](http://driskull.github.io/geoform-template-js/)
-
-[Builder Live Demo](http://driskull.github.io/geoform-template-js/?edit=true)
+    [Live Demo](http://driskull.github.io/geoform-template-js/)
+    [Builder Live Demo](http://driskull.github.io/geoform-template-js/?edit=true)
 
 * **Map:** Choose the web map used in your application.
 * **Title:** Customize the title of the application.
