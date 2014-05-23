@@ -6,6 +6,41 @@ define({
     "webmap": "1d48357b7d2040d18e9d610026319695",
     "form_layer":{
         "id": "Mission_Service_3346"
+    }, 
+     "details": {
+        "Title": "Demo Title",
+        "Logo": "/Images/myImage.png",
+        "Description": "This is sample Form"
+    },
+    "fields": [
+    {
+        "fieldName": "",
+        "fieldLabel": "",
+        "fieldType": "",
+        "fieldDescription": ""
+    },
+    {
+        "fieldName": "",
+        "fieldLabel": "",
+        "fieldType": "",
+        "fieldDescription": ""
+    },
+    {
+        "fieldName": "",
+        "fieldLabel": "",
+        "fieldType": "",
+        "fieldDescription": ""
+    },
+    {
+        "fieldName": "",
+        "fieldLabel": "",
+        "fieldType": "",
+        "fieldDescription": ""
+    }
+    ],
+    "theme": {
+        "themeName": "",
+        "themeSrc": ""
     },
     "oauthappid": null,
     //Enter the url to the proxy if needed by the applcation. See the "Using the proxy page" help topic for details
@@ -26,7 +61,8 @@ define({
     "localize": true,
     // custom URL parameters for this template
     "urlItems": [
-        "extent"
+        "extent",
+        "edit"
     ],
     "units": null,
     "helperServices": {
