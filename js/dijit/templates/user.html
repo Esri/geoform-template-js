@@ -1,0 +1,84 @@
+﻿<div class="container" data-dojo-attach-point="userMode">
+    <div class="row">
+        <div class="col-xs-12">
+            <div data-dojo-attach-point="statusAlert">
+            </div>
+            <div class="page-header">
+                <div class="media">
+                    <a class="pull-left" href="#">
+                        <img data-dojo-attach-point="appLogo" src="" alt="Logo" class="img-circle" style="height:140px; width:140px">
+                    </a>
+                    <div class="media-body">
+                        <h2 data-dojo-attach-point="appTitle">
+                            ${nls.builder.defaultTitleText}
+                        </h2>
+                        <p class="lead" data-dojo-attach-point="appDescription">
+                            ${nls.builder.defaultDescriptionText}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-7">
+            <h3>
+                ${nls.builder.geoFormGeneralTabText}</h3>
+            <form role="form" data-dojo-attach-point="userForm">
+            </form>
+        </div>
+        <div class="col-xs-12 col-sm-5">
+            <h3>
+                Location Info</h3>
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#myLocation" data-toggle="tab">My Location</a> </li>
+                <li><a href="#address" data-toggle="tab">Address</a> </li>
+                <li><a href="#coordinates" data-toggle="tab">Coordinates</a> </li>
+            </ul>
+            <form role="form" style="padding: 20px 0;">
+            <div class="tab-content">
+                <div id="myLocation" class="tab-pane active">
+                    <div>
+                        <button type="button" class="btn btn-default">
+                            Locate Me</button></div>
+                </div>
+                <div id="address" class="tab-pane">
+                    <div class="form-group">
+                        <label for="">
+                            Location</label>
+                        <input class="form-control" type="text" placeholder="Enter Address" />
+                    </div>
+                </div>
+                <div id="coordinates" class="tab-pane">
+                    <div class="form-group">
+                        <label for="">
+                            Location</label>
+                        <input class="form-control" type="text" placeholder="Enter Coordinates" />
+                    </div>
+                </div>
+            </div>
+            </form>
+            <div data-dojo-attach-point="mapDiv" style=" height:400px">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-7">
+            <div data-dojo-attach-point="onlineStatus">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <form role="form">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    Submit</button>
+                <button type="reset" class="btn btn-default">
+                    Clear</button>
+            </div>
+            </form>
+        </div>
+    </div>
+    <!-- col for tabs -->
+</div>
