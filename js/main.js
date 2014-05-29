@@ -36,7 +36,6 @@ define([
                 ready(lang.hitch(this, function () {
                     //supply either the webmap id or, if available, the item info
                     var itemInfo = this.config.itemInfo || this.config.webmap;
-                    this._createWebMap(itemInfo);
                 }));
             } else {
                 var error = new Error("Main:: Config is not defined");
@@ -66,8 +65,6 @@ define([
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
             // your code here!
-            
-            
             // get editable layer
             var layer = this.map.getLayer(this.config.form_layer.id);
             if(layer){
@@ -77,49 +74,11 @@ define([
                     layer: layer
                 });
             }
-            
             var fields = layer.fields;
-            
-            
             // jquery ready
             $( document ).ready(function() {
               $('.datepicker').datepicker();
             });
-          
-          
-        },
-        // create a map based on the input web map id
-        _createWebMap: function (itemInfo) {
-            arcgisUtils.createMap(itemInfo, "mapDiv", {
-                mapOptions: {
-                    smartNavigation: false,
-                    autoResize: false
-                    // Optionally define additional map config here for example you can
-                    // turn the slider off, display info windows, disable wraparound 180, slider position and more.
-                },
-                bingMapsKey: this.config.bingKey
-            }).then(lang.hitch(this, function (response) {
-                // Once the map is created we get access to the response which provides important info
-                // such as the map, operational layers, popup info and more. This object will also contain
-                // any custom options you defined for the template. In this example that is the 'theme' property.
-                // Here' we'll use it to update the application to match the specified color theme.
-                // console.log(this.config);
-                this.map = response.map;
-              
-                var bsm = new bootstrapmap(this.map);
-              
-              
-                // make sure map is loaded
-                if (this.map.loaded) {
-                    // do something with the map
-                    this._mapLoaded();
-                } else {
-                    on.once(this.map, "load", lang.hitch(this, function () {
-                        // do something with the map
-                        this._mapLoaded();
-                    }));
-                }
-            }), this.reportError);
         }
     });
 });

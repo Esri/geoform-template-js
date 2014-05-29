@@ -138,12 +138,9 @@
                     <div id="fields" class="tab-pane">
                         <h2>
                             Select Form Fields</h2>
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped" id="tableDND">
                             <thead>
                                 <tr>
-                                    <th>
-                                        #
-                                    </th>
                                     <th>
                                     ${nls.builder.fieldTabDisplayHeaderText}
                                     </th>
@@ -162,7 +159,7 @@
                                 </tr>
                             </thead>
                             <tbody data-dojo-attach-point="geoFormFieldsTable">
-                               
+
                             </tbody>
                         </table>
                         <p class="text-right">
@@ -181,7 +178,7 @@
                     <div id="preview" class="tab-pane">
                         <h2>
                             Preview Application</h2>
-                        <iframe class="preview-frame" src="index.html" frameborder="0"></iframe>
+                        <iframe class="preview-frame" src="" frameborder="0"></iframe>
                         <p>
                             <button type="button" class="btn btn-default">
                                 Preview</button>in a new window.</p>

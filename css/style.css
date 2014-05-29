@@ -38,6 +38,10 @@
 .table > tfoot > tr > td {
   vertical-align:middle !important;
 }
+
+.myDragClass {
+        background-color:gray;
+}
 /* Extra Small Devices, Phones */
 @media (min-width: 480px) {
     #mapDiv {
@@ -73,4 +77,24 @@
     .preview-frame{
         height: 600px;
     }
+}
+
+.esriGeocoderContainer
+{
+    width: 100% !important;
+}
+.simpleGeocoder .esriGeocoder input {
+  width: 80% !important;
+  height: 30px;
+}
+.simpleGeocoder .esriGeocoder .esriGeocoderSearch
+{
+    margin-top: 13px;
+}
+.simpleGeocoder .esriGeocoderHasValue .esriGeocoderReset
+{
+    margin-top: 13px !important;
+}
+.simpleGeocoder .esriGeocoder {
+    border:1px solid #dddddd !important;
 }
