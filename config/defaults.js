@@ -8,9 +8,9 @@ define({
         "id": "Mission_Service_3346"
     }, 
      "details": {
-        "Title": "Demo Title",
-        "Logo": "/Images/myImage.png",
-        "Description": "This is sample Form"
+        "Title": "GeoForm",
+        "Logo": "images/GeoForm.png",
+        "Description": "Complete this form to submit your geo-related information."
     },
     "fields": [
     {
