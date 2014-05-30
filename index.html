@@ -73,13 +73,12 @@
     <script type="text/javascript">
         require([
       "application/template",
-      "application/main",
       "application/signInHelper",
       "dojo/dom-class"
     ], function (
             Template,
-            Main,
-            signInHelper, domClass
+            signInHelper,
+            domClass
         ) {
         // start template
         var myTemplate = new Template();
@@ -89,8 +88,7 @@
             //i18n, appid, webmap and any custom values defined by the application.
             //In this example we have one called theme.
             var signIn = new signInHelper(), userInfo = {}, myApp;
-            var myApp = new Main();
-            myApp.startup(config);
+
             if (config.edit) {
                 signIn.createPortal().then(function (loggedInUser) {
                     userInfo.username = loggedInUser.username;
@@ -109,7 +107,7 @@
             }
             else {
                 require([
-                 "application/index",
+                 "application/main"
             ], function (userMode) {
                 var index = new userMode();
                 index.startup(config, myTemplate.appResponse);

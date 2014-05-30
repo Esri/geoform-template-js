@@ -55,15 +55,15 @@
                     </div>
                 </div>
                 <div id="coordinates" class="tab-pane">
-                    <div class="form-group">
+                    <div data-dojo-attach-point="coordinatesContainer" class="form-group">
                         <label for="">
                             Location</label>
-                        <input class="form-control" type="text" placeholder="Enter Coordinates" />
+                        <input data-dojo-attach-point="coordinateAddress" class="form-control" type="text" placeholder="Enter Coordinates" />
                     </div>
                 </div>
             </div>
             </form>
-            <div data-dojo-attach-point="mapDiv" style="height: 400px">
+            <div id="mapDiv" style="height: 400px">
             </div>
         </div>
     </div>
@@ -75,14 +75,12 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <form role="form">
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">
+                <button class="btn btn-primary" data-dojo-attach-point="submitButton">
                     Submit</button>
                 <button type="reset" class="btn btn-default">
                     Clear</button>
             </div>
-            </form>
         </div>
     </div>
     <!-- col for tabs -->
