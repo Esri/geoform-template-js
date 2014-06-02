@@ -88,7 +88,6 @@
             //i18n, appid, webmap and any custom values defined by the application.
             //In this example we have one called theme.
             var signIn = new signInHelper(), userInfo = {}, myApp;
-
             if (config.edit) {
                 signIn.createPortal().then(function (loggedInUser) {
                     userInfo.username = loggedInUser.username;
@@ -120,7 +119,7 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="js/bootstrap-datepicker.js"></script>
-
+	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-215788-4']);

@@ -15,11 +15,10 @@ define([
     "dijit/_TemplatedMixin",
     "dojo/text!application/dijit/templates/author.html",
     "application/browseIdDlg",
-    "esri/IdentityManager",
     "dojo/i18n!application/nls/builder",
     "esri/arcgis/utils",
     "dojo/domReady!"
-], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, authorTemplate, BrowseIdDlg, IdentityManager, i18n, arcgisUtils) {
+], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, authorTemplate, BrowseIdDlg, i18n, arcgisUtils) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         currentState: "webmap",
@@ -60,7 +59,7 @@ define([
                 this._getPrevTabDetails(evt);
             }));
 
-            $('#save').on('click', lang.hitch(this, function () {
+            $('#saveButton').on('click', lang.hitch(this, function () {
                 this._updateItem();
             }));
 
@@ -95,6 +94,7 @@ define([
 
         //function to get the details of previously selected tab
         _getPrevTabDetails: function (evt) {
+            var _self = this;
             if (evt) {
                 this.previousState = this.currentState;
                 this.currentState = evt.currentTarget.getAttribute("tab");
@@ -223,15 +223,10 @@ define([
                     }
                 }));
             }
-            $(document).ready(function () {
-                $("#tableDND").tableDnD({
-                    onDragClass: "myDragClass",
-                    onDrop: function (table, row) {
-                    },
-                    onDragStart: function (table, row) {
-                    }
-                });
 
+            $(document).ready(function () {
+                $("#tbodyDND").sortable({
+                });
             });
         },
 
@@ -346,7 +341,6 @@ define([
             var _self = this;
             switch (prevNavigationTab) {
                 case "webmap":
-
                     break;
                 case "details":
                     this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
@@ -356,7 +350,7 @@ define([
                 case "fields":
                     this.currentConfig.fields.length = 0;
                     var index, fieldName, fieldLabel, fieldType, fieldDescription, nullable, domain, defaultValue, sqlType, length,
-                    layerName, fieldIndex, fieldDataType;
+                    layerName, fieldDataType;
                     layerName = dom.byId("selectLayer").value;
                     array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow) {
                         if (currentRow.getAttribute("rowIndex") && query(".fieldCheckbox", currentRow)[0].checked) {

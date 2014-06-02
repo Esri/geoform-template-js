@@ -53,7 +53,7 @@ define([
         addressGeometry: null,
         constructor: function () {
         },
-        startup: function (config, response) {
+        startup: function (config, response, isPreview, node) {
             // config will contain application and user defined info for the template such as i18n strings, the web map id
             // and application id
             // any url parameters and any application specific configuration information.
@@ -219,33 +219,39 @@ define([
         },
 
         _validateField: function (currentNode) {
-            var inputType, inputValue, maxLength = null, typeCastedInputValue, decimal = /^[-+]?[0-9]+$/, float = /^[-+]?[0-9]+\.[0-9]+$/; ;
+            var inputType, inputValue, node, maxLength = null, typeCastedInputValue, decimal = /^[-+]?[0-9]+$/, float = /^[-+]?[0-9]+\.[0-9]+$/;
             inputValue = currentNode.currentTarget.value;
             inputType = domAttr.get(currentNode.currentTarget, "inputType");
+            if ($(currentNode.target)) {
+                node = $(currentNode.target.parentNode)[0];
+            }
+            else {
+                node = $(currentNode.srcElement.parentNode)[0];
+            }
             switch (inputType) {
                 case "String":
-                    domClass.remove($(currentNode.srcElement.parentNode)[0], "has-error");
+                    domClass.remove(node, "has-error");
                     break;
                 case "smallInteger":
                     typeCastedInputValue = parseInt(inputValue);
                     if ((inputValue.match(decimal) && typeCastedInputValue > -32768 && typeCastedInputValue < 32767) || inputValue.length === 0) {
-                        $(currentNode.srcElement.parentNode)[0].lastChild.innerHTML = "";
-                        domClass.remove($(currentNode.srcElement.parentNode)[0], "has-error");
+                        node.lastChild.innerHTML = "";
+                        domClass.remove(node, "has-error");
                     }
                     else {
-                        $(currentNode.srcElement.parentNode)[0].lastChild.innerHTML = "Please enter a valid number";
-                        domClass.add($(currentNode.srcElement.parentNode)[0], "has-error");
+                        node.lastChild.innerHTML = "Please enter a valid number";
+                        domClass.add(node, "has-error");
                     }
                     break;
                 case "Integer":
                     typeCastedInputValue = parseInt(inputValue);
                     if ((inputValue.match(decimal) && typeCastedInputValue > -2147483648 && typeCastedInputValue < 2147483647) || inputValue.length === 0) {
-                        $(currentNode.srcElement.parentNode)[0].lastChild.innerHTML = "";
-                        domClass.remove($(currentNode.srcElement.parentNode)[0], "has-error");
+                        node.lastChild.innerHTML = "";
+                        domClass.remove(node, "has-error");
                     }
                     else {
-                        $(currentNode.srcElement.parentNode)[0].lastChild.innerHTML = "Please enter a valid number";
-                        domClass.add($(currentNode.srcElement.parentNode)[0], "has-error");
+                        node.lastChild.innerHTML = "Please enter a valid number";
+                        domClass.add(node, "has-error");
                     }
                     break;
                 case "Single":
@@ -255,23 +261,23 @@ define([
                     //atleast one occurence of digits between o-9 in the end
                     typeCastedInputValue = parseFloat(inputValue);
                     if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue > -3.4 * Math.pow(10, 38) && typeCastedInputValue < 1.2 * Math.pow(10, 38)) || inputValue.length === 0) {
-                        $(currentNode.srcElement.parentNode)[0].lastChild.innerHTML = "";
-                        domClass.remove($(currentNode.srcElement.parentNode)[0], "has-error");
+                        node.lastChild.innerHTML = "";
+                        domClass.remove(node, "has-error");
                     }
                     else {
-                        $(currentNode.srcElement.parentNode)[0].lastChild.innerHTML = "Please enter a valid number";
-                        domClass.add($(currentNode.srcElement.parentNode)[0], "has-error");
+                        node.lastChild.innerHTML = "Please enter a valid number";
+                        domClass.add(node, "has-error");
                     }
                     break;
                 case "Double":
                     typeCastedInputValue = parseFloat(inputValue);
                     if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue > -2.2 * Math.pow(10, 308) && typeCastedInputValue < 1.8 * Math.pow(10, 38)) || inputValue.length === 0) {
-                        $(currentNode.srcElement.parentNode)[0].lastChild.innerHTML = "";
-                        domClass.remove($(currentNode.srcElement.parentNode)[0], "has-error");
+                        node.lastChild.innerHTML = "";
+                        domClass.remove(node, "has-error");
                     }
                     else {
-                        $(currentNode.srcElement.parentNode)[0].lastChild.innerHTML = "Please enter a valid number";
-                        domClass.add($(currentNode.srcElement.parentNode)[0], "has-error");
+                        node.lastChild.innerHTML = "Please enter a valid number";
+                        domClass.add(node, "has-error");
                     }
                     break;
             }
