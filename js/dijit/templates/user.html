@@ -6,7 +6,8 @@
             <div class="page-header">
                 <div class="media">
                     <a class="pull-left" href="#">
-                        <img data-dojo-attach-point="appLogo" src="" alt="Logo" class="img-circle" style="height:140px; width:140px">
+                        <img data-dojo-attach-point="appLogo" src="" alt="Logo" class="img-circle" style="height: 140px;
+                            width: 140px">
                     </a>
                     <div class="media-body">
                         <h2 data-dojo-attach-point="appTitle">
@@ -38,27 +39,31 @@
             <form role="form" style="padding: 20px 0;">
             <div class="tab-content">
                 <div id="myLocation" class="tab-pane active">
-                    <div>
-                        <button type="button" class="btn btn-default">
-                            Locate Me</button></div>
+                    <div class="form-group">
+                     <label for="">
+                            Location</label>
+                        <div data-dojo-attach-point="myLocation" class="btn btn-default">
+                        </div>
+                    </div>
                 </div>
                 <div id="address" class="tab-pane">
                     <div class="form-group">
                         <label for="">
                             Location</label>
-                        <input class="form-control" type="text" placeholder="Enter Address" />
+                        <div data-dojo-attach-point="geocodeAddress">
+                        </div>
                     </div>
                 </div>
                 <div id="coordinates" class="tab-pane">
-                    <div class="form-group">
+                    <div data-dojo-attach-point="coordinatesContainer" class="form-group">
                         <label for="">
                             Location</label>
-                        <input class="form-control" type="text" placeholder="Enter Coordinates" />
+                        <input data-dojo-attach-point="coordinateAddress" class="form-control" type="text" placeholder="Enter Coordinates" />
                     </div>
                 </div>
             </div>
             </form>
-            <div data-dojo-attach-point="mapDiv" style=" height:400px">
+            <div id="mapDiv" style="height: 400px">
             </div>
         </div>
     </div>
@@ -70,14 +75,12 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <form role="form">
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">
+                <button class="btn btn-primary" data-dojo-attach-point="submitButton">
                     Submit</button>
                 <button type="reset" class="btn btn-default">
                     Clear</button>
             </div>
-            </form>
         </div>
     </div>
     <!-- col for tabs -->

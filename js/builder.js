@@ -15,11 +15,10 @@ define([
     "dijit/_TemplatedMixin",
     "dojo/text!application/dijit/templates/author.html",
     "application/browseIdDlg",
-    "esri/IdentityManager",
     "dojo/i18n!application/nls/builder",
     "esri/arcgis/utils",
     "dojo/domReady!"
-], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, authorTemplate, BrowseIdDlg, IdentityManager, i18n, arcgisUtils) {
+], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, authorTemplate, BrowseIdDlg, i18n, arcgisUtils) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         currentState: "webmap",
@@ -60,7 +59,7 @@ define([
                 this._getPrevTabDetails(evt);
             }));
 
-            $('#save').on('click', lang.hitch(this, function () {
+            $('#saveButton').on('click', lang.hitch(this, function () {
                 this._updateItem();
             }));
 
@@ -93,8 +92,9 @@ define([
             }));
         },
 
-        //function to get the details of previously selected tab 
+        //function to get the details of previously selected tab
         _getPrevTabDetails: function (evt) {
+            var _self = this;
             if (evt) {
                 this.previousState = this.currentState;
                 this.currentState = evt.currentTarget.getAttribute("tab");
@@ -136,7 +136,7 @@ define([
             }));
         },
 
-        //function to set the title, logo-path and description from config 
+        //function to set the title, logo-path and description from config
         _populateDetails: function () {
             dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
             dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
@@ -161,7 +161,7 @@ define([
                 }));
                 domConstruct.create("br", {}, themesLabel);
                 themeThumbnail = domConstruct.create("img", { src: currentTheme.thumbnail, width: "200px", height: "133px", "style": "border:1px solid #555; " }, themesLabel);
-                on(themeThumbnail, "click", function () { window.open(currentTheme.refUrl) });
+                on(themeThumbnail, "click", function () { window.open(currentTheme.refUrl); });
             }));
         },
 
@@ -173,9 +173,7 @@ define([
 
         //function will populate all editable fields with validations
         _populateFields: function (layerName) {
-            var configuredFields = [], configuredFieldName = [], fieldRow, fieldNumber, fieldName, fieldLabel, fieldLabelInput,
-            fieldDescription, fieldDescriptionInput, fieldCheckBox,
-             fieldType, fieldTypeSelect, fieldCheckBoxInput, currentIndex = 0, layerIndex;
+            var configuredFields = [], configuredFieldName = [], fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox, fieldType, fieldTypeSelect, fieldCheckBoxInput, currentIndex = 0, layerIndex;
             if (this.geoFormFieldsTable) {
                 domConstruct.empty(this.geoFormFieldsTable);
             }
@@ -193,24 +191,21 @@ define([
             }));
             if (this.fieldInfo[layerName]) {
                 array.forEach(this.fieldInfo[layerName].Fields, lang.hitch(this, function (currentField, fieldIndex) {
-                    if (currentField.editable) {
-
-                        fieldRow = domConstruct.create("tr", {}, this.geoFormFieldsTable);
-                        fieldNumber = domConstruct.create("td", { innerHTML: currentIndex + 1 }, fieldRow);
+                    if (currentField.editable && !(currentField.type === "esriFieldTypeOID" || currentField.type === "esriFieldTypeGeometry" || currentField.type === "esriFieldTypeBlob" || currentField.type === "esriFieldTypeRaster" || currentField.type === "esriFieldTypeGUID" || currentField.type === "esriFieldTypeGlobalID" || currentField.type === "esriFieldTypeXML")) {
+                        fieldRow = domConstruct.create("tr", { rowIndex: currentIndex }, this.geoFormFieldsTable);
                         fieldCheckBox = domConstruct.create("td", {}, fieldRow);
 
                         fieldCheckBoxInput = domConstruct.create("input", { "class": "fieldCheckbox", type: "checkbox", index: currentIndex, fieldIndex: fieldIndex }, fieldCheckBox);
                         on(fieldCheckBoxInput, "change", lang.hitch(this, function () {
                             this._getFieldCheckboxState();
                         }));
-                        fieldName = domConstruct.create("td", { class: "fieldName", innerHTML: currentField.name, style: "color:#555; vertical-align:center !important;" }, fieldRow);
+                        fieldName = domConstruct.create("td", { class: "fieldName", innerHTML: currentField.name, index: currentIndex, style: "color:#555; vertical-align:center !important;" }, fieldRow);
                         fieldLabel = domConstruct.create("td", {}, fieldRow);
 
-                        fieldLabelInput = domConstruct.create("input", { class: "form-control fieldLabel", placeholder: i18n.builder.fieldLabelPlaceHolder, value: currentField.alias }, fieldLabel);
+                        fieldLabelInput = domConstruct.create("input", { class: "form-control fieldLabel", index: currentIndex, placeholder: i18n.builder.fieldLabelPlaceHolder, value: currentField.alias }, fieldLabel);
 
                         fieldType = domConstruct.create("td", {}, fieldRow);
-                        fieldTypeSelect = domConstruct.create("select", { disabled: "disabled", class: "form-control fieldSelect" }, fieldType);
-
+                        fieldTypeSelect = domConstruct.create("select", { disabled: "disabled", class: "form-control fieldSelect", index: currentIndex }, fieldType);
                         this._createFieldDataTypeOptions(currentField, fieldTypeSelect);
 
                         fieldDescription = domConstruct.create("td", {}, fieldRow);
@@ -222,10 +217,17 @@ define([
                             domAttr.set(fieldCheckBoxInput, "checked", true);
                             domAttr.set(fieldLabelInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldLabel);
                             domAttr.set(fieldDescriptionInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldDescription);
+                        } else {
+                            domAttr.set(fieldCheckBoxInput, "checked", false);
                         }
                     }
                 }));
             }
+
+            $(document).ready(function () {
+                $("#tbodyDND").sortable({
+                });
+            });
         },
 
         //function to fetch the datatype of the field
@@ -339,7 +341,6 @@ define([
             var _self = this;
             switch (prevNavigationTab) {
                 case "webmap":
-                    this.currentConfig.webmap = this.browseDlg.get("selectedWebmap").id;
                     break;
                 case "details":
                     this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
@@ -348,28 +349,35 @@ define([
                     break;
                 case "fields":
                     this.currentConfig.fields.length = 0;
-                    var index, fieldName, fieldLabel, fieldType, fieldDescription, nullable, domain, defaultValue, sqlType,
-                    layerName, fieldIndex;
-
-                    array.forEach(query(".fieldCheckbox:checked"), lang.hitch(this, function (currentCheckedField) {
-
-                        index = currentCheckedField.getAttribute("index");
-                        fieldIndex = currentCheckedField.getAttribute("fieldIndex");
-                        layerName = dom.byId("selectLayer").value;
-                        fieldName = query(".fieldName")[index].innerHTML;
-                        fieldLabel = query(".fieldLabel")[index].value;
-                        fieldType = query(".fieldSelect")[index].value;
-                        fieldDescription = query(".fieldDescription")[index].value;
-                        nullable = this.fieldInfo[layerName].Fields[fieldIndex].nullable;
-                        domain = this.fieldInfo[layerName].Fields[fieldIndex].domain;
-                        defaultValue = this.fieldInfo[layerName].Fields[fieldIndex].defaultValue;
-                        sqlType = this.fieldInfo[layerName].Fields[fieldIndex].sqlType;
-                        _self.currentConfig.fields.push({
-                            fieldName: fieldName, fieldLabel: fieldLabel,
-                            fieldType: fieldType, fieldDescription: fieldDescription,
-                            nullable: nullable, domain: domain,
-                            defaultValue: defaultValue, sqlType: sqlType
-                        });
+                    var index, fieldName, fieldLabel, fieldType, fieldDescription, nullable, domain, defaultValue, sqlType, length,
+                    layerName, fieldDataType;
+                    layerName = dom.byId("selectLayer").value;
+                    array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow) {
+                        if (currentRow.getAttribute("rowIndex") && query(".fieldCheckbox", currentRow)[0].checked) {
+                            index = currentRow.getAttribute("rowIndex");
+                            fieldName = query(".fieldName", currentRow)[0].innerHTML;
+                            fieldLabel = query(".fieldLabel", currentRow)[0].value;
+                            fieldType = query(".fieldSelect", currentRow)[0].value;
+                            fieldDescription = query(".fieldDescription", currentRow)[0].value;
+                            nullable = this.fieldInfo[layerName].Fields[Number(index) + 1].nullable;
+                            domain = this.fieldInfo[layerName].Fields[Number(index) + 1].domain;
+                            defaultValue = this.fieldInfo[layerName].Fields[Number(index) + 1].defaultValue;
+                            sqlType = this.fieldInfo[layerName].Fields[Number(index) + 1].sqlType;
+                            fieldDataType = this.fieldInfo[layerName].Fields[Number(index) + 1].type;
+                            if (this.fieldInfo[layerName].Fields[Number(index) + 1].length) {
+                                length = this.fieldInfo[layerName].Fields[Number(index) + 1].length;
+                            }
+                            else {
+                                length = null;
+                            }
+                            _self.currentConfig.fields.push({
+                                fieldName: fieldName, fieldLabel: fieldLabel,
+                                fieldType: fieldType, fieldDescription: fieldDescription,
+                                nullable: nullable, domain: domain,
+                                defaultValue: defaultValue, sqlType: sqlType, fieldDataType: fieldDataType,
+                                length: length
+                            });
+                        }
                     }));
                     break;
                 default:

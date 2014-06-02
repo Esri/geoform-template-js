@@ -4,43 +4,63 @@ define({
     //and url parameters.
     "appid": "",
     "webmap": "1d48357b7d2040d18e9d610026319695",
-    "form_layer":{
+    "form_layer": {
         "id": "Mission_Service_3346"
-    }, 
-     "details": {
+    },
+    "details": {
         "Title": "GeoForm",
         "Logo": "images/GeoForm.png",
         "Description": "Complete this form to submit your geo-related information."
     },
     "fields": [
     {
-        "fieldName": "",
-        "fieldLabel": "",
-        "fieldType": "",
-        "fieldDescription": ""
+        "defaultValue": null,
+        "domain": null,
+        "ieldDataType": "esriFieldTypeSingle",
+        "fieldDescription": "Total Mission Hours ?",
+        "fieldLabel": "Mission_Hours",
+        "fieldName": "Mission_Hours",
+        "fieldType": "Single",
+        "length": null,
+        "nullable": true
     },
     {
-        "fieldName": "",
-        "fieldLabel": "",
-        "fieldType": "",
-        "fieldDescription": ""
+        "defaultValue": null,
+        "domain": null,
+        "ieldDataType": "esriFieldTypeDate",
+        "fieldDescription": "Date of Mission ?",
+        "fieldLabel": "Mission_Date",
+        "fieldName": "Mission_Date",
+        "fieldType": "Date",
+        "length": 8,
+        "nullable": true
     },
     {
-        "fieldName": "",
-        "fieldLabel": "",
-        "fieldType": "",
-        "fieldDescription": ""
+        "defaultValue": null,
+        "domain": null,
+        "ieldDataType": "esriFieldTypeString",
+        "fieldDescription": "Team Name ?",
+        "fieldLabel": "Team",
+        "fieldName": "Team",
+        "fieldType": "String",
+        "length": 50,
+        "nullable": true
     },
     {
-        "fieldName": "",
-        "fieldLabel": "",
-        "fieldType": "",
-        "fieldDescription": ""
+        "defaultValue": null,
+        "domain": null,
+        "ieldDataType": "esriFieldTypeInteger",
+        "fieldDescription": "Mission Number ?",
+        "fieldLabel": "Mission_Number",
+        "fieldName": "Mission_Number",
+        "fieldType": "Integer",
+        "length": null,
+        "nullable": true
     }
     ],
     "theme": {
-        "themeName": "",
-        "themeSrc": ""
+        "themeName": "Readable",
+        "themeSrc": "themes/readable.css"
     },
     "oauthappid": null,
     //Enter the url to the proxy if needed by the applcation. See the "Using the proxy page" help topic for details
@@ -53,9 +73,9 @@ define({
     "bingmapskey": "",
     //Defaults to arcgis.com. Set this value to your portal or organization host name.
     "sharinghost": location.protocol + "//" + "www.arcgis.com",
-    //When true the template will query arcgis.com for default settings for helper services, units etc. If you 
+    //When true the template will query arcgis.com for default settings for helper services, units etc. If you
     //want to use custom settings for units or any of the helper services set queryForOrg to false then enter
-    //default values for any items you need using the helper services and units properties. 
+    //default values for any items you need using the helper services and units properties.
     "queryForOrg": true,
     // This template is localized. Keep true.
     "localize": true,
@@ -77,6 +97,6 @@ define({
         },
         "geocode": [{
             "url": null
-           }]
+        }]
     }
 });
