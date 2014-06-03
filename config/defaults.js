@@ -3,14 +3,14 @@ define({
     //default web map, default app color theme and more. These values can be overwritten by template configuration settings
     //and url parameters.
     "appid": "",
-    "webmap": "1d48357b7d2040d18e9d610026319695",
+    "webmap": "52e86d4fafe04e20acfd5a428202e8a1",
     "form_layer": {
-        "id": "Mission_Service_3346"
+        "id": "Citizen_Requests_Form_9964"
     },
     "details": {
-        "Title": "GeoForm",
+        "Title": "Citizen Service Request Form",
         "Logo": "images/GeoForm.png",
-        "Description": "Complete this form to submit your geo-related information."
+        "Description": "Use this form to make a request about Critical Issues, Issues that need to be resolved soon, or General Nuisances. Please specify the severity, what you are seeing, and any personal information you are willing to share. Feel free to add more details with the comment box or attach a photo. Finally - let us know you where when you saw the incident by using your location, typing in an address / coordinates, or simply put a point on the map."
     },
     "fields": [
     {
