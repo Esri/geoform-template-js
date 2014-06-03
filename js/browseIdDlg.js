@@ -16,7 +16,7 @@ define([
   "dijit/_WidgetBase",
   "dijit/_TemplatedMixin",
   "dijit/_WidgetsInTemplateMixin",
-  "dojo/text!application/dijit/templates/browseIdDlg.html",
+  "dojo/text!application/dijit/templates/BrowseIdDlg.html",
   "esri/request",
   "dijit/Dialog",
   "dijit/form/Select",
