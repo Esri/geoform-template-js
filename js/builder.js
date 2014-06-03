@@ -1,3 +1,4 @@
+/*global $ */
 define([
    "dojo/_base/declare",
     "dojo/on",
@@ -125,7 +126,7 @@ define([
                 else {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         attribute = currentTab.getAttribute("tab");
-                        if (((attribute == "publish" || attribute == "preview") && (query(".fieldCheckbox:checked").length == 0)) || (attribute == "fields" && dom.byId("selectLayer").value === "Select Layer")) {
+                        if (((attribute == "publish" || attribute == "preview") && (query(".fieldCheckbox:checked").length === 0)) || (attribute == "fields" && dom.byId("selectLayer").value === "Select Layer")) {
                             this._disableTab(currentTab);
                         }
                         else {
@@ -213,7 +214,7 @@ define([
 
                         currentIndex++;
                         if (configuredFieldName.indexOf(currentField.name) != -1) {
-                            configuredFields[configuredFieldName.indexOf(currentField.name)];
+                            //configuredFields[configuredFieldName.indexOf(currentField.name)];
                             domAttr.set(fieldCheckBoxInput, "checked", true);
                             domAttr.set(fieldLabelInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldLabel);
                             domAttr.set(fieldDescriptionInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldDescription);

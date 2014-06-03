@@ -60,9 +60,6 @@
             }, {
                 name: "edit",
                 location: package_path + '/js/edit'
-            }, {
-                name: "index",
-                location: package_path + '/js/index'
             }]
         };
     </script>
@@ -107,9 +104,9 @@
             else {
                 require([
                  "application/main"
-            ], function (userMode) {
-                var index = new userMode();
-                index.startup(config, myTemplate.appResponse);
+            ], function (Main) {
+                var user = new Main();
+                user.startup(config, myTemplate.appResponse);
             });
             }
         });

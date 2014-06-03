@@ -17,6 +17,7 @@ define([
     "dojo/dom-attr",
     "esri/dijit/LocateButton",
     "esri/dijit/Geocoder",
+    "esri/graphic",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dojo/text!application/dijit/templates/user.html",
@@ -42,6 +43,7 @@ define([
     domAttr,
     LocateButton,
     Geocoder,
+    Graphic,
     _WidgetBase,
     _TemplatedMixin,
     userTemplate,
@@ -79,13 +81,13 @@ define([
                 array.some(query(".geoFormQuestionare"), function (currentField) {
                     //TODO chk for mandatroy fields
                     //to check for errors in form before submitting.
-                    if (query(".form-control", currentField)[0].value == "" || domClass.contains(currentField, "has-error") || domClass.contains(currentField, "mandatory")) {
+                    if (query(".form-control", currentField)[0].value === "" || domClass.contains(currentField, "has-error") || domClass.contains(currentField, "mandatory")) {
                         alert("Please verify the form for errors and resubmit the form");
-                        flag = true
+                        flag = true;
                         return true;
                     }
                 });
-                if (flag == true) {
+                if (flag === true) {
                     return false;
                 }
                 this._addFeatureToLayer(this.config);
@@ -170,7 +172,7 @@ define([
                         questionString = currentField.fieldLabel;
                     }
                     else {
-                        questionString = currentField.fieldName
+                        questionString = currentField.fieldName;
                     }
                 }
 
@@ -351,7 +353,7 @@ define([
 
         _addFeatureToLayer: function (config) {
             //To populate data for apply edits
-            var featureData = new esri.Graphic();
+            var featureData = new Graphic();
             featureData.attributes = {};
             if (this.addressGeometry) {
                 array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
@@ -360,7 +362,7 @@ define([
                     featureData.attributes[key] = value;
                 });
                 featureData.geometry = {};
-                featureData.geometry = new esri.geometry.Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
+                featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
                 //code for apply-edits
                 this.map.getLayer(config.form_layer.id).applyEdits([featureData], null, null, function (addResults) {
                     alert("Feature Added");
