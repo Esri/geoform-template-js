@@ -22,7 +22,7 @@
     height: 100%;
     width: 100%;
     z-index: 500;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     overflow: hidden;
@@ -96,4 +96,62 @@
     margin-top: 13px !important;
 }
 .simpleGeocoder .esriGeocoder {
+    border: 1px solid #cccccc !important;
 }
+.iconClass {
+        font-size: 34px !important;
+        padding: 10px;
+        text-decoration: none !important;
+        color: #007ac2;
+        cursor: pointer;
+}
+.iconContent {
+        float: left;
+}
+.fieldCheckbox {
+        margin-right: 5px;
+        vertical-align: top;
+        margin-left: 8px !important;
+}
+.share-dialog-label {
+        display: initial;
+}
+.share-dialog-subheader {
+        font-size: 19px;
+        margin: 0 0 5px;
+        font-weight: 400;
+        margin-left: 8px;
+}
+.share-map-url {
+        width: 50%;
+        min-width: 30%;
+        max-width: 90%;
+        height: 25px;
+        font-size: 14px;
+        color: #777;
+        border: 1px solid #dcdcdc;
+        margin: 0 7px 0px !important;
+}
+.inputCoorninates {
+        width: 49% !important;
+        display: inline-table !important;
+}
+
+.circleImageDimension {
+        height: 140px;
+        width: 140px;
+}
+
+.myLocationOptions{
+        padding:20px 0px;
+}
+
+#selectWebmapBtn {
+        margin-top:10px;
+}
+
+#longAddress
+{
+    float: right;
+}
+

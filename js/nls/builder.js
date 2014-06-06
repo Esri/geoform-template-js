@@ -13,7 +13,7 @@
             previewText: "Preview",
             publishText: "Publish",
             titleText: "GeoForm Builder",
-            descriptionText: "Lorem ipsum dolor sit amet, et viderer adipisci duo. Libris consectetuer id mei, an cum regione mentitum, choro oblique dissentiunt id usu. Te veri illud corporasit, saepe mucius minimum vim ut, per no fabulas perfecto theophrastus. Eu convenire scripserit has, cibo sale erant te has.",
+            descriptionText: "GeoForm is a configurable template for form-based data editing of a <a target='_blank' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//0154000002w8000000'>Feature Service</a>. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the <a target='_blank' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//00sp0000001z000000'>Web Map</a> and editable Feature Services. Use this builder to customize and deploy your GeoForm following the steps on the left.",
             btnPreviousText: "Previous",
             btnNextText:"Next",
             webmapTabTitleText: "Choose a Webmap",
@@ -30,11 +30,27 @@
             fieldTabLabelHeaderText: "Label",
             fieldTabTypeHeaderText: "Type",
             fieldTabDescriptionHeaderText: "Description",
+            previewApplicationText: "Preview Application",
+            saveApplicationText: "Save Application",
+            saveText: "Save",
 
             //Local string for user mode
             defaultTitleText: "Default Title",
-            defaultDescriptionText:"Default Description",
-            geoFormGeneralTabText: "General"
+            defaultDescriptionText: "Default Description",
+            geoFormGeneralTabText: "General",
+            locationInformationText: "Location Info",
+            myLocationText: "My Location",
+            addressText: "Address",
+            cooridnatesText: "Coordinates",
+            locationTabText: "Location",
+            enterCoordinatesPlaceholder: "Enter Coordinates",
+            submitButtonText: "Submit",
+            clearButtonText: "Clear",
+            fieldvalidationMessageAlertText: "Please enter a valid number",
+            formValidationMessageAlertText: "Please verify the form for errors and resubmit the form",
+            latlongValidationMessageAlert: "Please select x and y coordinates",
+            emptylatitudeAlertMessage:"Please enter Latitude",
+            emptylongitudeAlertMessage:"Please enter Longitude"
         }
     }),
     "fr": 1

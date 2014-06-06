@@ -82,7 +82,8 @@ define([
           },
 
           _formatThumbnail: function (thmb) {
-              return thmb || "browse-dialog/images/default.png";
+              return thmb || "./images/default.png";
+
           },
 
           buildRendering: function () {
