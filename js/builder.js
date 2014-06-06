@@ -16,12 +16,14 @@ define([
     "dijit/_TemplatedMixin",
     "dojo/text!application/dijit/templates/author.html",
     "application/browseIdDlg",
+    "application/ShareDialog",
     "dojo/i18n!application/nls/builder",
     "esri/arcgis/utils",
     "dojo/domReady!"
-], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, authorTemplate, BrowseIdDlg, i18n, arcgisUtils) {
+], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, authorTemplate, BrowseIdDlg, ShareDialog, nls, arcgisUtils) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
+        nls: nls,
         currentState: "webmap",
         previousState: null,
         currentConfig: null,
@@ -30,7 +32,6 @@ define([
         userInfo: null,
         browseDlg: null,
         fieldInfo: {},
-        nls: i18n,
         themes: [
             { "name": "Cyborg", url: "themes/cyborg.css", "thumbnail": "images/cyborgThumbnail.jpg", "refUrl": "http://bootswatch.com/cyborg/" },
             { "name": "Cerulean", url: "themes/cerulean.css", "thumbnail": "images/cerulianThumbnail.jpg", "refUrl": "http://bootswatch.com/cerulean/" },
@@ -43,7 +44,6 @@ define([
         },
 
         startup: function (config, userInfo, response) {
-
             dom.byId("parentContainter").appendChild(this.authorMode);
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
@@ -74,9 +74,9 @@ define([
             this._initWebmapSelection();
             this._loadCSS("css/browseDialog.css");
             on(dom.byId("selectLayer"), "change", lang.hitch(this, function (evt) {
-                this.currentConfig.layer = evt.currentTarget.value;
+                this.currentConfig.form_layer.id = evt.currentTarget.value;
                 this._populateFields(evt.currentTarget.value);
-                if (evt.currentTarget.value == "Select Layer") {
+                if (evt.currentTarget.value == nls.builder.selectLayerDefaultOptionText) {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         if (domAttr.get(currentTab, "tab") == "fields" || domAttr.get(currentTab, "tab") == "preview" || domAttr.get(currentTab, "tab") == "publish") {
                             this._disableTab(currentTab);
@@ -100,6 +100,16 @@ define([
                 this.previousState = this.currentState;
                 this.currentState = evt.currentTarget.getAttribute("tab");
                 this._updateAppConfiguration(this.previousState);
+                if (this.currentState == "preview") {
+                    require([
+                       "application/main"
+                      ], function (userMode) {
+                          var index = new userMode();
+                          index.startup(_self.currentConfig, _self.response, true, query(".preview-frame")[0]);
+                      });
+                } else {
+                    localStorage.clear();
+                }
             }
         },
 
@@ -109,13 +119,13 @@ define([
             this._clearLayerOptions();
             array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                 if (currentLayer.url && currentLayer.url.split("/")[currentLayer.url.split("/").length - 2].toLowerCase() == "featureserver") {
-                    layerDefeeredListArr.push(this._queryLayer(currentLayer.url));
+                    layerDefeeredListArr.push(this._queryLayer(currentLayer.url, currentLayer.id));
                 }
             }));
             layerDefeeredList = new DeferredList(layerDefeeredListArr);
             layerDefeeredList.then(lang.hitch(this, function () {
                 if (dom.byId("selectLayer").options.length <= 1) {
-                    alert(i18n.builder.invalidWebmapSelectionAlert);
+                    alert(nls.builder.invalidWebmapSelectionAlert);
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         attribute = currentTab.getAttribute("tab");
                         if (attribute != "webmap") {
@@ -147,7 +157,7 @@ define([
         //function to populate all available themes in application
         _populateThemes: function () {
             var themesHeader, themesRadioButton, themesDivContainer, themesDivContent, themesLabel, themeThumbnail;
-            themesHeader = domConstruct.create("h2", { innerHTML: i18n.builder.selectThemeText }, this.stylesList);
+            themesHeader = domConstruct.create("h2", { innerHTML: nls.builder.selectThemeText }, this.stylesList);
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
                 themesDivContainer = domConstruct.create("div", { class: "col-md-4" }, this.stylesList);
                 themesDivContent = domConstruct.create("div", { class: "radio" }, themesDivContainer);
@@ -174,7 +184,8 @@ define([
 
         //function will populate all editable fields with validations
         _populateFields: function (layerName) {
-            var configuredFields = [], configuredFieldName = [], fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox, fieldType, fieldTypeSelect, fieldCheckBoxInput, currentIndex = 0, layerIndex;
+            var configuredFields = [], configuredFieldName = [], fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
+            fieldType, fieldTypeSelect, fieldCheckBoxInput, currentIndex = 0, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon;
             if (this.geoFormFieldsTable) {
                 domConstruct.empty(this.geoFormFieldsTable);
             }
@@ -194,6 +205,8 @@ define([
                 array.forEach(this.fieldInfo[layerName].Fields, lang.hitch(this, function (currentField, fieldIndex) {
                     if (currentField.editable && !(currentField.type === "esriFieldTypeOID" || currentField.type === "esriFieldTypeGeometry" || currentField.type === "esriFieldTypeBlob" || currentField.type === "esriFieldTypeRaster" || currentField.type === "esriFieldTypeGUID" || currentField.type === "esriFieldTypeGlobalID" || currentField.type === "esriFieldTypeXML")) {
                         fieldRow = domConstruct.create("tr", { rowIndex: currentIndex }, this.geoFormFieldsTable);
+                        fieldDNDIndicatorTD = domConstruct.create("td", {}, fieldRow);
+                        fieldDNDIndicatorIcon = domConstruct.create("span", { "class": "ui-icon ui-icon-arrowthick-2-n-s" }, fieldDNDIndicatorTD);
                         fieldCheckBox = domConstruct.create("td", {}, fieldRow);
 
                         fieldCheckBoxInput = domConstruct.create("input", { "class": "fieldCheckbox", type: "checkbox", index: currentIndex, fieldIndex: fieldIndex }, fieldCheckBox);
@@ -203,18 +216,22 @@ define([
                         fieldName = domConstruct.create("td", { class: "fieldName", innerHTML: currentField.name, index: currentIndex, style: "color:#555; vertical-align:center !important;" }, fieldRow);
                         fieldLabel = domConstruct.create("td", {}, fieldRow);
 
-                        fieldLabelInput = domConstruct.create("input", { class: "form-control fieldLabel", index: currentIndex, placeholder: i18n.builder.fieldLabelPlaceHolder, value: currentField.alias }, fieldLabel);
+                        fieldLabelInput = domConstruct.create("input", { class: "form-control fieldLabel", index: currentIndex, placeholder: nls.builder.fieldLabelPlaceHolder, value: currentField.alias }, fieldLabel);
 
                         fieldType = domConstruct.create("td", {}, fieldRow);
                         fieldTypeSelect = domConstruct.create("select", { disabled: "disabled", class: "form-control fieldSelect", index: currentIndex }, fieldType);
                         this._createFieldDataTypeOptions(currentField, fieldTypeSelect);
 
                         fieldDescription = domConstruct.create("td", {}, fieldRow);
-                        fieldDescriptionInput = domConstruct.create("input", { class: "form-control fieldDescription", placeholder: i18n.builder.fieldDescPlaceHolder, value: this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos[fieldIndex].tooltip }, fieldDescription);
-
+                        fieldDescriptionInput = domConstruct.create("input", { class: "form-control fieldDescription", placeholder: nls.builder.fieldDescPlaceHolder, value: "" }, fieldDescription);
+                        array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
+                            if (currentFieldPopupInfo.fieldName == currentField.name) {
+                                fieldDescriptionInput.value = currentFieldPopupInfo.tooltip;
+                            }
+                        });
                         currentIndex++;
                         if (configuredFieldName.indexOf(currentField.name) != -1) {
-                            //configuredFields[configuredFieldName.indexOf(currentField.name)];
+                            configuredFields[configuredFieldName.indexOf(currentField.name)];
                             domAttr.set(fieldCheckBoxInput, "checked", true);
                             domAttr.set(fieldLabelInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldLabel);
                             domAttr.set(fieldDescriptionInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldDescription);
@@ -241,7 +258,7 @@ define([
         },
 
         //function to query layer in order to obtain all the information of layer
-        _queryLayer: function (layerUrl) {
+        _queryLayer: function (layerUrl, layerId) {
             var layerDeferred = new Deferred();
             esriRequest({
                 url: layerUrl,
@@ -250,29 +267,28 @@ define([
                     f: 'json'
                 }
             }, { usePost: true }).then(lang.hitch(this, function (result) {
-                this._validateFeatureServer(result, layerUrl);
+                this._validateFeatureServer(result, layerUrl, layerId);
                 layerDeferred.resolve(true);
             }),
             function (error) {
-                alert(error);
                 layerDeferred.resolve(true);
             });
             return layerDeferred.promise;
         },
 
         //function to filter editable layers from all the layers in webmap
-        _validateFeatureServer: function (layerInfo, layerUrl) {
+        _validateFeatureServer: function (layerInfo, layerUrl, layerId) {
             if (layerInfo.capabilities.search("Create") != -1 && layerInfo.capabilities.search("Update") != 1) {
                 var filteredLayer;
                 filteredLayer = document.createElement("option");
-                filteredLayer.text = layerInfo.name;
-                filteredLayer.value = layerInfo.name;
+                filteredLayer.text = layerId;
+                filteredLayer.value = layerId;
                 dom.byId("selectLayer").appendChild(filteredLayer);
-                this.fieldInfo[layerInfo.name] = {};
-                this.fieldInfo[layerInfo.name].Fields = layerInfo.fields;
-                this.fieldInfo[layerInfo.name].layerUrl = layerUrl;
-                if (layerInfo.name == this.currentConfig.layer) {
-                    this._populateFields(layerInfo.name);
+                this.fieldInfo[layerId] = {};
+                this.fieldInfo[layerId].Fields = layerInfo.fields;
+                this.fieldInfo[layerId].layerUrl = layerUrl;
+                if (layerId == this.currentConfig.form_layer.id) {
+                    this._populateFields(layerId);
                     filteredLayer.selected = "selected";
                 }
             }
@@ -304,7 +320,6 @@ define([
                     }), function (error) {
                         console.log(error);
                     });
-
                 }
             }));
 
@@ -389,6 +404,7 @@ define([
         _updateItem: function () {
             this.currentConfig.edit = "";
             lang.mixin(this.response.itemData.values, this.currentConfig);
+            delete this.response.itemData.values["itemInfo"];
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;
             this.response.item.typeKeywords = typeof (this.response.item.typeKeywords) == "object" ? this.response.item.typeKeywords.join(',') : this.response.item.typeKeywords;
             var rqData = lang.mixin(this.response.item, {
@@ -412,10 +428,20 @@ define([
                 }, { usePost: true }).then(lang.hitch(this, function (result) {
                     if (result.success) {
                         domClass.remove(document.body, "app-loading");
+                        this._ShareDialog = new ShareDialog({
+                            bitlyLogin: this.currentConfig.bitlyLogin,
+                            bitlyKey: this.currentConfig.bitlyKey,
+                            //map: dojo.map,
+                            image: this.currentConfig.sharinghost + '/sharing/rest/content/items/' + this.currentConfig.itemInfo.item.id + '/info/' + this.currentConfig.itemInfo.item.thumbnail,
+                            title: "Title",
+                            summary: "Summary",
+                            hashtags: 'esriDSM'
+                        });
+                        this._ShareDialog.startup();
+                        $("#myModal").modal('show');
                     }
                 }), function () {
                     domClass.remove(document.body, "app-loading");
-                    alert("Error");
                 });
             }));
         },

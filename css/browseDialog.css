@@ -7,7 +7,7 @@
 .itemGrid img {
     width: 120px;
     height: 88px;
-    border: 0;
+    border: 0 !important;
 }
 .itemGrid {
     height: 110px;
@@ -45,6 +45,13 @@
     padding: 1em 3px;
     border: solid 1px #fff !important;
     margin: 2px;
+    background: none !important;
+    color: #333 !important;
+}
+.dgrid-content
+{
+    background: none !important;
+    border: none !important;
 }
 .dgrid-scroller {
     overflow-y: auto !important;
@@ -134,7 +141,11 @@
     margin-top: 8px !important;
     padding-right: 25px !important;
 }
-
+.ui-widget
+{
+    font-size: 14px !important;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}
 
 
 
