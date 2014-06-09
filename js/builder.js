@@ -226,7 +226,9 @@ define([
                         fieldDescriptionInput = domConstruct.create("input", { class: "form-control fieldDescription", placeholder: nls.builder.fieldDescPlaceHolder, value: "" }, fieldDescription);
                         array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
                             if (currentFieldPopupInfo.fieldName == currentField.name) {
-                                fieldDescriptionInput.value = currentFieldPopupInfo.tooltip;
+                                if (currentFieldPopupInfo.tooltip) {
+                                    fieldDescriptionInput.value = currentFieldPopupInfo.tooltip;
+                                }
                             }
                         });
                         currentIndex++;
@@ -234,7 +236,9 @@ define([
                             configuredFields[configuredFieldName.indexOf(currentField.name)];
                             domAttr.set(fieldCheckBoxInput, "checked", true);
                             domAttr.set(fieldLabelInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldLabel);
-                            domAttr.set(fieldDescriptionInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldDescription);
+                            if (configuredFields[configuredFieldName.indexOf(currentField.name)].fieldDescription) {
+                                domAttr.set(fieldDescriptionInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldDescription);
+                            }
                         } else {
                             domAttr.set(fieldCheckBoxInput, "checked", false);
                         }
@@ -433,8 +437,8 @@ define([
                             bitlyKey: this.currentConfig.bitlyKey,
                             //map: dojo.map,
                             image: this.currentConfig.sharinghost + '/sharing/rest/content/items/' + this.currentConfig.itemInfo.item.id + '/info/' + this.currentConfig.itemInfo.item.thumbnail,
-                            title: "Title",
-                            summary: "Summary",
+                            title: this.currentConfig.details.Title || "Geoform",
+                            summary: this.currentConfig.details.Description,
                             hashtags: 'esriDSM'
                         });
                         this._ShareDialog.startup();

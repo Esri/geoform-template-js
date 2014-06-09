@@ -167,7 +167,7 @@ define([
         },
         _setSymbol: function (point) {
             this.map.graphics.clear();
-            symbolUrl = window.location.href.split("index.html")[0] + "images/redpushpin.png";
+            symbolUrl = package_path + "/images/pushpin.png";
             var pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 25, 25);
             var graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
@@ -204,20 +204,8 @@ define([
                 else {
                     formContent = domConstruct.create("div", { "class": "form-group geoFormQuestionare has-feedback" }, this.userForm);
                 }
-                //condition to form the question with field's description or label or name as per availability
-                if (currentField.fieldDescription !== "") {
-                    questionString = currentField.fieldDescription;
-                }
-                else {
-                    if (currentField.fieldLabel !== "") {
-                        questionString = currentField.fieldLabel;
-                    }
-                    else {
-                        questionString = currentField.fieldName;
-                    }
-                }
 
-                labelContent = domConstruct.create("label", { class: "control-label", innerHTML: questionString }, formContent);
+                labelContent = domConstruct.create("label", { class: "control-label", innerHTML: currentField.fieldLabel }, formContent);
                 //code to make select boxes in case of a coded value
                 if (currentField.domain) {
                     inputContent = domConstruct.create("select", { "class": "form-control", "fieldName": currentField.fieldName }, formContent);
@@ -250,7 +238,7 @@ define([
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "Date":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Date", "fieldName": currentField.fieldName, "readonly": "readonly" }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Date", "fieldName": currentField.fieldName }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             $(inputContent).datepicker({
                                 onSelect: lang.hitch(this, function (evt, currentElement) {
@@ -262,7 +250,6 @@ define([
                             });
                             break;
                     }
-                    helpBlock = domConstruct.create("p", { "class": "help-block", "innerHTML": helpBlockString }, formContent);
                     //conditional check to attach keyup event to all the inputs except date and string field
                     //as validation is not required for date field and string fields max-length is already set
                     if (domAttr.get(inputContent, "inputType") !== "Date" || domAttr.get(inputContent, "inputType") !== "String") {
@@ -271,6 +258,7 @@ define([
                         }));
                     }
                 }
+                helpBlock = domConstruct.create("p", { "class": "help-block", "innerHTML": currentField.fieldDescription }, formContent);
             }));
             if (this.map.getLayer(this.config.form_layer.id).hasAttachments) {
                 formContent = domConstruct.create("div", { "class": "form-group" }, this.userForm);
@@ -316,7 +304,7 @@ define([
                     break;
                 case "Integer":
                     typeCastedInputValue = parseInt(inputValue);
-                    if ((inputValue.match(decimal) && typeCastedInputValue > -2147483648 && typeCastedInputValue < 2147483647) && inputValue.length !== 0) {
+                    if ((inputValue.match(decimal) && typeCastedInputValue > -2147483648 && typeCastedInputValue <= 2147483647) && inputValue.length !== 0) {
                         this._validateUserInput(true, node, inputValue, iskeyPress);
                     }
                     else {
@@ -356,7 +344,6 @@ define([
         },
         _validateUserInput: function (isValidInput, node, inputValue, iskeyPress) {
             if (isValidInput) {
-                node.lastChild.innerHTML = "";
                 domClass.remove(node, "has-error");
                 domClass.add(node, "has-success");
                 domClass.add(query("span", node)[0], "glyphicon-ok");
@@ -442,6 +429,7 @@ define([
                     var mapLocation = webMercatorUtils.lngLatToXY(evt.graphic.geometry.x, evt.graphic.geometry.y, true);
                     var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
                     this.addressGeometry = pt;
+                    this._setSymbol(evt.graphic.geometry);
                 }
             }));
         },
@@ -453,11 +441,11 @@ define([
                 showResults: true
             }, this.geocodeAddress);
             geocodeAddress.startup();
-            on(geocodeAddress, "find-results", lang.hitch(this, function (evt) {
 
+            on(geocodeAddress, "select", lang.hitch(this, function (evt) {
                 this.map.graphics.clear();
-                this.addressGeometry = evt.results.results[0].feature.geometry;
-                this._setSymbol(evt.results.results[0].feature.geometry);
+                this.addressGeometry = evt.result.feature.geometry;
+                this._setSymbol(evt.result.feature.geometry);
             }));
         },
 
@@ -500,6 +488,7 @@ define([
                 var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
                 this.addressGeometry = pt;
                 this.map.centerAt(pt);
+                this._setSymbol(pt);
                 domClass.remove(this.coordinatesContainer, "has-error");
             } else {
                 domClass.add(this.coordinatesContainer, "has-error");
@@ -511,8 +500,8 @@ define([
                 bitlyKey: this.config.bitlyKey,
                 //map: dojo.map,
                 image: this.config.sharinghost + '/sharing/rest/content/items/' + this.config.itemInfo.item.id + '/info/' + this.config.itemInfo.item.thumbnail,
-                title: "Title",
-                summary: "Summary",
+                title: this.config.details.Title || "Geoform",
+                summary: this.config.details.Description,
                 hashtags: 'esriDSM'
             });
             this._ShareDialog.startup();

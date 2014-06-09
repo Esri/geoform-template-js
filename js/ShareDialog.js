@@ -6,11 +6,7 @@ define([
     "esri/kernel",
     "dijit/_WidgetBase",
     "dijit/a11yclick",
-// "dijit/_TemplatedMixin",
     "dojo/on",
-// load template
-// "dojo/text!application/dijit/templates/ShareDialog.html",
-// "dojo/i18n!application/nls/ShareDialog",
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/dom-attr",
@@ -26,7 +22,7 @@ define([
         lang,
         has, esriNS,
         _WidgetBase, a11yclick,
-        on, //dijitTemplate, i18n,
+        on,
         domClass, domStyle, domAttr, domConstruct,
         esriRequest,
         urlUtils,
@@ -35,12 +31,10 @@ define([
     ) {
         var Widget = declare([_WidgetBase], {
             declaredClass: "esri.dijit.ShareDialog",
-            //templateString: dijitTemplate,
             options: {
                 theme: "ShareDialog",
                 visible: true,
                 dialog: null,
-                useExtent: false,
                 map: null,
                 url: window.location.href,
                 image: '',
@@ -53,26 +47,7 @@ define([
                 googlePlusURL: "https://plus.google.com/share?url={url}",
                 bitlyAPI: location.protocol === "https:" ? "https://api-ssl.bitly.com/v3/shorten" : "http://api.bit.ly/v3/shorten",
                 bitlyLogin: "",
-                bitlyKey: "",
-                embedSizes: [{
-                    "width": "100%",
-                    "height": "640px"
-                }, {
-                    "width": "100%",
-                    "height": "480px"
-                }, {
-                    "width": "100%",
-                    "height": "320px"
-                }, {
-                    "width": "800px",
-                    "height": "600px"
-                }, {
-                    "width": "640px",
-                    "height": "480px"
-                }, {
-                    "width": "480px",
-                    "height": "320px"
-                }]
+                bitlyKey: ""
             },
             // lifecycle: 1
             constructor: function (options, srcRefNode) {
@@ -81,7 +56,6 @@ define([
                 // properties
                 this.set("theme", defaults.theme);
                 this.set("url", defaults.url);
-                this.set("visible", defaults.visible);
                 this.set("mailURL", defaults.mailURL);
                 this.set("facebookURL", defaults.facebookURL);
                 this.set("twitterURL", defaults.twitterURL);
@@ -93,20 +67,14 @@ define([
                 this.set("title", defaults.title);
                 this.set("summary", defaults.summary);
                 this.set("hashtags", defaults.hashtags);
-                this.set("useExtent", defaults.useExtent);
                 // listeners
                 this.watch("theme", this._updateThemeWatch);
                 this.watch("url", this._updateUrl);
-                this.watch("visible", this._visible);
                 this.watch("bitlyUrl", this._updateBitlyUrl);
-                this.watch("useExtent", this._useExtentChanged);
             },
             // bind listener for button to action
             postCreate: function () {
                 this.inherited(arguments);
-                //this._setExtentChecked();
-                //                this.own(on(this._buttonNode, a11yclick, lang.hitch(this, this.toggle)));
-                //                this.own(on(this._extentInput, a11yclick, lang.hitch(this, this._useExtentUpdate)));
             },
             // start widget. called by user
             startup: function () {
@@ -187,6 +155,7 @@ define([
                 this._shortened = null;
                 // no bitly shortened
                 this.set("bitlyUrl", null);
+
                 // vars
                 var map = this.get("map"),
                     url = this.get("url"),
@@ -194,24 +163,6 @@ define([
                 // get url params
                 var urlObject = urlUtils.urlToObject(window.location.href);
                 urlObject.query = urlObject.query || {};
-                // include extent in url
-                if (this.get("useExtent") && map) {
-                    // get map extent in geographic
-                    var gExtent = map.geographicExtent;
-                    // set extent string
-                    urlObject.query.extent = number.format(gExtent.xmin, {
-                        places: 4
-                    }) + ',' + number.format(gExtent.ymin, {
-                        places: 4
-                    }) + ',' + number.format(gExtent.xmax, {
-                        places: 4
-                    }) + ',' + number.format(gExtent.ymax, {
-                        places: 4
-                    });
-
-                } else {
-                    urlObject.query.extent = null;
-                }
                 // create base url
                 url = window.location.protocol + '//' + window.location.host + window.location.pathname;
                 // each param
@@ -229,31 +180,15 @@ define([
                 }
                 // update url
                 this.set("url", url);
-                // reset embed code
-                //this._setEmbedCode();
                 // set url value
                 domAttr.set(dojo.byId("_shareMapUrlText"), "value", url);
-                //domAttr.set(this._linkButton, "href", url);
-            },
-            //            _setExtentChecked: function () {
-            //                domAttr.set(this._extentInput, 'checked', this.get("useExtent"));
-            //            },
-            //            _useExtentUpdate: function () {
-            //                var value = domAttr.get(this._extentInput, 'checked');
-            //                this.set("useExtent", value);
-            //            },
-            _useExtentChanged: function () {
-                this._updateUrl();
-                this._shareLink();
             },
             _updateBitlyUrl: function () {
                 var bitly = this.get("bitlyUrl");
                 if (bitly) {
                     domAttr.set(dojo.byId("_shareMapUrlText"), "value", bitly);
-                    //domAttr.set(this._linkButton, "href", bitly);
                 }
             },
-
             _updateThemeWatch: function () {
                 var oldVal = arguments[1];
                 var newVal = arguments[2];
