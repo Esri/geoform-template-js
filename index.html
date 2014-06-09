@@ -29,7 +29,7 @@
     <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.10/js/esri/css/esri.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
     <link rel="stylesheet" type="text/css" id="themeLink">
-    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css" />
+    <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.10/js/dojo/dijit/themes/claro/claro.css" />
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="js/html5shiv.min.js"></script>
@@ -69,20 +69,20 @@
             }]
         };
     </script>
-    <script type="text/javascript" src="//js.arcgis.com/3.9/"></script>
+    <script type="text/javascript" src="//js.arcgis.com/3.10/"></script>
     <script type="text/javascript" src="js/edit/offline.min.js"></script>
     <script type="text/javascript" src="js/edit/offlineOptions.js"></script>
     <script type="text/javascript" src="js/edit/IndexedDBShim.min.js"></script>
     <script type="text/javascript">
         require([
-      "application/template",
-      "application/signInHelper",
-      "dojo/dom-class"
+      "application/templateOptions",
+      "application/template"
     ], function (
+            templateOptions,
             Template
         ) {
         // start template
-        var myTemplate = new Template();
+        var myTemplate = new Template(templateOptions);
         // create my main application. Start placing your logic in the main.js file.
         myTemplate.startup().then(function (config) {
             //The config object contains the following properties: helper services, (optionally)
