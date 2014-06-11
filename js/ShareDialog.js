@@ -1,33 +1,22 @@
 define([
-    "dojo/Evented",
     "dojo/_base/declare",
     "dojo/_base/lang",
-    "dojo/has",
-    "esri/kernel",
     "dijit/_WidgetBase",
     "dijit/a11yclick",
     "dojo/on",
     "dojo/dom-class",
-    "dojo/dom-style",
     "dojo/dom-attr",
-    "dojo/dom-construct",
     "esri/request",
-    "esri/urlUtils",
-    "dijit/Dialog",
-    "dojo/number"
+    "esri/urlUtils"
 ],
     function (
-        Evented,
         declare,
         lang,
-        has, esriNS,
         _WidgetBase, a11yclick,
         on,
-        domClass, domStyle, domAttr, domConstruct,
+        domClass, domAttr,
         esriRequest,
-        urlUtils,
-        Dialog,
-        number
+        urlUtils
     ) {
         var Widget = declare([_WidgetBase], {
             declaredClass: "esri.dijit.ShareDialog",
@@ -35,7 +24,6 @@ define([
                 theme: "ShareDialog",
                 visible: true,
                 dialog: null,
-                map: null,
                 url: window.location.href,
                 image: '',
                 title: window.document.title,
@@ -50,7 +38,7 @@ define([
                 bitlyKey: ""
             },
             // lifecycle: 1
-            constructor: function (options, srcRefNode) {
+            constructor: function (options) {
                 // mix in settings and defaults
                 var defaults = lang.mixin({}, this.options, options);
                 // properties
@@ -155,10 +143,7 @@ define([
                 this._shortened = null;
                 // no bitly shortened
                 this.set("bitlyUrl", null);
-
-                // vars
-                var map = this.get("map"),
-                    url = this.get("url"),
+                  var url = this.get("url"),
                     useSeparator;
                 // get url params
                 var urlObject = urlUtils.urlToObject(window.location.href);

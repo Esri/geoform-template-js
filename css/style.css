@@ -22,7 +22,7 @@
     height: 100%;
     width: 100%;
     z-index: 500;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     overflow: hidden;
@@ -38,7 +38,11 @@
 .table > tfoot > tr > td {
   vertical-align:middle !important;
 }
-
+.progress-remove-margin
+{
+    margin-bottom: 0px !important;
+    margin-top:10px;
+}
 .myDragClass {
         background-color:gray;
 }
@@ -108,10 +112,15 @@
 .iconContent {
         float: left;
 }
-.fieldCheckbox {
+.fieldCheckbox, .selectAllCheckbox {
         margin-right: 5px;
         vertical-align: top;
         margin-left: 8px !important;
+}
+.progress-percent
+{
+    width: 100%;
+    line-height:50px;
 }
 .share-dialog-label {
         display: initial;
@@ -155,6 +164,25 @@
     float: right;
 }
 .has-feedback .form-control {
-        padding-right: 20px !important;
+    padding-right: 10px !important;
+}
+input::-ms-clear {
+    display: none;
+}
+.esriSimpleSlider {
+    z-index: 0 !important;
 }
 
+.layerFieldsName {
+    color: #555;
+    vertical-align: center !important;
+}
+
+.themeThubnail {
+    width: 200px;
+    height: 133px;
+    border: 1px solid #555;
+}
+.tableDimension{
+    min-width: 180px;
+}

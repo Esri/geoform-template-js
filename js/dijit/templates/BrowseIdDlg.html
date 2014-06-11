@@ -1,14 +1,14 @@
 <div class="widgetContent">
     <div data-dojo-type="dijit/Dialog" id="browse-id-dialog" title="${i18n.title}" draggable="false" execute="">
         <div data-dojo-attach-point="formNode" class="esriItemLinks dijitDialogPaneContentArea">
-            <div id="browse-id-box" style="width: 575px; min-height: 330px; padding: 0; overflow: auto;">
-                <div class="esriFloatLeading esriLeadingMargin1" style="width: 250px;">
+            <div id="browse-id-box">
+                <div class="esriFloatLeading esriLeadingMargin1">
                     <select data-dojo-attach-point="_filterSelect" data-dojo-type="dijit/form/Select" class="filterSelect"
-                        sortbylabel="false" maxheight='350' style="width: 240px; border: 1px solid #cdcdcd; height: 26px; margin-top: 0px;">
+                        sortbylabel="false">
                     </select>
                 </div>
-                <div class="search esriFloatTrailing esriTrailingMargin1" style="width: 250px;">
-                    <div id="search-form" style="position: relative;">
+                <div class="search esriFloatTrailing esriTrailingMargin1">
+                    <div id="search-form">
                         <input class="esriSearchBox" type="text" data-dojo-type="dijit/form/TextBox" trim="true"
                             id="browse-id-search-box" data-dojo-attach-point="searchText" data-dojo-attach-event="onKeyPress:_onSearchKeyPress,onFocus:_onSearchBoxFocus,onBlur:_onSearchBoxBlur"
                             alt="${i18n.searchTitle}" title="${i18n.searchTitle}" placeholder="${i18n.placeholder}" />
@@ -17,7 +17,7 @@
                             </div>
                     </div>
                 </div>
-                <div style="position: relative; width: 565px; clear: both;" data-dojo-attach-point="gallery"
+                <div data-dojo-attach-point="gallery"
                     id="gallery">
                 </div>
             </div>

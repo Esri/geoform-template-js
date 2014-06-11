@@ -96,10 +96,12 @@
     float: right;
 }
 .esriTrailingMargin1 {
+    width: 250px;
     margin-right: 2em;
 }
 .esriFloatLeading {
-    float: left!important;
+    width: 250px;
+    float: left !important;
 }
 .esriLeadingMargin1 {
     margin-left: 1em;
@@ -146,10 +148,32 @@
     font-size: 14px !important;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
 }
+#browse-id-box {
+    width: 575px;
+    min-height: 330px;
+    padding: 0px;
+    overflow: auto;
+}
+.filterSelect {
+    width: 240px;
+    border: 1px solid #cdcdcd;
+    height: 26px;
+    margin-top: 0px;
+    max-height: 350px;
+}
 
+#gallery {
+    position: relative;
+    width: 565px;
+    clear: both;
+}
 
-
-
+.gridVisibility {
+    display:none;
+}
+.select-dropdown {
+    width: 20px;
+}
 
 
 

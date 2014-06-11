@@ -34,8 +34,15 @@
         if (event.originalEvent.touches.length > 1) {
             return;
         }
+        var touch = event.originalEvent.changedTouches[0],
+        simulatedEvent = document.createEvent('MouseEvents');
 
-        event.preventDefault();
+        //Check if element is an input or a textarea
+        if ($(touch.target).is("input") || $(touch.target).is("textarea")) {
+            event.stopPropagation();
+        } else {
+            event.preventDefault();
+        }
 
         var touch = event.originalEvent.changedTouches[0],
         simulatedEvent = document.createEvent('MouseEvents');
