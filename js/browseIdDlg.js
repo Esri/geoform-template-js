@@ -10,6 +10,7 @@ define([
   "dojo/on",
   "dojo/query",
   "dojo/dom-style",
+  "dojo/dom-class",
   "application/grid",
   "esri/arcgis/Portal",
   "dojo/i18n!./nls/resources",
@@ -22,7 +23,7 @@ define([
   "dijit/form/Select",
   "dijit/form/Button",
   "dijit/form/TextBox"
-], function (Evented, declare, connect, lang, dojoEvent, dom, keys, registry, on, query, domStyle, Grid, esriPortal, i18n, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, template, esriRequest) {
+], function (Evented, declare, connect, lang, dojoEvent, dom, keys, registry, on, query, domStyle, domClass, Grid, esriPortal, i18n, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, template, esriRequest) {
     return declare([Evented, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
         constructor: function (args, userInfo) {
@@ -188,6 +189,7 @@ define([
             registry.byId('browse-id-dialog').show();
             this._grid.refresh();
             domStyle.set(query("#browse-id-dialog .dijitDialogPaneContent")[0], "height", "444px");
+            domClass.add(query('.dijitSelect .dijitArrowButton')[0], 'select-dropdown');
         }
     });
 });

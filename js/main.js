@@ -25,6 +25,7 @@ define([
     "application/ShareDialog",
     "esri/graphic",
     "esri/symbols/PictureMarkerSymbol",
+    "esri/toolbars/edit",
     "dojo/domReady!"
 ], function (
     ready,
@@ -45,13 +46,14 @@ define([
     _WidgetBase,
     _TemplatedMixin,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol) {
+    nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol, editToolbar) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: userTemplate,
         nls: nls,
         config: {},
         map: null,
         addressGeometry: null,
+        editToolbar: null,
         constructor: function () {
         },
         startup: function (config, response, isPreview, node) {
@@ -99,21 +101,14 @@ define([
                         flag = true;
                     }
                 }));
-                if (flag == true) {
+                if (flag === true) {
                     this._showErrorMessageDiv(nls.builder.formValidationMessageAlertText);
                 } else {
                     this._addFeatureToLayer(this.config);
                 }
             }));
             on(this.resetButton, "click", lang.hitch(this, function () {
-                array.forEach(query(".form-control"), function (currentInput) {
-                    var node = currentInput.parentElement;
-                    domAttr.set(currentInput, "value", "");
-                    domClass.remove(node, "has-error");
-                    domClass.remove(node, "has-success");
-                    domClass.remove(query("span", node)[0], "glyphicon-ok");
-                    domClass.remove(query("span", node)[0], "glyphicon-remove");
-                });
+                this._clearFormFields();
             }));
         },
         reportError: function (error) {
@@ -139,8 +134,6 @@ define([
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
             // your code here!
-
-
             // get editable layer
             var layer = this.map.getLayer(this.config.form_layer.id);
             if (layer) {
@@ -150,27 +143,44 @@ define([
                     layer: layer
                 });
             }
-
+            this.editToolbar = new editToolbar(this.map);
+            on(this.editToolbar, "graphic-move-start", lang.hitch(this, function () {
+                this.map.infoWindow.hide();
+            }));
+            on(this.editToolbar, "graphic-move-stop", lang.hitch(this, function (evt) {
+                this.map.infoWindow.setTitle(nls.builder.locationTabText);
+                this.map.infoWindow.setContent(nls.builder.addressSearchText);
+                this.map.infoWindow.show(evt.graphic.geometry);
+            }));
             var fields = layer.fields;
             on(this.map, 'click', lang.hitch(this, function (evt) {
-                var clickPoint = this._calculateLatLong(evt);
                 this.addressGeometry = evt.mapPoint;
-                this.XCoordinate.value = clickPoint[0];
-                this.YCoordinate.value = clickPoint[1];
-                this._setSymbol(evt.mapPoint);
+                if (!evt.graphic) {
+                    this.map.graphics.clear();
+                    this.map.infoWindow.setTitle(nls.builder.locationTabText);
+                    this.map.infoWindow.setContent(nls.builder.addressSearchText);
+                    if (this.map.infoWindow.isShowing) {
+                        this.map.infoWindow.hide();
+                    }
+                    this.map.infoWindow.show(this.addressGeometry);
+                    this._setSymbol(this.addressGeometry);
+                }
             }));
             on(this.map, 'mouse-move', lang.hitch(this, function (evt) {
                 var coords = this._calculateLatLong(evt);
-                domAttr.set(dojo.byId("latAddress"), "innerHTML", ("Y : " + coords[0]));
-                domAttr.set(dojo.byId("longAddress"), "innerHTML", ("X : " + coords[1]));
+                domAttr.set(dojo.byId("latAddress"), "innerHTML", ("Y : " + coords[0].toFixed(5)));
+                domAttr.set(dojo.byId("longAddress"), "innerHTML", ("X : " + coords[1].toFixed(5)));
             }));
         },
         _setSymbol: function (point) {
+            var symbolUrl, pictureMarkerSymbol, graphic;
             this.map.graphics.clear();
             symbolUrl = package_path + "/images/pushpin.png";
-            var pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 25, 25);
-            var graphic = new Graphic(point, pictureMarkerSymbol, null, null);
+            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 32, 32);
+            graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
+            this.map.centerAt(point);
+            this.editToolbar.activate(editToolbar.MOVE, graphic, null);
         },
 
         _calculateLatLong: function (evt) {
@@ -194,9 +204,28 @@ define([
 
         //function to validate and create the form
         _createForm: function (fields) {
-            var formContent, labelContent, questionString, inputContent, selectOptions, helpBlock, helpBlockString = "", fileUploadForm, fileInput;
-            array.forEach(fields, lang.hitch(this, function (currentField) {
-                //code to put aestrik mark for mandatory fields
+            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileUploadForm, fileInput,
+             matchingField, newAddedFields = [];
+            array.forEach(this.map.getLayer(this.config.form_layer.id).fields, lang.hitch(this, function (layerField) {
+                matchingField = false;
+                array.forEach(fields, lang.hitch(this, function (currentField) {
+                    if (layerField.name == currentField.fieldName && currentField.visible) {
+                        //code to put aestrik mark for mandatory fields
+                        newAddedFields.push(lang.mixin(layerField, currentField));
+                        matchingField = true;
+                    }
+                    else if (layerField.name == currentField.fieldName && !currentField.visible) {
+                        matchingField = true;
+                    }
+                }));
+                if (!matchingField) {
+                    if ((layerField.editable && !(layerField.type === "esriFieldTypeOID" || layerField.type === "esriFieldTypeGeometry" || layerField.type === "esriFieldTypeBlob" || layerField.type === "esriFieldTypeRaster" || layerField.type === "esriFieldTypeGUID" || layerField.type === "esriFieldTypeGlobalID" || layerField.type === "esriFieldTypeXML"))) {
+                        layerField.isNewField = true;
+                        newAddedFields.push(layerField);
+                    }
+                }
+            }));
+            array.forEach(newAddedFields, lang.hitch(this, function (currentField) {
                 if (!currentField.nullable) {
                     currentField.fieldDescription += " *";
                     formContent = domConstruct.create("div", { "class": "form-group has-feedback geoFormQuestionare mandatory" }, this.userForm);
@@ -204,11 +233,16 @@ define([
                 else {
                     formContent = domConstruct.create("div", { "class": "form-group geoFormQuestionare has-feedback" }, this.userForm);
                 }
-
-                labelContent = domConstruct.create("label", { class: "control-label", innerHTML: currentField.fieldLabel }, formContent);
+                labelContent = domConstruct.create("label", { class: "control-label" }, formContent);
+                if (currentField.isNewField) {
+                    labelContent.innerHTML = currentField.alias;
+                }
+                else {
+                    labelContent.innerHTML = currentField.fieldLabel;
+                }
                 //code to make select boxes in case of a coded value
                 if (currentField.domain) {
-                    inputContent = domConstruct.create("select", { "class": "form-control", "fieldName": currentField.fieldName }, formContent);
+                    inputContent = domConstruct.create("select", { "class": "form-control selectDomain", "fieldName": currentField.fieldName }, formContent);
                     array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
                         selectOptions = domConstruct.create("option", {}, inputContent);
                         selectOptions.text = currentOption.name;
@@ -216,28 +250,28 @@ define([
                     }));
                 }
                 else {
-                    switch (currentField.fieldType) {
-                        case "String":
+                    switch (currentField.type) {
+                        case "esriFieldTypeString":
                             inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "String", "maxLength": currentField.length, "fieldName": currentField.fieldName }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
-                        case "smallInteger":
+                        case "esriFieldTypeSmallInteger":
                             inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "smallInteger", "fieldName": currentField.fieldName }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
-                        case "Integer":
+                        case "esriFieldTypeInteger":
                             inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Integer", "fieldName": currentField.fieldName }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
-                        case "Single":
+                        case "esriFieldTypeSingle":
                             inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Single", "fieldName": currentField.fieldName }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
-                        case "Double":
+                        case "esriFieldTypeDouble":
                             inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Double", "fieldName": currentField.fieldName }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
-                        case "Date":
+                        case "esriFieldTypeDate":
                             inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Date", "fieldName": currentField.fieldName }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             $(inputContent).datepicker({
@@ -258,13 +292,29 @@ define([
                         }));
                     }
                 }
-                helpBlock = domConstruct.create("p", { "class": "help-block", "innerHTML": currentField.fieldDescription }, formContent);
+                helpBlock = domConstruct.create("p", { "class": "help-block" }, formContent);
+                if (currentField.isNewField) {
+                    array.forEach(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
+                        if (currentLayer.id == this.config.form_layer.id) {
+                            array.forEach(currentLayer.popupInfo.fieldInfos, function (currentFieldPopupInfo) {
+                                if (currentFieldPopupInfo.fieldName == currentField.name) {
+                                    if (currentFieldPopupInfo.tooltip) {
+                                        helpBlock.innerHTML = currentFieldPopupInfo.tooltip;
+                                    }
+                                }
+                            });
+                        }
+                    }));
+                }
+                else {
+                    helpBlock.innerHTML = currentField.fieldDescription;
+                }
             }));
             if (this.map.getLayer(this.config.form_layer.id).hasAttachments) {
                 formContent = domConstruct.create("div", { "class": "form-group" }, this.userForm);
                 fileUploadForm = domConstruct.create("form", { class: "fileUploadField" }, formContent);
                 domAttr.set(fileUploadForm, "id", "testForm");
-                fileInput = domConstruct.create("input", { "class": "form-control", "type": "file", "accept": "image/*", "capture": "camera", "name": "attachment" }, fileUploadForm);
+                fileInput = domConstruct.create("input", { "type": "file", "accept": "image/*", "capture": "camera", "name": "attachment" }, fileUploadForm);
                 domAttr.set(fileInput, "id", "testFormFileInput");
             }
         },
@@ -342,6 +392,20 @@ define([
                     break;
             }
         },
+        _clearFormFields: function () {
+            array.forEach(query(".form-control"), function (currentInput) {
+                var node = currentInput.parentElement;
+                if (!domClass.contains(currentInput, "selectDomain")) {
+                    domAttr.set(currentInput, "value", "");
+                    domClass.remove(node, "has-error");
+                    domClass.remove(node, "has-success");
+                    domClass.remove(query("span", node)[0], "glyphicon-ok");
+                    domClass.remove(query("span", node)[0], "glyphicon-remove");
+                } else {
+                    currentInput.options[0].selected = true;
+                }
+            });
+        },
         _validateUserInput: function (isValidInput, node, inputValue, iskeyPress) {
             if (isValidInput) {
                 domClass.remove(node, "has-error");
@@ -383,6 +447,10 @@ define([
                 this.map = response.map;
                 this.map.resize();
                 this.map.reposition();
+                this.map.on("pan-end", lang.hitch(this, function () {
+                    this.map.resize();
+                    this.map.reposition();
+                }));
                 var bsm = new bootstrapmap(this.map);
                 this._createForm(this.config.fields);
                 this._createLocateButton();
@@ -430,6 +498,9 @@ define([
                     var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
                     this.addressGeometry = pt;
                     this._setSymbol(evt.graphic.geometry);
+                    this.map.infoWindow.setTitle('Location');
+                    this.map.infoWindow.setContent("address");
+                    this.map.infoWindow.show(this.addressGeometry);
                 }
             }));
         },
@@ -446,6 +517,13 @@ define([
                 this.map.graphics.clear();
                 this.addressGeometry = evt.result.feature.geometry;
                 this._setSymbol(evt.result.feature.geometry);
+                this.map.centerAt(evt.result.feature.geometry);
+                if (this.map.infoWindow.isShowing) {
+                    this.map.infoWindow.hide();
+                }
+                this.map.infoWindow.setTitle(nls.builder.locationTabText);
+                this.map.infoWindow.setContent(nls.builder.addressSearchText);
+                this.map.infoWindow.show(evt.result.feature.geometry);
             }));
         },
 
@@ -462,19 +540,26 @@ define([
                 });
                 featureData.geometry = {};
                 featureData.geometry = new esri.geometry.Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
+
+                this._addProgressBar();
+                $("#myModal").modal('show');
                 //code for apply-edits
                 this.map.getLayer(config.form_layer.id).applyEdits([featureData], null, null, function (addResults) {
                     _self.map.graphics.clear();
+                    if (_self.map.infoWindow.isShowing) {
+                        _self.map.infoWindow.hide();
+                    }
                     domConstruct.destroy(query(".errorMessage")[0]);
                     _self._openShareDialog();
                     if (dom.byId("testForm") && dom.byId("testForm")[0].value !== "" && _self.map.getLayer(config.form_layer.id).hasAttachments) {
-                        _self.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("testForm"), function (evt) {
+                        _self.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("testForm"), function () {
                         }, function (error) {
                             _self.reportError(error);
                         });
                     }
+                    _self._clearFormFields();
                 }, function (error) {
-                    this.reportError(error);
+                    _self.reportError(error);
                 });
             } else {
                 this._showErrorMessageDiv(nls.builder.latlongValidationMessageAlert);
@@ -487,25 +572,61 @@ define([
                 var mapLocation = webMercatorUtils.lngLatToXY(latLong[0], latLong[1], true);
                 var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
                 this.addressGeometry = pt;
-                this.map.centerAt(pt);
-                this._setSymbol(pt);
+                this._setSymbol(this.addressGeometry);
+                this.map.infoWindow.setTitle(nls.builder.locationTabText);
+                this.map.infoWindow.setContent(nls.builder.addressSearchText);
+                if (this.map.infoWindow.isShowing) {
+                    this.map.infoWindow.hide();
+                }
+                setTimeout(lang.hitch(this, function () {
+                    this.map.infoWindow.show(this.addressGeometry);
+                }), 500);
                 domClass.remove(this.coordinatesContainer, "has-error");
             } else {
                 domClass.add(this.coordinatesContainer, "has-error");
             }
         },
+
         _openShareDialog: function () {
+            this._createShareDlgContent();
             this._ShareDialog = new ShareDialog({
                 bitlyLogin: this.config.bitlyLogin,
                 bitlyKey: this.config.bitlyKey,
-                //map: dojo.map,
                 image: this.config.sharinghost + '/sharing/rest/content/items/' + this.config.itemInfo.item.id + '/info/' + this.config.itemInfo.item.thumbnail,
-                title: this.config.details.Title || "Geoform",
+                title: this.config.details.Title || nls.builder.geoformTitleText,
                 summary: this.config.details.Description,
                 hashtags: 'esriDSM'
             });
             this._ShareDialog.startup();
             $("#myModal").modal('show');
+        },
+        //function to show a progress bar before the content of share dialog is loaded
+        _addProgressBar: function () {
+            var progressIndicatorContainer, progressIndicator;
+            domConstruct.empty(query(".modal-body")[0]);
+            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderInProgressTitleMessage);
+            progressIndicatorContainer = domConstruct.create("div", { class: "progress progress-striped active progress-remove-margin" }, query(".modal-body")[0]);
+            progressIndicator = domConstruct.create("div", { class: "progress-bar progress-percent", innerHTML: nls.builder.shareBuilderProgressBarMessage }, progressIndicatorContainer);
+        },
+        _createShareDlgContent: function () {
+            var iconContainer, facebookIconHolder, twitterIconHolder, googlePlusIconHolder, mailIconHolder;
+            domConstruct.empty(query(".modal-body")[0]);
+            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareUserTitleMessage);
+            iconContainer = domConstruct.create("div", { class: "iconContainer" }, query(".modal-body")[0]);
+            domConstruct.create("div", { class: "share-dialog-subheader", innerHTML: nls.builder.shareUserTextMessage }, iconContainer);
+            facebookIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
+            domConstruct.create("a", { class: "icon-facebook-sign iconClass", id: "facebookIcon" }, facebookIconHolder);
+            twitterIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
+            domConstruct.create("a", { class: "icon-twitter-sign iconClass", id: "twitterIcon" }, twitterIconHolder);
+            googlePlusIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
+            domConstruct.create("a", { class: "icon-google-plus-sign iconClass", id: "google-plusIcon" }, googlePlusIconHolder);
+            mailIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
+            domConstruct.create("a", { class: "icon-envelope iconClass", id: "mailIcon" }, mailIconHolder);
+            domConstruct.create("br", {}, iconContainer);
+            domConstruct.create("br", {}, iconContainer);
+            domConstruct.create("br", {}, iconContainer);
+            domConstruct.create("div", { class: "share-dialog-subheader", innerHTML: nls.builder.shareDialogFormText }, iconContainer);
+            domConstruct.create("input", { type: "text", class: "share-map-url", id: "_shareMapUrlText" }, iconContainer);
         },
 
         _showErrorMessageDiv: function (errorMessage) {

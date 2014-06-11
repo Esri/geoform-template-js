@@ -25,7 +25,6 @@
             detailTitleLabelText: "Title",
             detailLogoLabelText: "Logo Image",
             detailDescriptionLabelText: "Description",
-            fieldTabDisplayHeaderText: "Display",
             fieldTabFieldHeaderText: "Field",
             fieldTabLabelHeaderText: "Label",
             fieldTabTypeHeaderText: "Type",
@@ -33,6 +32,18 @@
             previewApplicationText: "Preview Application",
             saveApplicationText: "Save Application",
             saveText: "Save",
+            placeholderLatitude: "Latitude (Y)",
+            placeholderLongitude: "Longitude (X)",
+            toggleNavigationText: "Toggle navigation",
+            formPlaceholderText: "My Form",
+            imageLogoPlaceholderText: "http://www.mysite.com/myimage.jpg",
+            shareBuilderInProgressTitleMessage: "Publishing GeoForm",
+            shareBuilderProgressBarMessage:"Please Wait...",
+            shareBuilderTitleMessage: "Your GeoForm has been updated & published!",
+            shareBuilderTextMessage: "You can start collecting information by sharing with others",
+            shareDialogFormText: "Form Link",
+            geoformTitleText: "Geo Form",
+            addressSearchText:"Your submission will appear here. You can drag the pin to correct the location.",
 
             //Local string for user mode
             defaultTitleText: "Default Title",
@@ -50,7 +61,9 @@
             formValidationMessageAlertText: "Please verify the form for errors and resubmit the form",
             latlongValidationMessageAlert: "Please select x and y coordinates",
             emptylatitudeAlertMessage:"Please enter Latitude",
-            emptylongitudeAlertMessage:"Please enter Longitude"
+            emptylongitudeAlertMessage: "Please enter Longitude",
+            shareUserTitleMessage: "Thank you for your contribution!",
+            shareUserTextMessage: "Your entry has been submitted. Share with others using the following options"
         }
     }),
     "fr": 1

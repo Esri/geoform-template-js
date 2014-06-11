@@ -103,7 +103,7 @@
                     builder.startup(config, userInfo, myTemplate.appResponse);
                     domClass.remove(document.body, "app-loading");
                 }, function (error) {
-                    alert(error);
+                    console.log(error);
                 });
             });
             }
@@ -154,36 +154,9 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;</button>
                     <h4 class="modal-title" id="myModalLabel">
-                        Published</h4>
+                    </h4>
                 </div>
                 <div class="modal-body">
-                    <div class="iconContainer">
-                        <div class="share-dialog-subheader">
-                            Share this map</div>
-                        <div class="iconContent">
-                            <a class="icon-facebook-sign iconClass" id="facebookIcon"></a>
-                        </div>
-                        <div class="iconContent">
-                            <a class="icon-twitter-sign iconClass" id="twitterIcon"></a>
-                        </div>
-                        <div class="iconContent">
-                            <a class="icon-google-plus-sign iconClass" id="google-plusIcon"></a>
-                        </div>
-                        <div class="iconContent">
-                            <a class="icon-envelope iconClass" id="mailIcon"></a>
-                        </div>
-                    </div>
-                    <br />
-                    <br />
-                    <br />
-                    <!--<div>
-                        <input class="fieldCheckbox" type="checkbox" /><div class="share-dialog-label">
-                            Share current map extent</div>
-                    </div><br />-->
-                    <div class="share-dialog-subheader">
-                        Map Link</div>
-                    <input tabindex="0" class="share-map-url" autofocus="" type="text" id="_shareMapUrlText"
-                        readonly="" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
