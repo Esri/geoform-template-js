@@ -31,7 +31,7 @@ define([
             "<img alt='' src='${thumbnailUrl:_formatThumbnail}'>" +
             "<div class='truncate itemTitle'>${title:_formatTitle}</div>" +
             "<span class='itemOwner'>${owner}</span>" +
-            "<p class='itemText snippet' style='display:none;'>${snippet}</p>" +
+            "<p class='itemText snippet gridVisibility'>${snippet}</p>" +
             "</div>";
 
               this._detailsTemplate = this._detailsTemplate ||

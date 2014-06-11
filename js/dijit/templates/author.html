@@ -4,7 +4,7 @@
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span>
+          <span class="sr-only">${nls.builder.toggleNavigationText}</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -80,7 +80,7 @@
                         <h2>
                             ${nls.builder.webmapTabTitleText}
                         </h2>
-                        <img class="img-thumbnail" src="http://placehold.it/200x133" />
+                        <img class="img-thumbnail" src="" />
                         <br />
                         <button type="button" id="selectWebmapBtn" class="btn btn-default">
                             ${nls.builder.btnSelectWebmapText}
@@ -115,13 +115,13 @@
                         <div class="form-group">
                             <label for="">
                                 ${nls.builder.detailTitleLabelText}</label>
-                            <input type="text" class="form-control" id="detailTitleInput" placeholder="My Form">
+                            <input type="text" class="form-control" id="detailTitleInput" placeholder="${nls.builder.formPlaceholderText}" />
                         </div>
                         <div class="form-group">
                             <label for="">
-                            ${nls.builder.detailLogoLabelText}
-                                </label>
-                            <input type="text" class="form-control" id="detailLogoInput" placeholder="http://www.mysite.com/myimage.jpg">
+                                ${nls.builder.detailLogoLabelText}
+                            </label>
+                            <input type="text" class="form-control" id="detailLogoInput" placeholder="${nls.builder.imageLogoPlaceholderText}">
                         </div>
                         <div class="form-group">
                             <label for="">
@@ -138,32 +138,30 @@
                     <div id="fields" class="tab-pane">
                         <h2>
                             Select Form Fields</h2>
-                        <table class="table table-bordered table-striped" id="tableDND">
-                            <thead>
-                                <tr>
-                                  <th>
-                                    </th>
-                                    <th>
-                                    ${nls.builder.fieldTabDisplayHeaderText}
-                                    </th>
-                                    <th>
-                                    ${nls.builder.fieldTabFieldHeaderText}
-                                    </th>
-                                    <th>
-                                    ${nls.builder.fieldTabLabelHeaderText}
-                                    </th>
-                                    <th>
-                                    ${nls.builder.fieldTabTypeHeaderText}
-                                    </th>
-                                    <th>
-                                    ${nls.builder.fieldTabDescriptionHeaderText}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody data-dojo-attach-point="geoFormFieldsTable" id="tbodyDND">
-
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped" id="tableDND">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                        </th>
+                                        <th>
+                                        <input type="checkbox" data-dojo-attach-point="selectAll" class="selectAllCheckbox"/>
+                                        </th>
+                                        <th>
+                                            ${nls.builder.fieldTabFieldHeaderText}
+                                        </th>
+                                        <th>
+                                            ${nls.builder.fieldTabLabelHeaderText}
+                                        </th>
+                                        <th>
+                                            ${nls.builder.fieldTabDescriptionHeaderText}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody data-dojo-attach-point="geoFormFieldsTable" id="tbodyDND">
+                                </tbody>
+                            </table>
+                        </div>
                         <p class="text-right">
                             <a href="#" class="btn btn-default prevtab navigationTabs" tab="details">${nls.builder.btnPreviousText}</a>
                             <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${nls.builder.btnNextText}</a>
@@ -179,8 +177,9 @@
                     </div>
                     <div id="preview" class="tab-pane">
                         <h2>
-                           ${nls.builder.previewApplicationText} </h2>
-                        <iframe class="preview-frame" id="iframeContainer"  style="overflow-x:auto"></iframe>
+                            ${nls.builder.previewApplicationText}
+                        </h2>
+                        <iframe class="preview-frame" id="iframeContainer"></iframe>
                         <p class="text-right">
                             <a href="#" class="btn btn-default prevtab navigationTabs" tab="style">${nls.builder.btnPreviousText}</a>
                             <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${nls.builder.btnNextText}</a>
@@ -203,26 +202,4 @@
     </div>
     <!-- row for tabs -->
     <!-- /container -->
-    <!-- Modal -->
-    <!-- Modal -->
-    <div class="modal fade" id="webmapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        &times;</button>
-                    <h4 class="modal-title" id="H1">
-                        Published</h4>
-                </div>
-                <div class="modal-body">
-                    Success!
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">
-                        Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>

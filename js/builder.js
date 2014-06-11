@@ -32,7 +32,9 @@ define([
         userInfo: null,
         browseDlg: null,
         fieldInfo: {},
+        layerInfo: null,
         themes: [
+        { "name": "Default", url: "themes/default.css", "thumbnail": "images/defaultThumbnail.jpg", "refUrl": "http://bootswatch.com/default/" },
             { "name": "Cyborg", url: "themes/cyborg.css", "thumbnail": "images/cyborgThumbnail.jpg", "refUrl": "http://bootswatch.com/cyborg/" },
             { "name": "Cerulean", url: "themes/cerulean.css", "thumbnail": "images/cerulianThumbnail.jpg", "refUrl": "http://bootswatch.com/cerulean/" },
             { "name": "Journal", url: "themes/journal.css", "thumbnail": "images/journalThumbnail.jpg", "refUrl": "http://bootswatch.com/journal/" },
@@ -73,6 +75,13 @@ define([
             this._populateThemes();
             this._initWebmapSelection();
             this._loadCSS("css/browseDialog.css");
+            if (typeof (Storage) === 'undefined') {
+                array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
+                    if (domAttr.get(currentTab, "tab") == "preview") {
+                        this._disableTab(currentTab);
+                    }
+                }));
+            }
             on(dom.byId("selectLayer"), "change", lang.hitch(this, function (evt) {
                 this.currentConfig.form_layer.id = evt.currentTarget.value;
                 this._populateFields(evt.currentTarget.value);
@@ -90,6 +99,13 @@ define([
                         }
                     }));
                 }
+            }));
+
+            on(this.selectAll, "change", lang.hitch(this, function (evt) {
+                array.forEach(query(".fieldCheckbox"), lang.hitch(this, function (currentCheckBox) {
+                    currentCheckBox.checked = evt.currentTarget.checked;
+                }));
+                this._getFieldCheckboxState();
             }));
         },
 
@@ -165,13 +181,12 @@ define([
                 themesRadioButton = domConstruct.create("input", { type: "radio", name: "themesRadio", themeName: currentTheme.name, themeUrl: currentTheme.url }, themesLabel);
                 if (currentTheme.name == this.currentConfig.theme.themeName) {
                     themesRadioButton.checked = true;
-                    //this._loadCSS(currentTheme.url);
                 }
                 on(themesRadioButton, "change", lang.hitch(this, function (evt) {
                     this._configureTheme(evt);
                 }));
                 domConstruct.create("br", {}, themesLabel);
-                themeThumbnail = domConstruct.create("img", { src: currentTheme.thumbnail, width: "200px", height: "133px", "style": "border:1px solid #555; " }, themesLabel);
+                themeThumbnail = domConstruct.create("img", { src: currentTheme.thumbnail, class: "themeThubnail" }, themesLabel);
                 on(themeThumbnail, "click", function () { window.open(currentTheme.refUrl); });
             }));
         },
@@ -185,7 +200,7 @@ define([
         //function will populate all editable fields with validations
         _populateFields: function (layerName) {
             var configuredFields = [], configuredFieldName = [], fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
-            fieldType, fieldTypeSelect, fieldCheckBoxInput, currentIndex = 0, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon;
+            fieldCheckBoxInput, currentIndex = 0, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false, newAddedFields = [];
             if (this.geoFormFieldsTable) {
                 domConstruct.empty(this.geoFormFieldsTable);
             }
@@ -202,50 +217,73 @@ define([
                 }
             }));
             if (this.fieldInfo[layerName]) {
-                array.forEach(this.fieldInfo[layerName].Fields, lang.hitch(this, function (currentField, fieldIndex) {
-                    if (currentField.editable && !(currentField.type === "esriFieldTypeOID" || currentField.type === "esriFieldTypeGeometry" || currentField.type === "esriFieldTypeBlob" || currentField.type === "esriFieldTypeRaster" || currentField.type === "esriFieldTypeGUID" || currentField.type === "esriFieldTypeGlobalID" || currentField.type === "esriFieldTypeXML")) {
-                        fieldRow = domConstruct.create("tr", { rowIndex: currentIndex }, this.geoFormFieldsTable);
-                        fieldDNDIndicatorTD = domConstruct.create("td", {}, fieldRow);
-                        fieldDNDIndicatorIcon = domConstruct.create("span", { "class": "ui-icon ui-icon-arrowthick-2-n-s" }, fieldDNDIndicatorTD);
-                        fieldCheckBox = domConstruct.create("td", {}, fieldRow);
-
-                        fieldCheckBoxInput = domConstruct.create("input", { "class": "fieldCheckbox", type: "checkbox", index: currentIndex, fieldIndex: fieldIndex }, fieldCheckBox);
-                        on(fieldCheckBoxInput, "change", lang.hitch(this, function () {
-                            this._getFieldCheckboxState();
-                        }));
-                        fieldName = domConstruct.create("td", { class: "fieldName", innerHTML: currentField.name, index: currentIndex, style: "color:#555; vertical-align:center !important;" }, fieldRow);
-                        fieldLabel = domConstruct.create("td", {}, fieldRow);
-
-                        fieldLabelInput = domConstruct.create("input", { class: "form-control fieldLabel", index: currentIndex, placeholder: nls.builder.fieldLabelPlaceHolder, value: currentField.alias }, fieldLabel);
-
-                        fieldType = domConstruct.create("td", {}, fieldRow);
-                        fieldTypeSelect = domConstruct.create("select", { disabled: "disabled", class: "form-control fieldSelect", index: currentIndex }, fieldType);
-                        this._createFieldDataTypeOptions(currentField, fieldTypeSelect);
-
-                        fieldDescription = domConstruct.create("td", {}, fieldRow);
-                        fieldDescriptionInput = domConstruct.create("input", { class: "form-control fieldDescription", placeholder: nls.builder.fieldDescPlaceHolder, value: "" }, fieldDescription);
-                        array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
-                            if (currentFieldPopupInfo.fieldName == currentField.name) {
-                                if (currentFieldPopupInfo.tooltip) {
-                                    fieldDescriptionInput.value = currentFieldPopupInfo.tooltip;
-                                }
+                array.forEach(this.fieldInfo[layerName].Fields, lang.hitch(this, function (currentField) {
+                    matchingField = false;
+                    array.forEach(this.currentConfig.fields, lang.hitch(this, function (configLayerField) {
+                        if ((currentField.editable && configLayerField.fieldName == currentField.name)) {
+                            matchingField = true;
+                            if (!(currentField.type === "esriFieldTypeOID" || currentField.type === "esriFieldTypeGeometry" || currentField.type === "esriFieldTypeBlob" || currentField.type === "esriFieldTypeRaster" || currentField.type === "esriFieldTypeGUID" || currentField.type === "esriFieldTypeGlobalID" || currentField.type === "esriFieldTypeXML")) {
+                                newAddedFields.push(lang.mixin(currentField, configLayerField));
                             }
-                        });
-                        currentIndex++;
-                        if (configuredFieldName.indexOf(currentField.name) != -1) {
-                            configuredFields[configuredFieldName.indexOf(currentField.name)];
-                            domAttr.set(fieldCheckBoxInput, "checked", true);
-                            domAttr.set(fieldLabelInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldLabel);
-                            if (configuredFields[configuredFieldName.indexOf(currentField.name)].fieldDescription) {
-                                domAttr.set(fieldDescriptionInput, "value", configuredFields[configuredFieldName.indexOf(currentField.name)].fieldDescription);
-                            }
-                        } else {
-                            domAttr.set(fieldCheckBoxInput, "checked", false);
+                        }
+                    }));
+                    if (!matchingField) {
+                        if ((currentField.editable && !(currentField.type === "esriFieldTypeOID" || currentField.type === "esriFieldTypeGeometry" || currentField.type === "esriFieldTypeBlob" || currentField.type === "esriFieldTypeRaster" || currentField.type === "esriFieldTypeGUID" || currentField.type === "esriFieldTypeGlobalID" || currentField.type === "esriFieldTypeXML"))) {
+                            currentField.visible = true;
+                            currentField.isNewField = true;
+                            newAddedFields.push(currentField);
                         }
                     }
                 }));
             }
 
+            array.forEach(newAddedFields, lang.hitch(this, function (currentField) {
+                fieldRow = domConstruct.create("tr", { rowIndex: currentIndex }, this.geoFormFieldsTable);
+                domAttr.set(fieldRow, "visibleProp", currentField.visible);
+                fieldDNDIndicatorTD = domConstruct.create("td", {}, fieldRow);
+                fieldDNDIndicatorIcon = domConstruct.create("span", { "class": "ui-icon ui-icon-arrowthick-2-n-s" }, fieldDNDIndicatorTD);
+                fieldCheckBox = domConstruct.create("td", {}, fieldRow);
+                fieldCheckBoxInput = domConstruct.create("input", { "class": "fieldCheckbox", type: "checkbox", index: currentIndex }, fieldCheckBox);
+                domAttr.set(fieldCheckBoxInput, "checked", currentField.visible);
+
+                on(fieldCheckBoxInput, "change", lang.hitch(this, function () {
+                    if (query(".fieldCheckbox:checked").length == query(".fieldCheckbox").length) {
+                        this.selectAll.checked = true;
+                    }
+                    else {
+                        this.selectAll.checked = false;
+                    }
+                    this._getFieldCheckboxState();
+                }));
+
+                fieldName = domConstruct.create("td", { class: "fieldName layerFieldsName", innerHTML: currentField.name, index: currentIndex }, fieldRow);
+                fieldLabel = domConstruct.create("td", { class: "tableDimension" }, fieldRow);
+                fieldLabelInput = domConstruct.create("input", { class: "form-control fieldLabel", index: currentIndex, placeholder: nls.builder.fieldLabelPlaceHolder, value: currentField.alias }, fieldLabel);
+                fieldDescription = domConstruct.create("td", { class: "tableDimension" }, fieldRow);
+                fieldDescriptionInput = domConstruct.create("input", { class: "form-control fieldDescription", placeholder: nls.builder.fieldDescPlaceHolder, value: "" }, fieldDescription);
+                array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
+                    if (currentFieldPopupInfo.fieldName == currentField.name) {
+                        if (currentFieldPopupInfo.tooltip) {
+                            fieldDescriptionInput.value = currentFieldPopupInfo.tooltip;
+                        }
+                    }
+                });
+                currentIndex++;
+                if (currentField.isNewField) {
+                    domAttr.set(fieldLabelInput, "value", currentField.alias);
+                } else {
+                    domAttr.set(fieldLabelInput, "value", currentField.fieldLabel);
+                }
+                if (currentField.fieldDescription) {
+                    domAttr.set(fieldDescriptionInput, "value", currentField.fieldDescription);
+                }
+            }));
+            if (query(".fieldCheckbox:checked").length == query(".fieldCheckbox").length) {
+                this.selectAll.checked = true;
+            }
+            else {
+                this.selectAll.checked = false;
+            }
             $(document).ready(function () {
                 $("#tbodyDND").sortable({
                 });
@@ -274,7 +312,7 @@ define([
                 this._validateFeatureServer(result, layerUrl, layerId);
                 layerDeferred.resolve(true);
             }),
-            function (error) {
+            function () {
                 layerDeferred.resolve(true);
             });
             return layerDeferred.promise;
@@ -317,6 +355,7 @@ define([
                     domClass.add(document.body, "app-loading");
                     arcgisUtils.getItem(this.currentConfig.webmap).then(lang.hitch(this, function (itemInfo) {
                         this.currentConfig.fields.length = 0;
+                        this.currentConfig.form_layer.id = "";
                         domConstruct.empty(this.geoFormFieldsTable);
                         this.currentConfig.itemInfo = itemInfo;
                         this._addOperationalLayers();
@@ -369,33 +408,19 @@ define([
                     break;
                 case "fields":
                     this.currentConfig.fields.length = 0;
-                    var index, fieldName, fieldLabel, fieldType, fieldDescription, nullable, domain, defaultValue, sqlType, length,
-                    layerName, fieldDataType;
+                    var index, fieldName, fieldLabel, fieldDescription, layerName, visible;
                     layerName = dom.byId("selectLayer").value;
                     array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow) {
-                        if (currentRow.getAttribute("rowIndex") && query(".fieldCheckbox", currentRow)[0].checked) {
+                        if (currentRow.getAttribute("rowIndex")) {
                             index = currentRow.getAttribute("rowIndex");
-                            fieldName = query(".fieldName", currentRow)[0].innerHTML;
+                            fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
                             fieldLabel = query(".fieldLabel", currentRow)[0].value;
-                            fieldType = query(".fieldSelect", currentRow)[0].value;
                             fieldDescription = query(".fieldDescription", currentRow)[0].value;
-                            nullable = this.fieldInfo[layerName].Fields[Number(index) + 1].nullable;
-                            domain = this.fieldInfo[layerName].Fields[Number(index) + 1].domain;
-                            defaultValue = this.fieldInfo[layerName].Fields[Number(index) + 1].defaultValue;
-                            sqlType = this.fieldInfo[layerName].Fields[Number(index) + 1].sqlType;
-                            fieldDataType = this.fieldInfo[layerName].Fields[Number(index) + 1].type;
-                            if (this.fieldInfo[layerName].Fields[Number(index) + 1].length) {
-                                length = this.fieldInfo[layerName].Fields[Number(index) + 1].length;
-                            }
-                            else {
-                                length = null;
-                            }
+                            visible = query(".fieldCheckbox", currentRow)[0].checked;
                             _self.currentConfig.fields.push({
                                 fieldName: fieldName, fieldLabel: fieldLabel,
-                                fieldType: fieldType, fieldDescription: fieldDescription,
-                                nullable: nullable, domain: domain,
-                                defaultValue: defaultValue, sqlType: sqlType, fieldDataType: fieldDataType,
-                                length: length
+                                fieldDescription: fieldDescription,
+                                visible: visible
                             });
                         }
                     }));
@@ -417,12 +442,13 @@ define([
                 itemType: "text",
                 f: 'json',
                 token: this.userInfo.token,
-                title: this.currentConfig.details.Title ? this.currentConfig.details.Title : "Geo Form",
+                title: this.currentConfig.details.Title ? this.currentConfig.details.Title : nls.builder.geoformTitleText,
                 text: JSON.stringify(this.response.itemData),
                 type: "Web Mapping Application",
                 overwrite: true
             });
-            domClass.add(document.body, "app-loading");
+            this._addProgressBar();
+            $("#myModal").modal('show');
             arcgisUtils.getItem(this.currentConfig.appid).then(lang.hitch(this, function (response) {
                 var updateURL = this.userInfo.portal.url + "/sharing/content/users/" + this.userInfo.username + (response.item.ownerFolder ? ("/" + response.item.ownerFolder) : "") + "/items/" + this.currentConfig.appid + "/update";
                 esriRequest({
@@ -431,27 +457,55 @@ define([
                     handleAs: 'json'
                 }, { usePost: true }).then(lang.hitch(this, function (result) {
                     if (result.success) {
-                        domClass.remove(document.body, "app-loading");
+                        this._createShareDlgContent();
                         this._ShareDialog = new ShareDialog({
                             bitlyLogin: this.currentConfig.bitlyLogin,
                             bitlyKey: this.currentConfig.bitlyKey,
-                            //map: dojo.map,
                             image: this.currentConfig.sharinghost + '/sharing/rest/content/items/' + this.currentConfig.itemInfo.item.id + '/info/' + this.currentConfig.itemInfo.item.thumbnail,
-                            title: this.currentConfig.details.Title || "Geoform",
+                            title: this.currentConfig.details.Title || nls.builder.geoformTitleText,
                             summary: this.currentConfig.details.Description,
                             hashtags: 'esriDSM'
                         });
                         this._ShareDialog.startup();
-                        $("#myModal").modal('show');
                     }
                 }), function () {
-                    domClass.remove(document.body, "app-loading");
+                    $("#myModal").modal('hide');
                 });
             }));
         },
 
+        //function to show a progress bar before the content of share dialog is loaded
+        _addProgressBar: function () {
+            var progressIndicatorContainer, progressIndicator;
+            domConstruct.empty(query(".modal-body")[0]);
+            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderInProgressTitleMessage);
+            progressIndicatorContainer = domConstruct.create("div", { class: "progress progress-striped active progress-remove-margin" }, query(".modal-body")[0]);
+            progressIndicator = domConstruct.create("div", { class: "progress-bar progress-percent", innerHTML: nls.builder.shareBuilderProgressBarMessage }, progressIndicatorContainer);
+        },
+        _createShareDlgContent: function () {
+            var iconContainer, facebookIconHolder, twitterIconHolder, googlePlusIconHolder, mailIconHolder;
+            domConstruct.empty(query(".modal-body")[0]);
+            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderTitleMessage);
+            iconContainer = domConstruct.create("div", { class: "iconContainer" }, query(".modal-body")[0]);
+            domConstruct.create("div", { class: "share-dialog-subheader", innerHTML: nls.builder.shareBuilderTextMessage }, iconContainer);
+            facebookIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
+            domConstruct.create("a", { class: "icon-facebook-sign iconClass", id: "facebookIcon" }, facebookIconHolder);
+            twitterIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
+            domConstruct.create("a", { class: "icon-twitter-sign iconClass", id: "twitterIcon" }, twitterIconHolder);
+            googlePlusIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
+            domConstruct.create("a", { class: "icon-google-plus-sign iconClass", id: "google-plusIcon" }, googlePlusIconHolder);
+            mailIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
+            domConstruct.create("a", { class: "icon-envelope iconClass", id: "mailIcon" }, mailIconHolder);
+            domConstruct.create("br", {}, iconContainer);
+            domConstruct.create("br", {}, iconContainer);
+            domConstruct.create("br", {}, iconContainer);
+            domConstruct.create("div", { class: "share-dialog-subheader", innerHTML: nls.builder.shareDialogFormText }, iconContainer);
+            domConstruct.create("input", { type: "text", class: "share-map-url", id: "_shareMapUrlText" }, iconContainer);
+        },
         //function to enable the tab passed in input parameter
         _enableTab: function (currentTab) {
+            if (typeof (Storage) === 'undefined' && domAttr.get(currentTab, "tab") == "preview")
+                return;
             if (domClass.contains(currentTab, "btn")) {
                 domClass.remove(currentTab, "disabled");
             }

@@ -14,48 +14,28 @@ define({
     },
     "fields": [
     {
-        "defaultValue": null,
-        "domain": null,
-        "ieldDataType": "esriFieldTypeSingle",
         "fieldDescription": "Total Mission Hours ?",
         "fieldLabel": "Mission_Hours",
         "fieldName": "Mission_Hours",
-        "fieldType": "Single",
-        "length": null,
-        "nullable": true
+        "visible": true
     },
     {
-        "defaultValue": null,
-        "domain": null,
-        "ieldDataType": "esriFieldTypeDate",
         "fieldDescription": "Date of Mission ?",
         "fieldLabel": "Mission_Date",
         "fieldName": "Mission_Date",
-        "fieldType": "Date",
-        "length": 8,
-        "nullable": true
+        "visible": true
     },
     {
-        "defaultValue": null,
-        "domain": null,
-        "ieldDataType": "esriFieldTypeString",
         "fieldDescription": "Team Name ?",
         "fieldLabel": "Team",
         "fieldName": "Team",
-        "fieldType": "String",
-        "length": 50,
-        "nullable": true
+        "visible": true
     },
     {
-        "defaultValue": null,
-        "domain": null,
-        "ieldDataType": "esriFieldTypeInteger",
         "fieldDescription": "Mission Number ?",
         "fieldLabel": "Mission_Number",
         "fieldName": "Mission_Number",
-        "fieldType": "Integer",
-        "length": null,
-        "nullable": true
+        "visible": true
     }
     ],
     "theme": {
