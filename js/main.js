@@ -176,7 +176,7 @@ define([
             var symbolUrl, pictureMarkerSymbol, graphic;
             this.map.graphics.clear();
             symbolUrl = package_path + "/images/pushpin.png";
-            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 32, 32);
+            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
             this.map.centerAt(point);
