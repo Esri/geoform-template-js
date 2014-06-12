@@ -1,4 +1,4 @@
-﻿define({
+define({
     root: ({
         builder: {
             invalidWebmapSelectionAlert: "Selected webmap does not contain any feature server",
@@ -49,9 +49,9 @@
             defaultTitleText: "Default Title",
             defaultDescriptionText: "Default Description",
             geoFormGeneralTabText: "General",
-            locationInformationText: "Location Info",
+            locationInformationText: "Select Location",
             myLocationText: "My Location",
-            addressText: "Address",
+            addressText: "Search",
             cooridnatesText: "Coordinates",
             locationTabText: "Location",
             enterCoordinatesPlaceholder: "Enter Coordinates",
