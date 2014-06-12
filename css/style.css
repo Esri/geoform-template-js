@@ -149,6 +149,7 @@
 .circleImageDimension {
         height: 140px;
         width: 140px;
+    margin: 0 15px 5px 0;
 }
 
 .myLocationOptions{
