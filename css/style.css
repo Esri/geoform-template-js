@@ -16,6 +16,14 @@
         background-repeat: no-repeat;
 }
 
+#coordinatesContainer{
+    margin-bottom: 20px;
+}
+
+.inline-block{
+    display: inline-block;
+}
+
 
 .loading-indicator {
     display: none;
