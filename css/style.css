@@ -24,7 +24,9 @@
     display: inline-block;
 }
 
-
+.submit-area{
+    margin-bottom: 40px;
+}
 .loading-indicator {
     display: none;
     height: 100%;
@@ -152,12 +154,6 @@
 .inputCoorninates {
         width: 49% !important;
         display: inline-table !important;
-}
-
-.circleImageDimension {
-        height: 140px;
-        width: 140px;
-    margin: 0 15px 5px 0;
 }
 
 .myLocationOptions{

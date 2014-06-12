@@ -50,13 +50,13 @@ define([
             var html = '';
             switch (this.offlineFeaturesManager.getOnlineStatus()) {
             case this.offlineFeaturesManager.OFFLINE:
-                html += '<div class="alert alert-danger"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.offline + '</div>';
+                html += '<div class="well well-sm text-danger"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.offline + '</div>';
                 break;
             case this.offlineFeaturesManager.ONLINE:
-                html += '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> ' + i18n.onlineStatus.online + '</div>';
+                html += '<div class="well well-sm text-success"><span class="glyphicon glyphicon-ok-sign"></span> ' + i18n.onlineStatus.online + '</div>';
                 break;
             case this.offlineFeaturesManager.RECONNECTING:
-                html += '<div class="alert alert-warning"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.reconnecting + '</div>';
+                html += '<div class="well well-sm text-warning"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.reconnecting + '</div>';
                 break;
             }
             if(node){

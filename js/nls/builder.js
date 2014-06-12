@@ -48,8 +48,10 @@ define({
             //Local string for user mode
             defaultTitleText: "Default Title",
             defaultDescriptionText: "Default Description",
-            geoFormGeneralTabText: "General",
-            locationInformationText: "Select Location",
+            geoFormGeneralTabText: "1. Enter Information",
+            locationInformationText: "2. Select Location",
+            submitInformationText: "3. Complete Form",
+            submitInstructions: "Add this information to the map.",
             myLocationText: "My Location",
             addressText: "Search",
             cooridnatesText: "Coordinates",
