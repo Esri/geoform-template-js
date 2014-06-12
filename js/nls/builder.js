@@ -65,6 +65,5 @@ define({
             shareUserTitleMessage: "Thank you for your contribution!",
             shareUserTextMessage: "Your entry has been submitted. Share with others using the following options"
         }
-    }),
-    "fr": 1
+    })
 });

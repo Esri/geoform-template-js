@@ -36,6 +36,5 @@ define({
                 placeholder: "Enter search term"
             }
         }
-    }),
-    "fr": 1
+    })
 });
