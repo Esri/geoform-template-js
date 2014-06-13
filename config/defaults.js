@@ -9,7 +9,7 @@ define({
     },
     "details": {
         "Title": "Citizen Service Request Form",
-        "Logo": "images/GeoForm.png",
+        "Logo": "images/banner.jpg",
         "Description": "Use this form to make a request about Critical Issues, Issues that need to be resolved soon, or General Nuisances. Please specify the severity, what you are seeing, and any personal information you are willing to share. Feel free to add more details with the comment box or attach a photo. Finally - let us know you where when you saw the incident by using your location, typing in an address / coordinates, or simply put a point on the map."
     },
     "fields": [
