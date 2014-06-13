@@ -2,6 +2,7 @@ define({
     root: ({
         builder: {
             invalidWebmapSelectionAlert: "Selected webmap does not contain any feature server",
+            selectFieldsText:"Select Form Fields",
             selectThemeText: "Select Form Theme",
             fieldLabelPlaceHolder: "Label this field",
             fieldDescPlaceHolder: "Describe this field",
@@ -32,8 +33,6 @@ define({
             previewApplicationText: "Preview Application",
             saveApplicationText: "Save Application",
             saveText: "Save",
-            placeholderLatitude: "Latitude (Y)",
-            placeholderLongitude: "Longitude (X)",
             toggleNavigationText: "Toggle navigation",
             formPlaceholderText: "My Form",
             imageLogoPlaceholderText: "http://www.mysite.com/myimage.jpg",
@@ -43,29 +42,11 @@ define({
             shareBuilderTextMessage: "You can start collecting information by sharing with others",
             shareDialogFormText: "Form Link",
             geoformTitleText: "Geo Form",
-            addressSearchText:"Your submission will appear here. You can drag the pin to correct the location.",
-
-            //Local string for user mode
-            defaultTitleText: "Default Title",
-            defaultDescriptionText: "Default Description",
-            geoFormGeneralTabText: "1. Enter Information",
-            locationInformationText: "2. Select Location",
-            submitInformationText: "3. Complete Form",
-            submitInstructions: "Add this information to the map.",
-            myLocationText: "My Location",
-            addressText: "Search",
-            cooridnatesText: "Coordinates",
-            locationTabText: "Location",
-            enterCoordinatesPlaceholder: "Enter Coordinates",
-            submitButtonText: "Submit",
-            clearButtonText: "Clear",
-            fieldvalidationMessageAlertText: "Please enter a valid number",
-            formValidationMessageAlertText: "Please verify the form for errors and resubmit the form",
-            latlongValidationMessageAlert: "Please select x and y coordinates",
-            emptylatitudeAlertMessage:"Please enter Latitude",
-            emptylongitudeAlertMessage: "Please enter Longitude",
-            shareUserTitleMessage: "Thank you for your contribution!",
-            shareUserTextMessage: "Your entry has been submitted. Share with others using the following options"
+            layerTabText: "This is the layer that the GeoForm will be built from. The layer must be a feature service that is enabled for editing with sharing permissions appropriate for your audience.",
+            detailsTabText:"Use the Form Detail boxes below to customize the Title, add a custom logo, and provide a short description for your GeoForm audience.",
+            fieldsTabText:"Here you can select which fields will be visible to your GeoForm audience, edit the Labels they will see, and add a short Description to help with data entry.",
+            styleTabText: "Style your GeoForm using the themes below based on your preference.",
+            publishTabText: "If you are finished customizing your GeoForm, save the application and begin sharing with your audience. You can always return to this builder and continue customizing it based on feedback."
         }
     })
 });
