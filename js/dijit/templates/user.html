@@ -27,6 +27,7 @@
         <div class="col-xs-12 col-sm-5">
             <h2>
                 ${nls.user.locationInformationText}</h2>
+            <p>${nls.user.locationDescription}</p>
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#myLocation" data-toggle="tab">${nls.user.myLocationText}</a>
                 </li>
@@ -37,8 +38,6 @@
                 <div class="tab-content">
                     <div id="myLocation" class="tab-pane active">
                         <div class="form-group">
-                            <label for="">
-                            ${nls.user.locationTabText}</label>
                             <div>
                                 <div class="inline-block">
                                     <div data-dojo-attach-point="myLocation" class="btn btn-default">
@@ -49,16 +48,12 @@
                     </div>
                     <div id="address" class="tab-pane">
                         <div class="form-group">
-                            <label for="">
-                            ${nls.user.locationTabText}</label>
                             <div data-dojo-attach-point="geocodeAddress">
                             </div>
                         </div>
                     </div>
                     <div id="coordinates" class="tab-pane">
                         <div data-dojo-attach-point="coordinatesContainer" class="form-group">
-                            <label for="">
-                            ${nls.user.locationTabText}</label>
                             <div>
                             <input data-dojo-attach-point="XCoordinate" class="form-control inputCoorninates clearfix"
                                 type="text" placeholder="${nls.user.placeholderLatitude}" />

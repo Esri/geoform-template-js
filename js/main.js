@@ -27,6 +27,7 @@ define([
     "esri/graphic",
     "esri/symbols/PictureMarkerSymbol",
     "esri/toolbars/edit",
+    "dojo/i18n!esri/nls/jsapi",
     "dojo/domReady!"
 ], function (
     ready,
@@ -47,7 +48,7 @@ define([
     _WidgetBase,
     _TemplatedMixin,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol, editToolbar) {
+    nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol, editToolbar, esriBundle) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: userTemplate,
         nls: nls,
@@ -499,6 +500,9 @@ define([
             }
         },
         _createLocateButton: function () {
+            
+            esriBundle.widgets.locateButton.locate.button = nls.user.findMyLocation;
+            
             var currentLocation = new LocateButton({
                 map: this.map,
                 theme: "btn btn-default"

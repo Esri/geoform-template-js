@@ -1,4 +1,4 @@
-﻿define({
+define({
     root: ({
         user: {
             defaultTitleText: "Default Title",
@@ -7,7 +7,8 @@
             locationInformationText: "2. Select Location",
             submitInformationText: "3. Complete Form",
             submitInstructions: "Add this information to the map.",
-            myLocationText: "My Location",
+            myLocationText: "GPS",
+            locationDescription: "Select a location for your submission using one of the following options.",
             addressText: "Search",
             cooridnatesText: "Coordinates",
             locationTabText: "Location",
@@ -27,6 +28,7 @@
             placeholderLongitude: "Longitude (X)",
             latitude: "Latitude",
             longitude: "Longitude",
+            findMyLocation: "Find my location",
             myLocationTitleText: 'My Location',
             addressSearchText: "Your submission will appear here. You can drag the pin to correct the location."
         }
