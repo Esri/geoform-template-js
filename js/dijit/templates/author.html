@@ -93,6 +93,8 @@
                         <h2>
                             ${nls.builder.layerTabTitleText}
                         </h2>
+                        <div class="descriptionText">
+                            ${nls.builder.layerTabText}</div>
                         <form role="form">
                         <div class="form-group">
                             <label for="">
@@ -109,8 +111,10 @@
                     </div>
                     <div id="details" class="tab-pane">
                         <h2>
-                           ${nls.builder.detailsTabTitleText}
+                            ${nls.builder.detailsTabTitleText}
                         </h2>
+                      <div class="descriptionText">
+                            ${nls.builder.detailsTabText}</div>
                         <form role="form">
                         <div class="form-group">
                             <label for="">
@@ -125,8 +129,8 @@
                         </div>
                         <div class="form-group">
                             <label for="">
-                             ${nls.builder.detailDescriptionLabelText}
-                                </label>
+                                ${nls.builder.detailDescriptionLabelText}
+                            </label>
                             <textarea class="form-control" id="detailDescriptionInput" rows="3"></textarea>
                         </div>
                         </form>
@@ -137,7 +141,9 @@
                     </div>
                     <div id="fields" class="tab-pane">
                         <h2>
-                            Select Form Fields</h2>
+                             ${nls.builder.selectFieldsText}</h2>
+                      <div class="descriptionText">
+                            ${nls.builder.fieldsTabText}</div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped" id="tableDND">
                                 <thead>
@@ -145,7 +151,7 @@
                                         <th>
                                         </th>
                                         <th>
-                                        <input type="checkbox" data-dojo-attach-point="selectAll" class="selectAllCheckbox"/>
+                                            <input type="checkbox" data-dojo-attach-point="selectAll" class="selectAllCheckbox" />
                                         </th>
                                         <th>
                                             ${nls.builder.fieldTabFieldHeaderText}
@@ -168,6 +174,11 @@
                         </p>
                     </div>
                     <div id="style" class="tab-pane">
+                        <h2>
+                            ${nls.builder.selectThemeText}
+                        </h2>
+                       <div class="descriptionText">
+                            ${nls.builder.styleTabText}</div>
                         <div class="row show-grid" data-dojo-attach-point="stylesList">
                         </div>
                         <p class="text-right">
@@ -187,14 +198,15 @@
                     </div>
                     <div id="save" class="tab-pane">
                         <h2>
-                             ${nls.builder.saveApplicationText}</h2>
+                            ${nls.builder.saveApplicationText}</h2>
+                     <div class="descriptionText">
+                            ${nls.builder.publishTabText}</div>
                         <p class="">
                             <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton">
-                                 ${nls.builder.saveText}</button>
+                                ${nls.builder.saveText}</button>
                             <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview">${nls.builder.btnPreviousText}</a>
                         </p>
                     </div>
-
                 </div>
             </div>
         </div>

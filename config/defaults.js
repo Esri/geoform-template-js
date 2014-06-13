@@ -39,8 +39,8 @@ define({
     }
     ],
     "theme": {
-        "themeName": "Readable",
-        "themeSrc": "themes/readable.css"
+        "themeName": "Bootstrap (Default)",
+        "themeSrc": "css/themes/default.css"
     },
     "oauthappid": null,
     //Enter the url to the proxy if needed by the applcation. See the "Using the proxy page" help topic for details

@@ -34,12 +34,12 @@ define([
         fieldInfo: {},
         layerInfo: null,
         themes: [
-        { "name": "Default", url: "themes/default.css", "thumbnail": "images/defaultThumbnail.jpg", "refUrl": "http://bootswatch.com/default/" },
-            { "name": "Cyborg", url: "themes/cyborg.css", "thumbnail": "images/cyborgThumbnail.jpg", "refUrl": "http://bootswatch.com/cyborg/" },
-            { "name": "Cerulean", url: "themes/cerulean.css", "thumbnail": "images/cerulianThumbnail.jpg", "refUrl": "http://bootswatch.com/cerulean/" },
-            { "name": "Journal", url: "themes/journal.css", "thumbnail": "images/journalThumbnail.jpg", "refUrl": "http://bootswatch.com/journal/" },
-            { "name": "Darkly", url: "themes/darkly.css", "thumbnail": "images/darklyThumbnail.jpg", "refUrl": "http://bootswatch.com/darkly/" },
-            { "name": "Readable", url: "themes/readable.css", "thumbnail": "images/readableThumbnail.jpg", "refUrl": "http://bootswatch.com/readable/" }
+        { "name": "Bootstrap (Default)", url: "css/themes/default.css", "thumbnail": "images/defaultThumbnail.jpg", "refUrl": "http://bootswatch.com/default/" },
+            { "name": "Bootswatch: Cyborg", url: "css/themes/cyborg.css", "thumbnail": "images/cyborgThumbnail.jpg", "refUrl": "http://bootswatch.com/cyborg/" },
+            { "name": "Bootswatch: Cerulean", url: "css/themes/cerulean.css", "thumbnail": "images/cerulianThumbnail.jpg", "refUrl": "http://bootswatch.com/cerulean/" },
+            { "name": "Bootswatch: Journal", url: "css/themes/journal.css", "thumbnail": "images/journalThumbnail.jpg", "refUrl": "http://bootswatch.com/journal/" },
+            { "name": "Bootswatch: Darkly", url: "css/themes/darkly.css", "thumbnail": "images/darklyThumbnail.jpg", "refUrl": "http://bootswatch.com/darkly/" },
+            { "name": "Bootswatch: Readable", url: "css/themes/readable.css", "thumbnail": "images/readableThumbnail.jpg", "refUrl": "http://bootswatch.com/readable/" }
         ],
 
         constructor: function () {
@@ -172,8 +172,7 @@ define([
 
         //function to populate all available themes in application
         _populateThemes: function () {
-            var themesHeader, themesRadioButton, themesDivContainer, themesDivContent, themesLabel, themeThumbnail;
-            themesHeader = domConstruct.create("h2", { innerHTML: nls.builder.selectThemeText }, this.stylesList);
+            var themesRadioButton, themesDivContainer, themesDivContent, themesLabel, themeThumbnail;
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
                 themesDivContainer = domConstruct.create("div", { class: "col-md-4" }, this.stylesList);
                 themesDivContent = domConstruct.create("div", { class: "radio" }, themesDivContainer);
@@ -323,7 +322,7 @@ define([
             if (layerInfo.capabilities.search("Create") != -1 && layerInfo.capabilities.search("Update") != 1) {
                 var filteredLayer;
                 filteredLayer = document.createElement("option");
-                filteredLayer.text = layerId;
+                filteredLayer.text = layerInfo.name;
                 filteredLayer.value = layerId;
                 dom.byId("selectLayer").appendChild(filteredLayer);
                 this.fieldInfo[layerId] = {};
@@ -349,7 +348,7 @@ define([
                         domAttr.set(query(".img-thumbnail")[0], "src", this.browseDlg.get("selectedWebmap").thumbnailUrl.split("?token")[0]);
                         this.currentConfig.webmapThumbnailUrl = this.browseDlg.get("selectedWebmap").thumbnailUrl.split("?token")[0];
                     } else {
-                        domAttr.set(query(".img-thumbnail")[0], "src", "");
+                        domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png");
                     }
                     this.currentConfig.webmap = this.browseDlg.get("selectedWebmap").id;
                     domClass.add(document.body, "app-loading");
@@ -370,8 +369,10 @@ define([
                 this.browseDlg.show();
             }));
 
-            if (this.currentConfig.webmapThumbnailUrl) {
-                domAttr.set(query(".img-thumbnail")[0], "src", this.currentConfig.webmapThumbnailUrl);
+            if (this.currentConfig.itemInfo.item.thumbnail) {
+                domAttr.set(query(".img-thumbnail")[0], "src", "http://www.arcgis.com/sharing/rest/content/items/" + this.currentConfig.webmap + "/info/" + this.currentConfig.itemInfo.item.thumbnail + "?token=" + this.userInfo.token);
+            } else {
+                domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png?");
             }
         },
 

@@ -5,10 +5,11 @@
 
             <div class="jumbotron">
                 <img data-dojo-attach-point="appLogo" alt="Logo" class="img-responsive img-rounded" />
-                <h1 data-dojo-attach-point="appTitle">${nls.builder.defaultTitleText}
-                            </h1>
+                <h1 data-dojo-attach-point="appTitle">
+                    ${nls.user.defaultTitleText}
+                </h1>
                 <p data-dojo-attach-point="appDescription">
-                    ${nls.builder.defaultDescriptionText}
+                    ${nls.user.defaultDescriptionText}
                 </p>
                 <div class="clearfix"></div>
             </div>
@@ -19,27 +20,25 @@
         <div data-dojo-attach-point="erroMessageDiv"></div>
         <div class="col-xs-12 col-sm-7">
             <h2>
-                ${nls.builder.geoFormGeneralTabText}</h2>
+                ${nls.user.geoFormGeneralTabText}</h2>
             <form role="form" data-dojo-attach-point="userForm">
             </form>
         </div>
         <div class="col-xs-12 col-sm-5">
             <h2>
-                ${nls.builder.locationInformationText}</h2>
+                ${nls.user.locationInformationText}</h2>
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#myLocation" data-toggle="tab">${nls.builder.myLocationText}</a>
+                <li class="active"><a href="#myLocation" data-toggle="tab">${nls.user.myLocationText}</a>
                 </li>
-                <li><a href="#address" data-toggle="tab">${nls.builder.addressText}</a> 
-                </li>
-                <li><a href="#coordinates" data-toggle="tab">${nls.builder.cooridnatesText}</a>
-                </li>
+                <li><a href="#address" data-toggle="tab">${nls.user.addressText}</a> </li>
+                <li><a href="#coordinates" data-toggle="tab">${nls.user.cooridnatesText}</a> </li>
             </ul>
             <form role="form" class="myLocationOptions">
                 <div class="tab-content">
                     <div id="myLocation" class="tab-pane active">
                         <div class="form-group">
                             <label for="">
-                                ${nls.builder.locationTabText}</label>
+                            ${nls.user.locationTabText}</label>
                             <div>
                                 <div class="inline-block">
                                     <div data-dojo-attach-point="myLocation" class="btn btn-default">
@@ -51,7 +50,7 @@
                     <div id="address" class="tab-pane">
                         <div class="form-group">
                             <label for="">
-                                ${nls.builder.locationTabText}</label>
+                            ${nls.user.locationTabText}</label>
                             <div data-dojo-attach-point="geocodeAddress">
                             </div>
                         </div>
@@ -59,10 +58,12 @@
                     <div id="coordinates" class="tab-pane">
                         <div data-dojo-attach-point="coordinatesContainer" class="form-group">
                             <label for="">
-                                ${nls.builder.locationTabText}</label>
+                            ${nls.user.locationTabText}</label>
                             <div>
-                                <input data-dojo-attach-point="XCoordinate" class="form-control inputCoorninates clearfix" type="text" placeholder="${nls.builder.placeholderLatitude}" />
-                                <input data-dojo-attach-point="YCoordinate" class="form-control inputCoorninates clearfix" type="text" placeholder="${nls.builder.placeholderLongitude}" />
+                            <input data-dojo-attach-point="XCoordinate" class="form-control inputCoorninates clearfix"
+                                type="text" placeholder="${nls.user.placeholderLatitude}" />
+                            <input data-dojo-attach-point="YCoordinate" class="form-control inputCoorninates clearfix"
+                                type="text" placeholder="${nls.user.placeholderLongitude}" />
                             </div>
                         </div>
                     </div>
@@ -71,7 +72,7 @@
             <div id="mapDiv">
             </div>
             <div id="coordinatesContainer">
-                <span id="latAddress"></span><span id="longAddress"></span>
+                <span id="coordinatesValue"></span>
             </div>
         </div>
     </div>
@@ -83,14 +84,16 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <h2>${nls.builder.submitInformationText}</h2>
+            <h2>
+                ${nls.user.submitInformationText}</h2>
             <div class="form-group">
                 <div class="submit-area">
-                    <p>${nls.builder.submitInstructions}</p>
-                    <button class="btn btn-primary" data-dojo-attach-point="submitButton">
-                        ${nls.builder.submitButtonText}</button>
-                    <button type="reset" class="btn btn-default" data-dojo-attach-point="resetButton">
-                        ${nls.builder.clearButtonText}</button>
+                    <p>
+                        ${nls.user.submitInstructions}</p>
+                   <!-- <button type="button" data-dojo-attach-point="submitButton" class="btn btn-primary ">
+                        ${nls.user.submitButtonText}</button>-->
+                    <button type="button" data-dojo-attach-point="submitButton" data-loading-text="Loading..." class="btn btn-primary">
+                        ${nls.user.submitButtonText}</button>
                 </div>
             </div>
         </div>
