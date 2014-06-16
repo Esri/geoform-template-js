@@ -184,7 +184,7 @@ define([
                 var coords = this._calculateLatLong(evt);
                 var coordinatesValue = nls.user.latitude + ': ' + coords[0].toFixed(5) + ', ';
                 coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[1].toFixed(5);
-                domAttr.set(dojo.byId("coordinatesValue"), "innerHTML", coordinatesValue);
+                domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
             }));
         },
         _setSymbol: function (point) {
@@ -522,14 +522,16 @@ define([
             }
         },
         _createLocateButton: function () {
-
-            esriBundle.widgets.locateButton.locate.button = nls.user.findMyLocation;
+            
+            
 
             var currentLocation = new LocateButton({
                 map: this.map,
                 theme: "btn btn-default"
-            }, this.myLocation);
+            }, domConstruct.create('div'));
             currentLocation.startup();
+            
+            
             on(currentLocation, "locate", lang.hitch(this, function (evt) {
                 if (evt.graphic) {
                     var mapLocation = webMercatorUtils.lngLatToXY(evt.graphic.geometry.x, evt.graphic.geometry.y, true);
@@ -541,6 +543,12 @@ define([
                     this.map.infoWindow.show(this.addressGeometry);
                 }
             }));
+            
+            
+            on(dom.byId('geolocate_button'), 'click', lang.hitch(this, function(){
+                currentLocation.locate();
+            }));
+            
         },
 
         _createGeocoderButton: function () {
