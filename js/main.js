@@ -71,6 +71,10 @@ define([
                     domStyle.set(this.userMode, 'display', 'none');
                     var itemInfo = this.config.webmap;
                     this._setAppConfigurations(this.config.details);
+                    // window title
+                    if(this.config.details && this.config.details.Title){
+                        window.document.title = this.config.details.Title;
+                    }
                     this._createWebMap(itemInfo);
                     if (isPreview) {
                         if (typeof (Storage) !== "undefined") {
