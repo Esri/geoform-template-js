@@ -3,9 +3,9 @@ define({
     //default web map, default app color theme and more. These values can be overwritten by template configuration settings
     //and url parameters.
     "appid": "",
-    "webmap": "52e86d4fafe04e20acfd5a428202e8a1",
+    "webmap": "52e86d4fafe04e20acfd5a428202e8a1", // 655754776d884824bdb99bfa738a742a
     "form_layer": {
-        "id": "Citizen_Requests_Form_9964"
+        "id": "Citizen_Requests_Form_9964" // GeoForm_Test_FS_7306
     },
     "details": {
         "Title": "Citizen Service Request Form",
