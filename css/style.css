@@ -93,6 +93,7 @@
 @media (min-width: 1200px) {
     #mapDiv {
         height: 500px!important;
+    }
     .preview-frame{
         height: 600px;
     }
