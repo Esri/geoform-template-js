@@ -197,3 +197,8 @@ input::-ms-clear {
     font-size:18px;
     margin-bottom:10px;
 }
+    
+.geocoder-container{
+    position: relative;
+    z-index: 50;
+}
