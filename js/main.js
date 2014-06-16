@@ -28,6 +28,7 @@ define([
     "esri/symbols/PictureMarkerSymbol",
     "esri/toolbars/edit",
     "dojo/i18n!esri/nls/jsapi",
+    "dojo/NodeList-traverse",
     "dojo/domReady!"
 ], function (
     ready,
@@ -95,18 +96,28 @@ define([
             }
 
             on(this.submitButton, "click", lang.hitch(this, function () {
-                var flag = false;
-                array.some(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
+                var erroneousFields = [], errorMessage;
+                array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
                     //TODO chk for mandatroy fields
                     //to check for errors in form before submitting.
-                    if (query(".form-control", currentField)[0].value === "" || (query(".form-control", currentField)[0].value === "" && domClass.contains(currentField, "mandatory")) || domClass.contains(currentField, "has-error")) {
-                        this._validateField(currentField, false);
-                        flag = true;
+                    //if condition to check for conditions where mandatory fields are kept empty or the entered values are erroneous.
+                    if ((query(".form-control", currentField)[0].value === "" && domClass.contains(currentField, "mandatory")) || domClass.contains(currentField, "has-error")) {
+                        //need to check if this condition can be removed
+                        //this._validateField(currentField, false);
+                        erroneousFields.push(currentField);
                     }
                 }));
-                if (flag === true) {
-                    this._showErrorMessageDiv(nls.user.formValidationMessageAlertText);
-                } else {
+
+                if (erroneousFields.length !== 0) {
+                    errorMessage = nls.user.formValidationMessageAlertText + "\n <ul>";
+
+                    array.forEach(erroneousFields, function (erroneousField) {
+                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</li>";
+                    });
+                    errorMessage += "</ul>";
+                    this._showErrorMessageDiv(errorMessage);
+                }
+                else {
                     this._addFeatureToLayer(this.config);
                 }
             }));
@@ -179,7 +190,7 @@ define([
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
             this.map.graphics.clear();
-            symbolUrl = package_path + "/images/pushpin.png";
+            symbolUrl = "./images/pushpin.png";
             pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
@@ -209,8 +220,17 @@ define([
         //function to validate and create the form
         _createForm: function (fields) {
             if (!this.map.getLayer(this.config.form_layer.id)) {
-                /* We will add a code to create error page which will show the error message*/
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
+                array.some(query(".row"), lang.hitch(this, function (currentNode) {
+                    if (currentNode.children) {
+                        if (domClass.contains(currentNode.children[0], "errorMessageDiv")) {
+                            array.forEach(query(currentNode).nextAll(), lang.hitch(this, function (currentNode) {
+                                domStyle.set(currentNode, "display", "none");
+                            }));
+                            return true;
+                        }
+                    }
+                }));
                 return;
             }
             var formContent, labelContent, inputContent, selectOptions, helpBlock, fileUploadForm, fileInput,
@@ -234,10 +254,12 @@ define([
                     }
                 }
             }));
-            array.forEach(newAddedFields, lang.hitch(this, function (currentField) {
+            array.forEach(newAddedFields, lang.hitch(this, function (currentField, index) {
+                var mandatoryNotation = "";
+                //code to put aestrik mark for mandatory fields and also to give it a mandatory class.
                 if (!currentField.nullable) {
-                    currentField.fieldDescription += " *";
                     formContent = domConstruct.create("div", { "class": "form-group has-feedback geoFormQuestionare mandatory" }, this.userForm);
+                    mandatoryNotation = "<span class='text-danger'> *</span>";
                 }
                 else {
                     formContent = domConstruct.create("div", { "class": "form-group geoFormQuestionare has-feedback" }, this.userForm);
@@ -250,10 +272,10 @@ define([
                     fieldLabelText = currentField.fieldLabel;
                     fieldname = currentField.fieldName;
                 }
-                labelContent = domConstruct.create("label", { "for": fieldname, class: "control-label", innerHTML: fieldLabelText }, formContent);
+                labelContent = domConstruct.create("label", { "for": fieldname, class: "control-label", innerHTML: fieldLabelText + mandatoryNotation, id: fieldLabelText + "" + index }, formContent);
                 //code to make select boxes in case of a coded value
                 if (currentField.domain) {
-                    inputContent = domConstruct.create("select", { "class": "form-control selectDomain", "fieldName": fieldname }, formContent);
+                    inputContent = domConstruct.create("select", { "class": "form-control selectDomain", "id": fieldname }, formContent);
                     array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
                         selectOptions = domConstruct.create("option", {}, inputContent);
                         selectOptions.text = currentOption.name;
@@ -263,27 +285,27 @@ define([
                 else {
                     switch (currentField.type) {
                         case "esriFieldTypeString":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "String", "maxLength": currentField.length, "fieldName": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "String", "maxLength": currentField.length, "id": fieldname }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeSmallInteger":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "smallInteger", "fieldName": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "smallInteger", "id": fieldname }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeInteger":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Integer", "fieldName": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Integer", "id": fieldname }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeSingle":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Single", "fieldName": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Single", "id": fieldname }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDouble":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Double", "fieldName": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Double", "id": fieldname }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDate":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Date", "fieldName": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Date", "id": fieldname }, formContent);
                             domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
                             $(inputContent).datepicker({
                                 onSelect: lang.hitch(this, function (evt, currentElement) {
@@ -295,7 +317,7 @@ define([
                             });
                             break;
                     }
-                    domAttr.set(inputContent, "id", fieldname);
+
                     //conditional check to attach keyup event to all the inputs except date and string field
                     //as validation is not required for date field and string fields max-length is already set
                     if (domAttr.get(inputContent, "inputType") !== "Date" || domAttr.get(inputContent, "inputType") !== "String") {
@@ -500,9 +522,9 @@ define([
             }
         },
         _createLocateButton: function () {
-            
+
             esriBundle.widgets.locateButton.locate.button = nls.user.findMyLocation;
-            
+
             var currentLocation = new LocateButton({
                 map: this.map,
                 theme: "btn btn-default"
@@ -546,17 +568,16 @@ define([
         _addFeatureToLayer: function (config) {
             //To populate data for apply edits
             var _self = this;
-            var featureData = new esri.Graphic();
+            var featureData = new Graphic();
             featureData.attributes = {};
             if (this.addressGeometry) {
                 array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
-                    var key = domAttr.get(currentField, "fieldName");
+                    var key = domAttr.get(currentField, "id");
                     var value = currentField.value.trim();
                     featureData.attributes[key] = value;
                 });
                 featureData.geometry = {};
-                featureData.geometry = new esri.geometry.Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
-
+                featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
                 this._addProgressBar();
                 $("#myModal").modal('show');
                 //code for apply-edits
@@ -569,12 +590,12 @@ define([
                     _self._openShareDialog();
                     if (dom.byId("testForm") && dom.byId("testForm")[0].value !== "" && _self.map.getLayer(config.form_layer.id).hasAttachments) {
                         _self.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("testForm"), function () {
-                        }, function (error) {
+                        }, function () {
                             console.log(nls.user.addAttachmentFailedMessage);
                         });
                     }
                     _self._clearFormFields();
-                }, function (error) {
+                }, function () {
                     console.log(nls.user.addFeatureFailedMessage);
                 });
             } else {

@@ -1,7 +1,7 @@
 define({
     root: ({
         builder: {
-            invalidWebmapSelectionAlert: "Selected webmap does not contain any feature server",
+            invalidWebmapSelectionAlert: "The selected webmap does not contain a valid layer to use. Please add an editable FeatureLayer into your webmap to continue.",
             selectFieldsText:"Select Form Fields",
             selectThemeText: "Select Form Theme",
             fieldLabelPlaceHolder: "Label this field",

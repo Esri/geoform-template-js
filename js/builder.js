@@ -141,16 +141,21 @@ define([
             layerDefeeredList = new DeferredList(layerDefeeredListArr);
             layerDefeeredList.then(lang.hitch(this, function () {
                 if (dom.byId("selectLayer").options.length <= 1) {
-                    alert(nls.builder.invalidWebmapSelectionAlert);
+                    domAttr.set(dom.byId("selectLayer"), "disabled", true);
+                    this._showErrorMessageDiv(nls.builder.invalidWebmapSelectionAlert);
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         attribute = currentTab.getAttribute("tab");
-                        if (attribute != "webmap") {
+                        if (attribute === "webmap" || attribute === "layer") {
+                            this._enableTab(currentTab);
+                        }
+                        else {
                             this._disableTab(currentTab);
                         }
                     }));
                 }
                 else {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
+                        domConstruct.empty(this.erroMessageDiv);
                         attribute = currentTab.getAttribute("tab");
                         if (((attribute == "publish" || attribute == "preview") && (query(".fieldCheckbox:checked").length === 0)) || (attribute == "fields" && dom.byId("selectLayer").value === "Select Layer")) {
                             this._disableTab(currentTab);
@@ -159,6 +164,7 @@ define([
                             this._enableTab(currentTab);
                         }
                     }));
+                    domAttr.set(dom.byId("selectLayer"), "disabled", false);
                 }
             }));
         },
@@ -536,6 +542,11 @@ define([
                     this._enableTab(currentTab);
                 }
             }));
+        },
+
+        _showErrorMessageDiv: function (errorMessage) {
+            domConstruct.empty(this.erroMessageDiv);
+            domConstruct.create("div", { "class": "alert alert-danger errorMessage", innerHTML: errorMessage }, this.erroMessageDiv);
         }
     });
 });

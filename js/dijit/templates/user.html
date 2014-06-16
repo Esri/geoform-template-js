@@ -17,7 +17,10 @@
         </div>
     </div>
     <div class="row">
-        <div data-dojo-attach-point="erroMessageDiv"></div>
+        <div data-dojo-attach-point="erroMessageDiv" class="errorMessageDiv">
+        </div>
+    </div>
+    <div class="row">
         <div class="col-xs-12 col-sm-7">
             <h2>
                 ${nls.user.geoFormGeneralTabText}</h2>
@@ -85,8 +88,6 @@
                 <div class="submit-area">
                     <p>
                         ${nls.user.submitInstructions}</p>
-                   <!-- <button type="button" data-dojo-attach-point="submitButton" class="btn btn-primary ">
-                        ${nls.user.submitButtonText}</button>-->
                     <button type="button" data-dojo-attach-point="submitButton" data-loading-text="Loading..." class="btn btn-primary">
                         ${nls.user.submitButtonText}</button>
                 </div>
