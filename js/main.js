@@ -69,7 +69,7 @@ define([
                 ready(lang.hitch(this, function () {
                     //supply either the webmap id or, if available, the item info
                     domStyle.set(this.userMode, 'display', 'none');
-                    var itemInfo = this.config.webmap;
+                    var itemInfo = this.config.itemInfo || this.config.webmap;
                     this._setAppConfigurations(this.config.details);
                     // window title
                     if(this.config.details && this.config.details.Title){
