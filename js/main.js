@@ -86,10 +86,14 @@ define([
                         if (typeof (Storage) !== "undefined") {
                             localStorage.setItem("geoform_config", JSON.stringify(config));
                         }
-                        var cssStyle = document.createElement('link');
-                        cssStyle.rel = 'stylesheet';
-                        cssStyle.type = 'text/css';
-                        cssStyle.href = window.location.href.split("index.html")[0] + this.config.theme.themeSrc;
+                        
+                        
+                        
+                        var cssStyle = domConstruct.create('link',{
+                            rel: 'stylesheet',
+                            type: 'text/css',
+                            href: window.location.href.split("index.html")[0] + this.config.theme.themeSrc
+                        });
                         node.src = window.location.href.split("&")[0];
                         node.onload = function () {
                             domConstruct.place(cssStyle, $("#iframeContainer").contents().find('head')[0], "last");
@@ -282,14 +286,14 @@ define([
                     }
                 }
             }));
-            array.forEach(newAddedFields, lang.hitch(this, function (currentField, index) {
+            array.forEach(newAddedFields, lang.hitch(this, function(currentField, index) {
                 //code to put aestrik mark for mandatory fields and also to give it a mandatory class.
                 if (!currentField.nullable) {
-                    formContent = domConstruct.create("div", { "class": "form-group has-feedback geoFormQuestionare mandatory" }, this.userForm);
-                    requireField = domConstruct.create("div", { class: 'text-danger requireFieldStyle', innerHTML: "*" }, formContent);
+                    formContent = domConstruct.create("div", {className: "form-group has-feedback geoFormQuestionare mandatory" }, this.userForm);
+                    requireField = domConstruct.create("div", {className: 'text-danger requireFieldStyle', innerHTML: "*" }, formContent);
                 }
                 else {
-                    formContent = domConstruct.create("div", { "class": "form-group geoFormQuestionare has-feedback" }, this.userForm);
+                    formContent = domConstruct.create("div", {className: "form-group geoFormQuestionare has-feedback" }, this.userForm);
                 }
                 if (currentField.isNewField) {
                     fieldLabelText = currentField.alias;
@@ -299,13 +303,13 @@ define([
                     fieldLabelText = currentField.fieldLabel;
                     fieldname = currentField.fieldName;
                 }
-                labelContent = domConstruct.create("label", { "for": fieldname, class: "control-label", innerHTML: fieldLabelText, id: fieldLabelText + "" + index }, formContent);
+                labelContent = domConstruct.create("label", { "for": fieldname, className: "control-label", innerHTML: fieldLabelText, id: fieldLabelText + "" + index }, formContent);
                 if (requireField) {
                     domConstruct.place(requireField, labelContent, "after");
                 }
                 //code to make select boxes in case of a coded value
                 if (currentField.domain) {
-                    inputContent = domConstruct.create("select", { "class": "form-control selectDomain", "id": fieldname }, formContent);
+                    inputContent = domConstruct.create("select", {className: "form-control selectDomain", "id": fieldname }, formContent);
                     array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
                         selectOptions = domConstruct.create("option", {}, inputContent);
                         selectOptions.text = currentOption.name;
@@ -315,28 +319,28 @@ define([
                 else {
                     switch (currentField.type) {
                         case "esriFieldTypeString":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "String", "maxLength": currentField.length, "id": fieldname }, formContent);
-                            domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "String", "maxLength": currentField.length, "id": fieldname }, formContent);
+                            domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeSmallInteger":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "smallInteger", "id": fieldname }, formContent);
-                            domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "smallInteger", "id": fieldname }, formContent);
+                            domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeInteger":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Integer", "id": fieldname }, formContent);
-                            domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "Integer", "id": fieldname }, formContent);
+                            domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeSingle":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Single", "id": fieldname }, formContent);
-                            domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "Single", "id": fieldname }, formContent);
+                            domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDouble":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Double", "id": fieldname }, formContent);
-                            domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "Double", "id": fieldname }, formContent);
+                            domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDate":
-                            inputContent = domConstruct.create("input", { type: "text", "class": "form-control", "inputType": "Date", "id": fieldname }, formContent);
-                            domConstruct.create("span", { class: "glyphicon form-control-feedback" }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "Date", "id": fieldname }, formContent);
+                            domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             $(inputContent).datepicker({
                                 onSelect: lang.hitch(this, function (evt, currentElement) {
                                     domClass.remove(currentElement.input[0].parentElement, "has-error");
@@ -356,7 +360,7 @@ define([
                         }));
                     }
                 }
-                helpBlock = domConstruct.create("p", { "class": "help-block" }, formContent);
+                helpBlock = domConstruct.create("p", {className: "help-block" }, formContent);
                 if (currentField.isNewField) {
                     array.forEach(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                         if (currentLayer.id == this.config.form_layer.id) {
@@ -375,8 +379,8 @@ define([
                 }
             }));
             if (this.map.getLayer(this.config.form_layer.id).hasAttachments) {
-                formContent = domConstruct.create("div", { "class": "form-group" }, this.userForm);
-                fileUploadForm = domConstruct.create("form", { class: "fileUploadField" }, formContent);
+                formContent = domConstruct.create("div", {className: "form-group" }, this.userForm);
+                fileUploadForm = domConstruct.create("form", { className: "fileUploadField" }, formContent);
                 domAttr.set(fileUploadForm, "id", "testForm");
                 fileInput = domConstruct.create("input", { "type": "file", "accept": "image/*", "capture": "camera", "name": "attachment" }, fileUploadForm);
                 domAttr.set(fileInput, "id", "testFormFileInput");
@@ -674,26 +678,26 @@ define([
             var iconContainer, facebookIconHolder, twitterIconHolder, googlePlusIconHolder, mailIconHolder;
             domConstruct.empty(query(".modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.shareUserTitleMessage);
-            iconContainer = domConstruct.create("div", { class: "iconContainer" }, query(".modal-body")[0]);
-            domConstruct.create("div", { class: "share-dialog-subheader", innerHTML: nls.user.shareUserTextMessage }, iconContainer);
-            facebookIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
-            domConstruct.create("a", { class: "icon-facebook-sign iconClass", id: "facebookIcon" }, facebookIconHolder);
-            twitterIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
-            domConstruct.create("a", { class: "icon-twitter-sign iconClass", id: "twitterIcon" }, twitterIconHolder);
-            googlePlusIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
-            domConstruct.create("a", { class: "icon-google-plus-sign iconClass", id: "google-plusIcon" }, googlePlusIconHolder);
-            mailIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
-            domConstruct.create("a", { class: "icon-envelope iconClass", id: "mailIcon" }, mailIconHolder);
+            iconContainer = domConstruct.create("div", { className: "iconContainer" }, query(".modal-body")[0]);
+            domConstruct.create("div", { className: "share-dialog-subheader", innerHTML: nls.user.shareUserTextMessage }, iconContainer);
+            facebookIconHolder = domConstruct.create("div", { className: "iconContent" }, iconContainer);
+            domConstruct.create("a", { className: "icon-facebook-sign iconClass", id: "facebookIcon" }, facebookIconHolder);
+            twitterIconHolder = domConstruct.create("div", { className: "iconContent" }, iconContainer);
+            domConstruct.create("a", { className: "icon-twitter-sign iconClass", id: "twitterIcon" }, twitterIconHolder);
+            googlePlusIconHolder = domConstruct.create("div", { className: "iconContent" }, iconContainer);
+            domConstruct.create("a", { className: "icon-google-plus-sign iconClass", id: "google-plusIcon" }, googlePlusIconHolder);
+            mailIconHolder = domConstruct.create("div", { className: "iconContent" }, iconContainer);
+            domConstruct.create("a", { className: "icon-envelope iconClass", id: "mailIcon" }, mailIconHolder);
             domConstruct.create("br", {}, iconContainer);
             domConstruct.create("br", {}, iconContainer);
             domConstruct.create("br", {}, iconContainer);
-            domConstruct.create("div", { class: "share-dialog-subheader", innerHTML: nls.user.shareDialogFormText }, iconContainer);
-            domConstruct.create("input", { type: "text", class: "share-map-url", id: "_shareMapUrlText" }, iconContainer);
+            domConstruct.create("div", { className: "share-dialog-subheader", innerHTML: nls.user.shareDialogFormText }, iconContainer);
+            domConstruct.create("input", { type: "text", className: "share-map-url", id: "_shareMapUrlText" }, iconContainer);
         },
 
         _showErrorMessageDiv: function (errorMessage) {
             domConstruct.empty(this.erroMessageDiv);
-            domConstruct.create("div", { "class": "alert alert-danger errorMessage", innerHTML: errorMessage }, this.erroMessageDiv);
+            domConstruct.create("div", {className: "alert alert-danger errorMessage", innerHTML: errorMessage }, this.erroMessageDiv);
             $(window).scrollTop(0);
         },
 

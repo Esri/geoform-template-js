@@ -180,8 +180,8 @@ define([
         _populateThemes: function () {
             var themesRadioButton, themesDivContainer, themesDivContent, themesLabel, themeThumbnail;
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
-                themesDivContainer = domConstruct.create("div", { class: "col-md-4" }, this.stylesList);
-                themesDivContent = domConstruct.create("div", { class: "radio" }, themesDivContainer);
+                themesDivContainer = domConstruct.create("div", { className: "col-md-4" }, this.stylesList);
+                themesDivContent = domConstruct.create("div", { className: "radio" }, themesDivContainer);
                 themesLabel = domConstruct.create("label", { innerHTML: currentTheme.name }, themesDivContent);
                 themesRadioButton = domConstruct.create("input", { type: "radio", name: "themesRadio", themeName: currentTheme.name, themeUrl: currentTheme.url }, themesLabel);
                 if (currentTheme.name == this.currentConfig.theme.themeName) {
@@ -191,7 +191,7 @@ define([
                     this._configureTheme(evt);
                 }));
                 domConstruct.create("br", {}, themesLabel);
-                themeThumbnail = domConstruct.create("img", { src: currentTheme.thumbnail, class: "themeThubnail" }, themesLabel);
+                themeThumbnail = domConstruct.create("img", { src: currentTheme.thumbnail, className: "themeThubnail" }, themesLabel);
                 on(themeThumbnail, "click", function () { window.open(currentTheme.refUrl); });
             }));
         },
@@ -246,9 +246,9 @@ define([
                 fieldRow = domConstruct.create("tr", { rowIndex: currentIndex }, this.geoFormFieldsTable);
                 domAttr.set(fieldRow, "visibleProp", currentField.visible);
                 fieldDNDIndicatorTD = domConstruct.create("td", {}, fieldRow);
-                fieldDNDIndicatorIcon = domConstruct.create("span", { "class": "ui-icon ui-icon-arrowthick-2-n-s" }, fieldDNDIndicatorTD);
+                fieldDNDIndicatorIcon = domConstruct.create("span", { className: "ui-icon ui-icon-arrowthick-2-n-s" }, fieldDNDIndicatorTD);
                 fieldCheckBox = domConstruct.create("td", {}, fieldRow);
-                fieldCheckBoxInput = domConstruct.create("input", { "class": "fieldCheckbox", type: "checkbox", index: currentIndex }, fieldCheckBox);
+                fieldCheckBoxInput = domConstruct.create("input", { className: "fieldCheckbox", type: "checkbox", index: currentIndex }, fieldCheckBox);
                 domAttr.set(fieldCheckBoxInput, "checked", currentField.visible);
 
                 on(fieldCheckBoxInput, "change", lang.hitch(this, function () {
@@ -261,11 +261,11 @@ define([
                     this._getFieldCheckboxState();
                 }));
 
-                fieldName = domConstruct.create("td", { class: "fieldName layerFieldsName", innerHTML: currentField.name, index: currentIndex }, fieldRow);
-                fieldLabel = domConstruct.create("td", { class: "tableDimension" }, fieldRow);
-                fieldLabelInput = domConstruct.create("input", { class: "form-control fieldLabel", index: currentIndex, placeholder: nls.builder.fieldLabelPlaceHolder, value: currentField.alias }, fieldLabel);
-                fieldDescription = domConstruct.create("td", { class: "tableDimension" }, fieldRow);
-                fieldDescriptionInput = domConstruct.create("input", { class: "form-control fieldDescription", placeholder: nls.builder.fieldDescPlaceHolder, value: "" }, fieldDescription);
+                fieldName = domConstruct.create("td", { className: "fieldName layerFieldsName", innerHTML: currentField.name, index: currentIndex }, fieldRow);
+                fieldLabel = domConstruct.create("td", { className: "tableDimension" }, fieldRow);
+                fieldLabelInput = domConstruct.create("input", { className: "form-control fieldLabel", index: currentIndex, placeholder: nls.builder.fieldLabelPlaceHolder, value: currentField.alias }, fieldLabel);
+                fieldDescription = domConstruct.create("td", { className: "tableDimension" }, fieldRow);
+                fieldDescriptionInput = domConstruct.create("input", { className: "form-control fieldDescription", placeholder: nls.builder.fieldDescPlaceHolder, value: "" }, fieldDescription);
                 array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
                     if (currentFieldPopupInfo.fieldName == currentField.name) {
                         if (currentFieldPopupInfo.tooltip) {
@@ -487,28 +487,28 @@ define([
             var progressIndicatorContainer, progressIndicator;
             domConstruct.empty(query(".modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderInProgressTitleMessage);
-            progressIndicatorContainer = domConstruct.create("div", { class: "progress progress-striped active progress-remove-margin" }, query(".modal-body")[0]);
-            progressIndicator = domConstruct.create("div", { class: "progress-bar progress-percent", innerHTML: nls.builder.shareBuilderProgressBarMessage }, progressIndicatorContainer);
+            progressIndicatorContainer = domConstruct.create("div", { className: "progress progress-striped active progress-remove-margin" }, query(".modal-body")[0]);
+            progressIndicator = domConstruct.create("div", { className: "progress-bar progress-percent", innerHTML: nls.builder.shareBuilderProgressBarMessage }, progressIndicatorContainer);
         },
         _createShareDlgContent: function () {
             var iconContainer, facebookIconHolder, twitterIconHolder, googlePlusIconHolder, mailIconHolder;
             domConstruct.empty(query(".modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderTitleMessage);
-            iconContainer = domConstruct.create("div", { class: "iconContainer" }, query(".modal-body")[0]);
-            domConstruct.create("div", { class: "share-dialog-subheader", innerHTML: nls.builder.shareBuilderTextMessage }, iconContainer);
-            facebookIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
-            domConstruct.create("a", { class: "icon-facebook-sign iconClass", id: "facebookIcon" }, facebookIconHolder);
-            twitterIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
-            domConstruct.create("a", { class: "icon-twitter-sign iconClass", id: "twitterIcon" }, twitterIconHolder);
-            googlePlusIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
-            domConstruct.create("a", { class: "icon-google-plus-sign iconClass", id: "google-plusIcon" }, googlePlusIconHolder);
-            mailIconHolder = domConstruct.create("div", { class: "iconContent" }, iconContainer);
-            domConstruct.create("a", { class: "icon-envelope iconClass", id: "mailIcon" }, mailIconHolder);
+            iconContainer = domConstruct.create("div", { className: "iconContainer" }, query(".modal-body")[0]);
+            domConstruct.create("div", { className: "share-dialog-subheader", innerHTML: nls.builder.shareBuilderTextMessage }, iconContainer);
+            facebookIconHolder = domConstruct.create("div", { className: "iconContent" }, iconContainer);
+            domConstruct.create("a", { className: "icon-facebook-sign iconClass", id: "facebookIcon" }, facebookIconHolder);
+            twitterIconHolder = domConstruct.create("div", { className: "iconContent" }, iconContainer);
+            domConstruct.create("a", { className: "icon-twitter-sign iconClass", id: "twitterIcon" }, twitterIconHolder);
+            googlePlusIconHolder = domConstruct.create("div", { className: "iconContent" }, iconContainer);
+            domConstruct.create("a", { className: "icon-google-plus-sign iconClass", id: "google-plusIcon" }, googlePlusIconHolder);
+            mailIconHolder = domConstruct.create("div", { className: "iconContent" }, iconContainer);
+            domConstruct.create("a", { className: "icon-envelope iconClass", id: "mailIcon" }, mailIconHolder);
             domConstruct.create("br", {}, iconContainer);
             domConstruct.create("br", {}, iconContainer);
             domConstruct.create("br", {}, iconContainer);
-            domConstruct.create("div", { class: "share-dialog-subheader", innerHTML: nls.builder.shareDialogFormText }, iconContainer);
-            domConstruct.create("input", { type: "text", class: "share-map-url", id: "_shareMapUrlText" }, iconContainer);
+            domConstruct.create("div", { className: "share-dialog-subheader", innerHTML: nls.builder.shareDialogFormText }, iconContainer);
+            domConstruct.create("input", { type: "text", className: "share-map-url", id: "_shareMapUrlText" }, iconContainer);
         },
         //function to enable the tab passed in input parameter
         _enableTab: function (currentTab) {
@@ -547,7 +547,7 @@ define([
 
         _showErrorMessageDiv: function (errorMessage) {
             domConstruct.empty(this.erroMessageDiv);
-            domConstruct.create("div", { "class": "alert alert-danger errorMessage", innerHTML: errorMessage }, this.erroMessageDiv);
+            domConstruct.create("div", { className: "alert alert-danger errorMessage", innerHTML: errorMessage }, this.erroMessageDiv);
         }
     });
 });
