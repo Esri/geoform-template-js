@@ -1,8 +1,6 @@
 define({
     root: ({
         user: {
-            defaultTitleText: "Default Title",
-            defaultDescriptionText: "Default Description",
             geoFormGeneralTabText: "1. Enter Information",
             locationInformationText: "2. Select Location",
             submitInformationText: "3. Complete Form",

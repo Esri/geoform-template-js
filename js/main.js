@@ -100,6 +100,8 @@ define([
             }
 
             on(this.submitButton, "click", lang.hitch(this, function () {
+                var btn = $(this.submitButton);
+                btn.button('loading');
                 var erroneousFields = [], errorMessage;
                 array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
                     //TODO chk for mandatroy fields
@@ -113,13 +115,19 @@ define([
                 }));
 
                 if (erroneousFields.length !== 0) {
-                    errorMessage = nls.user.formValidationMessageAlertText + "\n <ul>";
+                    errorMessage = "1. " + nls.user.formValidationMessageAlertText + "\n <ul>";
 
                     array.forEach(erroneousFields, function (erroneousField) {
-                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</li>";
+                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</a></li>";
                     });
                     errorMessage += "</ul>";
+
+                    //condition check to find whether the user has selected a point on map or not.
+                    if (!this.addressGeometry) {
+                        errorMessage += "\n2. " + nls.user.latlongValidationMessageAlert;
+                    }
                     this._showErrorMessageDiv(errorMessage);
+                    btn.button('reset');
                 }
                 else {
                     this._addFeatureToLayer(this.config);
@@ -210,10 +218,19 @@ define([
         _setAppConfigurations: function (appConfigurations) {
             if (appConfigurations.Logo !== "")
                 this.appLogo.src = appConfigurations.Logo;
+            else
+                domClass.add(this.appLogo, "hide");
             if (appConfigurations.Title !== "")
                 this.appTitle.innerHTML = appConfigurations.Title;
+            else
+                domClass.add(this.appTitle, "hide");
             if (appConfigurations.Description !== "")
                 this.appDescription.innerHTML = appConfigurations.Description;
+            else
+                domClass.add(this.appDescription, "hide");
+            if (domClass.contains(this.appLogo, "hide") && domClass.contains(this.appTitle, "hide") && domClass.contains(this.appDescription, "hide")) {
+                domClass.add(this.jumbotronNode, "hide");
+            }
         },
 
         //function to set the theme for application
@@ -223,6 +240,8 @@ define([
 
         //function to validate and create the form
         _createForm: function (fields) {
+            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileUploadForm, fileInput,
+             matchingField, newAddedFields = [], fieldname, fieldLabelText, requireField;
             if (!this.map.getLayer(this.config.form_layer.id)) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
@@ -237,8 +256,6 @@ define([
                 }));
                 return;
             }
-            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileUploadForm, fileInput,
-             matchingField, newAddedFields = [], fieldname, fieldLabelText;
             array.forEach(this.map.getLayer(this.config.form_layer.id).fields, lang.hitch(this, function (layerField) {
                 matchingField = false;
                 array.forEach(fields, lang.hitch(this, function (currentField) {
@@ -259,11 +276,10 @@ define([
                 }
             }));
             array.forEach(newAddedFields, lang.hitch(this, function (currentField, index) {
-                var mandatoryNotation = "";
                 //code to put aestrik mark for mandatory fields and also to give it a mandatory class.
                 if (!currentField.nullable) {
                     formContent = domConstruct.create("div", { "class": "form-group has-feedback geoFormQuestionare mandatory" }, this.userForm);
-                    mandatoryNotation = "<span class='text-danger'> *</span>";
+                    requireField = domConstruct.create("div", { class: 'text-danger requireFieldStyle', innerHTML: "*" }, formContent);
                 }
                 else {
                     formContent = domConstruct.create("div", { "class": "form-group geoFormQuestionare has-feedback" }, this.userForm);
@@ -276,7 +292,10 @@ define([
                     fieldLabelText = currentField.fieldLabel;
                     fieldname = currentField.fieldName;
                 }
-                labelContent = domConstruct.create("label", { "for": fieldname, class: "control-label", innerHTML: fieldLabelText + mandatoryNotation, id: fieldLabelText + "" + index }, formContent);
+                labelContent = domConstruct.create("label", { "for": fieldname, class: "control-label", innerHTML: fieldLabelText, id: fieldLabelText + "" + index }, formContent);
+                if (requireField) {
+                    domConstruct.place(requireField, labelContent, "after");
+                }
                 //code to make select boxes in case of a coded value
                 if (currentField.domain) {
                     inputContent = domConstruct.create("select", { "class": "form-control selectDomain", "id": fieldname }, formContent);
@@ -526,16 +545,11 @@ define([
             }
         },
         _createLocateButton: function () {
-            
-            
-
             var currentLocation = new LocateButton({
                 map: this.map,
                 theme: "btn btn-default"
             }, domConstruct.create('div'));
             currentLocation.startup();
-            
-            
             on(currentLocation, "locate", lang.hitch(this, function (evt) {
                 if (evt.graphic) {
                     var mapLocation = webMercatorUtils.lngLatToXY(evt.graphic.geometry.x, evt.graphic.geometry.y, true);
@@ -547,12 +561,9 @@ define([
                     this.map.infoWindow.show(this.addressGeometry);
                 }
             }));
-            
-            
             on(dom.byId('geolocate_button'), 'click', lang.hitch(this, function(){
                 currentLocation.locate();
             }));
-            
         },
 
         _createGeocoderButton: function () {
@@ -590,8 +601,6 @@ define([
                 });
                 featureData.geometry = {};
                 featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
-                this._addProgressBar();
-                $("#myModal").modal('show');
                 //code for apply-edits
                 this.map.getLayer(config.form_layer.id).applyEdits([featureData], null, null, function (addResults) {
                     _self.map.graphics.clear();
@@ -600,6 +609,9 @@ define([
                     }
                     domConstruct.destroy(query(".errorMessage")[0]);
                     _self._openShareDialog();
+                    $("#myModal").modal('show');
+                    _self.map.getLayer(config.form_layer.id).refresh();
+                    _self._resetButton();
                     if (dom.byId("testForm") && dom.byId("testForm")[0].value !== "" && _self.map.getLayer(config.form_layer.id).hasAttachments) {
                         _self.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("testForm"), function () {
                         }, function () {
@@ -611,6 +623,7 @@ define([
                     console.log(nls.user.addFeatureFailedMessage);
                 });
             } else {
+                this._resetButton();
                 this._showErrorMessageDiv(nls.user.latlongValidationMessageAlert);
             }
         },
@@ -649,14 +662,7 @@ define([
             this._ShareDialog.startup();
             $("#myModal").modal('show');
         },
-        //function to show a progress bar before the content of share dialog is loaded
-        _addProgressBar: function () {
-            var progressIndicatorContainer, progressIndicator;
-            domConstruct.empty(query(".modal-body")[0]);
-            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.shareBuilderInProgressTitleMessage);
-            progressIndicatorContainer = domConstruct.create("div", { class: "progress progress-striped active progress-remove-margin" }, query(".modal-body")[0]);
-            progressIndicator = domConstruct.create("div", { class: "progress-bar progress-percent", innerHTML: nls.user.shareBuilderProgressBarMessage }, progressIndicatorContainer);
-        },
+
         _createShareDlgContent: function () {
             var iconContainer, facebookIconHolder, twitterIconHolder, googlePlusIconHolder, mailIconHolder;
             domConstruct.empty(query(".modal-body")[0]);
@@ -682,6 +688,11 @@ define([
             domConstruct.empty(this.erroMessageDiv);
             domConstruct.create("div", { "class": "alert alert-danger errorMessage", innerHTML: errorMessage }, this.erroMessageDiv);
             $(window).scrollTop(0);
+        },
+
+        _resetButton: function () {
+            var btn = $(this.submitButton);
+            btn.button('reset');
         }
     });
 });
