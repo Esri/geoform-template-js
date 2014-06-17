@@ -198,6 +198,7 @@ define([
                 coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[1].toFixed(5);
                 domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
             }));
+            this.map.resize();
         },
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
