@@ -48,8 +48,7 @@
     background: none !important;
     color: #333 !important;
 }
-.dgrid-content
-{
+.dgrid-content {
     background: none !important;
     border: none !important;
 }
@@ -143,10 +142,9 @@
     margin-top: 8px !important;
     padding-right: 25px !important;
 }
-.ui-widget
-{
+.ui-widget {
     font-size: 14px !important;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 #browse-id-box {
     width: 575px;
@@ -161,21 +159,14 @@
     margin-top: 0px;
     max-height: 350px;
 }
-
 #gallery {
     position: relative;
     width: 565px;
     clear: both;
 }
-
 .gridVisibility {
-    display:none;
+    display: none;
 }
 .select-dropdown {
     width: 20px;
 }
-
-
-
-
-

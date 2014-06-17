@@ -1,36 +1,31 @@
-#mapDiv{
-    width:  100% !important;
+#mapDiv {
+    width: 100% !important;
     height: 200px;
 }
-
-.preview-frame{
+.preview-frame {
     width: 100%;
     height: 200px;
     border: 1px solid #ccc;
 }
-
 .map .container {
     height: 100% !important;
     width: 100% !important;
 }
-
 /* Style for Loading Indicator*/
-.app-loading .loading-indicator {
-        display: block;
-        background-position: center center;
-        background-image: url(../images/ajax-loader.gif);
-        background-repeat: no-repeat;
-}
 
-#coordinatesContainer{
+.app-loading .loading-indicator {
+    display: block;
+    background-position: center center;
+    background-image: url(../images/ajax-loader.gif);
+    background-repeat: no-repeat;
+}
+#coordinatesContainer {
     margin-bottom: 20px;
 }
-
-.inline-block{
+.inline-block {
     display: inline-block;
 }
-
-.submit-area{
+.submit-area {
     margin-bottom: 40px;
 }
 .loading-indicator {
@@ -44,7 +39,7 @@
     overflow: hidden;
     background: #eee;
     color: #666;
-    opacity:1;
+    opacity: 1;
 }
 .table > thead > tr > th,
 .table > tbody > tr > th,
@@ -52,124 +47,120 @@
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  vertical-align:middle !important;
+    vertical-align: middle !important;
 }
-.progress-remove-margin
-{
+.progress-remove-margin {
     margin-bottom: 0px !important;
-    margin-top:10px;
+    margin-top: 10px;
 }
 .myDragClass {
-        background-color:gray;
+    background-color: gray;
 }
 /* Extra Small Devices, Phones */
+
 @media (min-width: 480px) {
     #mapDiv {
         height: 200px!important;
     }
-    .preview-frame{
+    .preview-frame {
         height: 400px;
     }
 }
 /* Small Devices, Tablets */
+
 @media (min-width: 768px) {
     #mapDiv {
         height: 300px!important;
     }
-    .preview-frame{
+    .preview-frame {
         height: 500px;
     }
 }
 /* Medium Devices, Desktops */
+
 @media (min-width: 992px) {
     #mapDiv {
         height: 400px!important;
     }
-    .preview-frame{
+    .preview-frame {
         height: 500px;
     }
 }
 /* Large Devices, Wide Screens */
+
 @media (min-width: 1200px) {
     #mapDiv {
         height: 500px!important;
     }
-    .preview-frame{
+    .preview-frame {
         height: 600px;
     }
 }
-
-.esriGeocoderContainer
-{
+.esriGeocoderContainer {
     width: 100% !important;
 }
 .simpleGeocoder .esriGeocoder input {
-  width: 80% !important;
-  height: 30px;
+    width: 80% !important;
+    height: 30px;
 }
-.simpleGeocoder .esriGeocoder .esriGeocoderSearch
-{
+.simpleGeocoder .esriGeocoder .esriGeocoderSearch {
     margin-top: 13px;
 }
-.simpleGeocoder .esriGeocoderHasValue .esriGeocoderReset
-{
+.simpleGeocoder .esriGeocoderHasValue .esriGeocoderReset {
     margin-top: 13px !important;
 }
 .simpleGeocoder .esriGeocoder {
     border: 1px solid #cccccc !important;
 }
 .iconClass {
-        font-size: 34px !important;
-        padding: 10px;
-        text-decoration: none !important;
-        color: #007ac2;
-        cursor: pointer;
+    font-size: 34px !important;
+    padding: 10px;
+    text-decoration: none !important;
+    color: #007ac2;
+    cursor: pointer;
 }
 .iconContent {
-        float: left;
+    float: left;
 }
-.fieldCheckbox, .selectAllCheckbox {
-        margin-right: 5px;
-        vertical-align: top;
-        margin-left: 8px !important;
+.fieldCheckbox,
+.selectAllCheckbox {
+    margin-right: 5px;
+    vertical-align: top;
+    margin-left: 8px !important;
 }
-.progress-percent
-{
+.progress-percent {
     width: 100%;
-    line-height:50px;
+    line-height: 50px;
 }
 .share-dialog-label {
-        display: initial;
+    display: initial;
 }
 .share-dialog-subheader {
-        font-size: 19px;
-        margin: 0 0 5px;
-        font-weight: 400;
-        margin-left: 8px;
+    font-size: 19px;
+    margin: 0 0 5px;
+    font-weight: 400;
+    margin-left: 8px;
 }
 .share-map-url {
-        width: 50%;
-        min-width: 30%;
-        max-width: 90%;
-        height: 25px;
-        font-size: 14px;
-        color: #777;
-        border: 1px solid #dcdcdc;
-        margin: 0 7px 0px !important;
+    width: 50%;
+    min-width: 30%;
+    max-width: 90%;
+    height: 25px;
+    font-size: 14px;
+    color: #777;
+    border: 1px solid #dcdcdc;
+    margin: 0 7px 0px !important;
 }
 .inputCoorninates {
-        width: 49% !important;
-        display: inline-table !important;
+    width: 49% !important;
+    display: inline-table !important;
 }
-
-.myLocationOptions{
-        padding:20px 0px;
+.myLocationOptions {
+    padding: 20px 0px;
 }
-
 #selectWebmapBtn {
-        margin-top:10px;
+    margin-top: 10px;
 }
-
 .has-feedback .form-control {
     padding-right: 10px !important;
 }
@@ -179,31 +170,26 @@ input::-ms-clear {
 .esriSimpleSlider {
     z-index: 0 !important;
 }
-
 .layerFieldsName {
     color: #555;
     vertical-align: center !important;
 }
-
 .themeThubnail {
     width: 200px;
     height: 133px;
     border: 1px solid #555;
 }
-.tableDimension{
+.tableDimension {
     min-width: 180px;
 }
-
 .descriptionText {
-    font-size:18px;
-    margin-bottom:10px;
+    font-size: 18px;
+    margin-bottom: 10px;
 }
-    
-.geocoder-container{
+.geocoder-container {
     position: relative;
     z-index: 50;
 }
-
-.requireFieldStyle{
-        display:inline-block;
+.requireFieldStyle {
+    display: inline-block;
 }

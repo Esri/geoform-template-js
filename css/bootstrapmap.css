@@ -9,12 +9,12 @@
     max-height: 100%;
     text-align: left;
     overflow: hidden;
-    -moz-box-sizing:content-box;
+    -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
 }
-.map *{
-    -moz-box-sizing:content-box;
+.map * {
+    -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
 }
@@ -37,7 +37,6 @@
 .esriSimpleSliderVertical .esriSimpleSliderIncrementButton {
     border-bottom: 1px solid #cccccc;
 }
-
 /*** Fix Bootstrap modal bug ***/
 
 body.modal-open,
