@@ -1,6 +1,6 @@
 #mapDiv {
     width: 100% !important;
-    height: 200px;
+    height: 200px !important;
 }
 .preview-frame {
     width: 100%;
