@@ -19,6 +19,7 @@ define([
     "esri/dijit/Geocoder",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
+    "dojo/text!application/dijit/templates/modal.html",
     "dojo/text!application/dijit/templates/user.html",
     "dojo/i18n!application/nls/user",
     "esri/geometry/webMercatorUtils",
@@ -48,6 +49,7 @@ define([
     Geocoder,
     _WidgetBase,
     _TemplatedMixin,
+    modalTemplate,
     userTemplate,
     nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol, editToolbar, esriBundle) {
     return declare([_WidgetBase, _TemplatedMixin], {
@@ -67,6 +69,10 @@ define([
                 this.config = config;
                 // document ready
                 ready(lang.hitch(this, function () {
+                    // modal i18n
+                    modalTemplate = lang.replace(modalTemplate, nls);
+                    // place modal code
+                    domConstruct.place(modalTemplate, document.body, 'last');
                     //supply either the webmap id or, if available, the item info
                     domStyle.set(this.userMode, 'display', 'none');
                     var itemInfo = this.config.itemInfo || this.config.webmap;

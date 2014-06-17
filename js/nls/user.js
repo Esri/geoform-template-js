@@ -9,6 +9,7 @@ define({
             locationDescription: "Select a location for your submission using one of the following options.",
             addressText: "Search",
             cooridnatesText: "Coordinates",
+            close: "Close",
             locationTabText: "Location",
             enterCoordinatesPlaceholder: "Enter Coordinates",
             submitButtonText: "Submit new entry",
