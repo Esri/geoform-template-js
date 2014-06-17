@@ -440,7 +440,7 @@ define([
         _updateItem: function () {
             this.currentConfig.edit = "";
             lang.mixin(this.response.itemData.values, this.currentConfig);
-            delete this.response.itemData.values["itemInfo"];
+            delete this.response.itemData.values.itemInfo;
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;
             this.response.item.typeKeywords = typeof (this.response.item.typeKeywords) == "object" ? this.response.item.typeKeywords.join(',') : this.response.item.typeKeywords;
             var rqData = lang.mixin(this.response.item, {

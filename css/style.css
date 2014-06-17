@@ -93,6 +93,7 @@
 @media (min-width: 1200px) {
     #mapDiv {
         height: 500px!important;
+    }
     .preview-frame{
         height: 600px;
     }
@@ -196,4 +197,9 @@ input::-ms-clear {
 .descriptionText {
     font-size:18px;
     margin-bottom:10px;
+}
+    
+.geocoder-container{
+    position: relative;
+    z-index: 50;
 }

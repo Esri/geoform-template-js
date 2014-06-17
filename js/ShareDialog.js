@@ -1,9 +1,12 @@
+/*global $,define,document */
+/*jslint sloppy:true,nomen:true */
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "dijit/_WidgetBase",
     "dijit/a11yclick",
     "dojo/on",
+    "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-attr",
     "esri/request",
@@ -14,7 +17,7 @@ define([
         lang,
         _WidgetBase, a11yclick,
         on,
-        domClass, domAttr,
+        dom, domClass, domAttr,
         esriRequest,
         urlUtils
     ) {
@@ -77,19 +80,19 @@ define([
                 this.inherited(arguments);
             },
             _init: function () {
-                this.own(on(dojo.byId("facebookIcon"), a11yclick, lang.hitch(this, function () {
+                this.own(on(dom.byId("facebookIcon"), a11yclick, lang.hitch(this, function () {
                     this._configureShareLink(this.get("facebookURL"));
                 })));
                 // twitter click
-                this.own(on(dojo.byId("twitterIcon"), a11yclick, lang.hitch(this, function () {
+                this.own(on(dom.byId("twitterIcon"), a11yclick, lang.hitch(this, function () {
                     this._configureShareLink(this.get("twitterURL"));
                 })));
                 // google plus click
-                this.own(on(dojo.byId("google-plusIcon"), a11yclick, lang.hitch(this, function () {
+                this.own(on(dom.byId("google-plusIcon"), a11yclick, lang.hitch(this, function () {
                     this._configureShareLink(this.get("googlePlusURL"));
                 })));
                 // email click
-                this.own(on(dojo.byId("mailIcon"), a11yclick, lang.hitch(this, function () {
+                this.own(on(dom.byId("mailIcon"), a11yclick, lang.hitch(this, function () {
                     this._configureShareLink(this.get("mailURL"), true);
                 })));
             },
@@ -166,12 +169,12 @@ define([
                 // update url
                 this.set("url", url);
                 // set url value
-                domAttr.set(dojo.byId("_shareMapUrlText"), "value", url);
+                domAttr.set(dom.byId("_shareMapUrlText"), "value", url);
             },
             _updateBitlyUrl: function () {
                 var bitly = this.get("bitlyUrl");
                 if (bitly) {
-                    domAttr.set(dojo.byId("_shareMapUrlText"), "value", bitly);
+                    domAttr.set(dom.byId("_shareMapUrlText"), "value", bitly);
                 }
             },
             _updateThemeWatch: function () {

@@ -35,7 +35,7 @@ define({
             saveText: "Save",
             toggleNavigationText: "Toggle navigation",
             formPlaceholderText: "My Form",
-            imageLogoPlaceholderText: "http://www.mysite.com/myimage.jpg",
+            imageLogoPlaceholderText: "http://www.mysite.com/myimage.png",
             shareBuilderInProgressTitleMessage: "Publishing GeoForm",
             shareBuilderProgressBarMessage:"Please Wait...",
             shareBuilderTitleMessage: "Your GeoForm has been updated & published!",
