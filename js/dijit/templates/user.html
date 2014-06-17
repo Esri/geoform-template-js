@@ -37,7 +37,7 @@
                 <li><a href="#address" data-toggle="tab">${nls.user.addressText}</a> </li>
                 <li><a href="#coordinates" data-toggle="tab">${nls.user.cooridnatesText}</a> </li>
             </ul>
-            <form role="form" class="myLocationOptions">
+            <div class="myLocationOptions">
                 <div class="tab-content">
                     <div id="myLocation" class="tab-pane active">
                         <div id="geolocate_button" class="btn btn-default">${nls.user.findMyLocation}</div>
@@ -48,18 +48,18 @@
                             </div>
                         </div>
                     </div>
-                    <div id="coordinates" class="tab-pane">
-                        <div data-dojo-attach-point="coordinatesContainer" class="form-group">
-                            <div>
-                            <input data-dojo-attach-point="XCoordinate" class="form-control inputCoorninates clearfix"
-                                type="text" placeholder="${nls.user.placeholderLatitude}" />
-                            <input data-dojo-attach-point="YCoordinate" class="form-control inputCoorninates clearfix"
-                                type="text" placeholder="${nls.user.placeholderLongitude}" />
-                            </div>
-                        </div>
+                    <div id="coordinates" class="tab-pane">                        
+                        <form class="form-inline" role="form">
+                          <div class="form-group" data-dojo-attach-point="coordinatesContainer">
+                            <input data-dojo-attach-point="XCoordinate" class="form-control" type="text" placeholder="${nls.user.placeholderLatitude}" />
+                          </div>
+                          <div class="form-group" data-dojo-attach-point="coordinatesContainer2">
+                            <input data-dojo-attach-point="YCoordinate" class="form-control" type="text" placeholder="${nls.user.placeholderLongitude}" />
+                          </div>
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
             <div id="mapDiv">
             </div>
             <div id="coordinatesContainer">
