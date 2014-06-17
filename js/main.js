@@ -84,7 +84,7 @@ define([
                     this._createWebMap(itemInfo);
                     if (isPreview) {
                         if (typeof (Storage) !== "undefined") {
-                            localStorage.setItem("config", JSON.stringify(config));
+                            localStorage.setItem("geoform_config", JSON.stringify(config));
                         }
                         var cssStyle = document.createElement('link');
                         cssStyle.rel = 'stylesheet';

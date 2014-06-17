@@ -80,7 +80,7 @@
             var myApp = new Main();
             // create my main application. Start placing your logic in the main.js file.
             myTemplate.startup().then(function (config) {
-                if (localStorage.getItem("config")) {
+                if (localStorage.getItem("geoform_config")) {
                     localStorage.clear();
                 }
                 //The config object contains the following properties: helper services, (optionally)
@@ -107,8 +107,8 @@
                         });
                     });
                 } else {
-                    if (localStorage.getItem("config")) {
-                        config = JSON.parse(localStorage.getItem("config"));
+                    if (localStorage.getItem("geoform_config")) {
+                        config = JSON.parse(localStorage.getItem("geoform_config"));
                     }
                     myApp.startup(config, myTemplate.appResponse);
                 }
