@@ -203,3 +203,7 @@ input::-ms-clear {
     position: relative;
     z-index: 50;
 }
+
+.requireFieldStyle{
+        display:inline-block;
+}

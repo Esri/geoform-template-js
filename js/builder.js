@@ -357,14 +357,15 @@ define([
                         domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png");
                     }
                     this.currentConfig.webmap = this.browseDlg.get("selectedWebmap").id;
-                    domClass.add(document.body, "app-loading");
+                    var btn = $(dom.byId("selectWebmapBtn"));
+                    btn.button('loading');
                     arcgisUtils.getItem(this.currentConfig.webmap).then(lang.hitch(this, function (itemInfo) {
                         this.currentConfig.fields.length = 0;
                         this.currentConfig.form_layer.id = "";
                         domConstruct.empty(this.geoFormFieldsTable);
                         this.currentConfig.itemInfo = itemInfo;
                         this._addOperationalLayers();
-                        domClass.remove(document.body, "app-loading");
+                        btn.button('reset');
                     }), function (error) {
                         console.log(error);
                     });
