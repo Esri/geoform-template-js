@@ -34,12 +34,12 @@ define([
         fieldInfo: {},
         layerInfo: null,
         themes: [
-        { "name": "Bootstrap (Default)", url: "css/themes/default.css", "thumbnail": "images/defaultThumbnail.jpg", "refUrl": "http://bootswatch.com/default/" },
-            { "name": "Bootswatch: Cyborg", url: "css/themes/cyborg.css", "thumbnail": "images/cyborgThumbnail.jpg", "refUrl": "http://bootswatch.com/cyborg/" },
-            { "name": "Bootswatch: Cerulean", url: "css/themes/cerulean.css", "thumbnail": "images/cerulianThumbnail.jpg", "refUrl": "http://bootswatch.com/cerulean/" },
-            { "name": "Bootswatch: Journal", url: "css/themes/journal.css", "thumbnail": "images/journalThumbnail.jpg", "refUrl": "http://bootswatch.com/journal/" },
-            { "name": "Bootswatch: Darkly", url: "css/themes/darkly.css", "thumbnail": "images/darklyThumbnail.jpg", "refUrl": "http://bootswatch.com/darkly/" },
-            { "name": "Bootswatch: Readable", url: "css/themes/readable.css", "thumbnail": "images/readableThumbnail.jpg", "refUrl": "http://bootswatch.com/readable/" }
+        { "name": "Bootstrap (Default)", url: "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css", "thumbnail": "images/defaultThumbnail.jpg", "refUrl": "http://bootswatch.com/default/" },
+            { "name": "Bootswatch: Cyborg", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cyborg/bootstrap.min.css", "thumbnail": "images/cyborgThumbnail.jpg", "refUrl": "http://bootswatch.com/cyborg/" },
+            { "name": "Bootswatch: Cerulean", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cerulean/bootstrap.min.css", "thumbnail": "images/cerulianThumbnail.jpg", "refUrl": "http://bootswatch.com/cerulean/" },
+            { "name": "Bootswatch: Journal", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/journal/bootstrap.min.css", "thumbnail": "images/journalThumbnail.jpg", "refUrl": "http://bootswatch.com/journal/" },
+            { "name": "Bootswatch: Darkly", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/darkly/bootstrap.min.css", "thumbnail": "images/darklyThumbnail.jpg", "refUrl": "http://bootswatch.com/darkly/" },
+            { "name": "Bootswatch: Readable", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/readable/bootstrap.min.css", "thumbnail": "images/readableThumbnail.jpg", "refUrl": "http://bootswatch.com/readable/" }
         ],
 
         constructor: function () {

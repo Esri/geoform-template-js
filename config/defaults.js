@@ -15,7 +15,7 @@ define({
     "fields": [],
     "theme": {
         "themeName": "Bootstrap (Default)",
-        "themeSrc": "css/themes/default.css"
+        "themeSrc": "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css"
     },
     "oauthappid": null,
     //Enter the url to the proxy if needed by the applcation. See the "Using the proxy page" help topic for details
