@@ -186,3 +186,12 @@ input::-ms-clear {
 .requireFieldStyle {
     display: inline-block;
 }
+/* fix for popup close */
+.titlePane .close,
+.titlePane .close:hover {
+    float: none;
+    opacity: 1;
+    font-size: inherit;
+    font-weight: normal;
+    text-shadow: none;
+}
