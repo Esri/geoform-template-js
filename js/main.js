@@ -213,7 +213,7 @@ define([
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
             this.map.graphics.clear();
-            symbolUrl = "./images/pin-purple.png";
+            symbolUrl = "./images/pins/purple.png";
             pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
