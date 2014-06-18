@@ -1,4 +1,4 @@
-#mapDiv {
+.map-div {
     width: 100% !important;
     height: 200px !important;
 }
@@ -19,11 +19,8 @@
     background-image: url(../images/ajax-loader.gif);
     background-repeat: no-repeat;
 }
-#coordinatesContainer {
+.coordinates-view {
     margin-bottom: 20px;
-}
-.inline-block {
-    display: inline-block;
 }
 .submit-area {
     margin-bottom: 40px;
@@ -59,7 +56,7 @@
 /* Extra Small Devices, Phones */
 
 @media (min-width: 480px) {
-    #mapDiv {
+    .map-div {
         height: 200px!important;
     }
     .preview-frame {
@@ -69,7 +66,7 @@
 /* Small Devices, Tablets */
 
 @media (min-width: 768px) {
-    #mapDiv {
+    .map-div {
         height: 300px!important;
     }
     .preview-frame {
@@ -79,7 +76,7 @@
 /* Medium Devices, Desktops */
 
 @media (min-width: 992px) {
-    #mapDiv {
+    .map-div {
         height: 400px!important;
     }
     .preview-frame {
@@ -89,7 +86,7 @@
 /* Large Devices, Wide Screens */
 
 @media (min-width: 1200px) {
-    #mapDiv {
+    .map-div {
         height: 500px!important;
     }
     .preview-frame {
@@ -154,7 +151,7 @@
 .myLocationOptions {
     padding: 20px 0px;
 }
-#selectWebmapBtn {
+.select-webmap-button {
     margin-top: 10px;
 }
 .has-feedback .form-control {

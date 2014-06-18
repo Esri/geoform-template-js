@@ -655,8 +655,10 @@ define([
                     this.map.infoWindow.show(this.addressGeometry);
                 }), 500);
                 domClass.remove(this.coordinatesContainer, "has-error");
+                domClass.remove(this.coordinatesContainer2, "has-error");
             } else {
                 domClass.add(this.coordinatesContainer, "has-error");
+                domClass.add(this.coordinatesContainer2, "has-error");
             }
         },
 
