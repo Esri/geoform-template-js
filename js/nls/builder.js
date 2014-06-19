@@ -1,6 +1,7 @@
 define({
     root: ({
         builder: {
+            invalidUser: "Sorry, you dont have enough permissions to view this item",
             invalidWebmapSelectionAlert: "The selected webmap does not contain a valid layer to use. Please add an editable FeatureLayer into your webmap to continue.",
             selectFieldsText:"Select Form Fields",
             selectThemeText: "Select Form Theme",

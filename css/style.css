@@ -38,6 +38,19 @@
     color: #666;
     opacity: 1;
 }
+
+.signIn-error-message {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    overflow: hidden;
+    margin-top:-40px;
+}
+.signIn-error-message  div.alert{
+    text-align:center !important;
+}
+
 .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,

@@ -59,6 +59,15 @@ define([
         map: null,
         addressGeometry: null,
         editToolbar: null,
+        themes: [
+        { "value": "bootstrap", url: "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css" },
+            { "value": "cyborg", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cyborg/bootstrap.min.css" },
+            { "value": "cerulian", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cerulean/bootstrap.min.css" },
+            { "value": "journal", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/journal/bootstrap.min.css" },
+            { "value": "darkly", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/darkly/bootstrap.min.css" },
+            { "value": "readable", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/readable/bootstrap.min.css" }
+        ],
+
         constructor: function () {
         },
         startup: function (config, response, isPreview, node) {
@@ -81,28 +90,30 @@ define([
                     if(this.config.details && this.config.details.Title){
                         window.document.title = this.config.details.Title;
                     }
-                    this._createWebMap(itemInfo);
                     if (isPreview) {
+                        var cssStyle;
                         if (typeof (Storage) !== "undefined") {
                             localStorage.setItem("geoform_config", JSON.stringify(config));
                         }
-                        
-                        
-                        
-                        var cssStyle = domConstruct.create('link',{
-                            rel: 'stylesheet',
-                            type: 'text/css',
-                            href: window.location.href.split("index.html")[0] + this.config.theme.themeSrc
-                        });
-                        node.src = window.location.href.split("&")[0];
-                        node.onload = function () {
+                        array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
+                            if (this.config.theme == currentTheme.value) {
+                                cssStyle = domConstruct.create('link', {
+                                    rel: 'stylesheet',
+                                    type: 'text/css',
+                                    href: currentTheme.url
+                                });
+                                node.src = window.location.href.split("&")[0];
+                            }
+                        }));
+                        setTimeout(function() {
                             domConstruct.place(cssStyle, $("#iframeContainer").contents().find('head')[0], "last");
-                        };
+                        },100);
                     }
                     else {
-                        this._switchStyle(this.config.theme.themeSrc);
+                        this._switchStyle(this.config.theme);
                         dom.byId("parentContainter").appendChild(this.userMode);
                     }
+                    this._createWebMap(itemInfo);
                 }));
             } else {
                 var error = new Error("Main:: Config is not defined");
@@ -245,8 +256,12 @@ define([
         },
 
         //function to set the theme for application
-        _switchStyle: function (cssSrc) {
-            dom.byId("themeLink").href = cssSrc;
+        _switchStyle: function (themeName) {
+            array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
+                if (themeName == currentTheme.value) {
+                    dom.byId("themeLink").href = currentTheme.url;
+                }
+            }));
         },
 
         //function to validate and create the form
@@ -323,25 +338,26 @@ define([
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeSmallInteger":
-                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "smallInteger", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.integerFormat, "inputType": "smallInteger", "id": fieldname }, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeInteger":
-                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "Integer", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.integerFormat, "inputType": "Integer", "id": fieldname }, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeSingle":
-                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "Single", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.floatFormat, "inputType": "Single", "id": fieldname }, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDouble":
-                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "Double", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.floatFormat, "inputType": "Double", "id": fieldname }, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDate":
-                            inputContent = domConstruct.create("input", { type: "text",className: "form-control", "inputType": "Date", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.dateFormat, "inputType": "Date", "id": fieldname }, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             $(inputContent).datepicker({
+                                format: "mm/dd/yyyy",
                                 onSelect: lang.hitch(this, function (evt, currentElement) {
                                     domClass.remove(currentElement.input[0].parentElement, "has-error");
                                     domClass.remove(query("span", currentElement.input[0].parentElement)[0], "glyphicon-remove");
@@ -467,8 +483,10 @@ define([
                     domAttr.set(currentInput, "value", "");
                     domClass.remove(node, "has-error");
                     domClass.remove(node, "has-success");
-                    domClass.remove(query("span", node)[0], "glyphicon-ok");
-                    domClass.remove(query("span", node)[0], "glyphicon-remove");
+                    if (query("span", node)[0]) {
+                        domClass.remove(query("span", node)[0], "glyphicon-ok");
+                        domClass.remove(query("span", node)[0], "glyphicon-remove");
+                    }
                 } else {
                     currentInput.options[0].selected = true;
                 }
@@ -546,10 +564,10 @@ define([
         _findLocation: function (evt) {
             if (evt.charCode === 13) {
                 if (this.XCoordinate.value === "") {
-                    alert(nls.user.emptylatitudeAlertMessage);
+                    this._showErrorMessageDiv(nls.user.emptylatitudeAlertMessage);
                     return;
                 } else if (this.YCoordinate.value === "") {
-                    alert(nls.user.emptylongitudeAlertMessage);
+                    this._showErrorMessageDiv(nls.user.emptylongitudeAlertMessage);
                     return;
                 }
                 this._locatePointOnMap(this.XCoordinate.value + "," + this.YCoordinate.value);

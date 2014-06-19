@@ -1,5 +1,6 @@
 /*global $ */
 define([
+   "dojo/ready",
    "dojo/_base/declare",
     "dojo/on",
     "dojo/dom",
@@ -14,13 +15,15 @@ define([
     "dojo/DeferredList",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
+    "dojo/text!application/dijit/templates/modal.html",
     "dojo/text!application/dijit/templates/author.html",
     "application/browseIdDlg",
     "application/ShareDialog",
     "dojo/i18n!application/nls/builder",
+    "dojo/i18n!application/nls/user",//We need this file to get string defined for modal dialog
     "esri/arcgis/utils",
     "dojo/domReady!"
-], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, authorTemplate, BrowseIdDlg, ShareDialog, nls, arcgisUtils) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, nls, usernls, arcgisUtils) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -34,12 +37,12 @@ define([
         fieldInfo: {},
         layerInfo: null,
         themes: [
-        { "name": "Bootstrap (Default)", url: "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css", "thumbnail": "images/themes/default.jpg", "refUrl": "http://bootswatch.com/default/" },
-            { "name": "Bootswatch: Cyborg", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cyborg/bootstrap.min.css", "thumbnail": "images/themes/cyborg.jpg", "refUrl": "http://bootswatch.com/cyborg/" },
-            { "name": "Bootswatch: Cerulean", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cerulean/bootstrap.min.css", "thumbnail": "images/themes/cerulian.jpg", "refUrl": "http://bootswatch.com/cerulean/" },
-            { "name": "Bootswatch: Journal", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/journal/bootstrap.min.css", "thumbnail": "images/themes/journal.jpg", "refUrl": "http://bootswatch.com/journal/" },
-            { "name": "Bootswatch: Darkly", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/darkly/bootstrap.min.css", "thumbnail": "images/themes/darkly.jpg", "refUrl": "http://bootswatch.com/darkly/" },
-            { "name": "Bootswatch: Readable", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/readable/bootstrap.min.css", "thumbnail": "images/themes/readable.jpg", "refUrl": "http://bootswatch.com/readable/" }
+        { "name": "Bootstrap (Default)", "value": "bootstrap", url: "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css", "thumbnail": "images/themes/default.jpg", "refUrl": "http://bootswatch.com/default/" },
+            { "name": "Bootswatch: Cyborg", "value": "cyborg", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cyborg/bootstrap.min.css", "thumbnail": "images/themes/cyborg.jpg", "refUrl": "http://bootswatch.com/cyborg/" },
+            { "name": "Bootswatch: Cerulean", "value": "cerulian", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cerulean/bootstrap.min.css", "thumbnail": "images/themes/cerulian.jpg", "refUrl": "http://bootswatch.com/cerulean/" },
+            { "name": "Bootswatch: Journal", "value": "journal", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/journal/bootstrap.min.css", "thumbnail": "images/themes/journal.jpg", "refUrl": "http://bootswatch.com/journal/" },
+            { "name": "Bootswatch: Darkly", "value": "darkly", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/darkly/bootstrap.min.css", "thumbnail": "images/themes/darkly.jpg", "refUrl": "http://bootswatch.com/darkly/" },
+            { "name": "Bootswatch: Readable", "value": "readable", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/readable/bootstrap.min.css", "thumbnail": "images/themes/readable.jpg", "refUrl": "http://bootswatch.com/readable/" }
         ],
 
         constructor: function () {
@@ -49,7 +52,12 @@ define([
             dom.byId("parentContainter").appendChild(this.authorMode);
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
-
+            // document ready
+            ready(lang.hitch(this, function () {
+                modalTemplate = lang.replace(modalTemplate, usernls);
+                // place modal code
+                domConstruct.place(modalTemplate, document.body, 'last');
+            }));
             $('.prevtab').on('click', lang.hitch(this, function () {
                 $tabs.filter('.active').prev('li').find('a[data-toggle="tab"]').tab('show');
             }));
@@ -183,8 +191,8 @@ define([
                 themesDivContainer = domConstruct.create("div", { className: "col-md-4" }, this.stylesList);
                 themesDivContent = domConstruct.create("div", { className: "radio" }, themesDivContainer);
                 themesLabel = domConstruct.create("label", { innerHTML: currentTheme.name }, themesDivContent);
-                themesRadioButton = domConstruct.create("input", { type: "radio", name: "themesRadio", themeName: currentTheme.name, themeUrl: currentTheme.url }, themesLabel);
-                if (currentTheme.name == this.currentConfig.theme.themeName) {
+                themesRadioButton = domConstruct.create("input", { type: "radio", name: "themesRadio", themeName: currentTheme.value, themeUrl: currentTheme.url }, themesLabel);
+                if (currentTheme.value == this.currentConfig.theme) {
                     themesRadioButton.checked = true;
                 }
                 on(themesRadioButton, "change", lang.hitch(this, function (evt) {
@@ -198,8 +206,7 @@ define([
 
         //function to select the previously configured theme.
         _configureTheme: function (selectedTheme) {
-            this.currentConfig.theme.themeName = selectedTheme.currentTarget.getAttribute("themeName");
-            this.currentConfig.theme.themeSrc = selectedTheme.currentTarget.getAttribute("themeUrl");
+            this.currentConfig.theme = selectedTheme.currentTarget.getAttribute("themeName");
         },
 
         //function will populate all editable fields with validations

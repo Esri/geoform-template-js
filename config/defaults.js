@@ -13,10 +13,7 @@ define({
         "Description": ""
     },
     "fields": [],
-    "theme": {
-        "themeName": "Bootstrap (Default)",
-        "themeSrc": "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css"
-    },
+    "theme": "bootstrap", // options: bootstrap, cerulian, cyborg, darkly, journal, readable
     "oauthappid": null,
     //Enter the url to the proxy if needed by the applcation. See the "Using the proxy page" help topic for details
     // //developers.arcgis.com/en/javascript/jshelp/ags_proxy.html
