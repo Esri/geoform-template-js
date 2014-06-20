@@ -102,8 +102,7 @@ define([
                                 node.src = window.location.href.split("&")[0];
                             }
                         }));
-                        var itemInfo = this.config.webmap;
-                        this._createWebMap(itemInfo);
+                        this._createWebMap(this.config.webmap);
                         node.onload = function () {
                             domConstruct.place(cssStyle, $("#iframeContainer").contents().find('head')[0], "last");
                         };
