@@ -69,7 +69,7 @@ function (Evented, declare, lang, domConstruct, domClass, _WidgetBase, ContentPa
                 }
                 else {
                     domClass.remove(document.body, "app-loading");
-                    signInErrorMessageDiv = domConstruct.create("div", { class: "signIn-error-message" }, dojo.body());
+                    var signInErrorMessageDiv = domConstruct.create("div", { class: "signIn-error-message" }, document.body);
                     domConstruct.create("div", { className: "alert alert-danger errorMessage", innerHTML: nls.builder.invalidUser }, signInErrorMessageDiv);
                     return false;
                 }
