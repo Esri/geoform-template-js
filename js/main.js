@@ -62,6 +62,11 @@ define([
         editToolbar: null,
         themes: theme,
         constructor: function () {
+            ready(lang.hitch(this, function () {
+                if (localStorage.getItem("geoform_config")) {
+                    localStorage.clear();
+                }
+            }));
         },
         startup: function (config, response, isPreview, node) {
             // config will contain application and user defined info for the template such as i18n strings, the web map id
@@ -149,12 +154,6 @@ define([
                     this._addFeatureToLayer(this.config);
                 }
             }));
-
-            window.onload = function () {
-                if (localStorage.getItem("geoform_config")) {
-                    localStorage.clear();
-                }
-            }
         },
         reportError: function (error) {
             // remove loading class from body
@@ -267,8 +266,7 @@ define([
 
         //function to validate and create the form
         _createForm: function (fields) {
-            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileUploadForm, fileInput,
-             matchingField, newAddedFields = [], fieldname, fieldLabelText, requireField;
+            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileUploadForm, fileInput, matchingField, newAddedFields = [], fieldname, fieldLabelText, requireField, sortedArray;
             if (!this.map.getLayer(this.config.form_layer.id)) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
@@ -284,7 +282,8 @@ define([
                 return;
             }
             array.forEach(this.map.getLayer(this.config.form_layer.id).fields, lang.hitch(this, function (layerField) {
-                matchingField = false, sortedArray = [];
+                matchingField = false;
+                sortedArray = [];
                 array.forEach(fields, lang.hitch(this, function (currentField) {
                     if (layerField.name == currentField.fieldName && currentField.visible) {
                         //code to put aestrik mark for mandatory fields

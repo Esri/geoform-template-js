@@ -38,7 +38,7 @@ define({
             formPlaceholderText: "My Form",
             imageLogoPlaceholderText: "http://www.mysite.com/myimage.png",
             shareBuilderInProgressTitleMessage: "Publishing GeoForm",
-            shareBuilderProgressBarMessage: "Please Wait &hellip;",
+            shareBuilderProgressBarMessage: "Please Wait&hellip;",
             shareBuilderTitleMessage: "Your GeoForm has been updated & published!",
             shareBuilderTextMessage: "You can start collecting information by sharing with others",
             shareDialogFormText: "Form Link",
