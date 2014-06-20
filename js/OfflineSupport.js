@@ -1,25 +1,19 @@
-/*global $, Offline */
+/*global Offline */
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
-    "dojo/_base/array",
     "dojo/on",
     "dojo/dom",
     "dojo/dom-construct",
-    "esri/toolbars/edit",
     "edit/offlineFeaturesManager",
-    "edit/editsStore",
     "esri/dijit/editing/Editor",
     "dojo/i18n!application/nls/resources"
 ], function (
     declare,
     lang,
-    array,
     on,
     dom, domConstruct,
-    Edit,
     OfflineFeaturesManager,
-    editsStore,
     Editor,
     i18n
 ) {

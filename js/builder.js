@@ -1,4 +1,4 @@
-/*global $ */
+/*global $, Storage */
 define([
    "dojo/ready",
    "dojo/_base/declare",

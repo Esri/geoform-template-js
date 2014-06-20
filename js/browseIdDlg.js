@@ -1,10 +1,8 @@
 define([
   "dojo/Evented",
   "dojo/_base/declare",
-  "dojo/_base/connect",
   "dojo/_base/lang",
   "dojo/_base/event",
-  "dojo/dom",
   "dojo/keys",
   "dijit/registry",
   "dojo/on",
@@ -12,7 +10,6 @@ define([
   "dojo/dom-style",
   "dojo/dom-class",
   "application/grid",
-  "esri/arcgis/Portal",
   "dojo/i18n!./nls/resources",
   "dijit/_WidgetBase",
   "dijit/_TemplatedMixin",
@@ -23,7 +20,7 @@ define([
   "dijit/form/Select",
   "dijit/form/Button",
   "dijit/form/TextBox"
-], function (Evented, declare, connect, lang, dojoEvent, dom, keys, registry, on, query, domStyle, domClass, Grid, esriPortal, i18n, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, template, esriRequest) {
+], function (Evented, declare, lang, dojoEvent, keys, registry, on, query, domStyle, domClass, Grid, i18n, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, template, esriRequest) {
     return declare([Evented, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
         constructor: function (args, userInfo) {
@@ -100,7 +97,8 @@ define([
         },
 
         doSearch: function () {
-            var filter = this._filterSelect.get("value"), portalUser = {};
+            var filter = this._filterSelect.get("value"),
+                portalUser = {};
             esriRequest({
                 url: this.userInfo.portal.url + "/sharing/rest/community/users/" + this.userInfo.username,
                 content: {
@@ -136,8 +134,10 @@ define([
                 }
                 var qs = "";
                 for (var key in parameters) {
-                    var val = parameters[key];
-                    qs += key + ":" + val + " ";
+                    if (parameters[key]) {
+                        var val = parameters[key];
+                        qs += key + ":" + val + " ";
+                    }
                 }
                 var query = {};
                 query.q = lang.trim(qs);
@@ -155,10 +155,9 @@ define([
             }
             this.doSearch();
         },
-        _onSearchBoxFocus: function (e) {
-        },
+        _onSearchBoxFocus: function () {},
 
-        _onSearchBoxBlur: function (e) {
+        _onSearchBoxBlur: function () {
             if (this.searchText.getValue() === "") {
 
             }
@@ -173,7 +172,7 @@ define([
         },
 
         // event
-        onSearchFieldKeyPress: function (event) {
+        onSearchFieldKeyPress: function () {
             // do nothing
         },
 
@@ -185,7 +184,7 @@ define([
             this.set("selected", null);
             registry.byId('browse-id-dialog').hide();
         },
-        show: function (params) {
+        show: function () {
             registry.byId('browse-id-dialog').show();
             this._grid.refresh();
             domStyle.set(query("#browse-id-dialog .dijitDialogPaneContent")[0], "height", "444px");

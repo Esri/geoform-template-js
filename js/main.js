@@ -1,4 +1,4 @@
-/*global $,define,document */
+/*global $,define,document,Storage */
 /*jslint sloppy:true,nomen:true */
 define([
     "dojo/ready",
@@ -28,7 +28,6 @@ define([
     "esri/graphic",
     "esri/symbols/PictureMarkerSymbol",
     "esri/toolbars/edit",
-    "dojo/i18n!esri/nls/jsapi",
     "application/themes",
     "dojo/NodeList-traverse",
     "dojo/domReady!"
@@ -52,7 +51,7 @@ define([
     _TemplatedMixin,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol, editToolbar, esriBundle, theme) {
+    nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol, editToolbar, theme) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: userTemplate,
         nls: nls,
@@ -196,9 +195,6 @@ define([
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(evt.graphic.geometry);
             }));
-            if (layer && layer.fields) {
-                var fields = layer.fields;
-            }
             on(this.map, 'click', lang.hitch(this, function (evt) {
                 this.addressGeometry = evt.mapPoint;
                 if (!evt.graphic) {
