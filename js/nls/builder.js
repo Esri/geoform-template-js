@@ -1,6 +1,7 @@
 define({
     root: ({
         builder: {
+            invalidUser: "Sorry, you dont have enough permissions to view this item",
             invalidWebmapSelectionAlert: "The selected webmap does not contain a valid layer to use. Please add an editable FeatureLayer into your webmap to continue.",
             selectFieldsText:"Select Form Fields",
             selectThemeText: "Select Form Theme",
@@ -37,7 +38,7 @@ define({
             formPlaceholderText: "My Form",
             imageLogoPlaceholderText: "http://www.mysite.com/myimage.png",
             shareBuilderInProgressTitleMessage: "Publishing GeoForm",
-            shareBuilderProgressBarMessage:"Please Wait...",
+            shareBuilderProgressBarMessage: "Please Wait &hellip;",
             shareBuilderTitleMessage: "Your GeoForm has been updated & published!",
             shareBuilderTextMessage: "You can start collecting information by sharing with others",
             shareDialogFormText: "Form Link",

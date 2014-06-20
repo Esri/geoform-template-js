@@ -15,6 +15,7 @@ define({
             submitButtonText: "Submit new entry",
             fieldvalidationMessageAlertText: "Please enter a valid number",
             formValidationMessageAlertText: "The following fields are required. Please enter the following fields before submission:",
+            validationFormatTypeSubstring:"The expected format is ",
             latlongValidationMessageAlert: "Please select a location for the entry",
             emptylatitudeAlertMessage: "Please enter Latitude",
             emptylongitudeAlertMessage: "Please enter Longitude",
@@ -31,7 +32,10 @@ define({
             myLocationTitleText: 'My Location',
             addressSearchText: "Your submission will appear here. You can drag the pin to correct the location.",
             shareDialogFormText: "Form Link",
-            shareBuilderProgressBarMessage:"Please Wait..."
+            close: "Close",
+            dateFormat: "mm/dd/yyyy",
+            integerFormat: "1234",
+            floatFormat: "1.234"
         }
     })
 });

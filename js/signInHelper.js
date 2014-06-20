@@ -2,15 +2,18 @@ define([
     "dojo/Evented",
     "dojo/_base/declare",
     "dojo/_base/lang",
+    "dojo/dom-construct",
+    "dojo/dom-class",
     "dijit/_WidgetBase",
     "dijit/layout/ContentPane",
     "dojo/on",
     "esri/arcgis/utils",
     "esri/arcgis/Portal",
     "dojo/Deferred",
-    "dojo/cookie"
+    "dojo/cookie",
+    "dojo/i18n!application/nls/builder"
 ],
-function (Evented, declare, lang, _WidgetBase, ContentPane, on, arcgisUtils, portal, Deferred, cookie) {
+function (Evented, declare, lang, domConstruct, domClass, _WidgetBase, ContentPane, on, arcgisUtils, portal, Deferred, cookie, nls) {
     var Widget = declare([_WidgetBase], {
         declaredClass: "application.signInHelper",
         _portal: null,
@@ -65,7 +68,9 @@ function (Evented, declare, lang, _WidgetBase, ContentPane, on, arcgisUtils, por
                     return true;
                 }
                 else {
-                    alert("Sorry, you dont have enough permissions to view this item");
+                    domClass.remove(document.body, "app-loading");
+                    signInErrorMessageDiv = domConstruct.create("div", { class: "signIn-error-message" }, dojo.body());
+                    domConstruct.create("div", { className: "alert alert-danger errorMessage", innerHTML: nls.builder.invalidUser }, signInErrorMessageDiv);
                     return false;
                 }
             }
