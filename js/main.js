@@ -29,6 +29,7 @@ define([
     "esri/symbols/PictureMarkerSymbol",
     "esri/toolbars/edit",
     "dojo/i18n!esri/nls/jsapi",
+    "application/themes",
     "dojo/NodeList-traverse",
     "dojo/domReady!"
 ], function (
@@ -51,7 +52,7 @@ define([
     _TemplatedMixin,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol, editToolbar, esriBundle) {
+    nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol, editToolbar, esriBundle, theme) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: userTemplate,
         nls: nls,
@@ -59,15 +60,7 @@ define([
         map: null,
         addressGeometry: null,
         editToolbar: null,
-        themes: [
-        { "value": "bootstrap", url: "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css" },
-            { "value": "cyborg", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cyborg/bootstrap.min.css" },
-            { "value": "cerulian", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cerulean/bootstrap.min.css" },
-            { "value": "journal", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/journal/bootstrap.min.css" },
-            { "value": "darkly", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/darkly/bootstrap.min.css" },
-            { "value": "readable", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/readable/bootstrap.min.css" }
-        ],
-
+        themes: theme,
         constructor: function () {
         },
         startup: function (config, response, isPreview, node) {
@@ -84,7 +77,6 @@ define([
                     domConstruct.place(modalTemplate, document.body, 'last');
                     //supply either the webmap id or, if available, the item info
                     domStyle.set(this.userMode, 'display', 'none');
-                    var itemInfo = this.config.itemInfo || this.config.webmap;
                     this._setAppConfigurations(this.config.details);
                     // window title
                     if(this.config.details && this.config.details.Title){
@@ -96,7 +88,7 @@ define([
                             localStorage.setItem("geoform_config", JSON.stringify(config));
                         }
                         array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
-                            if (this.config.theme == currentTheme.value) {
+                            if (this.config.theme == currentTheme.id) {
                                 cssStyle = domConstruct.create('link', {
                                     rel: 'stylesheet',
                                     type: 'text/css',
@@ -105,15 +97,18 @@ define([
                                 node.src = window.location.href.split("&")[0];
                             }
                         }));
-                        setTimeout(function() {
+                        var itemInfo = this.config.webmap;
+                        this._createWebMap(itemInfo);
+                        node.onload = function () {
                             domConstruct.place(cssStyle, $("#iframeContainer").contents().find('head')[0], "last");
-                        },100);
+                        };
                     }
                     else {
                         this._switchStyle(this.config.theme);
                         dom.byId("parentContainter").appendChild(this.userMode);
+                        var itemInfo = this.config.itemInfo || this.config.webmap;
+                        this._createWebMap(itemInfo);
                     }
-                    this._createWebMap(itemInfo);
                 }));
             } else {
                 var error = new Error("Main:: Config is not defined");
@@ -154,6 +149,12 @@ define([
                     this._addFeatureToLayer(this.config);
                 }
             }));
+
+            window.onload = function () {
+                if (localStorage.getItem("geoform_config")) {
+                    localStorage.clear();
+                }
+            }
         },
         reportError: function (error) {
             // remove loading class from body
@@ -258,7 +259,7 @@ define([
         //function to set the theme for application
         _switchStyle: function (themeName) {
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
-                if (themeName == currentTheme.value) {
+                if (themeName == currentTheme.id) {
                     dom.byId("themeLink").href = currentTheme.url;
                 }
             }));
@@ -283,7 +284,7 @@ define([
                 return;
             }
             array.forEach(this.map.getLayer(this.config.form_layer.id).fields, lang.hitch(this, function (layerField) {
-                matchingField = false;
+                matchingField = false, sortedArray = [];
                 array.forEach(fields, lang.hitch(this, function (currentField) {
                     if (layerField.name == currentField.fieldName && currentField.visible) {
                         //code to put aestrik mark for mandatory fields
@@ -301,7 +302,16 @@ define([
                     }
                 }
             }));
-            array.forEach(newAddedFields, lang.hitch(this, function(currentField, index) {
+            array.forEach(fields, lang.hitch(this, function (sortedElement) {
+                array.some(newAddedFields, lang.hitch(this, function (newElement) {
+                    var fName = newElement.isNewField ? newElement.name : newElement.fieldName;
+                    if (sortedElement.fieldName == fName) {
+                        sortedArray.push(newElement);
+                        return true;
+                    }
+                }));
+            }));
+            array.forEach(sortedArray, lang.hitch(this, function (currentField, index) {
                 //code to put aestrik mark for mandatory fields and also to give it a mandatory class.
                 if (!currentField.nullable) {
                     formContent = domConstruct.create("div", {className: "form-group has-feedback geoFormQuestionare mandatory" }, this.userForm);

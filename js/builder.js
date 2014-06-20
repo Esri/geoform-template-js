@@ -20,10 +20,11 @@ define([
     "application/browseIdDlg",
     "application/ShareDialog",
     "dojo/i18n!application/nls/builder",
-    "dojo/i18n!application/nls/user",//We need this file to get string defined for modal dialog
+    "dojo/i18n!application/nls/user", //We need this file to get string defined for modal dialog
     "esri/arcgis/utils",
+    "application/themes",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, nls, usernls, arcgisUtils) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, nls, usernls, arcgisUtils, theme) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -36,14 +37,7 @@ define([
         browseDlg: null,
         fieldInfo: {},
         layerInfo: null,
-        themes: [
-        { "name": "Bootstrap (Default)", "value": "bootstrap", url: "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css", "thumbnail": "images/themes/default.jpg", "refUrl": "http://bootswatch.com/default/" },
-            { "name": "Bootswatch: Cyborg", "value": "cyborg", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cyborg/bootstrap.min.css", "thumbnail": "images/themes/cyborg.jpg", "refUrl": "http://bootswatch.com/cyborg/" },
-            { "name": "Bootswatch: Cerulean", "value": "cerulian", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/cerulean/bootstrap.min.css", "thumbnail": "images/themes/cerulian.jpg", "refUrl": "http://bootswatch.com/cerulean/" },
-            { "name": "Bootswatch: Journal", "value": "journal", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/journal/bootstrap.min.css", "thumbnail": "images/themes/journal.jpg", "refUrl": "http://bootswatch.com/journal/" },
-            { "name": "Bootswatch: Darkly", "value": "darkly", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/darkly/bootstrap.min.css", "thumbnail": "images/themes/darkly.jpg", "refUrl": "http://bootswatch.com/darkly/" },
-            { "name": "Bootswatch: Readable", "value": "readable", url: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.1.1-1/css/readable/bootstrap.min.css", "thumbnail": "images/themes/readable.jpg", "refUrl": "http://bootswatch.com/readable/" }
-        ],
+        themes: theme,
 
         constructor: function () {
         },
@@ -191,8 +185,8 @@ define([
                 themesDivContainer = domConstruct.create("div", { className: "col-md-4" }, this.stylesList);
                 themesDivContent = domConstruct.create("div", { className: "radio" }, themesDivContainer);
                 themesLabel = domConstruct.create("label", { innerHTML: currentTheme.name }, themesDivContent);
-                themesRadioButton = domConstruct.create("input", { type: "radio", name: "themesRadio", themeName: currentTheme.value, themeUrl: currentTheme.url }, themesLabel);
-                if (currentTheme.value == this.currentConfig.theme) {
+                themesRadioButton = domConstruct.create("input", { type: "radio", name: "themesRadio", themeName: currentTheme.id, themeUrl: currentTheme.url }, themesLabel);
+                if (currentTheme.id == this.currentConfig.theme) {
                     themesRadioButton.checked = true;
                 }
                 on(themesRadioButton, "change", lang.hitch(this, function (evt) {
@@ -384,9 +378,9 @@ define([
             }));
 
             if (this.currentConfig.itemInfo.item.thumbnail) {
-                domAttr.set(query(".img-thumbnail")[0], "src", "http://www.arcgis.com/sharing/rest/content/items/" + this.currentConfig.webmap + "/info/" + this.currentConfig.itemInfo.item.thumbnail + "?token=" + this.userInfo.token);
+                domAttr.set(query(".img-thumbnail")[0], "src", this.currentConfig.sharinghost + "/sharing/rest/content/items/" + this.currentConfig.webmap + "/info/" + this.currentConfig.itemInfo.item.thumbnail + "?token=" + this.userInfo.token);
             } else {
-                domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png?");
+                domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png");
             }
         },
 

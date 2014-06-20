@@ -32,7 +32,6 @@ define({
             myLocationTitleText: 'My Location',
             addressSearchText: "Your submission will appear here. You can drag the pin to correct the location.",
             shareDialogFormText: "Form Link",
-            shareBuilderProgressBarMessage: "Please Wait...",
             close: "Close",
             dateFormat: "mm/dd/yyyy",
             integerFormat: "1234",
