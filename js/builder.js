@@ -38,11 +38,12 @@ define([
         fieldInfo: {},
         layerInfo: null,
         themes: theme,
+        localStorageSupport: null,
 
         constructor: function () {
         },
 
-        startup: function (config, userInfo, response) {
+        startup: function (config, userInfo, response, localStorageSupport) {
             dom.byId("parentContainter").appendChild(this.authorMode);
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
@@ -72,12 +73,13 @@ define([
             this.currentConfig = config;
             this.userInfo = userInfo;
             this.response = response;
+            this.localStorageSupport = localStorageSupport
             this._addOperationalLayers();
             this._populateDetails();
             this._populateThemes();
             this._initWebmapSelection();
             this._loadCSS("css/browseDialog.css");
-            if (typeof (Storage) === 'undefined') {
+            if (!this.localStorageSupport) {
                 array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                     if (domAttr.get(currentTab, "tab") == "preview") {
                         this._disableTab(currentTab);
@@ -123,7 +125,7 @@ define([
                        "application/main"
                       ], function (userMode) {
                           var index = new userMode();
-                          index.startup(_self.currentConfig, _self.response, true, query(".preview-frame")[0]);
+                          index.startup(_self.currentConfig, _self.response, _self.localStorageSupport, true, query(".preview-frame")[0]);
                       });
                 } else {
                     localStorage.clear();
@@ -513,7 +515,7 @@ define([
         },
         //function to enable the tab passed in input parameter
         _enableTab: function (currentTab) {
-            if (typeof (Storage) === 'undefined' && domAttr.get(currentTab, "tab") == "preview")
+            if (!this.localStorageSupport && domAttr.get(currentTab, "tab") == "preview")
                 return;
             if (domClass.contains(currentTab, "btn")) {
                 domClass.remove(currentTab, "disabled");
