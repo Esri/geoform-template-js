@@ -83,6 +83,16 @@
                 //The config object contains the following properties: helper services, (optionally)
                 //i18n, appid, webmap and any custom values defined by the application.
                 //In this example we have one called theme.
+            //code to check for local storage support
+            var localStorageSupport;
+            try {
+                var mod = 'modernizr';
+                localStorage.setItem(mod, mod);
+                localStorage.removeItem(mod);
+                localStorageSupport = true;
+            } catch (e) {
+                localStorageSupport = false;
+            }
                 if (config.edit) {
                     require([
                     "application/builder",
@@ -99,7 +109,7 @@
                             userInfo.token = loggedInUser.credential.token;
                             userInfo.portal = signIn.getPortal();
                             var builder = new builderMode();
-                            builder.startup(config, userInfo, myTemplate.appResponse);
+                            builder.startup(config, userInfo, myTemplate.appResponse, localStorageSupport);
                             domClass.remove(document.body, "app-loading");
                         }
                         }, function (error) {
@@ -110,7 +120,7 @@
                     if (localStorage.getItem("geoform_config")) {
                         config = JSON.parse(localStorage.getItem("geoform_config"));
                     }
-                    myApp.startup(config, myTemplate.appResponse);
+                myApp.startup(config, myTemplate.appResponse, localStorageSupport);
                 }
             }, function (error) {
                 // something went wrong. Let's report it.
