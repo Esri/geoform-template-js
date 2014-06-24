@@ -92,8 +92,7 @@
                     "dojo/dom-class"
                 ], function (builderMode, signInHelper, domClass) {
                         var signIn = new signInHelper(),
-                            userInfo = {},
-                            myApp;
+                            userInfo = {};
                         signIn.createPortal().then(function (loggedInUser) {
                         var isValidUser = signIn.authenticateUser(true, myTemplate.appResponse, loggedInUser);
                         if (isValidUser) {
