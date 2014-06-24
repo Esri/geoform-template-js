@@ -661,13 +661,13 @@ define([
                 //condition to filter out radio inputs
                 array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
                     var key = domAttr.get(currentField, "id");
-                    var value = currentField.value.trim();
+                    var value = lang.trim(currentField.value);
                     featureData.attributes[key] = value;
                 });
                 array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
                     if (query(".radioInput:checked", currentField).length !== 0) {
                         var key = query(".radioInput:checked", currentField)[0].id;
-                        var value = query(".radioInput:checked", currentField)[0].value.trim();
+                        var value = lang.trim(query(".radioInput:checked", currentField)[0].value);
                         featureData.attributes[key] = value;
                     }
                 });
