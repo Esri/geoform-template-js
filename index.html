@@ -68,11 +68,13 @@
         require([
       "application/templateOptions",
       "application/template",
-      "application/main"
+      "application/main",
+      "application/localStorageHelper"
     ], function (
             templateOptions,
             Template,
-            Main
+            Main,
+            localStorageHelper
         ) {
             // start template
             var myTemplate = new Template(templateOptions);
@@ -107,9 +109,11 @@
                         });
                     });
                 } else {
-                    if (localStorage.getItem("geoform_config")) {
-                        config = JSON.parse(localStorage.getItem("geoform_config"));
-                    }
+                var localStorageSupport = new localStorageHelper();
+                if (localStorageSupport.startup() && localStorage.getItem("geoform_config")) {
+                    config = JSON.parse(localStorage.getItem("geoform_config"));
+                    localStorage.clear();
+                }
                     myApp.startup(config, myTemplate.appResponse);
                 }
             }, function (error) {

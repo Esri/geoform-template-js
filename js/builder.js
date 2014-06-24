@@ -19,12 +19,13 @@ define([
     "dojo/text!application/dijit/templates/author.html",
     "application/browseIdDlg",
     "application/ShareDialog",
+    "application/localStorageHelper",
     "dojo/i18n!application/nls/builder",
     "dojo/i18n!application/nls/user", //We need this file to get string defined for modal dialog
     "esri/arcgis/utils",
     "application/themes",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, nls, usernls, arcgisUtils, theme) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, localStorageHelper, nls, usernls, arcgisUtils, theme) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -38,6 +39,7 @@ define([
         fieldInfo: {},
         layerInfo: null,
         themes: theme,
+        localStorageSupport: null,
 
         constructor: function () {
         },
@@ -72,12 +74,13 @@ define([
             this.currentConfig = config;
             this.userInfo = userInfo;
             this.response = response;
+            this.localStorageSupport = new localStorageHelper();
             this._addOperationalLayers();
             this._populateDetails();
             this._populateThemes();
             this._initWebmapSelection();
             this._loadCSS("css/browseDialog.css");
-            if (typeof (Storage) === 'undefined') {
+            if (!this.localStorageSupport.startup()) {
                 array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                     if (domAttr.get(currentTab, "tab") == "preview") {
                         this._disableTab(currentTab);
@@ -513,7 +516,7 @@ define([
         },
         //function to enable the tab passed in input parameter
         _enableTab: function (currentTab) {
-            if (typeof (Storage) === 'undefined' && domAttr.get(currentTab, "tab") == "preview")
+            if (!this.localStorageSupport.startup() && domAttr.get(currentTab, "tab") == "preview")
                 return;
             if (domClass.contains(currentTab, "btn")) {
                 domClass.remove(currentTab, "disabled");
