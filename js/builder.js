@@ -80,7 +80,7 @@ define([
             this._populateThemes();
             this._initWebmapSelection();
             this._loadCSS("css/browseDialog.css");
-            if (!this.localStorageSupport.startup()) {
+            if (!this.localStorageSupport.supportsStorage()) {
                 array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                     if (domAttr.get(currentTab, "tab") == "preview") {
                         this._disableTab(currentTab);
