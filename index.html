@@ -110,7 +110,7 @@
                     });
                 } else {
                 var localStorageSupport = new localStorageHelper();
-                if (localStorageSupport.startup() && localStorage.getItem("geoform_config")) {
+                if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
                     config = JSON.parse(localStorage.getItem("geoform_config"));
                     localStorage.clear();
                 }

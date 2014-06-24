@@ -516,7 +516,7 @@ define([
         },
         //function to enable the tab passed in input parameter
         _enableTab: function (currentTab) {
-            if (!this.localStorageSupport.startup() && domAttr.get(currentTab, "tab") == "preview")
+            if (!this.localStorageSupport.supportsStorage() && domAttr.get(currentTab, "tab") == "preview")
                 return;
             if (domClass.contains(currentTab, "btn")) {
                 domClass.remove(currentTab, "disabled");
