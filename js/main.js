@@ -25,6 +25,7 @@ define([
     "esri/geometry/webMercatorUtils",
     "esri/geometry/Point",
     "application/ShareDialog",
+    "application/localStorageHelper",
     "esri/graphic",
     "esri/symbols/PictureMarkerSymbol",
     "esri/toolbars/edit",
@@ -51,7 +52,7 @@ define([
     _TemplatedMixin,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareDialog, Graphic, PictureMarkerSymbol, editToolbar, theme) {
+    nls, webMercatorUtils, Point, ShareDialog, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, theme) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: userTemplate,
         nls: nls,
@@ -60,12 +61,9 @@ define([
         addressGeometry: null,
         editToolbar: null,
         themes: theme,
+        localStorageSupport: null,
         constructor: function () {
-            ready(lang.hitch(this, function () {
-                if (localStorage.getItem("geoform_config")) {
-                    localStorage.clear();
-                }
-            }));
+
         },
         startup: function (config, response, isPreview, node) {
             // config will contain application and user defined info for the template such as i18n strings, the web map id
@@ -73,6 +71,7 @@ define([
             // any url parameters and any application specific configuration information.
             if (config) {
                 this.config = config;
+                this.localStorageSupport = new localStorageHelper();
                 // document ready
                 ready(lang.hitch(this, function () {
                     // modal i18n
@@ -88,7 +87,7 @@ define([
                     }
                     if (isPreview) {
                         var cssStyle;
-                        if (typeof (Storage) !== "undefined") {
+                        if (this.localStorageSupport.startup()) {
                             localStorage.setItem("geoform_config", JSON.stringify(config));
                         }
                         array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
@@ -125,11 +124,20 @@ define([
                 array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
                     //TODO chk for mandatroy fields
                     //to check for errors in form before submitting.
+                    //condition check to filter out radio fields
+                    if ((query(".form-control", currentField)[0])) {
                     //if condition to check for conditions where mandatory fields are kept empty or the entered values are erroneous.
                     if ((query(".form-control", currentField)[0].value === "" && domClass.contains(currentField, "mandatory")) || domClass.contains(currentField, "has-error")) {
                         //need to check if this condition can be removed
                         //this._validateField(currentField, false);
                         erroneousFields.push(currentField);
+                        }
+                    }
+                    //handle errors in radio fields here.
+                    else {
+                        if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0) {
+                            erroneousFields.push(currentField);
+                        }
                     }
                 }));
 
@@ -137,7 +145,10 @@ define([
                     errorMessage = "1. " + nls.user.formValidationMessageAlertText + "\n <ul>";
 
                     array.forEach(erroneousFields, function (erroneousField) {
-                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</a></li>";
+                        if (query(".form-control", erroneousField).length !== 0 && query(".form-control", erroneousField)[0].placeholder !== "")
+                            errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</a>. " + nls.user.validationFormatTypeSubstring + query(".form-control", erroneousField)[0].placeholder + "</li>";
+                        else
+                            errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</a></li>";
                     });
                     errorMessage += "</ul>";
 
@@ -298,15 +309,24 @@ define([
             }));
             array.forEach(fields, lang.hitch(this, function (sortedElement) {
                 array.some(newAddedFields, lang.hitch(this, function (newElement) {
-                    var fName = newElement.isNewField ? newElement.name : newElement.fieldName;
-                    if (sortedElement.fieldName == fName) {
-                        sortedArray.push(newElement);
-                        return true;
+                    var fName = newElement.name ? newElement.name : newElement.fieldName;
+                    if (this.config.appid) {
+                        if (sortedElement.fieldName == fName) {
+                            sortedArray.push(newElement);
+                            return true;
+                        }
+                    }
+                    else {
+                        if (sortedElement.name == fName) {
+                            sortedArray.push(newElement);
+                            return true;
+                        }
                     }
                 }));
             }));
             array.forEach(sortedArray, lang.hitch(this, function (currentField, index) {
-                //code to put aestrik mark for mandatory fields and also to give it a mandatory class.
+                var radioContainer, radioContent, inputLabel;
+                //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
                 if (!currentField.nullable) {
                     formContent = domConstruct.create("div", {className: "form-group has-feedback geoFormQuestionare mandatory" }, this.userForm);
                     requireField = domConstruct.create("div", {className: 'text-danger requireFieldStyle', innerHTML: "*" }, formContent);
@@ -327,13 +347,24 @@ define([
                     domConstruct.place(requireField, labelContent, "after");
                 }
                 //code to make select boxes in case of a coded value
+                //code to make select boxes in case of a coded value
                 if (currentField.domain) {
-                    inputContent = domConstruct.create("select", {className: "form-control selectDomain", "id": fieldname }, formContent);
-                    array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
-                        selectOptions = domConstruct.create("option", {}, inputContent);
-                        selectOptions.text = currentOption.name;
-                        selectOptions.value = currentOption.code;
-                    }));
+                    if (currentField.domain.codedValues.length !== 2) {
+                        inputContent = domConstruct.create("select", { className: "form-control selectDomain", "id": fieldname }, formContent);
+                        array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
+                            selectOptions = domConstruct.create("option", {}, inputContent);
+                            selectOptions.text = currentOption.name;
+                            selectOptions.value = currentOption.code;
+                        }));
+                    }
+                    else {
+                        radioContainer = domConstruct.create("div", { className: "radioContainer" }, formContent);
+                        array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
+                            radioContent = domConstruct.create("div", { className: "radio" }, radioContainer);
+                            inputLabel = domConstruct.create("label", { innerHTML: currentOption.name }, radioContent);
+                            inputContent = domConstruct.create("input", { "id": fieldname, className: "radioInput", type: "radio", name: currentField.fieldName, value: currentOption.code }, inputLabel);
+                        }));
+                    }
                 }
                 else {
                     switch (currentField.type) {
@@ -627,10 +658,18 @@ define([
             var featureData = new Graphic();
             featureData.attributes = {};
             if (this.addressGeometry) {
+                //condition to filter out radio inputs
                 array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
                     var key = domAttr.get(currentField, "id");
                     var value = currentField.value.trim();
                     featureData.attributes[key] = value;
+                });
+                array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
+                    if (query(".radioInput:checked", currentField).length !== 0) {
+                        var key = query(".radioInput:checked", currentField)[0].id;
+                        var value = query(".radioInput:checked", currentField)[0].value.trim();
+                        featureData.attributes[key] = value;
+                    }
                 });
                 featureData.geometry = {};
                 featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
