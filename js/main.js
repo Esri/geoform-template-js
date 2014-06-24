@@ -87,7 +87,7 @@ define([
                     }
                     if (isPreview) {
                         var cssStyle;
-                        if (this.localStorageSupport.startup()) {
+                        if (this.localStorageSupport.supportsStorage()) {
                             localStorage.setItem("geoform_config", JSON.stringify(config));
                         }
                         array.forEach(this.themes, lang.hitch(this, function (currentTheme) {

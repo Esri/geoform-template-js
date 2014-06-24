@@ -1,13 +1,11 @@
-﻿/*global $,define,document,Storage */
+/*global $,define,document,Storage */
 /*jslint sloppy:true,nomen:true */
 define([
-    "dojo/ready",
     "dojo/_base/declare",
-    "dijit/_WidgetBase",
     "dojo/domReady!"
-], function (ready, declare, _WidgetBase) {
-    return declare([_WidgetBase], {
-        startup: function () {
+], function (declare) {
+    return declare(null, {
+        supportsStorage: function () {
             var localStorageSupport;
             try {
                 var mod = 'modernizr';
@@ -17,7 +15,7 @@ define([
             } catch (e) {
                 localStorageSupport = false;
             }
-            return localStorageSupport
+            return localStorageSupport;
         }
     });
 });
