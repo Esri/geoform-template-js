@@ -34,8 +34,13 @@ define([
             // update indicator and check status
             this.updateConnectivityIndicator();
             Offline.check();
-            Offline.on('up', lang.hitch(this, this.goOnline));
-            Offline.on('down', lang.hitch(this, this.goOffline));
+            Offline.on('up', lang.hitch(this, function(){
+                this.goOnline();
+                
+            }));
+            Offline.on('down', lang.hitch(this, function(){
+                 this.goOffline();
+            }));
         },
 
         // update online status
@@ -64,14 +69,13 @@ define([
             this.offlineFeaturesManager.goOnline(lang.hitch(this, function () {
                 this.updateConnectivityIndicator();
             }));
-            // update status
-            this.updateConnectivityIndicator();
         },
 
         // now offline
         goOffline: function () {
             // go offline
             this.offlineFeaturesManager.goOffline();
+            this.updateConnectivityIndicator();
         },
 
         // setup editing
