@@ -187,8 +187,8 @@ define([
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
                 themesDivContainer = domConstruct.create("div", { className: "col-md-4" }, this.stylesList);
                 themesDivContent = domConstruct.create("div", { className: "radio" }, themesDivContainer);
-                themesLabel = domConstruct.create("label", { innerHTML: currentTheme.name }, themesDivContent);
-                themesRadioButton = domConstruct.create("input", { type: "radio", name: "themesRadio", themeName: currentTheme.id, themeUrl: currentTheme.url }, themesLabel);
+                themesLabel = domConstruct.create("label", { innerHTML: currentTheme.name, "for": currentTheme.id }, themesDivContent);
+                themesRadioButton = domConstruct.create("input", { type: "radio", id: currentTheme.id, name: "themesRadio", themeName: currentTheme.id, themeUrl: currentTheme.url }, themesLabel);
                 if (currentTheme.id == this.currentConfig.theme) {
                     themesRadioButton.checked = true;
                 }
@@ -270,13 +270,15 @@ define([
                 fieldLabelInput = domConstruct.create("input", { className: "form-control fieldLabel", index: currentIndex, placeholder: nls.builder.fieldLabelPlaceHolder, value: currentField.alias }, fieldLabel);
                 fieldDescription = domConstruct.create("td", { className: "tableDimension" }, fieldRow);
                 fieldDescriptionInput = domConstruct.create("input", { className: "form-control fieldDescription", placeholder: nls.builder.fieldDescPlaceHolder, value: "" }, fieldDescription);
-                array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
-                    if (currentFieldPopupInfo.fieldName == currentField.name) {
-                        if (currentFieldPopupInfo.tooltip) {
-                            fieldDescriptionInput.value = currentFieldPopupInfo.tooltip;
+                if (this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo) {
+                    array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
+                        if (currentFieldPopupInfo.fieldName == currentField.name) {
+                            if (currentFieldPopupInfo.tooltip) {
+                                fieldDescriptionInput.value = currentFieldPopupInfo.tooltip;
+                            }
                         }
-                    }
-                });
+                    });
+                }
                 currentIndex++;
                 if (currentField.isNewField) {
                     domAttr.set(fieldLabelInput, "value", currentField.alias);
@@ -420,19 +422,25 @@ define([
                     break;
                 case "fields":
                     this.currentConfig.fields.length = 0;
-                    var index, fieldName, fieldLabel, fieldDescription, layerName, visible;
+                    var index, fieldName, fieldLabel, fieldDescription, layerName, visible, defaultValue;
                     layerName = dom.byId("selectLayer").value;
                     array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow) {
                         if (currentRow.getAttribute("rowIndex")) {
                             index = currentRow.getAttribute("rowIndex");
                             fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
+                            array.some(this.fieldInfo[this.currentConfig.form_layer.id].Fields, function (currentField) {
+                                if (currentField.name == fieldName) {
+                                    defaultValue = currentField.defaultValue;
+                                    return true;
+                                }
+                            });
                             fieldLabel = query(".fieldLabel", currentRow)[0].value;
                             fieldDescription = query(".fieldDescription", currentRow)[0].value;
                             visible = query(".fieldCheckbox", currentRow)[0].checked;
                             _self.currentConfig.fields.push({
                                 fieldName: fieldName, fieldLabel: fieldLabel,
                                 fieldDescription: fieldDescription,
-                                visible: visible
+                                visible: visible, defaultValue: defaultValue
                             });
                         }
                     }));

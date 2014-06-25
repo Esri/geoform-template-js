@@ -4,14 +4,14 @@ define([
     "dojo/dom-class",
     "dijit/_WidgetBase",
     "dojo/on",
-    "dojo/dom",
     "esri/arcgis/utils",
     "esri/arcgis/Portal",
     "dojo/Deferred",
     "dojo/cookie",
+    "dojo/dom-construct",
     "dojo/i18n!application/nls/builder"
 ],
-function (declare, lang, domClass, _WidgetBase, on, dom, arcgisUtils, portal, Deferred, cookie, nls) {
+function (declare, lang, domClass, _WidgetBase, on, arcgisUtils, portal, Deferred, cookie, domConstruct, nls) {
     var Widget = declare([_WidgetBase], {
         declaredClass: "application.signInHelper",
         _portal: null,
@@ -72,10 +72,13 @@ function (declare, lang, domClass, _WidgetBase, on, dom, arcgisUtils, portal, De
                     // for localization. If you don't need to support multiple languages you can hardcode the
                     // strings here and comment out the call in index.html to get the localization strings.
                     // set message
-                    var node = dom.byId("loading_message");
+                    //We found some changes here and it was not working so we have modified the code
+                    var signInErrorMessageDiv = domConstruct.create("div", { class: "signIn-error-message" }, document.body);
+                    var node = domConstruct.create("div", { className: "alert alert-danger errorMessage", innerHTML: nls.builder.invalidUser }, signInErrorMessageDiv);
                     if (node) {
                         node.innerHTML = nls.builder.invalidUser;
                     }
+                    return false;
                 }
             }
             else {
