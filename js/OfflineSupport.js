@@ -59,7 +59,6 @@ define([
           var options = {
             html: true,
             animation: true,
-            placement: 'top',
             trigger: 'manual',
             title: i18n.onlineStatus.title,
             content: html
