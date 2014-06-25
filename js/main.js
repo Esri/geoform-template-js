@@ -80,11 +80,6 @@ define([
                     domConstruct.place(modalTemplate, document.body, 'last');
                     //supply either the webmap id or, if available, the item info
                     domStyle.set(this.userMode, 'display', 'none');
-                    this._setAppConfigurations(this.config.details);
-                    // window title
-                    if(this.config.details && this.config.details.Title){
-                        window.document.title = this.config.details.Title;
-                    }
                     if (isPreview) {
                         var cssStyle;
                         if (this.localStorageSupport.supportsStorage()) {
@@ -349,7 +344,7 @@ define([
                 //code to make select boxes in case of a coded value
                 //code to make select boxes in case of a coded value
                 if (currentField.domain) {
-                    if (currentField.domain.codedValues.length !== 2) {
+                    if (currentField.domain.codedValues.length > 2) {
                         inputContent = domConstruct.create("select", { className: "form-control selectDomain", "id": fieldname }, formContent);
                         array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
                             selectOptions = domConstruct.create("option", {}, inputContent);
@@ -361,8 +356,8 @@ define([
                         radioContainer = domConstruct.create("div", { className: "radioContainer" }, formContent);
                         array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
                             radioContent = domConstruct.create("div", { className: "radio" }, radioContainer);
-                            inputLabel = domConstruct.create("label", { innerHTML: currentOption.name }, radioContent);
-                            inputContent = domConstruct.create("input", { "id": fieldname, className: "radioInput", type: "radio", name: currentField.fieldName, value: currentOption.code }, inputLabel);
+                            inputLabel = domConstruct.create("label", { innerHTML: currentOption.name, "for": currentOption.code + fieldname }, radioContent);
+                            inputContent = domConstruct.create("input", { "id": currentOption.code + fieldname, className: "radioInput", type: "radio", name: fieldname, value: currentOption.code }, inputLabel);
                         }));
                     }
                 }
@@ -402,7 +397,10 @@ define([
                             });
                             break;
                     }
-
+                    //If present fetch default values
+                    if (currentField.defaultValue) {
+                        domAttr.set(inputContent, "value", currentField.defaultValue);
+                    }
                     //conditional check to attach keyup event to all the inputs except date and string field
                     //as validation is not required for date field and string fields max-length is already set
                     if (domAttr.get(inputContent, "inputType") !== "Date" || domAttr.get(inputContent, "inputType") !== "String") {
@@ -526,6 +524,9 @@ define([
                     currentInput.options[0].selected = true;
                 }
             });
+            array.forEach(query(".radioInput:checked"), function (currentField) {
+                domAttr.set(currentField, "checked", false);
+            });
         },
         _validateUserInput: function (isValidInput, node, inputValue, iskeyPress) {
             if (isValidInput) {
@@ -569,6 +570,15 @@ define([
                 this.map = response.map;
                 this.map.resize();
                 this.map.reposition();
+                //Check for the appid if it is not present load entire application with webmap defaults
+                if (!this.config.appid && this.config.webmap) {
+                    this._setWebmapDefaults();
+                }
+                this._setAppConfigurations(this.config.details);
+                // window title
+                if (this.config.details && this.config.details.Title) {
+                    window.document.title = this.config.details.Title;
+                }
                 this.map.on("pan-end", lang.hitch(this, function () {
                     this.map.resize();
                     this.map.reposition();
@@ -666,7 +676,7 @@ define([
                 });
                 array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
                     if (query(".radioInput:checked", currentField).length !== 0) {
-                        var key = query(".radioInput:checked", currentField)[0].id;
+                        var key = query(".radioInput:checked", currentField)[0].name;
                         var value = lang.trim(query(".radioInput:checked", currentField)[0].value);
                         featureData.attributes[key] = value;
                     }
@@ -679,6 +689,7 @@ define([
                     if (_self.map.infoWindow.isShowing) {
                         _self.map.infoWindow.hide();
                     }
+                    _self.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
                     _self._openShareDialog();
                     $("#myModal").modal('show');
@@ -767,6 +778,23 @@ define([
         _resetButton: function () {
             var btn = $(this.submitButton);
             btn.button('reset');
+        },
+
+        _setWebmapDefaults: function () {
+            this.config.details.Title = this.config.itemInfo.item.title;
+            this.config.details.Description = this.config.itemInfo.item.snippet;
+            if (this.config.itemInfo.item.thumbnail) {
+                this.config.details.Logo = this.config.sharinghost + "/sharing/rest/content/items/" + this.config.webmap + '/info/' + this.config.itemInfo.item.thumbnail;
+            } else {
+                this.config.details.Logo = "./images/default.png";
+            }
+            array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
+                if (currentLayer.url.split("/")[currentLayer.url.split("/").length - 2] == "FeatureServer") {
+                    this.config.form_layer.id = currentLayer.id;
+                    this.config.fields = this.map.getLayer(this.config.form_layer.id).fields;
+                    return true;
+                }
+            }));
         }
     });
 });

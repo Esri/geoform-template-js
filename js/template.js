@@ -361,10 +361,7 @@ define([
                         }
                         // Set the itemInfo config option. This can be used when calling createMap instead of the webmap id
                         this.config.itemInfo = itemInfo;
-                        //Set the web map defaults to application defaults.So application will work without hosting it on Arcgis online
-                        this._setWebmapDefaults().then(function () {
-                            deferred.resolve(itemInfo);
-                        });
+                        deferred.resolve(itemInfo);
                     }), function (error) {
                         if (!error) {
                             error = new Error("Error retrieving display item.");
@@ -472,34 +469,6 @@ define([
             // (center, basemap, theme) are only here as examples and can be removed if you don't plan on
             // supporting additional url parameters in your application.
             this.customUrlConfig = this._createUrlParamsObject(this.templateConfig.urlItems);
-        },
-        _setWebmapDefaults: function () {
-            var layer, layerRequest;
-            this.config.details.Title = this.config.itemInfo.item.title;
-            this.config.details.Description = this.config.itemInfo.item.snippet;
-            if (this.config.itemInfo.item.thumbnail) {
-                this.config.details.Logo = this.config.sharinghost + "/sharing/rest/content/items/" + this.config.webmap + '/info/' + this.config.itemInfo.item.thumbnail;
-            } else {
-                this.config.details.Logo = "./images/default.png";
-            }
-            array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
-                if (currentLayer.url.split("/")[currentLayer.url.split("/").length - 2] == "FeatureServer") {
-                    this.config.form_layer.id = currentLayer.id;
-                    layer = currentLayer;
-                    return true;
-                }
-            }));
-            //After we get 'FeatureServer' we want all the fields for creating Geo form
-            layerRequest = esriRequest({
-                url: layer.url,
-                content: {
-                    f: 'json'
-                }
-            }).then(lang.hitch(this, function (result) {
-            //Store all the fields in config file
-                this.config.fields = result.fields;
-            }));
-            return layerRequest;
         }
     });
 });
