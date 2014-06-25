@@ -1,4 +1,4 @@
-/*global Offline */
+/*global Offline, $ */
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
@@ -45,21 +45,34 @@ define([
 
         // update online status
         updateConnectivityIndicator: function () {
-            var node = dom.byId('onlineStatus');
-            var html = '';
-            switch (this.offlineFeaturesManager.getOnlineStatus()) {
+            var html;
+            var status = this.offlineFeaturesManager.getOnlineStatus();
+            switch (status) {
             case this.offlineFeaturesManager.OFFLINE:
-                html += '<div class="well well-sm text-danger"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.offline + '</div>';
-                break;
-            case this.offlineFeaturesManager.ONLINE:
-                html += '<div class="well well-sm text-success"><span class="glyphicon glyphicon-ok-sign"></span> ' + i18n.onlineStatus.online + '</div>';
+                html = '<span class="text-danger"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.offline + '</span>';
                 break;
             case this.offlineFeaturesManager.RECONNECTING:
-                html += '<div class="well well-sm text-warning"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.reconnecting + '</div>';
+                html = '<span class="text-warning"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.reconnecting + '</span>';
                 break;
             }
-            if(node){
-                node.innerHTML = html;
+            var submitButton = $('#submit_container');
+            if(submitButton){
+              submitButton.popover('destroy');
+              if(html){
+                var options = {
+                  html: true,
+                  animation: true,
+                  trigger: 'manual',
+                  content: html
+                };
+                submitButton.popover(options);
+                submitButton.popover('show');
+                if(status !== this.offlineFeaturesManager.OFFLINE){
+                  setTimeout(function(){
+                    submitButton.popover('hide');
+                  }, 5000);
+                } 
+              }
             }
         },
 
