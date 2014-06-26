@@ -35,7 +35,23 @@
     color: #666;
     opacity: 1;
 }
-
+.loading-error {
+    display: none;
+    width: 100%;
+    height: 100px;
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 0;
+    text-align: center;
+    margin: -50px 0 0 0;
+}
+.app-error .loading-indicator {
+    display: block;
+}
+.app-error .loading-error {
+    display: block;
+}
 .signIn-error-message {
     width: 100%;
     position: absolute;
