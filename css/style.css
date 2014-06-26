@@ -226,3 +226,9 @@ input::-ms-clear {
 .submit-container {
   display: inline-block;
 }
+.webmap-thumb{
+  display: inline-block;
+}
+.webmap-thumb-container{
+  margin-bottom: 5px;
+}

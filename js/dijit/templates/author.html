@@ -65,11 +65,12 @@
         <div class="tab-content">
           <div id="webmap" class="tab-pane active">
             <h2>${nls.builder.webmapTabTitleText}</h2>
-            <a id="webmapLink" href="" target="_blank">
-              <img class="img-thumbnail" src="" />
+            <div class="webmap-thumb-container">
+            <a id="webmapLink" class="webmap-thumb" target="_blank">
+              <img class="img-thumbnail" />
             </a>
-            <br />
-            <button type="button" id="selectWebmapBtn" class="select-webmap-button btn btn-default" data-loading-text='<i class="icon-spin icon-refresh"></i> ${nls.builder.btnSelectWebmapText}'>${nls.builder.btnSelectWebmapText}</button>
+              </div>
+            <button type="button" id="selectWebmapBtn" class="select-webmap-button btn btn-default" data-loading-text="${nls.builder.btnSelectWebmapTextLoading}">${nls.builder.btnSelectWebmapText}</button>
             <p class="text-right"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${nls.builder.btnNextText}</a>
             </p>
           </div>

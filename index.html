@@ -27,9 +27,9 @@
   <!-- Optional theme -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
-  <!-- Bootstrap-map-js -->
   <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.10/js/esri/css/esri.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
+  <!-- Bootstrap theme -->
   <link rel="stylesheet" type="text/css" id="themeLink">
   <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.10/js/dojo/dijit/themes/claro/claro.css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
@@ -45,7 +45,7 @@
   <div class="loading-indicator">
     <div class="icon-loading icon-spinner icon-spin"></div>
     <div class="loading-error">
-      <div class="alert alert-danger"><span class="icon-frown"></span>  <span id="loading_message"></span>
+      <div class="alert alert-danger"><span class="icon-frown"></span> <span id="loading_message"></span>
       </div>
     </div>
   </div>
@@ -97,9 +97,9 @@
         //In this example we have one called theme.
         if (config.edit) {
           require([
-                    "application/builder",
-                    "application/signInHelper",
-                    "dojo/dom-class"
+            "application/builder",
+            "application/signInHelper",
+            "dojo/dom-class"
                 ], function (builderMode, signInHelper, domClass) {
             var signIn = new signInHelper(),
               userInfo = {};
