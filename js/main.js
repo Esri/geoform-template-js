@@ -216,8 +216,8 @@ define([
             }));
             on(this.map, 'mouse-move', lang.hitch(this, function (evt) {
                 var coords = this._calculateLatLong(evt);
-                var coordinatesValue = nls.user.latitude + ': ' + coords[0].toFixed(5) + ', ';
-                coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[1].toFixed(5);
+                var coordinatesValue = nls.user.latitude + ': ' + coords[1].toFixed(5) + ', ';
+                coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);
                 domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
             }));
             this.map.resize();
@@ -607,7 +607,8 @@ define([
         },
 
         _findLocation: function (evt) {
-            if (evt.charCode === 13) {
+            var keyCode = evt.charCode || evt.keyCode;
+            if (keyCode === 13) {
                 if (this.XCoordinate.value === "") {
                     this._showErrorMessageDiv(nls.user.emptylatitudeAlertMessage);
                     return;
@@ -625,17 +626,17 @@ define([
             }, domConstruct.create('div'));
             currentLocation.startup();
             on(currentLocation, "locate", lang.hitch(this, function (evt) {
-                if (evt.graphic) {
-                    var mapLocation = webMercatorUtils.lngLatToXY(evt.graphic.geometry.x, evt.graphic.geometry.y, true);
-                    var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
-                    this.addressGeometry = pt;
-                    this._setSymbol(evt.graphic.geometry);
-                    this.map.infoWindow.setTitle(nls.user.myLocationTitleText);
-                    this.map.infoWindow.setContent(nls.user.addressSearchText);
-                    this.map.infoWindow.show(this.addressGeometry);
-                }
+                var mapLocation = webMercatorUtils.lngLatToXY(evt.graphic.geometry.x, evt.graphic.geometry.y, true);
+                var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
+                this.addressGeometry = pt;
+                this._setSymbol(evt.graphic.geometry);
+                this.map.infoWindow.setTitle(nls.user.myLocationTitleText);
+                this.map.infoWindow.setContent(nls.user.addressSearchText);
+                this.map.infoWindow.show(this.addressGeometry);
+                this._setSymbol(evt.graphic.geometry);
             }));
             on(dom.byId('geolocate_button'), 'click', lang.hitch(this, function(){
+                this.map.infoWindow.hide();
                 currentLocation.locate();
             }));
         },
@@ -713,8 +714,8 @@ define([
 
         _locatePointOnMap: function (coordinates) {
             var latLong = coordinates.split(",");
-            if (latLong[0] >= -180 && latLong[0] <= 180 && latLong[1] >= -90 && latLong[1] <= 90) {
-                var mapLocation = webMercatorUtils.lngLatToXY(latLong[0], latLong[1], true);
+            if (latLong[0] >= -90 && latLong[0] <= 90 && latLong[1] >= -180 && latLong[1] <= 180) {
+                var mapLocation = webMercatorUtils.lngLatToXY(latLong[1], latLong[0], true);
                 var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
                 this.addressGeometry = pt;
                 this._setSymbol(this.addressGeometry);
@@ -726,11 +727,10 @@ define([
                 setTimeout(lang.hitch(this, function () {
                     this.map.infoWindow.show(this.addressGeometry);
                 }), 500);
-                domClass.remove(this.coordinatesContainer, "has-error");
-                domClass.remove(this.coordinatesContainer2, "has-error");
-            } else {
-                domClass.add(this.coordinatesContainer, "has-error");
-                domClass.add(this.coordinatesContainer2, "has-error");
+                domConstruct.empty(this.erroMessageDiv);
+            }
+            else {
+                this._showErrorMessageDiv(nls.user.invalidLatLong);
             }
         },
 
