@@ -381,7 +381,7 @@ define([
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDouble":
-                            inputContent = domConstruct.create("input", { type: "number", className: "form-control", placeholder: nls.user.floatFormat, "inputType": "Double", "id": fieldname, step:"any", step:".1"  }, formContent);
+                            inputContent = domConstruct.create("input", { type: "number", className: "form-control", placeholder: nls.user.floatFormat, "inputType": "Double", "id": fieldname, step:".1"  }, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDate":
