@@ -1,217 +1,192 @@
-define(["esri/graphic"], function(Graphic)
-{
-    "use strict";
-	/* private consts */
-	var EDITS_QUEUE_KEY = "esriEditsQueue";
-	var SEPARATOR = "|@|";
+define(["esri/graphic"], function (Graphic) {
+  "use strict";
+  /* private consts */
+  var EDITS_QUEUE_KEY = "esriEditsQueue";
+  var SEPARATOR = "|@|";
 
-	return {
+  return {
 
-		//
-		// public interface
-		//
+    //
+    // public interface
+    //
 
-		// enum
-		
-		ADD: "add",
-		UPDATE: "update",
-		DELETE:"delete",
+    // enum
 
-		// ERROR_DUPLICATE_EDIT: "Attempt to insert duplicated edit",
-		ERROR_LOCALSTORAGE_FULL: "LocalStorage capacity exceeded",
+    ADD: "add",
+    UPDATE: "update",
+    DELETE: "delete",
 
-		isSupported: function() 
-		{
-			// http://stackoverflow.com/questions/11214404/how-to-detect-if-browser-supports-html5-local-storage
-            var mod = "esriLocalStorageTest";
-			try {
-				window.localStorage.setItem(mod, mod);
-				window.localStorage.removeItem(mod);
-				return true;
-			} catch(e) {
-				return false;
-            }
-        },
+    // ERROR_DUPLICATE_EDIT: "Attempt to insert duplicated edit",
+    ERROR_LOCALSTORAGE_FULL: "LocalStorage capacity exceeded",
 
-		pushEdit: function(operation,layer,graphic)
-		{
-			var edit = {
-				operation: operation,
-				layer: layer,
-				graphic: this._serialize(graphic)
-			};
+    isSupported: function () {
+      // http://stackoverflow.com/questions/11214404/how-to-detect-if-browser-supports-html5-local-storage
+      var mod = "esriLocalStorageTest";
+      try {
+        window.localStorage.setItem(mod, mod);
+        window.localStorage.removeItem(mod);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
 
-			var edits = this._retrieveEditsQueue();
-			edits.push(edit);
-			var success = this._storeEditsQueue(edits);
-			return { success: success, error: success? undefined : {code: 1000, description:this.ERROR_LOCALSTORAGE_FULL} };
-		},
+    pushEdit: function (operation, layer, graphic) {
+      var edit = {
+        operation: operation,
+        layer: layer,
+        graphic: this._serialize(graphic)
+      };
 
-		peekFirstEdit: function()
-		{
-			var edits = this._retrieveEditsQueue();
-			var firstEdit;
+      var edits = this._retrieveEditsQueue();
+      edits.push(edit);
+      var success = this._storeEditsQueue(edits);
+      return {
+        success: success,
+        error: success ? undefined : {
+          code: 1000,
+          description: this.ERROR_LOCALSTORAGE_FULL
+        }
+      };
+    },
 
-			if( edits )
-			{
-				firstEdit = edits[0];
-				firstEdit.graphic = this._deserialize(firstEdit.graphic);
-				return firstEdit;	
-			}
-			return null;			
-		},
+    peekFirstEdit: function () {
+      var edits = this._retrieveEditsQueue();
+      var firstEdit;
 
-		popFirstEdit: function()
-		{
-			var edits = this._retrieveEditsQueue();
-			var firstEdit;
+      if (edits) {
+        firstEdit = edits[0];
+        firstEdit.graphic = this._deserialize(firstEdit.graphic);
+        return firstEdit;
+      }
+      return null;
+    },
 
-			if( edits )
-			{
-				firstEdit = edits.shift();
-				this._storeEditsQueue(edits);
-				firstEdit.graphic = this._deserialize(firstEdit.graphic);
-				return firstEdit;			
-			}
-			return null;			
-		},
+    popFirstEdit: function () {
+      var edits = this._retrieveEditsQueue();
+      var firstEdit;
 
-		hasPendingEdits: function()
-		{
-			var storedValue = window.localStorage.getItem(EDITS_QUEUE_KEY) || "";
-			return ( storedValue !== "" );
-		},
+      if (edits) {
+        firstEdit = edits.shift();
+        this._storeEditsQueue(edits);
+        firstEdit.graphic = this._deserialize(firstEdit.graphic);
+        return firstEdit;
+      }
+      return null;
+    },
 
-		pendingEditsCount: function()
-		{
-			var storedValue = window.localStorage.getItem(EDITS_QUEUE_KEY) || "";
+    hasPendingEdits: function () {
+      var storedValue = window.localStorage.getItem(EDITS_QUEUE_KEY) || "";
+      return (storedValue !== "");
+    },
 
-			if( storedValue === "" )
-			{
-				return 0;	// fast easy case				
-			}
+    pendingEditsCount: function () {
+      var storedValue = window.localStorage.getItem(EDITS_QUEUE_KEY) || "";
 
-			var editsArray = this._unpackArrayOfEdits(storedValue);
-			return editsArray.length;
-		},
+      if (storedValue === "") {
+        return 0; // fast easy case				
+      }
 
-		resetEditsQueue: function()
-		{
-			window.localStorage.setItem(EDITS_QUEUE_KEY, "");
-		},
+      var editsArray = this._unpackArrayOfEdits(storedValue);
+      return editsArray.length;
+    },
 
-		getEditsStoreSizeBytes: function()
-		{
-			var editsQueueValue = window.localStorage.getItem(EDITS_QUEUE_KEY);
+    resetEditsQueue: function () {
+      window.localStorage.setItem(EDITS_QUEUE_KEY, "");
+    },
 
-			return (editsQueueValue? EDITS_QUEUE_KEY.length + editsQueueValue.length : 0); 
-		},
+    getEditsStoreSizeBytes: function () {
+      var editsQueueValue = window.localStorage.getItem(EDITS_QUEUE_KEY);
 
-		getLocalStorageSizeBytes: function()
-		{
-			var bytes = 0,
-				key, value;
+      return (editsQueueValue ? EDITS_QUEUE_KEY.length + editsQueueValue.length : 0);
+    },
 
-			for(key in window.localStorage )
-			{
-				if( window.localStorage.hasOwnProperty(key))
-				{
-					value = window.localStorage.getItem(key);
-					bytes += key.length + value.length;					
-				}
-			}
-			return bytes;
-		},
+    getLocalStorageSizeBytes: function () {
+      var bytes = 0,
+        key, value;
 
-		//
-		// internal methods
-		//
+      for (key in window.localStorage) {
+        if (window.localStorage.hasOwnProperty(key)) {
+          value = window.localStorage.getItem(key);
+          bytes += key.length + value.length;
+        }
+      }
+      return bytes;
+    },
 
-		//
-		// graphic serialization/deserialization
-		//
-		_serialize: function(graphic)
-		{
-			// keep only attributes and geometry, that are the values that get sent to the server by applyEdits() 
-			// see http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Apply_Edits_Feature_Service_Layer/02r3000000r6000000/
-			// use graphic's built-in serializing method
-			var json = graphic.toJson();
-			var jsonClean = 
-			{
-				attributes: json.attributes,
-				geometry: json.geometry
-			};
-			return JSON.stringify(jsonClean);
-		},
+    //
+    // internal methods
+    //
 
-		_deserialize: function(json)
-		{	
-			var graphic = new Graphic(JSON.parse(json));
-			return graphic;
-		},
+    //
+    // graphic serialization/deserialization
+    //
+    _serialize: function (graphic) {
+      // keep only attributes and geometry, that are the values that get sent to the server by applyEdits() 
+      // see http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Apply_Edits_Feature_Service_Layer/02r3000000r6000000/
+      // use graphic's built-in serializing method
+      var json = graphic.toJson();
+      var jsonClean = {
+        attributes: json.attributes,
+        geometry: json.geometry
+      };
+      return JSON.stringify(jsonClean);
+    },
 
-		_retrieveEditsQueue: function()
-		{
-			var storedValue = window.localStorage.getItem(EDITS_QUEUE_KEY) || "";
-			return this._unpackArrayOfEdits(storedValue);
-		},
+    _deserialize: function (json) {
+      var graphic = new Graphic(JSON.parse(json));
+      return graphic;
+    },
 
-		_storeEditsQueue: function(edits)
-		{
-			try 
-			{
-				var serializedEdits = this._packArrayOfEdits(edits);
-				window.localStorage.setItem(EDITS_QUEUE_KEY, serializedEdits);
-				return true;
-			}
-			catch(err)
-			{
-				return false;
-			}
-		},
+    _retrieveEditsQueue: function () {
+      var storedValue = window.localStorage.getItem(EDITS_QUEUE_KEY) || "";
+      return this._unpackArrayOfEdits(storedValue);
+    },
 
-		_packArrayOfEdits: function(edits)
-		{
-			var serializedEdits = [];
-			edits.forEach(function(edit)
-			{
-				serializedEdits.push( JSON.stringify(edit) );
-			});
-			return serializedEdits.join(SEPARATOR);
-		},
+    _storeEditsQueue: function (edits) {
+      try {
+        var serializedEdits = this._packArrayOfEdits(edits);
+        window.localStorage.setItem(EDITS_QUEUE_KEY, serializedEdits);
+        return true;
+      } catch (err) {
+        return false;
+      }
+    },
 
-		_unpackArrayOfEdits: function(serializedEdits)
-		{
-			if( !serializedEdits )
-			{
-				return [];				
-			}
+    _packArrayOfEdits: function (edits) {
+      var serializedEdits = [];
+      edits.forEach(function (edit) {
+        serializedEdits.push(JSON.stringify(edit));
+      });
+      return serializedEdits.join(SEPARATOR);
+    },
 
-			var edits = [];
-			serializedEdits.split(SEPARATOR).forEach( function(serializedEdit)
-			{
-				edits.push( JSON.parse(serializedEdit) );
-			});
+    _unpackArrayOfEdits: function (serializedEdits) {
+      if (!serializedEdits) {
+        return [];
+      }
 
-			return edits;
-		},
+      var edits = [];
+      serializedEdits.split(SEPARATOR).forEach(function (serializedEdit) {
+        edits.push(JSON.parse(serializedEdit));
+      });
 
-		_isEditDuplicated: function(newEdit,edits)
-		{
-			var i,
-				edit;
+      return edits;
+    },
 
-			for(i=0; i<edits.length; i++)
-			{	
-				edit = edits[i];
-				if( edit.operation === newEdit.operation &&
-					edit.layer     === newEdit.layer     &&
-					edit.graphic   === newEdit.graphic )
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-	};
+    _isEditDuplicated: function (newEdit, edits) {
+      var i,
+        edit;
+
+      for (i = 0; i < edits.length; i++) {
+        edit = edits[i];
+        if (edit.operation === newEdit.operation &&
+          edit.layer === newEdit.layer &&
+          edit.graphic === newEdit.graphic) {
+          return true;
+        }
+      }
+      return false;
+    }
+  };
 });
