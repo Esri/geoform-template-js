@@ -29,6 +29,7 @@ define([
     "esri/graphic",
     "esri/symbols/PictureMarkerSymbol",
     "esri/toolbars/edit",
+    "esri/dijit/Popup",
     "application/themes",
     "dojo/NodeList-traverse",
     "dojo/domReady!"
@@ -52,7 +53,7 @@ define([
     _TemplatedMixin,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareDialog, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, theme) {
+    nls, webMercatorUtils, Point, ShareDialog, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: userTemplate,
         nls: nls,
@@ -226,7 +227,7 @@ define([
             var symbolUrl, pictureMarkerSymbol, graphic;
             this.map.graphics.clear();
             symbolUrl = "./images/pins/purple.png";
-            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36);
+            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(10, 0);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
             this.map.centerAt(point);
@@ -551,11 +552,14 @@ define([
 
         // create a map based on the input web map id
         _createWebMap: function (itemInfo) {
+          var popup = new Popup(null, domConstruct.create("div"));
+          domClass.add(popup.domNode, 'light');
             domConstruct.empty($("#mapDiv"));
             arcgisUtils.createMap(itemInfo, "mapDiv", {
                 mapOptions: {
                     smartNavigation: false,
-                    autoResize: false
+                    autoResize: false,
+                    infoWindow: popup
                     // Optionally define additional map config here for example you can
                     // turn the slider off, display info windows, disable wraparound 180, slider position and more.
                 },
