@@ -84,7 +84,7 @@
 
 @media (min-width: 480px) {
   .map-div {
-    height: 200px!important;
+    height: 250px!important;
   }
   .preview-frame {
     height: 400px;
@@ -94,7 +94,7 @@
 
 @media (min-width: 768px) {
   .map-div {
-    height: 300px!important;
+    height: 350px!important;
   }
   .preview-frame {
     height: 500px;
@@ -104,7 +104,7 @@
 
 @media (min-width: 992px) {
   .map-div {
-    height: 400px!important;
+    height: 450px!important;
   }
   .preview-frame {
     height: 500px;
