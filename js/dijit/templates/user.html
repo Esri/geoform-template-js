@@ -41,10 +41,10 @@
                     <div id="coordinates" class="tab-pane">
                         <form class="form-inline" role="form">
                             <div class="form-group" data-dojo-attach-point="coordinatesContainer">
-                                <input type="number" pattern="\-?\d+(\.\d{0,})?" data-dojo-attach-point="XCoordinate" class="form-control" type="text" placeholder="${nls.user.placeholderLatitude}" />
+                                <input type="number" pattern="-?\d{1,3}\.\d+" data-dojo-attach-point="XCoordinate" class="form-control" type="text" placeholder="${nls.user.placeholderLatitude}" />
                             </div>
                             <div class="form-group" data-dojo-attach-point="coordinatesContainer2">
-                                <input type="number" pattern="\-?\d+(\.\d{0,})?" data-dojo-attach-point="YCoordinate" class="form-control" type="text" placeholder="${nls.user.placeholderLongitude}" />
+                                <input type="number" pattern="-?\d{1,3}\.\d+" data-dojo-attach-point="YCoordinate" class="form-control" type="text" placeholder="${nls.user.placeholderLongitude}" />
                             </div>
                         </form>
                     </div>
