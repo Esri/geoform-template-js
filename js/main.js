@@ -368,23 +368,23 @@ define([
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeSmallInteger":
-                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.integerFormat, "inputType": "smallInteger", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "number", className: "form-control", placeholder: nls.user.integerFormat, "inputType": "smallInteger", "id": fieldname, "pattern":"[0-9]*" }, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeInteger":
-                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.integerFormat, "inputType": "Integer", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "number", className: "form-control", placeholder: nls.user.integerFormat, "inputType": "Integer", "id": fieldname, "pattern":"[0-9]*"}, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeSingle":
-                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.floatFormat, "inputType": "Single", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "number", className: "form-control", placeholder: nls.user.floatFormat, "inputType": "Single", "id": fieldname, "pattern":"[0-9]*"}, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDouble":
-                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.floatFormat, "inputType": "Double", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "number", className: "form-control", placeholder: nls.user.floatFormat, "inputType": "Double", "id": fieldname, step:"any", pattern:"\-?\d+(\.\d{0,})?"  }, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             break;
                         case "esriFieldTypeDate":
-                            inputContent = domConstruct.create("input", { type: "text", className: "form-control", placeholder: nls.user.dateFormat, "inputType": "Date", "id": fieldname }, formContent);
+                            inputContent = domConstruct.create("input", { type: "date", className: "form-control", placeholder: nls.user.dateFormat, "inputType": "Date", "id": fieldname }, formContent);
                             domConstruct.create("span", { className: "glyphicon form-control-feedback" }, formContent);
                             $(inputContent).datepicker({
                                 format: "mm/dd/yyyy",

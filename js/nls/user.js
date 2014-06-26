@@ -13,6 +13,7 @@ define({
             locationTabText: "Location",
             enterCoordinatesPlaceholder: "Enter Coordinates",
             submitButtonText: "Submit new entry",
+            submitButtonTextLoading: "Submitting&hellip;",
             fieldvalidationMessageAlertText: "Please enter a valid number",
             formValidationMessageAlertText: "The following fields are required. Please enter the following fields before submission:",
             validationFormatTypeSubstring:"The expected format is ",
