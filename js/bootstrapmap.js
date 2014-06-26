@@ -146,7 +146,7 @@ define([
           }
           // height
           if (h < 300) {
-            ih = h * 0.75;
+            ih = h * 0.5;
           } else if (h < 600) {
             ih = 200;
           } else {
