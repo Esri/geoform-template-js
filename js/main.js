@@ -215,7 +215,7 @@ define([
                     this._setSymbol(this.addressGeometry);
                 }
             }));
-            on(this.map, 'mouse-move', lang.hitch(this, function (evt) {
+            on(this.map, 'mouse-move, click', lang.hitch(this, function (evt) {
                 var coords = this._calculateLatLong(evt);
                 var coordinatesValue = nls.user.latitude + ': ' + coords[1].toFixed(5) + ', ';
                 coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);

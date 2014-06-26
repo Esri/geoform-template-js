@@ -3,6 +3,7 @@ define([
     "dojo/_base/lang",
     "dojo/dom-class",
     "dijit/_WidgetBase",
+    "dojo/dom",
     "dojo/on",
     "esri/arcgis/utils",
     "esri/arcgis/Portal",
@@ -11,7 +12,7 @@ define([
     "dojo/dom-construct",
     "dojo/i18n!application/nls/builder"
 ],
-function (declare, lang, domClass, _WidgetBase, on, arcgisUtils, portal, Deferred, cookie, domConstruct, nls) {
+function (declare, lang, domClass, _WidgetBase, dom, on, arcgisUtils, portal, Deferred, cookie, domConstruct, nls) {
     var Widget = declare([_WidgetBase], {
         declaredClass: "application.signInHelper",
         _portal: null,
@@ -57,6 +58,25 @@ function (declare, lang, domClass, _WidgetBase, on, arcgisUtils, portal, Deferre
         userIsAppOwner: function (itemData, userInfo) {
             return (userInfo && itemData.item.owner == userInfo.username);
         },
+      
+        reportError: function (error) {
+            // remove loading class from body
+            domClass.remove(document.body, "app-loading");
+            domClass.add(document.body, "app-error");
+            // an error occurred - notify the user. In this example we pull the string from the
+            // resource.js file located in the nls folder because we've set the application up
+            // for localization. If you don't need to support multiple languages you can hardcode the
+            // strings here and comment out the call in index.html to get the localization strings.
+            // set message
+            var node = dom.byId("loading_message");
+            if (node) {
+                if (this.config && this.config.i18n) {
+                    node.innerHTML = this.config.i18n.map.error + ": " + error.message;
+                } else {
+                    node.innerHTML = "Unable to create map: " + error.message;
+                }
+            }
+        },
 
         authenticateUser: function (isEditMode, data, userInfo) {
             if (isEditMode) {
@@ -64,20 +84,8 @@ function (declare, lang, domClass, _WidgetBase, on, arcgisUtils, portal, Deferre
                     return true;
                 }
                 else {
-                    // remove loading class from body
-                    domClass.remove(document.body, "app-loading");
-                    domClass.add(document.body, "app-error");
-                    // an error occurred - notify the user. In this example we pull the string from the
-                    // resource.js file located in the nls folder because we've set the application up
-                    // for localization. If you don't need to support multiple languages you can hardcode the
-                    // strings here and comment out the call in index.html to get the localization strings.
-                    // set message
-                    //We found some changes here and it was not working so we have modified the code
-                    var signInErrorMessageDiv = domConstruct.create("div", { class: "signIn-error-message" }, document.body);
-                    var node = domConstruct.create("div", { className: "alert alert-danger errorMessage", innerHTML: nls.builder.invalidUser }, signInErrorMessageDiv);
-                    if (node) {
-                        node.innerHTML = nls.builder.invalidUser;
-                    }
+                    this.reportError(new Error(nls.builder.invalidUser));
+                    
                     return false;
                 }
             }
