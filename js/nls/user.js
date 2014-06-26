@@ -35,7 +35,8 @@ define({
             close: "Close",
             dateFormat: "mm/dd/yyyy",
             integerFormat: "1234",
-            floatFormat: "1.234"
+            floatFormat: "1.234",
+            invalidLatLong:"Please enter valid Latitude and Longitude"
         }
     })
 });

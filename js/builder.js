@@ -357,12 +357,13 @@ define([
             on(this.browseDlg, "close", lang.hitch(this, function () {
                 if (this.browseDlg.get("selected") !== null && this.browseDlg.get("selectedWebmap") !== null) {
                     if (this.browseDlg.get("selectedWebmap").thumbnailUrl) {
-                        domAttr.set(query(".img-thumbnail")[0], "src", this.browseDlg.get("selectedWebmap").thumbnailUrl.split("?token")[0]);
-                        this.currentConfig.webmapThumbnailUrl = this.browseDlg.get("selectedWebmap").thumbnailUrl.split("?token")[0];
+                        domAttr.set(query(".img-thumbnail")[0], "src", this.browseDlg.get("selectedWebmap").thumbnailUrl);
+                        this.currentConfig.webmapThumbnailUrl = this.browseDlg.get("selectedWebmap").thumbnailUrl;
                     } else {
                         domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png");
                     }
                     this.currentConfig.webmap = this.browseDlg.get("selectedWebmap").id;
+                    dom.byId("webmapLink").href = this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap;
                     var btn = $(dom.byId("selectWebmapBtn"));
                     btn.button('loading');
                     arcgisUtils.getItem(this.currentConfig.webmap).then(lang.hitch(this, function (itemInfo) {
@@ -387,6 +388,7 @@ define([
             } else {
                 domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png");
             }
+            dom.byId("webmapLink").href = this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap;
         },
 
         //function to load the css on runtime
