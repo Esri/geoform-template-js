@@ -399,7 +399,7 @@ define([
                         break;
                     case "esriFieldTypeSmallInteger":
                         inputContent = domConstruct.create("input", {
-                            type: "number",
+                            type: "text",
                             className: "form-control",
                             placeholder: nls.user.integerFormat,
                             "inputType": "smallInteger",
@@ -412,7 +412,7 @@ define([
                         break;
                     case "esriFieldTypeInteger":
                         inputContent = domConstruct.create("input", {
-                            type: "number",
+                            type: "text",
                             className: "form-control",
                             placeholder: nls.user.integerFormat,
                             "inputType": "Integer",
@@ -425,7 +425,7 @@ define([
                         break;
                     case "esriFieldTypeSingle":
                         inputContent = domConstruct.create("input", {
-                            type: "number",
+                            type: "text",
                             className: "form-control",
                             placeholder: nls.user.floatFormat,
                             "inputType": "Single",
@@ -438,7 +438,7 @@ define([
                         break;
                     case "esriFieldTypeDouble":
                         inputContent = domConstruct.create("input", {
-                            type: "number",
+                            type: "text",
                             className: "form-control",
                             placeholder: nls.user.floatFormat,
                             "inputType": "Double",
