@@ -19,6 +19,7 @@ define({
       btnPreviousText: "Previous",
       btnNextText: "Next",
       webmapTabTitleText: "Choose a Webmap",
+      viewWebmap: "View webmap",
       btnSelectWebmapText: "Select Webmap",
       btnSelectWebmapTextLoading: "Loading&hellip;",
       layerTabTitleText: "Select Editable Layer",
