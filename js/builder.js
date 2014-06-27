@@ -570,28 +570,28 @@ define([
         className: "iconContent"
       }, iconContainer);
       domConstruct.create("a", {
-        className: "icon-facebook-sign iconClass",
+        className: "fa fa-facebook-square iconClass",
         id: "facebookIcon"
       }, facebookIconHolder);
       twitterIconHolder = domConstruct.create("div", {
         className: "iconContent"
       }, iconContainer);
       domConstruct.create("a", {
-        className: "icon-twitter-sign iconClass",
+        className: "fa fa-twitter-square iconClass",
         id: "twitterIcon"
       }, twitterIconHolder);
       googlePlusIconHolder = domConstruct.create("div", {
         className: "iconContent"
       }, iconContainer);
       domConstruct.create("a", {
-        className: "icon-google-plus-sign iconClass",
+        className: "fa fa-google-plus-square iconClass",
         id: "google-plusIcon"
       }, googlePlusIconHolder);
       mailIconHolder = domConstruct.create("div", {
         className: "iconContent"
       }, iconContainer);
       domConstruct.create("a", {
-        className: "icon-envelope iconClass",
+        className: "fa fa-envelope iconClass",
         id: "mailIcon"
       }, mailIconHolder);
       domConstruct.create("br", {}, iconContainer);
