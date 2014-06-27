@@ -1,175 +1,175 @@
 <div data-dojo-attach-point="authorMode">
-  <nav class="visible-xs navbar navbar-default" role="navigation">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">${nls.builder.toggleNavigationText}</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="tab-links nav navbar-nav navbar-right">
-          <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${nls.builder.webmapText}</a>
-          </li>
-          <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${nls.builder.layerText}</a>
-          </li>
-          <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${nls.builder.detailsText}</a>
-          </li>
-          <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${nls.builder.fieldsText}</a>
-          </li>
-          <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${nls.builder.styleText}</a>
-          </li>
-          <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${nls.builder.previewText}</a>
-          </li>
-          <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${nls.builder.publishText}</a>
-          </li>
-        </ul>
-      </div>
-      <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container-fluid -->
-  </nav>
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-12">
-        <div class="page-header">
-          <h2>${nls.builder.titleText}</h2>
-          <p class="lead">${nls.builder.descriptionText}</p>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="hidden-xs col-sm-3">
-        <ul class="tab-links nav nav-pills nav-stacked">
-          <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${nls.builder.webmapText}</a>
-          </li>
-          <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${nls.builder.layerText}</a>
-          </li>
-          <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${nls.builder.detailsText}</a>
-          </li>
-          <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${nls.builder.fieldsText}</a>
-          </li>
-          <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${nls.builder.styleText}</a>
-          </li>
-          <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${nls.builder.previewText}</a>
-          </li>
-          <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${nls.builder.publishText}</a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-xs-12 col-sm-9">
-        <div class="tab-content">
-          <div id="webmap" class="tab-pane active">
-            <h2>${nls.builder.webmapTabTitleText}</h2>
-            <div class="webmap-thumb-container">
-            <a title="${nls.builder.viewWebmap}" id="webmapLink" class="webmap-thumb" target="_blank">
-              <img alt="${nls.builder.viewWebmap}" class="img-thumbnail" />
-            </a>
-              </div>
-            <button type="button" id="selectWebmapBtn" class="select-webmap-button btn btn-default" data-loading-text="${nls.builder.btnSelectWebmapTextLoading}">${nls.builder.btnSelectWebmapText}</button>
-            <p class="text-right"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${nls.builder.btnNextText}</a>
-            </p>
-          </div>
-          <div id="layer" class="tab-pane">
-            <h2>${nls.builder.layerTabTitleText}</h2>
-            <div class="descriptionText">${nls.builder.layerTabText}</div>
-            <form role="form">
-              <div class="form-group">
-                <div data-dojo-attach-point="erroMessageDiv"></div>
-                <label for="selectLayer">${nls.builder.selectLayerLabelText}</label>
-                <select id="selectLayer" class="form-control">
-                  <option selected="selected">${nls.builder.selectLayerDefaultOptionText}</option>
-                </select>
-              </div>
-            </form>
-            <p class="text-right">
-              <a href="#" class="btn btn-default prevtab navigationTabs" tab="webmap">${nls.builder.btnPreviousText}</a>
-              <a href="#" class="btn btn-primary nexttab navigationTabs" tab="details">${nls.builder.btnNextText}</a>
-            </p>
-          </div>
-          <div id="details" class="tab-pane">
-            <h2>${nls.builder.detailsTabTitleText}</h2>
-            <div class="descriptionText">${nls.builder.detailsTabText}</div>
-            <form role="form">
-              <div class="form-group">
-                <label for="detailTitleInput">${nls.builder.detailTitleLabelText}</label>
-                <input type="text" class="form-control" id="detailTitleInput" placeholder="${nls.builder.formPlaceholderText}" />
-              </div>
-              <div class="form-group">
-                <label for="detailLogoInput">${nls.builder.detailLogoLabelText}</label>
-                <input type="url" class="form-control" id="detailLogoInput" placeholder="${nls.builder.imageLogoPlaceholderText}">
-              </div>
-              <div class="form-group">
-                <label for="detailDescriptionInput">${nls.builder.detailDescriptionLabelText}</label>
-                <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
-              </div>
-            </form>
-            <p class="text-right">
-              <a href="#" class="btn btn-default prevtab navigationTabs" tab="layer">${nls.builder.btnPreviousText}</a>
-              <a href="#" class="btn btn-primary nexttab navigationTabs" tab="fields">${nls.builder.btnNextText}</a>
-            </p>
-          </div>
-          <div id="fields" class="tab-pane">
-            <h2>${nls.builder.selectFieldsText}</h2>
-            <div class="descriptionText">${nls.builder.fieldsTabText}</div>
-            <div class="table-responsive">
-              <table class="table table-bordered table-striped" id="tableDND">
-                <thead>
-                  <tr>
-                    <th>
-                    </th>
-                    <th>
-                      <input type="checkbox" data-dojo-attach-point="selectAll" class="selectAllCheckbox" />
-                    </th>
-                    <th>${nls.builder.fieldTabFieldHeaderText}</th>
-                    <th>${nls.builder.fieldTabLabelHeaderText}
-                    </th>
-                    <th>${nls.builder.fieldTabDescriptionHeaderText}</th>
-                  </tr>
-                </thead>
-                <tbody data-dojo-attach-point="geoFormFieldsTable" id="tbodyDND">
-                </tbody>
-              </table>
+    <nav class="visible-xs navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">${nls.builder.toggleNavigationText}</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             </div>
-            <p class="text-right">
-              <a href="#" class="btn btn-default prevtab navigationTabs" tab="details">${nls.builder.btnPreviousText}</a>
-              <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${nls.builder.btnNextText}</a>
-            </p>
-          </div>
-          <div id="style" class="tab-pane">
-            <h2>${nls.builder.selectThemeText}</h2>
-            <div class="descriptionText">${nls.builder.styleTabText}</div>
-            <div class="row show-grid" data-dojo-attach-point="stylesList"></div>
-            <p class="text-right">
-              <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields">${nls.builder.btnPreviousText}</a>
-              <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${nls.builder.btnNextText}</a>
-            </p>
-          </div>
-          <div id="preview" class="tab-pane">
-            <h2>${nls.builder.previewApplicationText}</h2>
-            <iframe class="preview-frame" id="iframeContainer"></iframe>
-            <p class="text-right">
-              <a href="#" class="btn btn-default prevtab navigationTabs" tab="style">${nls.builder.btnPreviousText}</a>
-              <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${nls.builder.btnNextText}</a>
-            </p>
-          </div>
-          <div id="save" class="tab-pane">
-            <h2>${nls.builder.saveApplicationText}</h2>
-            <div class="descriptionText">${nls.builder.publishTabText}</div>
-            <p class="">
-              <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton">${nls.builder.saveText}</button>
-              <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview">${nls.builder.btnPreviousText}</a>
-            </p>
-          </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="tab-links nav navbar-nav navbar-right">
+                    <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${nls.builder.webmapText}</a>
+                    </li>
+                    <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${nls.builder.layerText}</a>
+                    </li>
+                    <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${nls.builder.detailsText}</a>
+                    </li>
+                    <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${nls.builder.fieldsText}</a>
+                    </li>
+                    <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${nls.builder.styleText}</a>
+                    </li>
+                    <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${nls.builder.previewText}</a>
+                    </li>
+                    <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${nls.builder.publishText}</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
         </div>
-      </div>
+        <!-- /.container-fluid -->
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="page-header">
+                    <h2>${nls.builder.titleText}</h2>
+                    <p class="lead">${nls.builder.descriptionText}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="hidden-xs col-sm-3">
+                <ul class="tab-links nav nav-pills nav-stacked">
+                    <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${nls.builder.webmapText}</a>
+                    </li>
+                    <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${nls.builder.layerText}</a>
+                    </li>
+                    <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${nls.builder.detailsText}</a>
+                    </li>
+                    <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${nls.builder.fieldsText}</a>
+                    </li>
+                    <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${nls.builder.styleText}</a>
+                    </li>
+                    <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${nls.builder.previewText}</a>
+                    </li>
+                    <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${nls.builder.publishText}</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <div class="tab-content">
+                    <div id="webmap" class="tab-pane active">
+                        <h2>${nls.builder.webmapTabTitleText}</h2>
+                        <div class="webmap-thumb-container">
+                            <a title="${nls.builder.viewWebmap}" id="webmapLink" class="webmap-thumb" target="_blank">
+                                <img alt="${nls.builder.viewWebmap}" class="img-thumbnail" />
+                            </a>
+                        </div>
+                        <button type="button" id="selectWebmapBtn" class="select-webmap-button btn btn-default" data-loading-text="${nls.builder.btnSelectWebmapTextLoading}">${nls.builder.btnSelectWebmapText}</button>
+                        <p class="text-right"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${nls.builder.btnNextText}</a>
+                        </p>
+                    </div>
+                    <div id="layer" class="tab-pane">
+                        <h2>${nls.builder.layerTabTitleText}</h2>
+                        <div class="descriptionText">${nls.builder.layerTabText}</div>
+                        <form role="form">
+                            <div class="form-group">
+                                <div data-dojo-attach-point="erroMessageDiv"></div>
+                                <label for="selectLayer">${nls.builder.selectLayerLabelText}</label>
+                                <select id="selectLayer" class="form-control">
+                                    <option selected="selected">${nls.builder.selectLayerDefaultOptionText}</option>
+                                </select>
+                            </div>
+                        </form>
+                        <p class="text-right">
+                            <a href="#" class="btn btn-default prevtab navigationTabs" tab="webmap">${nls.builder.btnPreviousText}</a>
+                            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="details">${nls.builder.btnNextText}</a>
+                        </p>
+                    </div>
+                    <div id="details" class="tab-pane">
+                        <h2>${nls.builder.detailsTabTitleText}</h2>
+                        <div class="descriptionText">${nls.builder.detailsTabText}</div>
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="detailTitleInput">${nls.builder.detailTitleLabelText}</label>
+                                <input type="text" class="form-control" id="detailTitleInput" placeholder="${nls.builder.formPlaceholderText}" />
+                            </div>
+                            <div class="form-group">
+                                <label for="detailLogoInput">${nls.builder.detailLogoLabelText}</label>
+                                <input type="url" class="form-control" id="detailLogoInput" placeholder="${nls.builder.imageLogoPlaceholderText}">
+                            </div>
+                            <div class="form-group">
+                                <label for="detailDescriptionInput">${nls.builder.detailDescriptionLabelText}</label>
+                                <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
+                            </div>
+                        </form>
+                        <p class="text-right">
+                            <a href="#" class="btn btn-default prevtab navigationTabs" tab="layer">${nls.builder.btnPreviousText}</a>
+                            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="fields">${nls.builder.btnNextText}</a>
+                        </p>
+                    </div>
+                    <div id="fields" class="tab-pane">
+                        <h2>${nls.builder.selectFieldsText}</h2>
+                        <div class="descriptionText">${nls.builder.fieldsTabText}</div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped" id="tableDND">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                        </th>
+                                        <th>
+                                            <input type="checkbox" data-dojo-attach-point="selectAll" class="selectAllCheckbox" />
+                                        </th>
+                                        <th>${nls.builder.fieldTabFieldHeaderText}</th>
+                                        <th>${nls.builder.fieldTabLabelHeaderText}
+                                        </th>
+                                        <th>${nls.builder.fieldTabDescriptionHeaderText}</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-dojo-attach-point="geoFormFieldsTable" id="tbodyDND">
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-right">
+                            <a href="#" class="btn btn-default prevtab navigationTabs" tab="details">${nls.builder.btnPreviousText}</a>
+                            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${nls.builder.btnNextText}</a>
+                        </p>
+                    </div>
+                    <div id="style" class="tab-pane">
+                        <h2>${nls.builder.selectThemeText}</h2>
+                        <div class="descriptionText">${nls.builder.styleTabText}</div>
+                        <div class="row show-grid" data-dojo-attach-point="stylesList"></div>
+                        <p class="text-right">
+                            <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields">${nls.builder.btnPreviousText}</a>
+                            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${nls.builder.btnNextText}</a>
+                        </p>
+                    </div>
+                    <div id="preview" class="tab-pane">
+                        <h2>${nls.builder.previewApplicationText}</h2>
+                        <iframe class="preview-frame" id="iframeContainer"></iframe>
+                        <p class="text-right">
+                            <a href="#" class="btn btn-default prevtab navigationTabs" tab="style">${nls.builder.btnPreviousText}</a>
+                            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${nls.builder.btnNextText}</a>
+                        </p>
+                    </div>
+                    <div id="save" class="tab-pane">
+                        <h2>${nls.builder.saveApplicationText}</h2>
+                        <div class="descriptionText">${nls.builder.publishTabText}</div>
+                        <p class="">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton">${nls.builder.saveText}</button>
+                            <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview">${nls.builder.btnPreviousText}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- col for tabs -->
     </div>
-    <!-- col for tabs -->
-  </div>
-  <!-- row for tabs -->
-  <!-- /container -->
+    <!-- row for tabs -->
+    <!-- /container -->
 </div>

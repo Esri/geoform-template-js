@@ -1,113 +1,113 @@
 /* <---------Webmap Dialog box CSS---------> */
 
 .gallery {
-  margin: auto;
-  height: 25em;
+    margin: auto;
+    height: 25em;
 }
 .itemGrid img {
-  width: 120px;
-  height: 88px;
-  border: 0 !important;
+    width: 120px;
+    height: 88px;
+    border: 0 !important;
 }
 .itemGrid {
-  height: 110px;
+    height: 110px;
 }
 .itemGrid:hover {
-  cursor: pointer;
-  display: block;
-  color: hsl(15, 2%, 45%);
-  z-index: 99;
-  border-radius: 4px;
-  overflow: hidden;
+    cursor: pointer;
+    display: block;
+    color: hsl(15, 2%, 45%);
+    z-index: 99;
+    border-radius: 4px;
+    overflow: hidden;
 }
 .itemGrid .itemText {
-  font-size: 8pt;
-  text-align: left;
-  margin: 0;
+    font-size: 8pt;
+    text-align: left;
+    margin: 0;
 }
 .itemTitle {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .itemOwner {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .soria .ui-state-active {
-  background-color: #fff;
+    background-color: #fff;
 }
 .dgrid-row {
-  width: 125px;
-  float: left;
-  text-align: center;
-  padding: 1em 3px;
-  border: solid 1px #fff !important;
-  margin: 2px;
-  background: none !important;
-  color: #333 !important;
+    width: 125px;
+    float: left;
+    text-align: center;
+    padding: 1em 3px;
+    border: solid 1px #fff !important;
+    margin: 2px;
+    background: none !important;
+    color: #333 !important;
 }
 .dgrid-content {
-  background: none !important;
-  border: none !important;
+    background: none !important;
+    border: none !important;
 }
 .dgrid-scroller {
-  overflow-y: auto !important;
+    overflow-y: auto !important;
 }
 .dgrid-pagination-links:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 .dgrid-pagination .dgrid-page-disabled {
-  color: hsl(0, 0%, 67%) !important;
-  cursor: default;
+    color: hsl(0, 0%, 67%) !important;
+    cursor: default;
 }
 .dgrid-page-link {
-  cursor: pointer;
+    cursor: pointer;
 }
 .dgrid-active {
-  background-color: #fff;
+    background-color: #fff;
 }
 .dgrid-selected {
-  border-radius: 4px;
-  background-color: #fff;
-  border: solid 1px #BFD6EB !important;
+    border-radius: 4px;
+    background-color: #fff;
+    border: solid 1px #BFD6EB !important;
 }
 .dgrid-row .dgrid-row-odd {
-  background-color: #fff;
+    background-color: #fff;
 }
 .dgrid-row .dgrid-row-even {
-  background-color: #fff;
+    background-color: #fff;
 }
 .dgrid-row:hover {
-  border-radius: 4px;
-  background-color: #E1F0FB !important;
+    border-radius: 4px;
+    background-color: #E1F0FB !important;
 }
 ;
  .truncate {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /*Styles for the web map search box */
 
 .esriFloatTrailing {
-  float: right;
+    float: right;
 }
 .esriTrailingMargin1 {
-  width: 250px;
-  margin-right: 2em;
+    width: 250px;
+    margin-right: 2em;
 }
 .esriFloatLeading {
-  width: 250px;
-  float: left !important;
+    width: 250px;
+    float: left !important;
 }
 .esriLeadingMargin1 {
-  margin-left: 1em;
+    margin-left: 1em;
 }
 #search-form {
-  position: relative;
-  margin-bottom: 5px;
+    position: relative;
+    margin-bottom: 5px;
 }
 /*
 .esriSearchBox {
@@ -116,57 +116,57 @@
 */
 
 .esriSearchBox.dijitTextBox {
-  width: 250px;
-  background: none;
-  background-image: none!important;
-  filter: none;
-  opacity: 1;
-  background-color: hsl(0, 100%, 100%)!important;
-  border-color: hsl(0, 0%, 80%)!important;
+    width: 250px;
+    background: none;
+    background-image: none!important;
+    filter: none;
+    opacity: 1;
+    background-color: hsl(0, 100%, 100%)!important;
+    border-color: hsl(0, 0%, 80%)!important;
 }
 #search-form .dijitInputContainer {
-  padding-top: 3px;
+    padding-top: 3px;
 }
 .esriSearchButton {
-  position: absolute;
-  cursor: pointer;
-  right: 0px;
-  top: 5px;
-  font-size: 16px;
+    position: absolute;
+    cursor: pointer;
+    right: 0px;
+    top: 5px;
+    font-size: 16px;
 }
 .clear {
-  clear: both;
+    clear: both;
 }
 .claro .dijitDialogPaneActionBar {
-  margin: 0px !important;
-  margin-top: 8px !important;
-  padding-right: 25px !important;
+    margin: 0px !important;
+    margin-top: 8px !important;
+    padding-right: 25px !important;
 }
 .ui-widget {
-  font-size: 14px !important;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-size: 14px !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 #browse-id-box {
-  width: 575px;
-  min-height: 330px;
-  padding: 0px;
-  overflow: auto;
+    width: 575px;
+    min-height: 330px;
+    padding: 0px;
+    overflow: auto;
 }
 .filterSelect {
-  width: 240px;
-  border: 1px solid #cdcdcd;
-  height: 26px;
-  margin-top: 0px;
-  max-height: 350px;
+    width: 240px;
+    border: 1px solid #cdcdcd;
+    height: 26px;
+    margin-top: 0px;
+    max-height: 350px;
 }
 #gallery {
-  position: relative;
-  width: 565px;
-  clear: both;
+    position: relative;
+    width: 565px;
+    clear: both;
 }
 .gridVisibility {
-  display: none;
+    display: none;
 }
 .select-dropdown {
-  width: 20px;
+    width: 20px;
 }

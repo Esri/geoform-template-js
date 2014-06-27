@@ -2,156 +2,156 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="Keywords" content="GeoForm, GeoForm Template, Template, Map, Esri">
-  <meta name="description" content="GeoForm is a configurable template for form based data editing of a Feature Service. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the Web Map and editable Feature Services.">
-  <meta name="author" content="esri">
-  <!-- Facebook -->
-  <meta property="og:title" content="GeoForm">
-  <meta property="og:image" content="images/item.png">
-  <meta property="og:site_name" content="esri">
-  <!-- Safari iOS - apps only -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <!-- Chrome for Android -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-  <link rel="shortcut icon" href="images/favicon.ico">
-  <link rel="prefetch" href="images/pins/purple.png">
-  <title>GeoForm</title>
-  <!-- Bootstrap core CSS -->
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css">
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.10/js/esri/css/esri.css">
-  <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
-  <!-- Bootstrap theme -->
-  <link rel="stylesheet" type="text/css" id="themeLink">
-  <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.10/js/dojo/dijit/themes/claro/claro.css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
-  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"/>
-  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!--[if lt IE 9]>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="Keywords" content="GeoForm, GeoForm Template, Template, Map, Esri">
+    <meta name="description" content="GeoForm is a configurable template for form based data editing of a Feature Service. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the Web Map and editable Feature Services.">
+    <meta name="author" content="esri">
+    <!-- Facebook -->
+    <meta property="og:title" content="GeoForm">
+    <meta property="og:image" content="images/item.png">
+    <meta property="og:site_name" content="esri">
+    <!-- Safari iOS - apps only -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- Chrome for Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="prefetch" href="images/pins/purple.png">
+    <title>GeoForm</title>
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.10/js/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrapmap.css">
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" type="text/css" id="themeLink">
+    <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.10/js/dojo/dijit/themes/claro/claro.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
   <![endif]-->
 </head>
 
 <body class="claro app-loading">
-  <div class="loading-indicator">
-    <div class="icon-loading fa fa-spinner fa-spin"></div>
-    <div class="loading-error">
-      <div class="alert alert-danger"><span class="icon-frown"></span> <span id="loading_message"></span>
-      </div>
+    <div class="loading-indicator">
+        <div class="icon-loading fa fa-spinner fa-spin"></div>
+        <div class="loading-error">
+            <div class="alert alert-danger"><span class="icon-frown"></span>  <span id="loading_message"></span>
+            </div>
+        </div>
     </div>
-  </div>
-  <div id="parentContainter"></div>
-  <script type="text/javascript">
-    var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-    var dojoConfig = {
-      // The locationPath logic below may look confusing but all its doing is
-      // enabling us to load the api from a CDN and load local modules from the correct location.
-      packages: [{
-        name: "application",
-        location: package_path + '/js'
+    <div id="parentContainter"></div>
+    <script type="text/javascript">
+        var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+        var dojoConfig = {
+            // The locationPath logic below may look confusing but all its doing is
+            // enabling us to load the api from a CDN and load local modules from the correct location.
+            packages: [{
+                name: "application",
+                location: package_path + '/js'
             }, {
-        name: "config",
-        location: package_path + '/config'
+                name: "config",
+                location: package_path + '/config'
             }, {
-        name: "arcgis_templates",
-        location: package_path + '/..'
+                name: "arcgis_templates",
+                location: package_path + '/..'
             }, {
-        name: "edit",
-        location: package_path + '/js/edit'
+                name: "edit",
+                location: package_path + '/js/edit'
             }]
-    };
-  </script>
-  <script type="text/javascript" src="//jsdev.arcgis.com/3.10compact"></script>
-  <script type="text/javascript" src="js/edit/offline.min.js"></script>
-  <script type="text/javascript" src="js/edit/offlineOptions.js"></script>
-  <script type="text/javascript" src="js/edit/IndexedDBShim.min.js"></script>
-  <script type="text/javascript">
-    require([
+        };
+    </script>
+    <script type="text/javascript" src="//jsdev.arcgis.com/3.10compact"></script>
+    <script type="text/javascript" src="js/edit/offline.min.js"></script>
+    <script type="text/javascript" src="js/edit/offlineOptions.js"></script>
+    <script type="text/javascript" src="js/edit/IndexedDBShim.min.js"></script>
+    <script type="text/javascript">
+        require([
       "application/templateOptions",
       "application/template",
       "application/main",
       "application/localStorageHelper"
     ], function (
-      templateOptions,
-      Template,
-      Main,
-      localStorageHelper
-    ) {
-      // start template
-      var myTemplate = new Template(templateOptions);
-      // create my main application. Start placing your logic in the main.js file.
-      var myApp = new Main();
-      // create my main application. Start placing your logic in the main.js file.
-      myTemplate.startup().then(function (config) {
-        //The config object contains the following properties: helper services, (optionally)
-        //i18n, appid, webmap and any custom values defined by the application.
-        //In this example we have one called theme.
-        if (config.edit) {
-          require([
+            templateOptions,
+            Template,
+            Main,
+            localStorageHelper
+        ) {
+            // start template
+            var myTemplate = new Template(templateOptions);
+            // create my main application. Start placing your logic in the main.js file.
+            var myApp = new Main();
+            // create my main application. Start placing your logic in the main.js file.
+            myTemplate.startup().then(function (config) {
+                //The config object contains the following properties: helper services, (optionally)
+                //i18n, appid, webmap and any custom values defined by the application.
+                //In this example we have one called theme.
+                if (config.edit) {
+                    require([
             "application/builder",
             "application/signInHelper",
             "dojo/dom-class"
                 ], function (builderMode, signInHelper, domClass) {
-            var signIn = new signInHelper(),
-              userInfo = {};
-            signIn.createPortal().then(function (loggedInUser) {
-              var isValidUser = signIn.authenticateUser(true, myTemplate.appResponse, loggedInUser);
-              if (isValidUser) {
-                userInfo.username = loggedInUser.username;
-                userInfo.token = loggedInUser.credential.token;
-                userInfo.portal = signIn.getPortal();
-                var builder = new builderMode();
-                builder.startup(config, userInfo, myTemplate.appResponse);
-                domClass.remove(document.body, "app-loading");
-              }
+                        var signIn = new signInHelper(),
+                            userInfo = {};
+                        signIn.createPortal().then(function (loggedInUser) {
+                            var isValidUser = signIn.authenticateUser(true, myTemplate.appResponse, loggedInUser);
+                            if (isValidUser) {
+                                userInfo.username = loggedInUser.username;
+                                userInfo.token = loggedInUser.credential.token;
+                                userInfo.portal = signIn.getPortal();
+                                var builder = new builderMode();
+                                builder.startup(config, userInfo, myTemplate.appResponse);
+                                domClass.remove(document.body, "app-loading");
+                            }
+                        }, function (error) {
+                            myApp.reportError(error);
+                        });
+                    });
+                } else {
+                    var localStorageSupport = new localStorageHelper();
+                    if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
+                        config = JSON.parse(localStorage.getItem("geoform_config"));
+                        localStorage.clear();
+                    }
+                    myApp.startup(config, myTemplate.appResponse);
+                }
             }, function (error) {
-              myApp.reportError(error);
+                // something went wrong. Let's report it.
+                myApp.reportError(error);
             });
-          });
-        } else {
-          var localStorageSupport = new localStorageHelper();
-          if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
-            config = JSON.parse(localStorage.getItem("geoform_config"));
-            localStorage.clear();
-          }
-          myApp.startup(config, myTemplate.appResponse);
-        }
-      }, function (error) {
-        // something went wrong. Let's report it.
-        myApp.reportError(error);
-      });
-    });
-  </script>
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-  <!-- pulgin to support DND in touch enabled devices -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-215788-4']);
-     //_gaq.push(['_setDomainName', 'esri.com']);
-    _gaq.push(['_trackPageview']);
-    _gaq.push(['_trackPageLoadTime']);
-    (function () {
-      var ga = document.createElement('script');
-      ga.type = 'text/javascript';
-      ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
+        });
+    </script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <!-- pulgin to support DND in touch enabled devices -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-215788-4']);
+         //_gaq.push(['_setDomainName', 'esri.com']);
+        _gaq.push(['_trackPageview']);
+        _gaq.push(['_trackPageLoadTime']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
 </body>
 
 </html>

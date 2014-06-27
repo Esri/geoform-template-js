@@ -1,69 +1,69 @@
 .map-div {
-  width: 100% !important;
-  height: 200px !important;
+    width: 100% !important;
+    height: 200px !important;
 }
 .preview-frame {
-  width: 100%;
-  height: 200px;
-  border: 1px solid #ccc;
+    width: 100%;
+    height: 200px;
+    border: 1px solid #ccc;
 }
 .map .container {
-  height: 100% !important;
-  width: 100% !important;
+    height: 100% !important;
+    width: 100% !important;
 }
 /* Style for Loading Indicator*/
 
 .app-loading .loading-indicator {
-  display: block;
+    display: block;
 }
 .submit-area {
-  margin-bottom: 40px;
+    margin-bottom: 40px;
 }
 .loading-indicator {
-  display: none;
-  height: 100%;
-  width: 100%;
-  z-index: 500;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  background: #fff;
-  color: #000;
-  opacity: 1;
+    display: none;
+    height: 100%;
+    width: 100%;
+    z-index: 500;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background: #fff;
+    color: #000;
+    opacity: 1;
 }
 .loading-error {
-  display: none;
-  width: 30%;
-  height: 40px;
-  position: absolute;
-  z-index: 2;
-  top: 50%;
-  left: 50%;
-  text-align: center;
-  margin: -20px 0 0 -15%;
-  font-size: 16px;
-  line-height: normal;
+    display: none;
+    width: 30%;
+    height: 40px;
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    margin: -20px 0 0 -15%;
+    font-size: 16px;
+    line-height: normal;
 }
 .icon-loading {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  overflow: hidden;
-  margin: -20px 0 0 -20px;
-  font-size: 40px;
-  line-height: 40px;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+    margin: -20px 0 0 -20px;
+    font-size: 40px;
+    line-height: 40px;
 }
 .app-error .icon-loading {
-  display: none;
+    display: none;
 }
 .app-error .loading-indicator {
-  display: block;
+    display: block;
 }
 .app-error .loading-error {
-  display: block;
+    display: block;
 }
 .table > thead > tr > th,
 .table > tbody > tr > th,
@@ -71,164 +71,164 @@
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  vertical-align: middle !important;
+    vertical-align: middle !important;
 }
 .progress-remove-margin {
-  margin-bottom: 0px !important;
-  margin-top: 10px;
+    margin-bottom: 0px !important;
+    margin-top: 10px;
 }
 .myDragClass {
-  background-color: gray;
+    background-color: gray;
 }
 /* Extra Small Devices, Phones */
 
 @media (min-width: 480px) {
-  .map-div {
-    height: 250px!important;
-  }
-  .preview-frame {
-    height: 400px;
-  }
+    .map-div {
+        height: 250px!important;
+    }
+    .preview-frame {
+        height: 400px;
+    }
 }
 /* Small Devices, Tablets */
 
 @media (min-width: 768px) {
-  .map-div {
-    height: 350px!important;
-  }
-  .preview-frame {
-    height: 500px;
-  }
+    .map-div {
+        height: 350px!important;
+    }
+    .preview-frame {
+        height: 500px;
+    }
 }
 /* Medium Devices, Desktops */
 
 @media (min-width: 992px) {
-  .map-div {
-    height: 450px!important;
-  }
-  .preview-frame {
-    height: 500px;
-  }
+    .map-div {
+        height: 450px!important;
+    }
+    .preview-frame {
+        height: 500px;
+    }
 }
 /* Large Devices, Wide Screens */
 
 @media (min-width: 1200px) {
-  .map-div {
-    height: 500px!important;
-  }
-  .preview-frame {
-    height: 600px;
-  }
+    .map-div {
+        height: 500px!important;
+    }
+    .preview-frame {
+        height: 600px;
+    }
 }
 .esriGeocoderContainer {
-  width: 100% !important;
+    width: 100% !important;
 }
 .simpleGeocoder .esriGeocoder input {
-  width: 80% !important;
-  height: 30px;
+    width: 80% !important;
+    height: 30px;
 }
 .simpleGeocoder .esriGeocoder .esriGeocoderSearch {
-  margin-top: 13px;
+    margin-top: 13px;
 }
 .simpleGeocoder .esriGeocoderHasValue .esriGeocoderReset {
-  margin-top: 13px !important;
+    margin-top: 13px !important;
 }
 .simpleGeocoder .esriGeocoder {
-  border: 1px solid #cccccc !important;
+    border: 1px solid #cccccc !important;
 }
 .iconClass {
-  font-size: 34px !important;
-  padding: 10px;
-  text-decoration: none !important;
-  color: #007ac2;
-  cursor: pointer;
+    font-size: 34px !important;
+    padding: 10px;
+    text-decoration: none !important;
+    color: #007ac2;
+    cursor: pointer;
 }
 .iconContent {
-  float: left;
+    float: left;
 }
 .fieldCheckbox,
 .selectAllCheckbox {
-  margin-right: 5px;
-  vertical-align: top;
-  margin-left: 8px !important;
+    margin-right: 5px;
+    vertical-align: top;
+    margin-left: 8px !important;
 }
 .progress-percent {
-  width: 100%;
-  line-height: 50px;
+    width: 100%;
+    line-height: 50px;
 }
 .share-dialog-label {
-  display: initial;
+    display: initial;
 }
 .share-dialog-subheader {
-  font-size: 19px;
-  margin: 0 0 5px;
-  font-weight: 400;
-  margin-left: 8px;
+    font-size: 19px;
+    margin: 0 0 5px;
+    font-weight: 400;
+    margin-left: 8px;
 }
 .share-map-url {
-  width: 50%;
-  min-width: 30%;
-  max-width: 90%;
-  height: 25px;
-  font-size: 14px;
-  color: #777;
-  border: 1px solid #dcdcdc;
-  margin: 0 7px 0px !important;
+    width: 50%;
+    min-width: 30%;
+    max-width: 90%;
+    height: 25px;
+    font-size: 14px;
+    color: #777;
+    border: 1px solid #dcdcdc;
+    margin: 0 7px 0px !important;
 }
 .myLocationOptions {
-  padding: 20px 0px;
+    padding: 20px 0px;
 }
 .select-webmap-button {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 .has-feedback .form-control {
-  padding-right: 10px !important;
+    padding-right: 10px !important;
 }
 input::-ms-clear {
-  display: none;
+    display: none;
 }
 .esriSimpleSlider {
-  z-index: 0 !important;
+    z-index: 0 !important;
 }
 .layerFieldsName {
-  color: #555;
-  vertical-align: center !important;
+    color: #555;
+    vertical-align: center !important;
 }
 .themeThubnail {
-  width: 200px;
-  height: 133px;
-  border: 1px solid #555;
+    width: 200px;
+    height: 133px;
+    border: 1px solid #555;
 }
 .tableDimension {
-  min-width: 180px;
+    min-width: 180px;
 }
 .descriptionText {
-  font-size: 18px;
-  margin-bottom: 10px;
+    font-size: 18px;
+    margin-bottom: 10px;
 }
 .geocoder-container {
-  position: relative;
-  z-index: 50;
+    position: relative;
+    z-index: 50;
 }
 .requireFieldStyle {
-  display: inline-block;
+    display: inline-block;
 }
 /* fix for popup close */
 
 .titlePane .close,
 .titlePane .close:hover {
-  float: none;
-  opacity: 1;
-  font-size: inherit;
-  font-weight: normal;
-  text-shadow: none;
+    float: none;
+    opacity: 1;
+    font-size: inherit;
+    font-weight: normal;
+    text-shadow: none;
 }
 .submit-container {
-  display: inline-block;
+    display: inline-block;
 }
-.webmap-thumb{
-  display: inline-block;
+.webmap-thumb {
+    display: inline-block;
 }
-.webmap-thumb-container{
-  margin-bottom: 5px;
+.webmap-thumb-container {
+    margin-bottom: 5px;
 }
