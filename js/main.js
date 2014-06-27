@@ -93,10 +93,9 @@ define([
                   type: 'text/css',
                   href: currentTheme.url
                 });
-                node.src = window.location.href.split("&")[0];
               }
             }));
-            this._createWebMap(this.config.webmap);
+            node.src = window.location.href.split("&")[0];
             node.onload = function () {
               domConstruct.place(cssStyle, $("#iframeContainer").contents().find('head')[0], "last");
             };
@@ -752,16 +751,26 @@ define([
       var featureData = new Graphic();
       featureData.attributes = {};
       if (this.addressGeometry) {
+                var key, value;
         //condition to filter out radio inputs
         array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
           var key = domAttr.get(currentField, "id");
-          var value = lang.trim(currentField.value);
+                        if (domClass.contains(currentField, "hasDatepicker")) {
+                            var dateValues = lang.trim(currentField.value).split("/");
+                            var date = parseInt(dateValues[1]);
+                            var month = parseInt(dateValues[0]) - 1;
+                            var year = parseInt(dateValues[2]);
+                            value = Date.UTC(year, month, date);
+                        }
+                        else {
+                            value = lang.trim(currentField.value);
+                        }
           featureData.attributes[key] = value;
         });
         array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
           if (query(".radioInput:checked", currentField).length !== 0) {
-            var key = query(".radioInput:checked", currentField)[0].name;
-            var value = lang.trim(query(".radioInput:checked", currentField)[0].value);
+            key = query(".radioInput:checked", currentField)[0].name;
+            value = lang.trim(query(".radioInput:checked", currentField)[0].value);
             featureData.attributes[key] = value;
           }
         });
@@ -844,28 +853,28 @@ define([
         className: "iconContent"
       }, iconContainer);
       domConstruct.create("a", {
-        className: "icon-facebook-sign iconClass",
+        className: "fa fa-facebook-square iconClass",
         id: "facebookIcon"
       }, facebookIconHolder);
       twitterIconHolder = domConstruct.create("div", {
         className: "iconContent"
       }, iconContainer);
       domConstruct.create("a", {
-        className: "icon-twitter-sign iconClass",
+        className: "fa fa-twitter-square iconClass",
         id: "twitterIcon"
       }, twitterIconHolder);
       googlePlusIconHolder = domConstruct.create("div", {
         className: "iconContent"
       }, iconContainer);
       domConstruct.create("a", {
-        className: "icon-google-plus-sign iconClass",
+        className: "fa fa-google-plus-square iconClass",
         id: "google-plusIcon"
       }, googlePlusIconHolder);
       mailIconHolder = domConstruct.create("div", {
         className: "iconContent"
       }, iconContainer);
       domConstruct.create("a", {
-        className: "icon-envelope iconClass",
+        className: "fa fa-envelope iconClass",
         id: "mailIcon"
       }, mailIconHolder);
       domConstruct.create("br", {}, iconContainer);
