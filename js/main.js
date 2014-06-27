@@ -199,6 +199,7 @@ define([
                 this.map.infoWindow.setTitle(nls.user.locationTabText);
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(evt.graphic.geometry);
+                this.addressGeometry = evt.graphic.geometry;
             }));
             on(this.map, 'click', lang.hitch(this, function (evt) {
                 this.addressGeometry = evt.mapPoint;
