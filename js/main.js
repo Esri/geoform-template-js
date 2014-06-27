@@ -709,8 +709,8 @@ define([
             }, domConstruct.create('div'));
             currentLocation.startup();
             on(currentLocation, "locate", lang.hitch(this, function (evt) {
-                var mapLocation = webMercatorUtils.lngLatToXY(evt.graphic.geometry.x, evt.graphic.geometry.y, true);
-                var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
+                var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
+                evt.graphic.setGeometry(pt);
                 this.addressGeometry = pt;
                 this._setSymbol(evt.graphic.geometry);
                 this.map.infoWindow.setTitle(nls.user.myLocationTitleText);
