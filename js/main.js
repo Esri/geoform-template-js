@@ -757,11 +757,7 @@ define([
                 array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
                     var key = domAttr.get(currentField, "id");
                     if (domClass.contains(currentField, "hasDatepicker")) {
-                        var dateValues = lang.trim(currentField.value).split("/");
-                        var date = parseInt(dateValues[1]);
-                        var month = parseInt(dateValues[0]) - 1;
-                        var year = parseInt(dateValues[2]);
-                        value = Date.UTC(year, month, date);
+                        value = $(currentField).datepicker("getDate");
                     } else {
                         value = lang.trim(currentField.value);
                     }
