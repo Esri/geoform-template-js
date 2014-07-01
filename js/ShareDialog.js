@@ -6,6 +6,8 @@ define([
     "dijit/_WidgetBase",
     "dijit/a11yclick",
     "dojo/on",
+    "dojo/io-query",
+    "dojo/_base/lang",
     "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-attr",
@@ -17,6 +19,7 @@ define([
         lang,
         _WidgetBase, a11yclick,
         on,
+        ioQuery,lang,
         dom, domClass, domAttr,
         esriRequest,
         urlUtils
@@ -98,7 +101,8 @@ define([
             },
             _shareLink: function () {
                 if (this.get("bitlyAPI") && this.get("bitlyLogin") && this.get("bitlyKey")) {
-                    var currentUrl = this.get("url").split("&edit")[0];
+                    //Handle getting url param in _updateUrl
+                    var currentUrl = this.get("url");
                     // not already shortened
                     if (currentUrl !== this._shortened) {
                         // set shortened
@@ -148,25 +152,19 @@ define([
                 this.set("bitlyUrl", null);
                 var url = this.get("url"),
                     useSeparator;
-                // get url params
-                var urlObject = urlUtils.urlToObject(window.location.href);
-                urlObject.query = urlObject.query || {};
+
                 // create base url
                 url = window.location.protocol + '//' + window.location.host + window.location.pathname;
-                // each param
-                for (var i in urlObject.query) {
-                    if (urlObject.query[i]) {
-                        // use separator
-                        if (useSeparator) {
-                            url += '&';
-                        } else {
-                            url += '?';
-                            useSeparator = true;
-                        }
-                        url += i + '=' + urlObject.query[i];
-                    }
+
+                //Remove edit=true from the query parameters 
+                if(location.href.indexOf("?") > -1){
+                 var queryUrl = location.href;
+                 var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
+                    newParams = lang.clone(urlParams);
+                 delete newParams.edit; //Remove edit parameter 
+                 url =  queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                 }
-                url = url.split("&edit")[0];
+
                 // update url
                 this.set("url", url);
                 // set url value
