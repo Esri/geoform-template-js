@@ -10,6 +10,7 @@ define([
     "dojo/dom-style",
     "dojo/on",
     "dojo/query",
+    "dojo/io-query",
     "application/bootstrapmap",
     "application/OfflineSupport",
     "dojo/_base/array",
@@ -42,6 +43,7 @@ define([
     domClass, domStyle,
     on,
     query,
+    ioQuery,
     bootstrapmap,
     OfflineSupport,
     array,
@@ -95,7 +97,18 @@ define([
                                 });
                             }
                         }));
-                        node.src = window.location.href.split("&")[0];
+                        //Handle case where edit is first url parameter we'll use the same logic we used in sharedialog.js
+                        var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+                        if(window.location.href.indexOf("?") > -1){
+                             var queryUrl = window.location.href;
+                             var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
+                                newParams = lang.clone(urlParams);
+                             delete newParams.edit; //Remove edit parameter 
+                             url =  queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
+                        }                    
+                        node.src = url;
+
+                    
                         node.onload = function () {
                             domConstruct.place(cssStyle, $("#iframeContainer").contents().find('head')[0], "last");
                         };
