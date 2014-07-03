@@ -34,8 +34,8 @@ define({
             shareDialogFormText: "Form Link",
             close: "Close",
             dateFormat: "mm/dd/yyyy",
-            integerFormat: "1234",
-            floatFormat: "1.234",
+            integerFormat: "Enter a number",
+            floatFormat: "Enter a decimal number",
             invalidLatLong: "Please enter valid Latitude and Longitude"
         }
     })
