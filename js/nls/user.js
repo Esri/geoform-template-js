@@ -6,7 +6,7 @@ define({
             submitInformationText: "3. Complete Form",
             submitInstructions: "Add this information to the map.",
             myLocationText: "GPS",
-            locationDescription: "Select a location for your submission using one of the following options or by or by clicking/tapping the map.",
+            locationDescription: "Select a location for your submission using one of the following options or by clicking/tapping the map.",
             addressText: "Search",
             cooridnatesText: "Coordinates",
             locationTabText: "Location",
