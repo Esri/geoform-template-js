@@ -80,7 +80,7 @@ define([
                 })));
             },
             _handlePopup: function(){
-                if(this.map.width <= 400 || this.map.height <= 400){
+                if(this.map.width < 400 || this.map.height < 400){
                     this._resizeInfoWin();
                     this.map.infoWindow.maximize();
                 } 
