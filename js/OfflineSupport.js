@@ -3,7 +3,6 @@ define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "dojo/on",
-    "dojo/dom",
     "dojo/dom-construct",
     "edit/offlineFeaturesManager",
     "esri/dijit/editing/Editor",
@@ -12,7 +11,7 @@ define([
     declare,
     lang,
     on,
-    dom, domConstruct,
+    domConstruct,
     OfflineFeaturesManager,
     Editor,
     i18n

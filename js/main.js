@@ -1,4 +1,4 @@
-/*global $,define,document,Storage */
+/*global $,define,document */
 /*jslint sloppy:true,nomen:true */
 define([
     "dojo/ready",
@@ -199,7 +199,7 @@ define([
             var layer = this.map.getLayer(this.config.form_layer.id);
             if (layer) {
                 // support basic offline editing
-                var handleOffline = new OfflineSupport({
+                OfflineSupport({
                     map: this.map,
                     layer: layer
                 });
@@ -679,7 +679,8 @@ define([
                     this.map.resize();
                     this.map.reposition();
                 }));
-                var bsm = new bootstrapmap(this.map);
+                // bootstrap map functions
+                bootstrapmap(this.map);
                 this._createForm(this.config.fields);
                 this._createLocateButton();
                 this._createGeocoderButton();

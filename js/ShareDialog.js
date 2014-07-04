@@ -7,22 +7,19 @@ define([
     "dijit/a11yclick",
     "dojo/on",
     "dojo/io-query",
-    "dojo/_base/lang",
     "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-attr",
-    "esri/request",
-    "esri/urlUtils"
+    "esri/request"
 ],
     function (
         declare,
         lang,
         _WidgetBase, a11yclick,
         on,
-        ioQuery,lang,
+        ioQuery,
         dom, domClass, domAttr,
-        esriRequest,
-        urlUtils
+        esriRequest
     ) {
         var Widget = declare([_WidgetBase], {
             declaredClass: "esri.dijit.ShareDialog",
@@ -104,15 +101,15 @@ define([
                     //Handle getting url param in _updateUrl
                     var currentUrl = this.get("url");
 
-                   //Remove edit=true from the query parameters 
-                    if(location.href.indexOf("?") > -1){
-                     var queryUrl = location.href;
-                     var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
-                        newParams = lang.clone(urlParams);
-                     delete newParams.edit; //Remove edit parameter 
-                     currentUrl =  queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
+                    //Remove edit=true from the query parameters 
+                    if (location.href.indexOf("?") > -1) {
+                        var queryUrl = location.href;
+                        var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
+                            newParams = lang.clone(urlParams);
+                        delete newParams.edit; //Remove edit parameter 
+                        currentUrl = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                     }
-                   
+
                     // not already shortened
                     if (currentUrl !== this._shortened) {
                         // set shortened
@@ -160,19 +157,18 @@ define([
                 this._shortened = null;
                 // no bitly shortened
                 this.set("bitlyUrl", null);
-                var url = this.get("url"),
-                    useSeparator;
+                var url = this.get("url");
 
                 // create base url
                 url = window.location.protocol + '//' + window.location.host + window.location.pathname;
 
                 //Remove edit=true from the query parameters 
-                if(location.href.indexOf("?") > -1){
-                 var queryUrl = location.href;
-                 var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
-                    newParams = lang.clone(urlParams);
-                 delete newParams.edit; //Remove edit parameter 
-                 url =  queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
+                if (location.href.indexOf("?") > -1) {
+                    var queryUrl = location.href;
+                    var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
+                        newParams = lang.clone(urlParams);
+                    delete newParams.edit; //Remove edit parameter 
+                    url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                 }
 
                 // update url

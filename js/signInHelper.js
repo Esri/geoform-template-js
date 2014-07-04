@@ -9,10 +9,9 @@ define([
     "esri/arcgis/Portal",
     "dojo/Deferred",
     "dojo/cookie",
-    "dojo/dom-construct",
     "dojo/i18n!application/nls/builder"
 ],
-    function (declare, lang, domClass, _WidgetBase, dom, on, arcgisUtils, portal, Deferred, cookie, domConstruct, nls) {
+    function (declare, lang, domClass, _WidgetBase, dom, on, arcgisUtils, portal, Deferred, cookie, nls) {
         var Widget = declare([_WidgetBase], {
             declaredClass: "application.signInHelper",
             _portal: null,
