@@ -16,7 +16,7 @@ define({
             fieldvalidationMessageAlertText: "Please enter a valid number",
             formValidationMessageAlertText: "The following fields are required. Please enter the following fields before submission:",
             validationFormatTypeSubstring: "The expected format is ",
-            latlongValidationMessageAlert: "Please enter valid Latitude and Longitude in decimal degrees",
+            selectLocation: "Please select a location for your submission.",
             emptylatitudeAlertMessage: "Please enter Latitude",
             emptylongitudeAlertMessage: "Please enter Longitude",
             shareUserTitleMessage: "Thank you for your contribution!",
@@ -36,7 +36,7 @@ define({
             dateFormat: "mm/dd/yyyy",
             integerFormat: "Enter a number",
             floatFormat: "Enter a decimal number",
-            invalidLatLong: "Please enter valid Latitude and Longitude"
+            invalidLatLong: "Please enter a valid Latitude and Longitude"
         }
     })
 });

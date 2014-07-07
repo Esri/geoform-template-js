@@ -162,7 +162,7 @@ define([
 
                     //condition check to find whether the user has selected a point on map or not.
                     if (!this.addressGeometry) {
-                        errorMessage += "\n2. " + nls.user.latlongValidationMessageAlert;
+                        errorMessage += "\n2. " + nls.user.selectLocation;
                     }
                     this._showErrorMessageDiv(errorMessage);
                     btn.button('reset');
@@ -809,7 +809,7 @@ define([
                 });
             } else {
                 this._resetButton();
-                this._showErrorMessageDiv(nls.user.latlongValidationMessageAlert);
+                this._showErrorMessageDiv(nls.user.selectLocation);
             }
         },
 
