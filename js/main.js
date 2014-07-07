@@ -691,7 +691,7 @@ define([
                     this._findLocation(evt);
                 }));
                 on(this.cordsSubmit, "click", lang.hitch(this, function (evt) {
-                    this._evaluateCoordinates();
+                    this._findLocation(evt);
                 }));
                 // make sure map is loaded
                 if (this.map.loaded) {
@@ -742,16 +742,32 @@ define([
                 currentLocation.locate();
             }));
         },
-
+        _searchGeocoder: function(){
+            var value = this.searchInput.value;
+            this.geocodeAddress.find(value).then(lang.hitch(this, function(evt){
+                if(evt.results && evt.results.length){
+                    this.geocodeAddress.select(evt.results[0]);
+                }
+            }));
+        },
         _createGeocoderButton: function () {
-            var geocodeAddress = new Geocoder({
-                map: this.map,
-                autoComplete: true,
-                showResults: true
-            }, this.geocodeAddress);
-            geocodeAddress.startup();
-
-            on(geocodeAddress, "select", lang.hitch(this, function (evt) {
+            this.geocodeAddress = new Geocoder({
+                map: this.map
+            }, domConstruct.create('div'));
+            this.geocodeAddress.startup();
+            
+            on(this.searchInput, 'keyup', lang.hitch(this, function(evt){
+                var keyCode = evt.charCode || evt.keyCode;
+                if (keyCode === 13) {
+                    this._searchGeocoder();
+                }
+            }));
+            
+            on(this.searchSubmit, 'click', lang.hitch(this, function(){
+                this._searchGeocoder();
+            }));
+            
+            on(this.geocodeAddress, "select", lang.hitch(this, function (evt) {
                 this.map.graphics.clear();
                 this.addressGeometry = evt.result.feature.geometry;
                 this._setSymbol(evt.result.feature.geometry);

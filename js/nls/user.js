@@ -17,8 +17,8 @@ define({
             formValidationMessageAlertText: "The following fields are required. Please enter the following fields before submission:",
             validationFormatTypeSubstring: "The expected format is ",
             selectLocation: "Please select a location for your submission.",
-            emptylatitudeAlertMessage: "Please enter Latitude",
-            emptylongitudeAlertMessage: "Please enter Longitude",
+            emptylatitudeAlertMessage: "Please enter a latitude coordinate",
+            emptylongitudeAlertMessage: "Please enter a longitude coordinate",
             shareUserTitleMessage: "Thank you for your contribution!",
             shareUserTextMessage: "Your entry has been submitted. Share with others using the following options",
             addAttachmentFailedMessage: "Unable to add attachment to layer",
@@ -37,7 +37,7 @@ define({
             integerFormat: "Enter a number",
             floatFormat: "Enter a decimal number",
             setLocation: "Set location",
-            invalidLatLong: "Please enter a valid Latitude and Longitude"
+            invalidLatLong: "Please enter valid latitude and longitude coordinates."
         }
     })
 });

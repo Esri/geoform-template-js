@@ -37,9 +37,12 @@
                         <div id="geolocate_button" class="btn btn-default">${nls.user.findMyLocation}</div>
                     </div>
                     <div id="address" class="tab-pane">
-                        <div class="form-group geocoder-container">
-                            <div data-dojo-attach-point="geocodeAddress"></div>
-                        </div>
+                        <div class="input-group">
+                            <input data-dojo-attach-point="searchInput" type="text" class="form-control">
+                          <span class="input-group-btn">
+                            <button data-dojo-attach-point="searchSubmit" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                          </span>
+                        </div> 
                     </div>
                     <div id="coordinates" class="tab-pane">
                         <form role="form">
