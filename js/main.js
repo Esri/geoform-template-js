@@ -215,8 +215,8 @@ define([
                 this.addressGeometry = evt.graphic.geometry;
             }));
             on(this.map, 'click', lang.hitch(this, function (evt) {
-                this.addressGeometry = evt.mapPoint;
                 if (!evt.graphic) {
+                    this.addressGeometry = evt.mapPoint;
                     this.map.graphics.clear();
                     this.map.infoWindow.setTitle(nls.user.locationTabText);
                     this.map.infoWindow.setContent(nls.user.addressSearchText);
