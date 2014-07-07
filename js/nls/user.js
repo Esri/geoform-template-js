@@ -36,6 +36,7 @@ define({
             dateFormat: "mm/dd/yyyy",
             integerFormat: "Enter a number",
             floatFormat: "Enter a decimal number",
+            setLocation: "Set location",
             invalidLatLong: "Please enter a valid Latitude and Longitude"
         }
     })

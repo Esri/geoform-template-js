@@ -690,6 +690,9 @@ define([
                 on(this.YCoordinate, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
                 }));
+                on(this.cordsSubmit, "click", lang.hitch(this, function (evt) {
+                    this._evaluateCoordinates();
+                }));
                 // make sure map is loaded
                 if (this.map.loaded) {
                     // do something with the map
@@ -702,18 +705,20 @@ define([
                 }
             }), this.reportError);
         },
-
+        _evaluateCoordinates: function(){
+            if (this.XCoordinate.value === "") {
+                this._showErrorMessageDiv(nls.user.emptylatitudeAlertMessage);
+                return;
+            } else if (this.YCoordinate.value === "") {
+                this._showErrorMessageDiv(nls.user.emptylongitudeAlertMessage);
+                return;
+            }
+            this._locatePointOnMap(this.XCoordinate.value + "," + this.YCoordinate.value);
+        },
         _findLocation: function (evt) {
             var keyCode = evt.charCode || evt.keyCode;
             if (keyCode === 13) {
-                if (this.XCoordinate.value === "") {
-                    this._showErrorMessageDiv(nls.user.emptylatitudeAlertMessage);
-                    return;
-                } else if (this.YCoordinate.value === "") {
-                    this._showErrorMessageDiv(nls.user.emptylongitudeAlertMessage);
-                    return;
-                }
-                this._locatePointOnMap(this.XCoordinate.value + "," + this.YCoordinate.value);
+                this._evaluateCoordinates();
             }
         },
         _createLocateButton: function () {
