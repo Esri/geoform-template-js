@@ -99,16 +99,16 @@ define([
                         }));
                         //Handle case where edit is first url parameter we'll use the same logic we used in sharedialog.js
                         var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
-                        if(window.location.href.indexOf("?") > -1){
-                             var queryUrl = window.location.href;
-                             var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
+                        if (window.location.href.indexOf("?") > -1) {
+                            var queryUrl = window.location.href;
+                            var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
                                 newParams = lang.clone(urlParams);
-                             delete newParams.edit; //Remove edit parameter 
-                             url =  queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
-                        }                    
+                            delete newParams.edit; //Remove edit parameter 
+                            url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
+                        }
                         node.src = url;
 
-                    
+
                         node.onload = function () {
                             domConstruct.place(cssStyle, $("#iframeContainer").contents().find('head')[0], "last");
                         };
@@ -700,7 +700,7 @@ define([
                 }
             }), this.reportError);
         },
-        _evaluateCoordinates: function(){
+        _evaluateCoordinates: function () {
             this._clearSubmissionGraphic();
             if (this.XCoordinate.value === "") {
                 this._showErrorMessageDiv(nls.user.emptylatitudeAlertMessage);
@@ -724,17 +724,16 @@ define([
             }, domConstruct.create('div'));
             currentLocation.startup();
             on(currentLocation, "locate", lang.hitch(this, function (evt) {
-                if(evt.error){
+                if (evt.error) {
                     alert(nls.user.locationNotFound);
-                }
-                else{
+                } else {
                     var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
                     evt.graphic.setGeometry(pt);
                     this.addressGeometry = pt;
                     this.map.infoWindow.setTitle(nls.user.myLocationTitleText);
                     this.map.infoWindow.setContent(nls.user.addressSearchText);
                     this.map.infoWindow.show(this.addressGeometry);
-                    this._setSymbol(evt.graphic.geometry);   
+                    this._setSymbol(evt.graphic.geometry);
                 }
                 $('#geolocate_button').button('reset');
             }));
@@ -744,20 +743,19 @@ define([
                 currentLocation.locate();
             }));
         },
-        _searchGeocoder: function(){
+        _searchGeocoder: function () {
             this._clearSubmissionGraphic();
             var value = this.searchInput.value;
             var node = dom.byId('geocoder_spinner');
-            if(value){
+            if (value) {
                 domClass.remove(node, 'glyphicon glyphicon-search');
                 domClass.add(node, 'fa fa-spinner fa-spin');
-                this.geocodeAddress.find(value).then(lang.hitch(this, function(evt){
+                this.geocodeAddress.find(value).then(lang.hitch(this, function (evt) {
                     domClass.remove(node, 'fa fa-spinner fa-spin');
                     domClass.add(node, 'glyphicon glyphicon-search');
-                    if(evt.results && evt.results.length){
+                    if (evt.results && evt.results.length) {
                         this.geocodeAddress.select(evt.results[0]);
-                    }
-                    else{
+                    } else {
                         alert(nls.user.locationNotFound);
                     }
                 }));
@@ -768,18 +766,18 @@ define([
                 map: this.map
             }, domConstruct.create('div'));
             this.geocodeAddress.startup();
-            
-            on(this.searchInput, 'keyup', lang.hitch(this, function(evt){
+
+            on(this.searchInput, 'keyup', lang.hitch(this, function (evt) {
                 var keyCode = evt.charCode || evt.keyCode;
                 if (keyCode === 13) {
                     this._searchGeocoder();
                 }
             }));
-            
-            on(this.searchSubmit, 'click', lang.hitch(this, function(){
+
+            on(this.searchSubmit, 'click', lang.hitch(this, function () {
                 this._searchGeocoder();
             }));
-            
+
             on(this.geocodeAddress, "select", lang.hitch(this, function (evt) {
                 this.addressGeometry = evt.result.feature.geometry;
                 this._setSymbol(evt.result.feature.geometry);
@@ -839,7 +837,7 @@ define([
                 this._showErrorMessageDiv(nls.user.selectLocation);
             }
         },
-        _clearSubmissionGraphic: function(){
+        _clearSubmissionGraphic: function () {
             this.addressGeometry = null;
             this.map.graphics.clear();
             if (this.map.infoWindow.isShowing) {
