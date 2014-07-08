@@ -63,7 +63,7 @@ define([
                 // FeatureLayers
                 if (this.map.infoWindow) {
                     this._handles.push(on(this.map.infoWindow, "selection-change, set-features, show", lang.hitch(this, function () {
-                        this._handlePopup();
+                        this._resizeInfoWin();
                     })));
                 }
                 // resize
@@ -79,15 +79,9 @@ define([
                     this.map.resize();
                 })));
             },
-            _handlePopup: function(){
-                if(this.map.width < 400 || this.map.height < 400){
-                    this._resizeInfoWin();
-                    this.map.infoWindow.maximize();
-                } 
-                else{
-                    this._centerPopup();
-                    this._resizeInfoWin();
-                }
+            _handlePopup: function () {
+                this._resizeInfoWin();
+                this._centerPopup();
             },
             _resizeInfoWin: function () {
                 if (this.map.infoWindow) {

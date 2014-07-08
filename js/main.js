@@ -242,7 +242,6 @@ define([
             pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(10, 0);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
-            this.map.centerAt(point);
             this.editToolbar.activate(editToolbar.MOVE, graphic, null);
         },
 
