@@ -6,8 +6,6 @@ GeoForm is a configurable template for form based data editing of a [Feature Ser
 
 [Live Demo](http://esri.github.io/geoform-template-js/)
 
-[Builder Live Demo](http://esri.github.io/geoform-template-js/?edit=true)
-
 * **Map:** Choose the web map used in your application.
 * **Title:** Customize the title of the application.
 * **Logo:** Choose a logo to display in the application.
@@ -27,12 +25,27 @@ The GeoForm template can be accessed via the ArcGIS template gallery or item det
 3. Access the .html page.
 4. See the readme.html page for configuration options.
 
+## Adding The Template To Your ArcGIS Online Organization
+See how you can [add this template to your organization](http://blogs.esri.com/esri/arcgis/2014/04/21/be-an-early-adopter/) as an early adopter.
+
 ## Configuring The Template
+
 This template includes an application builder. If you're using this template via ArcGIS.com, you can take advantage of this builder while logged into ArcGIS and by configuring the published application.
 
 If you are not using ArcGIS Online applications, you can configure this template by editing the defaults.js in the config folder.
 
  [New to Github? Get started here.](https://github.com/)
+
+## More Information
+
+See the [ArcGIS Blog post](http://blogs.esri.com/esri/arcgis/2014/07/08/editing-via-pop-ups-got-you-down/) for additional informationa bout this application.
+
+## Limitations
+
+* Only supports point editable feature layers.
+* Offline editing only supports storing applyEdits and submitting upon reconnection.
+    * Attachment support currently not supported for offline.
+* Offline does not cache tiles. 
 
 ## Requirements
 
