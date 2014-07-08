@@ -725,11 +725,9 @@ define([
             currentLocation.startup();
             on(currentLocation, "locate", lang.hitch(this, function (evt) {
                 if(evt.error){
-                    this._clearSubmissionGraphic();
                     alert(nls.user.locationNotFound);
                 }
                 else{
-                    this._clearSubmissionGraphic();
                     var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
                     evt.graphic.setGeometry(pt);
                     this.addressGeometry = pt;
@@ -738,23 +736,32 @@ define([
                     this.map.infoWindow.show(this.addressGeometry);
                     this._setSymbol(evt.graphic.geometry);   
                 }
+                $('#geolocate_button').button('reset');
             }));
             on(dom.byId('geolocate_button'), 'click', lang.hitch(this, function () {
-                this.map.infoWindow.hide();
+                this._clearSubmissionGraphic();
+                $('#geolocate_button').button('loading');
                 currentLocation.locate();
             }));
         },
         _searchGeocoder: function(){
+            this._clearSubmissionGraphic();
             var value = this.searchInput.value;
-            this.geocodeAddress.find(value).then(lang.hitch(this, function(evt){
-                if(evt.results && evt.results.length){
-                    this.geocodeAddress.select(evt.results[0]);
-                }
-                else{
-                    this._clearSubmissionGraphic();
-                    alert(nls.user.locationNotFound);
-                }
-            }));
+            var node = dom.byId('geocoder_spinner');
+            if(value){
+                domClass.remove(node, 'glyphicon glyphicon-search');
+                domClass.add(node, 'fa fa-spinner fa-spin');
+                this.geocodeAddress.find(value).then(lang.hitch(this, function(evt){
+                    domClass.remove(node, 'fa fa-spinner fa-spin');
+                    domClass.add(node, 'glyphicon glyphicon-search');
+                    if(evt.results && evt.results.length){
+                        this.geocodeAddress.select(evt.results[0]);
+                    }
+                    else{
+                        alert(nls.user.locationNotFound);
+                    }
+                }));
+            }
         },
         _createGeocoderButton: function () {
             this.geocodeAddress = new Geocoder({
@@ -774,7 +781,6 @@ define([
             }));
             
             on(this.geocodeAddress, "select", lang.hitch(this, function (evt) {
-                this._clearSubmissionGraphic();
                 this.addressGeometry = evt.result.feature.geometry;
                 this._setSymbol(evt.result.feature.geometry);
                 this.map.centerAt(evt.result.feature.geometry);
@@ -844,17 +850,14 @@ define([
         _locatePointOnMap: function (coordinates) {
             var latLong = coordinates.split(",");
             if (latLong[0] >= -90 && latLong[0] <= 90 && latLong[1] >= -180 && latLong[1] <= 180) {
-                this._clearSubmissionGraphic();
-                var mapLocation = webMercatorUtils.lngLatToXY(latLong[1], latLong[0], true);
-                var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
+                var mapLocation = new Point(latLong[1], latLong[0]);
+                var pt = webMercatorUtils.geographicToWebMercator(mapLocation);
                 this.addressGeometry = pt;
                 this._setSymbol(this.addressGeometry);
                 this.map.infoWindow.setTitle(nls.user.locationTabText);
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
-                setTimeout(lang.hitch(this, function () {
-                    this.map.infoWindow.show(this.addressGeometry);
-                    this.map.centerAt(this.addressGeometry);
-                }), 500);
+                this.map.infoWindow.show(this.addressGeometry);
+                this.map.centerAt(this.addressGeometry);
                 domConstruct.empty(this.erroMessageDiv);
             } else {
                 this._showErrorMessageDiv(nls.user.invalidLatLong);
@@ -932,9 +935,11 @@ define([
             domConstruct.empty(this.erroMessageDiv);
             domConstruct.create("div", {
                 className: "alert alert-danger errorMessage",
+                id: "errorMessage",
                 innerHTML: errorMessage
             }, this.erroMessageDiv);
-            $(window).scrollTop(0);
+            window.location.hash = "#errorMessage";
+            this.map.resize();
         },
 
         _resetButton: function () {

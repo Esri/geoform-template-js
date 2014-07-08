@@ -34,13 +34,13 @@
             <div class="myLocationOptions">
                 <div class="tab-content">
                     <div id="myLocation" class="tab-pane active">
-                        <div id="geolocate_button" class="btn btn-default">${nls.user.findMyLocation}</div>
+                        <div id="geolocate_button" class="btn btn-default" data-loading-text="${nls.user.finding}">${nls.user.findMyLocation}</div>
                     </div>
                     <div id="address" class="tab-pane">
                         <div class="input-group">
                             <input data-dojo-attach-point="searchInput" type="text" class="form-control">
                           <span class="input-group-btn">
-                            <button data-dojo-attach-point="searchSubmit" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                            <button data-dojo-attach-point="searchSubmit" class="btn btn-default" type="button"><span id="geocoder_spinner" class="glyphicon glyphicon-search"></span></button>
                           </span>
                         </div> 
                     </div>
@@ -59,6 +59,7 @@
                     </div>
                 </div>
             </div>
+            <div class="clearfix"></div>
             <div id="mapDiv" class="map-div"></div>
             <div id="coordinatesContainer">
                 <span class="text-muted" id="coordinatesValue"></span>

@@ -29,6 +29,7 @@ define({
             latitude: "Latitude",
             longitude: "Longitude",
             findMyLocation: "Find my location",
+            finding: "Locating&hellip;",
             myLocationTitleText: 'My Location',
             addressSearchText: "Your submission will appear here. You can drag the pin to correct the location.",
             shareDialogFormText: "Form Link",
