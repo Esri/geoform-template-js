@@ -216,13 +216,10 @@ define([
             }));
             on(this.map, 'click', lang.hitch(this, function (evt) {
                 if (!evt.graphic) {
+                    this._clearSubmissionGraphic();
                     this.addressGeometry = evt.mapPoint;
-                    this.map.graphics.clear();
                     this.map.infoWindow.setTitle(nls.user.locationTabText);
                     this.map.infoWindow.setContent(nls.user.addressSearchText);
-                    if (this.map.infoWindow.isShowing) {
-                        this.map.infoWindow.hide();
-                    }
                     this.map.infoWindow.show(this.addressGeometry);
                     this._setSymbol(this.addressGeometry);
                 }
@@ -237,7 +234,6 @@ define([
         },
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
-            this.map.graphics.clear();
             symbolUrl = "./images/pins/purple.png";
             pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(10, 0);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
@@ -705,11 +701,7 @@ define([
             }), this.reportError);
         },
         _evaluateCoordinates: function(){
-            this.addressGeometry = null;
-            this.map.graphics.clear();
-            if (this.map.infoWindow.isShowing) {
-                this.map.infoWindow.hide();
-            }
+            this._clearSubmissionGraphic();
             if (this.XCoordinate.value === "") {
                 this._showErrorMessageDiv(nls.user.emptylatitudeAlertMessage);
                 return;
@@ -732,14 +724,20 @@ define([
             }, domConstruct.create('div'));
             currentLocation.startup();
             on(currentLocation, "locate", lang.hitch(this, function (evt) {
-                var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
-                evt.graphic.setGeometry(pt);
-                this.addressGeometry = pt;
-                this._setSymbol(evt.graphic.geometry);
-                this.map.infoWindow.setTitle(nls.user.myLocationTitleText);
-                this.map.infoWindow.setContent(nls.user.addressSearchText);
-                this.map.infoWindow.show(this.addressGeometry);
-                this._setSymbol(evt.graphic.geometry);
+                if(evt.error){
+                    this._clearSubmissionGraphic();
+                    alert(nls.user.locationNotFound);
+                }
+                else{
+                    this._clearSubmissionGraphic();
+                    var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
+                    evt.graphic.setGeometry(pt);
+                    this.addressGeometry = pt;
+                    this.map.infoWindow.setTitle(nls.user.myLocationTitleText);
+                    this.map.infoWindow.setContent(nls.user.addressSearchText);
+                    this.map.infoWindow.show(this.addressGeometry);
+                    this._setSymbol(evt.graphic.geometry);   
+                }
             }));
             on(dom.byId('geolocate_button'), 'click', lang.hitch(this, function () {
                 this.map.infoWindow.hide();
@@ -751,6 +749,10 @@ define([
             this.geocodeAddress.find(value).then(lang.hitch(this, function(evt){
                 if(evt.results && evt.results.length){
                     this.geocodeAddress.select(evt.results[0]);
+                }
+                else{
+                    this._clearSubmissionGraphic();
+                    alert(nls.user.locationNotFound);
                 }
             }));
         },
@@ -772,13 +774,10 @@ define([
             }));
             
             on(this.geocodeAddress, "select", lang.hitch(this, function (evt) {
-                this.map.graphics.clear();
+                this._clearSubmissionGraphic();
                 this.addressGeometry = evt.result.feature.geometry;
                 this._setSymbol(evt.result.feature.geometry);
                 this.map.centerAt(evt.result.feature.geometry);
-                if (this.map.infoWindow.isShowing) {
-                    this.map.infoWindow.hide();
-                }
                 this.map.infoWindow.setTitle(nls.user.locationTabText);
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(evt.result.feature.geometry);
@@ -813,10 +812,7 @@ define([
                 featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
                 //code for apply-edits
                 this.map.getLayer(config.form_layer.id).applyEdits([featureData], null, null, function (addResults) {
-                    _self.map.graphics.clear();
-                    if (_self.map.infoWindow.isShowing) {
-                        _self.map.infoWindow.hide();
-                    }
+                    _self._clearSubmissionGraphic();
                     _self.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
                     _self._openShareDialog();
@@ -837,19 +833,24 @@ define([
                 this._showErrorMessageDiv(nls.user.selectLocation);
             }
         },
+        _clearSubmissionGraphic: function(){
+            this.addressGeometry = null;
+            this.map.graphics.clear();
+            if (this.map.infoWindow.isShowing) {
+                this.map.infoWindow.hide();
+            }
+        },
 
         _locatePointOnMap: function (coordinates) {
             var latLong = coordinates.split(",");
             if (latLong[0] >= -90 && latLong[0] <= 90 && latLong[1] >= -180 && latLong[1] <= 180) {
+                this._clearSubmissionGraphic();
                 var mapLocation = webMercatorUtils.lngLatToXY(latLong[1], latLong[0], true);
                 var pt = new Point(mapLocation[0], mapLocation[1], this.map.spatialReference);
                 this.addressGeometry = pt;
                 this._setSymbol(this.addressGeometry);
                 this.map.infoWindow.setTitle(nls.user.locationTabText);
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
-                if (this.map.infoWindow.isShowing) {
-                    this.map.infoWindow.hide();
-                }
                 setTimeout(lang.hitch(this, function () {
                     this.map.infoWindow.show(this.addressGeometry);
                     this.map.centerAt(this.addressGeometry);
