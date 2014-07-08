@@ -690,7 +690,7 @@ define([
                     this._findLocation(evt);
                 }));
                 on(this.cordsSubmit, "click", lang.hitch(this, function (evt) {
-                    this._findLocation(evt);
+                    this._evaluateCoordinates(evt);
                 }));
                 // make sure map is loaded
                 if (this.map.loaded) {
@@ -705,6 +705,11 @@ define([
             }), this.reportError);
         },
         _evaluateCoordinates: function(){
+            this.addressGeometry = null;
+            this.map.graphics.clear();
+            if (this.map.infoWindow.isShowing) {
+                this.map.infoWindow.hide();
+            }
             if (this.XCoordinate.value === "") {
                 this._showErrorMessageDiv(nls.user.emptylatitudeAlertMessage);
                 return;
@@ -847,6 +852,7 @@ define([
                 }
                 setTimeout(lang.hitch(this, function () {
                     this.map.infoWindow.show(this.addressGeometry);
+                    this.map.centerAt(this.addressGeometry);
                 }), 500);
                 domConstruct.empty(this.erroMessageDiv);
             } else {
