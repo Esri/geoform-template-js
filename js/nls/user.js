@@ -39,6 +39,8 @@ define({
             locationNotFound: "Location could not be found.",
             floatFormat: "Enter a decimal number",
             setLocation: "Set location",
+            find: "Zip Code, city, etc.",
+            toggleDropdown: "Toggle Dropdown",
             invalidLatLong: "Please enter valid latitude and longitude coordinates."
         }
     })

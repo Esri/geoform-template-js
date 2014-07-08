@@ -5,6 +5,7 @@ define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "esri/arcgis/utils",
+    "esri/lang",
     "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-style",
@@ -39,6 +40,7 @@ define([
     declare,
     lang,
     arcgisUtils,
+    esriLang,
     dom,
     domClass, domStyle,
     on,
@@ -67,6 +69,79 @@ define([
         localStorageSupport: null,
         constructor: function () {
 
+        },
+        _createGeocoderOptions: function() {
+            var hasEsri = false, esriIdx, geocoders = lang.clone(this.config.helperServices.geocode);
+            // default options
+            var options = {
+                map: this.map,
+                autoNavigate: true,
+                arcgisGeocoder: {
+                    placeholder: nls.user.find
+                },
+                geocoders: null
+            };
+            //only use geocoders with a url defined
+            geocoders = array.filter(geocoders, function (geocoder) {
+                if (geocoder.url) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+            // at least 1 geocoder defined
+            if(geocoders.length){
+                // each geocoder
+                array.forEach(geocoders, lang.hitch(this, function(geocoder) {
+                    // if esri geocoder
+                    if (geocoder.url && geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
+                        hasEsri = true;
+                        geocoder.name = "Esri World Geocoder";
+                        geocoder.outFields = "Match_addr, stAddr, City";
+                        geocoder.singleLineFieldName = "SingleLine";
+                        geocoder.esri = true;
+                        geocoder.placefinding = true;
+                        geocoder.placeholder = nls.user.find;
+                    }
+                }));
+                //only use geocoders with a singleLineFieldName that allow placefinding unless its custom
+                geocoders = array.filter(geocoders, function (geocoder) {
+                    if (geocoder.name && geocoder.name === "Custom") {
+                        return (esriLang.isDefined(geocoder.singleLineFieldName));
+                    } else {
+                        return (esriLang.isDefined(geocoder.singleLineFieldName) && esriLang.isDefined(geocoder.placefinding) && geocoder.placefinding);
+                    }
+                });
+                // if we have an esri geocoder
+                if (hasEsri) {
+                    for (var i = 0; i < geocoders.length; i++) {
+                        if (esriLang.isDefined(geocoders[i].esri) && geocoders[i].esri === true) {
+                            esriIdx = i;
+                            break;
+                        }
+                    }
+                }
+                // set autoComplete
+                options.autoComplete = hasEsri;
+                // set esri options
+                if (hasEsri) {
+                    options.minCharacters = 0;
+                    options.maxLocations = 5;
+                    options.searchDelay = 100;
+                }
+                //If the World geocoder is primary enable auto complete 
+                if (hasEsri && esriIdx === 0) {
+                    options.arcgisGeocoder = geocoders.splice(0, 1)[0]; //geocoders[0];
+                    if (geocoders.length > 0) {
+                        options.geocoders = geocoders;
+                    }
+                } else {
+                    options.arcgisGeocoder = false;
+                    options.geocoders = geocoders;
+                }
+            }
+            return options;
         },
         startup: function (config, response, isPreview, node) {
             // config will contain application and user defined info for the template such as i18n strings, the web map id
@@ -762,11 +837,27 @@ define([
             }
         },
         _createGeocoderButton: function () {
-            this.geocodeAddress = new Geocoder({
-                map: this.map
-            }, domConstruct.create('div'));
+            var options = this._createGeocoderOptions();
+            this.geocodeAddress = new Geocoder(options, domConstruct.create('div'));
             this.geocodeAddress.startup();
-
+            if(this.geocodeAddress._geocoders && this.geocodeAddress._geocoders.length > 1){
+                var html = '';
+                html += '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">';
+                html += '<span class="caret"></span>';
+                html += '<span class="sr-only">' + nls.user.toggleDropdown + '</span>';
+                html += '</button>';
+                html += '<ul class="dropdown-menu" role="menu" id="geocoder_menu">';
+                for(var i = 0; i < this.geocodeAddress._geocoders.length; i++){
+                    var gc = this.geocodeAddress._geocoders[i];
+                    html += '<li><a data-index="' + i + '" href="#">' + gc.name + '</a></li>';
+                }
+                html += '</ul>';
+                var node = dom.byId('geocoder_buttons');
+                domConstruct.place(html, node, 'last');
+            }
+            
+            domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
+            
             on(this.searchInput, 'keyup', lang.hitch(this, function (evt) {
                 var keyCode = evt.charCode || evt.keyCode;
                 if (keyCode === 13) {
@@ -786,6 +877,20 @@ define([
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(evt.result.feature.geometry);
             }));
+            
+            on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function (evt) {
+                domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
+            }));
+            
+            
+            var gcMenu = dom.byId('geocoder_menu');
+            if(gcMenu){
+                on(gcMenu, 'a:click', lang.hitch(this, function(evt){
+                    var idx = parseInt(domAttr.get(evt.target, 'data-index'), 10);
+                    this.geocodeAddress.set('activeGeocoderIndex', idx);
+                    evt.preventDefault();
+                }));   
+            }
         },
 
         _addFeatureToLayer: function (config) {
