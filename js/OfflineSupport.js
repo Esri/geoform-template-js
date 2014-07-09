@@ -23,6 +23,8 @@ define([
             this.defaults = options;
             // create offline manager
             this.offlineFeaturesManager = new OfflineFeaturesManager();
+            // enable offline attachments
+            this.offlineFeaturesManager.initAttachments();
             // once layer is loaded
             if (this.defaults.layer.loaded) {
                 this.initEditor();
@@ -32,7 +34,6 @@ define([
             Offline.check();
             Offline.on('up', lang.hitch(this, function () {
                 this.goOnline();
-
             }));
             Offline.on('down', lang.hitch(this, function () {
                 this.goOffline();
@@ -91,12 +92,6 @@ define([
         // setup editing
         initEditor: function () {
             
-            // enable offline attachments
-            this.offlineFeaturesManager.initAttachments();
-            
-            /* extend layer with offline detection functionality */
-            this.offlineFeaturesManager.extend(this.defaults.layer);
-            
             /* handle errors that happen while storing offline edits */
             this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, function (results) {
                 var errors = Array.prototype.concat(
@@ -115,6 +110,10 @@ define([
                     console.log(errors);
                 }
             });
+            
+            /* extend layer with offline detection functionality */
+            this.offlineFeaturesManager.extend(this.defaults.layer);
+            
             // editor settings
             var settings = {
                 map: this.defaults.map,

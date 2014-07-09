@@ -297,7 +297,7 @@ define([
             var layer = this.map.getLayer(this.config.form_layer.id);
             if (layer) {
                 // support basic offline editing
-                OfflineSupport({
+                new OfflineSupport({
                     map: this.map,
                     layer: layer
                 });
@@ -770,7 +770,7 @@ define([
                     this.map.reposition();
                 }));
                 // bootstrap map functions
-                bootstrapmap(this.map);
+                new bootstrapmap(this.map);
                 this._createForm(this.config.fields);
                 this._createLocateButton();
                 this._createGeocoderButton();
