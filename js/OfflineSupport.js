@@ -24,7 +24,7 @@ define([
             // create offline manager
             this.offlineFeaturesManager = new OfflineFeaturesManager();
             // enable offline attachments
-            offlineFeaturesManager.initAttachments();
+            this.offlineFeaturesManager.initAttachments();
             // once layer is loaded
             if (this.defaults.layer.loaded) {
                 this.initEditor();
