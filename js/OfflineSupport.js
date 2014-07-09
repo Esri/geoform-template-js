@@ -127,11 +127,6 @@ define([
             }, domConstruct.create('div'));
             // start editor
             editor.startup();
-            // if online
-            if (Offline.state === 'up') {
-                // if we have pending edits from previous executions and we are online, then try to replay them
-                this.goOnline();
-            }
             // update indicator and check status
             this.updateConnectivityIndicator();
         }
