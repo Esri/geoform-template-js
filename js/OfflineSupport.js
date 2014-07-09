@@ -23,8 +23,6 @@ define([
             this.defaults = options;
             // create offline manager
             this.offlineFeaturesManager = new OfflineFeaturesManager();
-            // enable offline attachments
-            this.offlineFeaturesManager.initAttachments();
             // once layer is loaded
             if (this.defaults.layer.loaded) {
                 this.initEditor();
@@ -92,8 +90,13 @@ define([
 
         // setup editing
         initEditor: function () {
+            
+            // enable offline attachments
+            this.offlineFeaturesManager.initAttachments();
+            
             /* extend layer with offline detection functionality */
             this.offlineFeaturesManager.extend(this.defaults.layer);
+            
             /* handle errors that happen while storing offline edits */
             this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, function (results) {
                 var errors = Array.prototype.concat(
