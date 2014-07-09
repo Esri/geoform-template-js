@@ -70,77 +70,100 @@ define([
         constructor: function () {
 
         },
-        _createGeocoderOptions: function() {
-            var hasEsri = false, esriIdx, geocoders = lang.clone(this.config.helperServices.geocode);
-            // default options
-            var options = {
-                map: this.map,
-                autoNavigate: true,
-                arcgisGeocoder: {
-                    placeholder: nls.user.find
-                },
-                geocoders: null
-            };
-            //only use geocoders with a url defined
-            geocoders = array.filter(geocoders, function (geocoder) {
-                if (geocoder.url) {
-                    return true;
+        _createGeocoderOptions: function () {
+            //Check for multiple geocoder support and setup options for geocoder widget. 
+            var hasEsri = false,
+                geocoders = lang.clone(this.config.helperServices.geocode);
+
+            array.forEach(geocoders, function (geocoder, index) {
+
+                if (geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
+                    hasEsri = true;
+                    geocoder.name = "Esri World Geocoder";
+                    geocoder.outFields = "Match_addr, stAddr, City";
+                    geocoder.singleLineFieldName = "SingleLine";
+                    geocoder.esri = geocoder.placefinding = true;
+                    geocoder.placeholder = nls.user.find;
                 }
-                else{
-                    return false;
-                }
+
             });
-            // at least 1 geocoder defined
-            if(geocoders.length){
-                // each geocoder
-                array.forEach(geocoders, lang.hitch(this, function(geocoder) {
-                    // if esri geocoder
-                    if (geocoder.url && geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
-                        hasEsri = true;
-                        geocoder.name = "Esri World Geocoder";
-                        geocoder.outFields = "Match_addr, stAddr, City";
-                        geocoder.singleLineFieldName = "SingleLine";
-                        geocoder.esri = true;
-                        geocoder.placefinding = true;
-                        geocoder.placeholder = nls.user.find;
+            //only use geocoders with a singleLineFieldName that allow placefinding
+            geocoders = array.filter(geocoders, function (geocoder) {
+                return (esriLang.isDefined(geocoder.singleLineFieldName) && esriLang.isDefined(geocoder.placefinding) && geocoder.placefinding);
+            });
+            var esriIdx;
+            if (hasEsri) {
+                for (var i = 0; i < geocoders.length; i++) {
+                    if (esriLang.isDefined(geocoders[i].esri) && geocoders[i].esri === true) {
+                        esriIdx = i;
+                        break;
                     }
-                }));
-                //only use geocoders with a singleLineFieldName that allow placefinding unless its custom
-                geocoders = array.filter(geocoders, function (geocoder) {
-                    if (geocoder.name && geocoder.name === "Custom") {
-                        return (esriLang.isDefined(geocoder.singleLineFieldName));
-                    } else {
-                        return (esriLang.isDefined(geocoder.singleLineFieldName) && esriLang.isDefined(geocoder.placefinding) && geocoder.placefinding);
-                    }
-                });
-                // if we have an esri geocoder
-                if (hasEsri) {
-                    for (var i = 0; i < geocoders.length; i++) {
-                        if (esriLang.isDefined(geocoders[i].esri) && geocoders[i].esri === true) {
-                            esriIdx = i;
-                            break;
-                        }
-                    }
-                }
-                // set autoComplete
-                options.autoComplete = hasEsri;
-                // set esri options
-                if (hasEsri) {
-                    options.minCharacters = 0;
-                    options.maxLocations = 5;
-                    options.searchDelay = 100;
-                }
-                //If the World geocoder is primary enable auto complete 
-                if (hasEsri && esriIdx === 0) {
-                    options.arcgisGeocoder = geocoders.splice(0, 1)[0]; //geocoders[0];
-                    if (geocoders.length > 0) {
-                        options.geocoders = geocoders;
-                    }
-                } else {
-                    options.arcgisGeocoder = false;
-                    options.geocoders = geocoders;
                 }
             }
+            var options = {
+                map: this.map,
+                autoComplete: hasEsri
+            };
+
+
+            //If there is a valid search id and field defined add the feature layer to the geocoder array
+            var searchLayers = [];
+            if (this.config.itemInfo.itemData && this.config.itemInfo.itemData.applicationProperties && this.config.itemInfo.itemData.applicationProperties.viewing && this.config.itemInfo.itemData.applicationProperties.viewing.search) {
+                var searchOptions = this.config.itemInfo.itemData.applicationProperties.viewing.search;
+
+
+                array.forEach(searchOptions.layers, lang.hitch(this, function (searchLayer) {
+                    var operationalLayers = this.config.itemInfo.itemData.operationalLayers;
+                    var layer = null;
+                    array.some(operationalLayers, function (opLayer) {
+                        if (opLayer.id === searchLayer.id) {
+                            layer = opLayer;
+                            return true;
+                        }
+                    });
+
+                    var url = layer.url;
+                    var field = searchLayer.field.name;
+                    var name = layer.title;
+                    if (esriLang.isDefined(searchLayer.subLayer)) {
+                        url = url + "/" + searchLayer.subLayer;
+                        array.some(layer.layerObject.layerInfos, function (info) {
+                            if (info.id == searchLayer.subLayer) {
+                                name += " - " + layer.layerObject.layerInfos[searchLayer.subLayer].name;
+                                return true;
+                            }
+
+                        });
+                    }
+                    searchLayers.push({
+                        "name": name,
+                        "url": url,
+                        "field": field,
+                        "exactMatch": (searchLayer.field.exactMatch || false),
+                        "placeholder": searchOptions.hintText,
+                        "outFields": "*",
+                        "type": "query",
+                        "layerId": searchLayer.id,
+                        "subLayerId": parseInt(searchLayer.subLayer) || null
+                    });
+                }));
+
+            }
+
+
+            if (hasEsri && esriIdx === 0) { // Esri geocoder is primary
+                options.arcgisGeocoder = false;
+                if (geocoders.length > 0) {
+                    options.geocoders = searchLayers.length ? searchLayers.concat(geocoders) : geocoders;
+                } else if (searchLayers.length > 0) {
+                    options.geocoders = searchLayers;
+                }
+            } else { // Esri geocoder is not primary
+                options.arcgisGeocoder = false;
+                options.geocoders = searchLayers.length ? searchLayers.concat(geocoders) : geocoders;
+            }
+
+
             return options;
         },
         startup: function (config, response, isPreview, node) {
@@ -836,6 +859,19 @@ define([
                 }));
             }
         },
+        _geocoderMenuItems: function(){
+            var html = '';
+            for(var i = 0; i < this.geocodeAddress._geocoders.length; i++){
+                var gc = this.geocodeAddress._geocoders[i];
+                var active = '';
+                if(i === this.geocodeAddress.activeGeocoderIndex){
+                    active = 'active';
+                }
+                html += '<li class="' + active + '"><a data-index="' + i + '" href="#">' + gc.name + '</a></li>';
+            }
+            var node = dom.byId('geocoder_menu');
+            node.innerHTML = html;
+        },
         _createGeocoderButton: function () {
             var options = this._createGeocoderOptions();
             this.geocodeAddress = new Geocoder(options, domConstruct.create('div'));
@@ -847,13 +883,10 @@ define([
                 html += '<span class="sr-only">' + nls.user.toggleDropdown + '</span>';
                 html += '</button>';
                 html += '<ul class="dropdown-menu" role="menu" id="geocoder_menu">';
-                for(var i = 0; i < this.geocodeAddress._geocoders.length; i++){
-                    var gc = this.geocodeAddress._geocoders[i];
-                    html += '<li><a data-index="' + i + '" href="#">' + gc.name + '</a></li>';
-                }
                 html += '</ul>';
                 var node = dom.byId('geocoder_buttons');
                 domConstruct.place(html, node, 'last');
+                this._geocoderMenuItems();
             }
             
             domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
@@ -880,6 +913,7 @@ define([
             
             on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function (evt) {
                 domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
+                this._geocoderMenuItems();
             }));
             
             
