@@ -137,9 +137,6 @@ define([
             var layerDefeeredListArr = [],
                 layerDefeeredList, attribute;
             this._clearLayerOptions();
-            
-            console.log(this.currentConfig.itemInfo.itemData.operationalLayers);
-            
             array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                 if (currentLayer.url && currentLayer.url.split("/")[currentLayer.url.split("/").length - 2].toLowerCase() == "featureserver") {
                     layerDefeeredListArr.push(this._queryLayer(currentLayer.url, currentLayer.id));
