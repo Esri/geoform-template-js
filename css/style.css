@@ -1,50 +1,3 @@
-/*** Esri Map ***/
-
-.map {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    min-height: 100px;
-    max-height: 100%;
-    text-align: left;
-    overflow: hidden;
-    -moz-box-sizing: content-box;
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box;
-}
-.map * {
-    -moz-box-sizing: content-box;
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box;
-}
-.map > img {
-    text-align: left;
-}
-/*** Restyle Esri Zoomin-out ***/
-
-.esriSimpleSlider {
-    border: 1px solid #cccccc;
-    top: 15px;
-    left: 15px;
-}
-.esriSimpleSliderVertical .esriSimpleSliderIncrementButton,
-.esriSimpleSliderVertical .esriSimpleSliderDecrementButton {
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 27px;
-}
-.esriSimpleSliderVertical .esriSimpleSliderIncrementButton {
-    border-bottom: 1px solid #cccccc;
-}
-/*** Fix Bootstrap modal bug ***/
-
-body.modal-open,
-.modal-open .navbar-fixed-top,
-.modal-open .navbar-fixed-bottom {
-    margin-right: 0;
-    margin-top: 0;
-}
 .map-div {
     width: 100% !important;
     height: 200px !important;
@@ -278,4 +231,51 @@ input::-ms-clear {
 }
 .webmap-thumb-container {
     margin-bottom: 5px;
+}
+/*** Esri Map ***/
+
+.map {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100px;
+    max-height: 100%;
+    text-align: left;
+    overflow: hidden;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+}
+.map * {
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+}
+.map > img {
+    text-align: left;
+}
+/*** Restyle Esri Zoomin-out ***/
+
+.esriSimpleSlider {
+    border: 1px solid #cccccc;
+    top: 15px;
+    left: 15px;
+}
+.esriSimpleSliderVertical .esriSimpleSliderIncrementButton,
+.esriSimpleSliderVertical .esriSimpleSliderDecrementButton {
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 27px;
+}
+.esriSimpleSliderVertical .esriSimpleSliderIncrementButton {
+    border-bottom: 1px solid #cccccc;
+}
+/*** Fix Bootstrap modal bug ***/
+
+body.modal-open,
+.modal-open .navbar-fixed-top,
+.modal-open .navbar-fixed-bottom {
+    margin-right: 0;
+    margin-top: 0;
 }
