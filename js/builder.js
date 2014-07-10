@@ -137,6 +137,9 @@ define([
             var layerDefeeredListArr = [],
                 layerDefeeredList, attribute;
             this._clearLayerOptions();
+            
+            console.log(this.currentConfig.itemInfo.itemData.operationalLayers);
+            
             array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                 if (currentLayer.url && currentLayer.url.split("/")[currentLayer.url.split("/").length - 2].toLowerCase() == "featureserver") {
                     layerDefeeredListArr.push(this._queryLayer(currentLayer.url, currentLayer.id));
@@ -530,9 +533,9 @@ define([
                             bitlyLogin: this.currentConfig.bitlyLogin,
                             bitlyKey: this.currentConfig.bitlyKey,
                             image: this.currentConfig.sharinghost + '/sharing/rest/content/items/' + this.currentConfig.itemInfo.item.id + '/info/' + this.currentConfig.itemInfo.item.thumbnail,
-                            title: this.currentConfig.details.Title || nls.builder.geoformTitleText,
-                            summary: this.currentConfig.details.Description,
-                            hashtags: 'esriDSM'
+                            title: this.currentConfig.details.Title || nls.builder.geoformTitleText || '',
+                            summary: this.currentConfig.details.Description || '',
+                            hashtags: 'esriGeoForm'
                         });
                         this._ShareDialog.startup();
                     }
