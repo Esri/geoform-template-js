@@ -23,6 +23,8 @@
                     </li>
                     <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${nls.builder.styleText}</a>
                     </li>
+                     <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${nls.builder.optionText}</a>
+                    </li>
                     <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${nls.builder.previewText}</a>
                     </li>
                     <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${nls.builder.publishText}</a>
@@ -54,6 +56,8 @@
                     <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${nls.builder.fieldsText}</a>
                     </li>
                     <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${nls.builder.styleText}</a>
+                    </li>
+                    <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${nls.builder.optionText}</a>
                     </li>
                     <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${nls.builder.previewText}</a>
                     </li>
@@ -149,6 +153,22 @@
                             <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${nls.builder.btnNextText}</a>
                         </p>
                     </div>
+                    <div id="options" class="tab-pane">
+                        <h2>
+                            ${nls.builder.optionsApplicationText}</h2>
+                        <div class="descriptionText">
+                            ${nls.builder.optionsDescriptionText}</div>
+                        <div>
+                            <input id="jumbotronOption" type="checkbox" value="Use Small Header" />
+                            <label for="jumbotronOption">
+                                 ${nls.builder.smallHeader}</label>
+                        </div>
+                        <div>
+                            <input id="shareOption" type="checkbox" value="share" />
+                            <label for="shareOption">
+                                 ${nls.builder.shareApplication}</label>
+                        </div>
+                    </div>
                     <div id="preview" class="tab-pane">
                         <h2>${nls.builder.previewApplicationText}</h2>
                         <iframe class="preview-frame" id="iframeContainer"></iframe>
@@ -163,6 +183,7 @@
                         <p class="">
                             <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton">${nls.builder.saveText}</button>
                             <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview">${nls.builder.btnPreviousText}</a>
+                            <button id="done" type="button" class="btn btn-default">Done</button>
                         </p>
                     </div>
                 </div>

@@ -69,6 +69,16 @@ define([
                 this._updateItem();
             }));
 
+            $('#done').on('click', lang.hitch(this, function () {
+                var detailsPageURL = this.currentConfig.sharinghost + "/home/item.html?id=" + this.currentConfig.appid;
+                window.open(detailsPageURL);
+            }));
+            $('#jumbotronOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.disableJumbotron = $('#jumbotronOption')[0].checked;
+            }));
+            $('#shareOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.shareOption = $('#shareOption')[0].checked;
+            }));
             this.previousConfig = lang.clone(this.config);
             this.currentConfig = config;
             this.userInfo = userInfo;
@@ -76,6 +86,8 @@ define([
             this.localStorageSupport = new localStorageHelper();
             this._addOperationalLayers();
             this._populateDetails();
+            this._populateJumbotronOption(this.currentConfig.disableJumbotron);
+            this._populateShareOption(this.currentConfig.shareOption);
             this._populateThemes();
             this._initWebmapSelection();
             this._loadCSS("css/browseDialog.css");
@@ -174,7 +186,15 @@ define([
         _populateDetails: function () {
             dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
             dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
-            dom.byId("detailDescriptionInput").value = this.currentConfig.details.Description;
+            dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
+            $(document).ready(function () {
+                $('#detailDescriptionInput').summernote({
+                    height: 200,
+                    minHeight: null,
+                    maxHeight: null,
+                    focus: true
+                });
+            });
         },
 
         //function to populate all available themes in application
@@ -215,6 +235,12 @@ define([
             }));
         },
 
+        _populateJumbotronOption: function (jumbotronOption) {
+            $("#jumbotronOption")[0].checked = jumbotronOption;
+        },
+        _populateShareOption: function (shareOption) {
+            $("#shareOption")[0].checked = shareOption;
+        },
         //function to select the previously configured theme.
         _configureTheme: function (selectedTheme) {
             this.currentConfig.theme = selectedTheme.currentTarget.getAttribute("themeName");
@@ -227,7 +253,7 @@ define([
                 fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
                 fieldCheckBoxInput, currentIndex = 0,
                 layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
-                newAddedFields = [];
+                newAddedFields = [], sortedFields = []; ;
             if (this.geoFormFieldsTable) {
                 domConstruct.empty(this.geoFormFieldsTable);
             }
@@ -264,7 +290,22 @@ define([
                 }));
             }
 
+            array.forEach(this.currentConfig.fields, lang.hitch(this, function (configField) {
+                array.some(newAddedFields, lang.hitch(this, function (currentField) {
+                    if (currentField.fieldName === configField.fieldName) {
+                        sortedFields.push(currentField);
+                        return true;
+                    }
+                }));
+            }));
             array.forEach(newAddedFields, lang.hitch(this, function (currentField) {
+                if (sortedFields.indexOf(currentField) === -1) {
+                    sortedFields.push(currentField);
+                }
+
+            }));
+            //newAddedFields & this.currentConfig.fields
+            array.forEach(sortedFields, lang.hitch(this, function (currentField) {
                 fieldRow = domConstruct.create("tr", {
                     rowIndex: currentIndex
                 }, this.geoFormFieldsTable);
@@ -462,7 +503,7 @@ define([
             case "details":
                 this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
                 this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
-                this.currentConfig.details.Description = dom.byId("detailDescriptionInput").value;
+                this.currentConfig.details.Description = $('#detailDescriptionInput').code();
                 break;
             case "fields":
                 this.currentConfig.fields.length = 0;
@@ -530,8 +571,8 @@ define([
                             bitlyLogin: this.currentConfig.bitlyLogin,
                             bitlyKey: this.currentConfig.bitlyKey,
                             image: this.currentConfig.sharinghost + '/sharing/rest/content/items/' + this.currentConfig.itemInfo.item.id + '/info/' + this.currentConfig.itemInfo.item.thumbnail,
-                            title: this.currentConfig.details.Title || nls.builder.geoformTitleText || '',
-                            summary: this.currentConfig.details.Description || '',
+                            title: this.currentConfig.details.Title || nls.builder.geoformTitleText,
+                            summary: this.currentConfig.details.Description,
                             hashtags: 'esriGeoForm'
                         });
                         this._ShareDialog.startup();
@@ -545,11 +586,11 @@ define([
         //function to show a progress bar before the content of share dialog is loaded
         _addProgressBar: function () {
             var progressIndicatorContainer, progressIndicator;
-            domConstruct.empty(query(".modal-body")[0]);
+            domConstruct.empty($("#myModal .modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderInProgressTitleMessage);
             progressIndicatorContainer = domConstruct.create("div", {
                 className: "progress progress-striped active progress-remove-margin"
-            }, query(".modal-body")[0]);
+            }, $("#myModal .modal-body")[0]);
             progressIndicator = domConstruct.create("div", {
                 className: "progress-bar progress-percent",
                 innerHTML: nls.builder.shareBuilderProgressBarMessage
@@ -557,15 +598,16 @@ define([
         },
         _createShareDlgContent: function () {
             var iconContainer, facebookIconHolder, twitterIconHolder, googlePlusIconHolder, mailIconHolder;
-            domConstruct.empty(query(".modal-body")[0]);
+            domConstruct.empty($("#myModal .modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderTitleMessage);
             iconContainer = domConstruct.create("div", {
                 className: "iconContainer"
-            }, query(".modal-body")[0]);
+            }, $("#myModal .modal-body")[0]);
             domConstruct.create("div", {
                 className: "share-dialog-subheader",
                 innerHTML: nls.builder.shareBuilderTextMessage
             }, iconContainer);
+            if ($("#shareOption")[0].checked) {
             facebookIconHolder = domConstruct.create("div", {
                 className: "iconContent"
             }, iconContainer);
@@ -587,6 +629,7 @@ define([
                 className: "fa fa-google-plus-square iconClass",
                 id: "google-plusIcon"
             }, googlePlusIconHolder);
+            }
             mailIconHolder = domConstruct.create("div", {
                 className: "iconContent"
             }, iconContainer);

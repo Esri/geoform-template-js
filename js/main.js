@@ -5,7 +5,6 @@ define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "esri/arcgis/utils",
-    "esri/lang",
     "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-style",
@@ -40,7 +39,6 @@ define([
     declare,
     lang,
     arcgisUtils,
-    esriLang,
     dom,
     domClass, domStyle,
     on,
@@ -69,102 +67,6 @@ define([
         localStorageSupport: null,
         constructor: function () {
 
-        },
-        _createGeocoderOptions: function () {
-            //Check for multiple geocoder support and setup options for geocoder widget. 
-            var hasEsri = false,
-                geocoders = lang.clone(this.config.helperServices.geocode);
-
-            array.forEach(geocoders, function (geocoder, index) {
-
-                if (geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
-                    hasEsri = true;
-                    geocoder.name = "Esri World Geocoder";
-                    geocoder.outFields = "Match_addr, stAddr, City";
-                    geocoder.singleLineFieldName = "SingleLine";
-                    geocoder.esri = geocoder.placefinding = true;
-                    geocoder.placeholder = nls.user.find;
-                }
-
-            });
-            //only use geocoders with a singleLineFieldName that allow placefinding
-            geocoders = array.filter(geocoders, function (geocoder) {
-                return (esriLang.isDefined(geocoder.singleLineFieldName) && esriLang.isDefined(geocoder.placefinding) && geocoder.placefinding);
-            });
-            var esriIdx;
-            if (hasEsri) {
-                for (var i = 0; i < geocoders.length; i++) {
-                    if (esriLang.isDefined(geocoders[i].esri) && geocoders[i].esri === true) {
-                        esriIdx = i;
-                        break;
-                    }
-                }
-            }
-            var options = {
-                map: this.map,
-                autoComplete: hasEsri
-            };
-
-
-            //If there is a valid search id and field defined add the feature layer to the geocoder array
-            var searchLayers = [];
-            if (this.config.itemInfo.itemData && this.config.itemInfo.itemData.applicationProperties && this.config.itemInfo.itemData.applicationProperties.viewing && this.config.itemInfo.itemData.applicationProperties.viewing.search) {
-                var searchOptions = this.config.itemInfo.itemData.applicationProperties.viewing.search;
-
-
-                array.forEach(searchOptions.layers, lang.hitch(this, function (searchLayer) {
-                    var operationalLayers = this.config.itemInfo.itemData.operationalLayers;
-                    var layer = null;
-                    array.some(operationalLayers, function (opLayer) {
-                        if (opLayer.id === searchLayer.id) {
-                            layer = opLayer;
-                            return true;
-                        }
-                    });
-
-                    var url = layer.url;
-                    var field = searchLayer.field.name;
-                    var name = layer.title;
-                    if (esriLang.isDefined(searchLayer.subLayer)) {
-                        url = url + "/" + searchLayer.subLayer;
-                        array.some(layer.layerObject.layerInfos, function (info) {
-                            if (info.id == searchLayer.subLayer) {
-                                name += " - " + layer.layerObject.layerInfos[searchLayer.subLayer].name;
-                                return true;
-                            }
-
-                        });
-                    }
-                    searchLayers.push({
-                        "name": name,
-                        "url": url,
-                        "field": field,
-                        "exactMatch": (searchLayer.field.exactMatch || false),
-                        "placeholder": searchOptions.hintText,
-                        "outFields": "*",
-                        "type": "query",
-                        "layerId": searchLayer.id,
-                        "subLayerId": parseInt(searchLayer.subLayer) || null
-                    });
-                }));
-
-            }
-
-
-            if (hasEsri && esriIdx === 0) { // Esri geocoder is primary
-                options.arcgisGeocoder = false;
-                if (geocoders.length > 0) {
-                    options.geocoders = searchLayers.length ? searchLayers.concat(geocoders) : geocoders;
-                } else if (searchLayers.length > 0) {
-                    options.geocoders = searchLayers;
-                }
-            } else { // Esri geocoder is not primary
-                options.arcgisGeocoder = false;
-                options.geocoders = searchLayers.length ? searchLayers.concat(geocoders) : geocoders;
-            }
-
-
-            return options;
         },
         startup: function (config, response, isPreview, node) {
             // config will contain application and user defined info for the template such as i18n strings, the web map id
@@ -215,6 +117,9 @@ define([
                         dom.byId("parentContainter").appendChild(this.userMode);
                         var itemInfo = this.config.itemInfo || this.config.webmap;
                         this._createWebMap(itemInfo);
+                        if (this.config.disableJumbotron) {
+                            domClass.remove(this.jumbotronNode, "jumbotron");
+                        }
                     }
                 }));
             } else {
@@ -297,7 +202,7 @@ define([
             var layer = this.map.getLayer(this.config.form_layer.id);
             if (layer) {
                 // support basic offline editing
-                new OfflineSupport({
+                OfflineSupport({
                     map: this.map,
                     layer: layer
                 });
@@ -307,6 +212,9 @@ define([
                 this.map.infoWindow.hide();
             }));
             on(this.editToolbar, "graphic-move-stop", lang.hitch(this, function (evt) {
+                this.map.infoWindow.setTitle(nls.user.locationTabText);
+                this.map.infoWindow.setContent(nls.user.addressSearchText);
+                this.map.infoWindow.show(evt.graphic.geometry);
                 this.addressGeometry = evt.graphic.geometry;
             }));
             on(this.map, 'click', lang.hitch(this, function (evt) {
@@ -556,7 +464,7 @@ define([
                     case "esriFieldTypeDate":
                         inputContent = domConstruct.create("input", {
                             type: "text",
-                            className: "form-control",
+                            className: "form-control hasDatetimepicker",
                             placeholder: nls.user.dateFormat,
                             "inputType": "Date",
                             "id": fieldname
@@ -564,8 +472,11 @@ define([
                         domConstruct.create("span", {
                             className: "glyphicon form-control-feedback"
                         }, formContent);
-                        $(inputContent).datepicker({
-                            format: "mm/dd/yyyy",
+                        $(inputContent).datetimepicker({
+                            format: "dd MM yyyy - HH:ii P",
+                            showMeridian: true,
+                            autoclose: true,
+                            todayBtn: true,
                             onSelect: lang.hitch(this, function (evt, currentElement) {
                                 domClass.remove(currentElement.input[0].parentElement, "has-error");
                                 domClass.remove(query("span", currentElement.input[0].parentElement)[0], "glyphicon-remove");
@@ -754,6 +665,7 @@ define([
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
                 this.map = response.map;
+                this.defaultExtent = this.map.extent;
                 this.map.resize();
                 this.map.reposition();
                 //Check for the appid if it is not present load entire application with webmap defaults
@@ -770,7 +682,7 @@ define([
                     this.map.reposition();
                 }));
                 // bootstrap map functions
-                new bootstrapmap(this.map);
+                bootstrapmap(this.map);
                 this._createForm(this.config.fields);
                 this._createLocateButton();
                 this._createGeocoderButton();
@@ -856,38 +768,12 @@ define([
                 }));
             }
         },
-        _geocoderMenuItems: function(){
-            var html = '';
-            for(var i = 0; i < this.geocodeAddress._geocoders.length; i++){
-                var gc = this.geocodeAddress._geocoders[i];
-                var active = '';
-                if(i === this.geocodeAddress.activeGeocoderIndex){
-                    active = 'active';
-                }
-                html += '<li class="' + active + '"><a data-index="' + i + '" href="#">' + gc.name + '</a></li>';
-            }
-            var node = dom.byId('geocoder_menu');
-            node.innerHTML = html;
-        },
         _createGeocoderButton: function () {
-            var options = this._createGeocoderOptions();
-            this.geocodeAddress = new Geocoder(options, domConstruct.create('div'));
+            this.geocodeAddress = new Geocoder({
+                map: this.map
+            }, domConstruct.create('div'));
             this.geocodeAddress.startup();
-            if(this.geocodeAddress._geocoders && this.geocodeAddress._geocoders.length > 1){
-                var html = '';
-                html += '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">';
-                html += '<span class="caret"></span>';
-                html += '<span class="sr-only">' + nls.user.toggleDropdown + '</span>';
-                html += '</button>';
-                html += '<ul class="dropdown-menu" role="menu" id="geocoder_menu">';
-                html += '</ul>';
-                var node = dom.byId('geocoder_buttons');
-                domConstruct.place(html, node, 'last');
-                this._geocoderMenuItems();
-            }
-            
-            domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
-            
+
             on(this.searchInput, 'keyup', lang.hitch(this, function (evt) {
                 var keyCode = evt.charCode || evt.keyCode;
                 if (keyCode === 13) {
@@ -907,21 +793,6 @@ define([
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(evt.result.feature.geometry);
             }));
-            
-            on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function (evt) {
-                domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
-                this._geocoderMenuItems();
-            }));
-            
-            
-            var gcMenu = dom.byId('geocoder_menu');
-            if(gcMenu){
-                on(gcMenu, 'a:click', lang.hitch(this, function(evt){
-                    var idx = parseInt(domAttr.get(evt.target, 'data-index'), 10);
-                    this.geocodeAddress.set('activeGeocoderIndex', idx);
-                    evt.preventDefault();
-                }));   
-            }
         },
 
         _addFeatureToLayer: function (config) {
@@ -932,15 +803,15 @@ define([
             if (this.addressGeometry) {
                 var key, value;
                 //condition to filter out radio inputs
-                array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
+                array.forEach(query(".geoFormQuestionare .form-control"), lang.hitch(this, function (currentField) {
                     var key = domAttr.get(currentField, "id");
-                    if (domClass.contains(currentField, "hasDatepicker")) {
-                        value = $(currentField).datepicker("getDate");
+                    if (domClass.contains(currentField, "hasDatetimepicker")) {
+                        value = $(currentField).datetimepicker("getDate");
                     } else {
                         value = lang.trim(currentField.value);
                     }
                     featureData.attributes[key] = value;
-                });
+                }));
                 array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
                     if (query(".radioInput:checked", currentField).length !== 0) {
                         key = query(".radioInput:checked", currentField)[0].name;
@@ -956,6 +827,7 @@ define([
                     _self.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
                     _self._openShareDialog();
+                    _self.map.setExtent(_self.defaultExtent);
                     $("#myModal").modal('show');
                     _self.map.getLayer(config.form_layer.id).refresh();
                     _self._resetButton();
@@ -1004,9 +876,10 @@ define([
                 bitlyLogin: this.config.bitlyLogin,
                 bitlyKey: this.config.bitlyKey,
                 image: this.config.sharinghost + '/sharing/rest/content/items/' + this.config.itemInfo.item.id + '/info/' + this.config.itemInfo.item.thumbnail,
-                title: this.config.details.Title || nls.user.geoformTitleText || '',
-                summary: this.config.details.Description || '',
-                hashtags: 'esriGeoForm'
+                title: this.config.details.Title || nls.user.geoformTitleText,
+                summary: this.config.details.Description,
+                hashtags: 'esriGeoForm',
+                shareOption: this.config.shareOption
             });
             this._ShareDialog.startup();
             $("#myModal").modal('show');
@@ -1023,6 +896,7 @@ define([
                 className: "share-dialog-subheader",
                 innerHTML: nls.user.shareUserTextMessage
             }, iconContainer);
+            if (this.config.shareOption) {
             facebookIconHolder = domConstruct.create("div", {
                 className: "iconContent"
             }, iconContainer);
@@ -1044,6 +918,7 @@ define([
                 className: "fa fa-google-plus-square iconClass",
                 id: "google-plusIcon"
             }, googlePlusIconHolder);
+            }
             mailIconHolder = domConstruct.create("div", {
                 className: "iconContent"
             }, iconContainer);

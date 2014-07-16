@@ -12,8 +12,11 @@ define({
             detailsText: "3. Details",
             fieldsText: "4. Fields",
             styleText: "5. Style",
-            previewText: "6. Preview",
-            publishText: "7. Publish",
+            optionText: "6. Options",
+            previewText: "7. Preview",
+            publishText: "8. Publish",
+            optionsApplicationText: "Enable/Disable Jumbotron",
+            optionsDescriptionText: "The <a target='_blank' href='http://getbootstrap.com/components/#jumbotron'>Bootstrap Jumbotron</a> is too large for some applications. This can be disabled by checking this box.",
             titleText: "GeoForm Builder",
             descriptionText: "GeoForm is a configurable template for form-based data editing of a <a target='_blank' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//0154000002w8000000'>Feature Service</a>. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the <a target='_blank' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//00sp0000001z000000'>Web Map</a> and editable Feature Services. Use this builder to customize and deploy your GeoForm following the steps on the left.",
             btnPreviousText: "Previous",
@@ -49,7 +52,9 @@ define({
             detailsTabText: "Use the Form Detail boxes below to customize the Title, add a custom logo, and provide a short description for your GeoForm audience.",
             fieldsTabText: "Here you can select which fields will be visible to your GeoForm audience, edit the Labels they will see, and add a short Description to help with data entry.",
             styleTabText: "Style your GeoForm using the themes below based on your preference.",
-            publishTabText: "If you are finished customizing your GeoForm, save the application and begin sharing with your audience. You can always return to this builder and continue customizing it based on feedback."
+            publishTabText: "Ifyou are finished customizing your GeoForm, save the application and begin sharing with your audience. You can always return to this builder and continue customizing it based on feedback.",
+            smallHeader: "Use Small Headers",
+            shareApplication: "Share Application"
         }
     })
 });

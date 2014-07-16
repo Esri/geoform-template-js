@@ -38,7 +38,8 @@ define([
                 googlePlusURL: "https://plus.google.com/share?url={url}",
                 bitlyAPI: location.protocol === "https:" ? "https://api-ssl.bitly.com/v3/shorten" : "http://api.bit.ly/v3/shorten",
                 bitlyLogin: "",
-                bitlyKey: ""
+                bitlyKey: "",
+                shareOption: ""
             },
             // lifecycle: 1
             constructor: function (options) {
@@ -58,6 +59,7 @@ define([
                 this.set("title", defaults.title);
                 this.set("summary", defaults.summary);
                 this.set("hashtags", defaults.hashtags);
+                this.set("shareOption", defaults.shareOption);
                 // listeners
                 this.watch("theme", this._updateThemeWatch);
                 this.watch("url", this._updateUrl);
@@ -80,6 +82,7 @@ define([
                 this.inherited(arguments);
             },
             _init: function () {
+                if (this.shareOption) {
                 this.own(on(dom.byId("facebookIcon"), a11yclick, lang.hitch(this, function () {
                     this._configureShareLink(this.get("facebookURL"));
                 })));
@@ -91,6 +94,7 @@ define([
                 this.own(on(dom.byId("google-plusIcon"), a11yclick, lang.hitch(this, function () {
                     this._configureShareLink(this.get("googlePlusURL"));
                 })));
+                }
                 // email click
                 this.own(on(dom.byId("mailIcon"), a11yclick, lang.hitch(this, function () {
                     this._configureShareLink(this.get("mailURL"), true);
