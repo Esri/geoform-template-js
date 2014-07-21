@@ -180,7 +180,6 @@ define([
                     // place modal code
                     domConstruct.place(modalTemplate, document.body, 'last');
                     //supply either the webmap id or, if available, the item info
-                    domStyle.set(this.userMode, 'display', 'none');
                     if (isPreview) {
                         var cssStyle;
                         if (this.localStorageSupport.supportsStorage()) {
@@ -208,7 +207,8 @@ define([
 
 
                         node.onload = function () {
-                            domConstruct.place(cssStyle, $("#iframeContainer").contents().find('head')[0], "last");
+                            var frame = document.getElementById("iframeContainer").contentWindow.document;
+                            domConstruct.place(cssStyle, frame.getElementsByTagName('head')[0], "last");
                         };
                     } else {
                         this._switchStyle(this.config.theme);
@@ -293,7 +293,6 @@ define([
             this.map.reposition();
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
-            domStyle.set(this.userMode, 'display', 'block');
             // your code here!
             // get editable layer
             var layer = this.map.getLayer(this.config.form_layer.id);
@@ -742,7 +741,7 @@ define([
             arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
                     smartNavigation: false,
-                    autoResize: false,
+                    autoResize: true,
                     infoWindow: popup
                     // Optionally define additional map config here for example you can
                     // turn the slider off, display info windows, disable wraparound 180, slider position and more.
@@ -765,10 +764,6 @@ define([
                 if (this.config.details && this.config.details.Title) {
                     window.document.title = this.config.details.Title;
                 }
-                this.map.on("pan-end", lang.hitch(this, function () {
-                    this.map.resize();
-                    this.map.reposition();
-                }));
                 // bootstrap map functions
                 new bootstrapmap(this.map);
                 this._createForm(this.config.fields);
