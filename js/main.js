@@ -289,6 +289,8 @@ define([
         },
         // Map is ready
         _mapLoaded: function () {
+            this.map.resize();
+            this.map.reposition();
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
             domStyle.set(this.userMode, 'display', 'block');
@@ -325,7 +327,6 @@ define([
                 coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);
                 domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
             }));
-            this.map.resize();
         },
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
@@ -754,8 +755,6 @@ define([
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
                 this.map = response.map;
-                this.map.resize();
-                this.map.reposition();
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
@@ -1074,6 +1073,7 @@ define([
             }, this.erroMessageDiv);
             window.location.hash = "#errorMessage";
             this.map.resize();
+            this.map.reposition();
         },
 
         _resetButton: function () {
