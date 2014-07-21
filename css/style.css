@@ -12,7 +12,9 @@
     width: 100%;
 }
 /* Style for Loading Indicator*/
-
+.app-loading{
+    overflow: hidden;
+}
 .app-loading .loading-indicator {
     display: block;
 }
