@@ -737,8 +737,9 @@ define([
         _createWebMap: function (itemInfo) {
             var popup = new Popup(null, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
-            domConstruct.empty($("#mapDiv"));
-            arcgisUtils.createMap(itemInfo, "mapDiv", {
+            var mapDiv = dom.byId('mapDiv');
+            mapDiv.innerHTML = '';
+            arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
                     smartNavigation: false,
                     autoResize: false,

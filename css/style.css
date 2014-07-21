@@ -1,4 +1,4 @@
-.map-div {
+#geoform .map-div {
     width: 100% !important;
     height: 200px !important;
 }
@@ -7,9 +7,9 @@
     height: 200px;
     border: 1px solid #ccc;
 }
-.map .container {
-    height: 100% !important;
-    width: 100% !important;
+#geoform .map .container {
+    height: 100%;
+    width: 100%;
 }
 /* Style for Loading Indicator*/
 
@@ -65,16 +65,16 @@
 .app-error .loading-error {
     display: block;
 }
-.table > thead > tr > th,
-.table > tbody > tr > th,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > tbody > tr > td,
-.table > tfoot > tr > td {
-    vertical-align: middle !important;
+#geoform .table > thead > tr > th,
+#geoform .table > tbody > tr > th,
+#geoform .table > tfoot > tr > th,
+#geoform .table > thead > tr > td,
+#geoform .table > tbody > tr > td,
+#geoform .table > tfoot > tr > td {
+    vertical-align: middle ;
 }
-.progress-remove-margin {
-    margin-bottom: 0px !important;
+#geoform .progress-remove-margin {
+    margin-bottom: 0px;
     margin-top: 10px;
 }
 .myDragClass {
@@ -83,8 +83,8 @@
 /* Extra Small Devices, Phones */
 
 @media (min-width: 480px) {
-    .map-div {
-        height: 250px!important;
+    #geoform .map-div {
+        height: 250px !important;
     }
     .preview-frame {
         height: 400px;
@@ -93,8 +93,8 @@
 /* Small Devices, Tablets */
 
 @media (min-width: 768px) {
-    .map-div {
-        height: 350px!important;
+    #geoform .map-div {
+        height: 350px;
     }
     .preview-frame {
         height: 500px;
@@ -104,7 +104,7 @@
 
 @media (min-width: 992px) {
     .map-div {
-        height: 450px!important;
+        height: 450px !important;
     }
     .preview-frame {
         height: 500px;
@@ -113,44 +113,28 @@
 /* Large Devices, Wide Screens */
 
 @media (min-width: 1200px) {
-    .map-div {
-        height: 500px!important;
+    #geoform .map-div {
+        height: 500px !important;
     }
     .preview-frame {
         height: 600px;
     }
 }
-.esriGeocoderContainer {
-    width: 100% !important;
-}
-.simpleGeocoder .esriGeocoder input {
-    width: 80% !important;
-    height: 30px;
-}
-.simpleGeocoder .esriGeocoder .esriGeocoderSearch {
-    margin-top: 13px;
-}
-.simpleGeocoder .esriGeocoderHasValue .esriGeocoderReset {
-    margin-top: 13px !important;
-}
-.simpleGeocoder .esriGeocoder {
-    border: 1px solid #cccccc !important;
-}
-.iconClass {
-    font-size: 34px !important;
+#geoform .iconClass {
+    font-size: 34px;
     padding: 10px;
-    text-decoration: none !important;
+    text-decoration: none;
     color: #007ac2;
     cursor: pointer;
 }
 .iconContent {
     float: left;
 }
-.fieldCheckbox,
-.selectAllCheckbox {
+#geoform .fieldCheckbox,
+#geoform .selectAllCheckbox {
     margin-right: 5px;
     vertical-align: top;
-    margin-left: 8px !important;
+    margin-left: 8px;
 }
 .progress-percent {
     width: 100%;
@@ -173,7 +157,7 @@
     font-size: 14px;
     color: #777;
     border: 1px solid #dcdcdc;
-    margin: 0 7px 0px !important;
+    margin: 0 7px 0px;
 }
 .myLocationOptions {
     padding: 20px 0px;
@@ -181,18 +165,18 @@
 .select-webmap-button {
     margin-top: 10px;
 }
-.has-feedback .form-control {
-    padding-right: 10px !important;
+#geoform .has-feedback .form-control {
+    padding-right: 10px;
 }
 input::-ms-clear {
     display: none;
 }
-.esriSimpleSlider {
-    z-index: 0 !important;
+#geoform .esriSimpleSlider {
+    z-index: 0;
 }
-.layerFieldsName {
+#geoform .layerFieldsName {
     color: #555;
-    vertical-align: center !important;
+    vertical-align: center;
 }
 .themeThubnail {
     width: 200px;
