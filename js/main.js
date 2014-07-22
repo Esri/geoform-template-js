@@ -82,7 +82,6 @@ define([
                     // place modal code
                     domConstruct.place(modalTemplate, document.body, 'last');
                     //supply either the webmap id or, if available, the item info
-                    domStyle.set(this.userMode, 'display', 'none');
                     if (isPreview) {
                         var cssStyle;
                         if (this.localStorageSupport.supportsStorage()) {
@@ -110,7 +109,8 @@ define([
 
 
                         node.onload = function () {
-                            domConstruct.place(cssStyle, $("#iframeContainer").contents().find('head')[0], "last");
+                            var frame = document.getElementById("iframeContainer").contentWindow.document;
+                            domConstruct.place(cssStyle, frame.getElementsByTagName('head')[0], "last");
                         };
                     } else {
                         this._switchStyle(this.config.theme);
@@ -194,9 +194,10 @@ define([
         },
         // Map is ready
         _mapLoaded: function () {
+            this.map.resize();
+            this.map.reposition();
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
-            domStyle.set(this.userMode, 'display', 'block');
             // your code here!
             // get editable layer
             var layer = this.map.getLayer(this.config.form_layer.id);
@@ -233,7 +234,6 @@ define([
                 coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);
                 domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
             }));
-            this.map.resize();
         },
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
@@ -647,11 +647,12 @@ define([
         _createWebMap: function (itemInfo) {
             var popup = new Popup(null, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
-            domConstruct.empty($("#mapDiv"));
-            arcgisUtils.createMap(itemInfo, "mapDiv", {
+            var mapDiv = dom.byId('mapDiv');
+            mapDiv.innerHTML = '';
+            arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
                     smartNavigation: false,
-                    autoResize: false,
+                    autoResize: true,
                     infoWindow: popup
                     // Optionally define additional map config here for example you can
                     // turn the slider off, display info windows, disable wraparound 180, slider position and more.
@@ -665,9 +666,11 @@ define([
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
                 this.map = response.map;
+
                 this.defaultExtent = this.map.extent;
                 this.map.resize();
                 this.map.reposition();
+
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
@@ -677,10 +680,6 @@ define([
                 if (this.config.details && this.config.details.Title) {
                     window.document.title = this.config.details.Title;
                 }
-                this.map.on("pan-end", lang.hitch(this, function () {
-                    this.map.resize();
-                    this.map.reposition();
-                }));
                 // bootstrap map functions
                 bootstrapmap(this.map);
                 this._createForm(this.config.fields);
@@ -949,6 +948,7 @@ define([
             }, this.erroMessageDiv);
             window.location.hash = "#errorMessage";
             this.map.resize();
+            this.map.reposition();
         },
 
         _resetButton: function () {
