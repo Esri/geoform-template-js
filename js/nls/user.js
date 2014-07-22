@@ -41,7 +41,8 @@ define({
             setLocation: "Set location",
             find: "Zip Code, city, etc.",
             toggleDropdown: "Toggle Dropdown",
-            invalidLatLong: "Please enter valid latitude and longitude coordinates."
+            invalidLatLong: "Please enter valid latitude and longitude coordinates.",
+            geoformTitleText: "Geo Form"
         }
     })
 });

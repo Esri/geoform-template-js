@@ -5,6 +5,7 @@ define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "esri/arcgis/utils",
+    "esri/lang",
     "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-style",
@@ -39,6 +40,7 @@ define([
     declare,
     lang,
     arcgisUtils,
+    esriLang,
     dom,
     domClass, domStyle,
     on,
@@ -65,10 +67,113 @@ define([
         editToolbar: null,
         themes: theme,
         localStorageSupport: null,
+        defaultValueAttributes: null,
         constructor: function () {
 
         },
+        _createGeocoderOptions: function () {
+            //Check for multiple geocoder support and setup options for geocoder widget. 
+            var hasEsri = false,
+                geocoders = lang.clone(this.config.helperServices.geocode);
+
+            array.forEach(geocoders, function (geocoder, index) {
+
+                if (geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
+                    hasEsri = true;
+                    geocoder.name = "Esri World Geocoder";
+                    geocoder.outFields = "Match_addr, stAddr, City";
+                    geocoder.singleLineFieldName = "SingleLine";
+                    geocoder.esri = geocoder.placefinding = true;
+                    geocoder.placeholder = nls.user.find;
+                }
+
+            });
+            //only use geocoders with a singleLineFieldName that allow placefinding
+            geocoders = array.filter(geocoders, function (geocoder) {
+                return (esriLang.isDefined(geocoder.singleLineFieldName) && esriLang.isDefined(geocoder.placefinding) && geocoder.placefinding);
+            });
+            var esriIdx;
+            if (hasEsri) {
+                for (var i = 0; i < geocoders.length; i++) {
+                    if (esriLang.isDefined(geocoders[i].esri) && geocoders[i].esri === true) {
+                        esriIdx = i;
+                        break;
+                    }
+                }
+            }
+            var options = {
+                map: this.map,
+                autoComplete: hasEsri
+            };
+
+
+            //If there is a valid search id and field defined add the feature layer to the geocoder array
+            var searchLayers = [];
+            if (this.config.itemInfo.itemData && this.config.itemInfo.itemData.applicationProperties && this.config.itemInfo.itemData.applicationProperties.viewing && this.config.itemInfo.itemData.applicationProperties.viewing.search) {
+                var searchOptions = this.config.itemInfo.itemData.applicationProperties.viewing.search;
+
+
+                array.forEach(searchOptions.layers, lang.hitch(this, function (searchLayer) {
+                    var operationalLayers = this.config.itemInfo.itemData.operationalLayers;
+                    var layer = null;
+                    array.some(operationalLayers, function (opLayer) {
+                        if (opLayer.id === searchLayer.id) {
+                            layer = opLayer;
+                            return true;
+                        }
+                    });
+
+                    var url = layer.url;
+                    var field = searchLayer.field.name;
+                    var name = layer.title;
+                    if (esriLang.isDefined(searchLayer.subLayer)) {
+                        url = url + "/" + searchLayer.subLayer;
+                        array.some(layer.layerObject.layerInfos, function (info) {
+                            if (info.id == searchLayer.subLayer) {
+                                name += " - " + layer.layerObject.layerInfos[searchLayer.subLayer].name;
+                                return true;
+                            }
+
+                        });
+                    }
+                    searchLayers.push({
+                        "name": name,
+                        "url": url,
+                        "field": field,
+                        "exactMatch": (searchLayer.field.exactMatch || false),
+                        "placeholder": searchOptions.hintText,
+                        "outFields": "*",
+                        "type": "query",
+                        "layerId": searchLayer.id,
+                        "subLayerId": parseInt(searchLayer.subLayer) || null
+                    });
+                }));
+
+            }
+
+
+            if (hasEsri && esriIdx === 0) { // Esri geocoder is primary
+                options.arcgisGeocoder = false;
+                if (geocoders.length > 0) {
+                    options.geocoders = searchLayers.length ? searchLayers.concat(geocoders) : geocoders;
+                } else if (searchLayers.length > 0) {
+                    options.geocoders = searchLayers;
+                }
+            } else { // Esri geocoder is not primary
+                options.arcgisGeocoder = false;
+                options.geocoders = searchLayers.length ? searchLayers.concat(geocoders) : geocoders;
+            }
+
+
+            return options;
+        },
         startup: function (config, response, isPreview, node) {
+            var localStorageSupport = new localStorageHelper();
+            if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
+                config = JSON.parse(localStorage.getItem("geoform_config"));
+                localStorage.clear();
+            }
+
             // config will contain application and user defined info for the template such as i18n strings, the web map id
             // and application id
             // any url parameters and any application specific configuration information.
@@ -82,6 +187,7 @@ define([
                     // place modal code
                     domConstruct.place(modalTemplate, document.body, 'last');
                     //supply either the webmap id or, if available, the item info
+                    domStyle.set(this.userMode, 'display', 'none');
                     if (isPreview) {
                         var cssStyle;
                         if (this.localStorageSupport.supportsStorage()) {
@@ -194,16 +300,15 @@ define([
         },
         // Map is ready
         _mapLoaded: function () {
-            this.map.resize();
-            this.map.reposition();
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
+            domStyle.set(this.userMode, 'display', 'block');
             // your code here!
             // get editable layer
             var layer = this.map.getLayer(this.config.form_layer.id);
             if (layer) {
                 // support basic offline editing
-                OfflineSupport({
+                new OfflineSupport({
                     map: this.map,
                     layer: layer
                 });
@@ -234,10 +339,12 @@ define([
                 coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);
                 domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
             }));
+            this.map.resize();
+            this.map.reposition();
         },
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
-            symbolUrl = "./images/pins/purple.png";
+            symbolUrl = "./images/pins/" + this.config.pushpinColor + ".png";
             pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(10, 0);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
@@ -362,7 +469,6 @@ define([
                     domConstruct.place(requireField, labelContent, "after");
                 }
                 //code to make select boxes in case of a coded value
-                //code to make select boxes in case of a coded value
                 if (currentField.domain) {
                     if (currentField.domain.codedValues.length > 2) {
                         inputContent = domConstruct.create("select", {
@@ -472,11 +578,11 @@ define([
                         domConstruct.create("span", {
                             className: "glyphicon form-control-feedback"
                         }, formContent);
-                        $(inputContent).datetimepicker({
-                            format: "dd MM yyyy - HH:ii P",
-                            showMeridian: true,
-                            autoclose: true,
-                            todayBtn: true,
+                            $(inputContent).datetimepicker({
+                                format: "dd MM yyyy - HH:ii P",
+                                showMeridian: true,
+                                autoclose: true,
+                                todayBtn: true,
                             onSelect: lang.hitch(this, function (evt, currentElement) {
                                 domClass.remove(currentElement.input[0].parentElement, "has-error");
                                 domClass.remove(query("span", currentElement.input[0].parentElement)[0], "glyphicon-remove");
@@ -526,6 +632,7 @@ define([
                 }, formContent);
                 domAttr.set(fileUploadForm, "id", "testForm");
                 fileInput = domConstruct.create("input", {
+                    className: "form-control",
                     "type": "file",
                     "accept": "image/*",
                     "capture": "camera",
@@ -647,9 +754,8 @@ define([
         _createWebMap: function (itemInfo) {
             var popup = new Popup(null, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
-            var mapDiv = dom.byId('mapDiv');
-            mapDiv.innerHTML = '';
-            arcgisUtils.createMap(itemInfo, mapDiv, {
+            domConstruct.empty($("#mapDiv"));
+            arcgisUtils.createMap(itemInfo, "mapDiv", {
                 mapOptions: {
                     smartNavigation: false,
                     autoResize: true,
@@ -666,11 +772,9 @@ define([
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
                 this.map = response.map;
-
                 this.defaultExtent = this.map.extent;
                 this.map.resize();
                 this.map.reposition();
-
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
@@ -680,8 +784,12 @@ define([
                 if (this.config.details && this.config.details.Title) {
                     window.document.title = this.config.details.Title;
                 }
+                this.map.on("pan-end", lang.hitch(this, function () {
+                    this.map.resize();
+                    this.map.reposition();
+                }));
                 // bootstrap map functions
-                bootstrapmap(this.map);
+                new bootstrapmap(this.map);
                 this._createForm(this.config.fields);
                 this._createLocateButton();
                 this._createGeocoderButton();
@@ -730,6 +838,7 @@ define([
             }, domConstruct.create('div'));
             currentLocation.startup();
             on(currentLocation, "locate", lang.hitch(this, function (evt) {
+                domConstruct.empty(this.erroMessageDiv);
                 if (evt.error) {
                     alert(nls.user.locationNotFound);
                 } else {
@@ -750,6 +859,7 @@ define([
             }));
         },
         _searchGeocoder: function () {
+            domConstruct.empty(this.erroMessageDiv);
             this._clearSubmissionGraphic();
             var value = this.searchInput.value;
             var node = dom.byId('geocoder_spinner');
@@ -767,12 +877,38 @@ define([
                 }));
             }
         },
+        _geocoderMenuItems: function(){
+            var html = '';
+            for(var i = 0; i < this.geocodeAddress._geocoders.length; i++){
+                var gc = this.geocodeAddress._geocoders[i];
+                var active = '';
+                if(i === this.geocodeAddress.activeGeocoderIndex){
+                    active = 'active';
+                }
+                html += '<li class="' + active + '"><a data-index="' + i + '" href="#">' + gc.name + '</a></li>';
+            }
+            var node = dom.byId('geocoder_menu');
+            node.innerHTML = html;
+        },
         _createGeocoderButton: function () {
-            this.geocodeAddress = new Geocoder({
-                map: this.map
-            }, domConstruct.create('div'));
+            var options = this._createGeocoderOptions();
+            this.geocodeAddress = new Geocoder(options, domConstruct.create('div'));
             this.geocodeAddress.startup();
-
+            if(this.geocodeAddress._geocoders && this.geocodeAddress._geocoders.length > 1){
+                var html = '';
+                html += '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">';
+                html += '<span class="caret"></span>';
+                html += '<span class="sr-only">' + nls.user.toggleDropdown + '</span>';
+                html += '</button>';
+                html += '<ul class="dropdown-menu" role="menu" id="geocoder_menu">';
+                html += '</ul>';
+                var node = dom.byId('geocoder_buttons');
+                domConstruct.place(html, node, 'last');
+                this._geocoderMenuItems();
+            }
+            
+            domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
+            
             on(this.searchInput, 'keyup', lang.hitch(this, function (evt) {
                 var keyCode = evt.charCode || evt.keyCode;
                 if (keyCode === 13) {
@@ -792,6 +928,21 @@ define([
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(evt.result.feature.geometry);
             }));
+
+            on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function () {
+                domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
+                this._geocoderMenuItems();
+            }));
+            
+            
+            var gcMenu = dom.byId('geocoder_menu');
+            if(gcMenu){
+                on(gcMenu, 'a:click', lang.hitch(this, function(evt){
+                    var idx = parseInt(domAttr.get(evt.target, 'data-index'), 10);
+                    this.geocodeAddress.set('activeGeocoderIndex', idx);
+                    evt.preventDefault();
+                }));   
+            }
         },
 
         _addFeatureToLayer: function (config) {
@@ -875,8 +1026,8 @@ define([
                 bitlyLogin: this.config.bitlyLogin,
                 bitlyKey: this.config.bitlyKey,
                 image: this.config.sharinghost + '/sharing/rest/content/items/' + this.config.itemInfo.item.id + '/info/' + this.config.itemInfo.item.thumbnail,
-                title: this.config.details.Title || nls.user.geoformTitleText,
-                summary: this.config.details.Description,
+                title: this.config.details.Title || nls.user.geoformTitleText || '',
+                summary: this.config.details.Description || '',
                 hashtags: 'esriGeoForm',
                 shareOption: this.config.shareOption
             });
@@ -896,27 +1047,27 @@ define([
                 innerHTML: nls.user.shareUserTextMessage
             }, iconContainer);
             if (this.config.shareOption) {
-            facebookIconHolder = domConstruct.create("div", {
-                className: "iconContent"
-            }, iconContainer);
-            domConstruct.create("a", {
-                className: "fa fa-facebook-square iconClass",
-                id: "facebookIcon"
-            }, facebookIconHolder);
-            twitterIconHolder = domConstruct.create("div", {
-                className: "iconContent"
-            }, iconContainer);
-            domConstruct.create("a", {
-                className: "fa fa-twitter-square iconClass",
-                id: "twitterIcon"
-            }, twitterIconHolder);
-            googlePlusIconHolder = domConstruct.create("div", {
-                className: "iconContent"
-            }, iconContainer);
-            domConstruct.create("a", {
-                className: "fa fa-google-plus-square iconClass",
-                id: "google-plusIcon"
-            }, googlePlusIconHolder);
+                facebookIconHolder = domConstruct.create("div", {
+                    className: "iconContent"
+                }, iconContainer);
+                domConstruct.create("a", {
+                    className: "fa fa-facebook-square iconClass",
+                    id: "facebookIcon"
+                }, facebookIconHolder);
+                twitterIconHolder = domConstruct.create("div", {
+                    className: "iconContent"
+                }, iconContainer);
+                domConstruct.create("a", {
+                    className: "fa fa-twitter-square iconClass",
+                    id: "twitterIcon"
+                }, twitterIconHolder);
+                googlePlusIconHolder = domConstruct.create("div", {
+                    className: "iconContent"
+                }, iconContainer);
+                domConstruct.create("a", {
+                    className: "fa fa-google-plus-square iconClass",
+                    id: "google-plusIcon"
+                }, googlePlusIconHolder);
             }
             mailIconHolder = domConstruct.create("div", {
                 className: "iconContent"
@@ -941,6 +1092,7 @@ define([
 
         _showErrorMessageDiv: function (errorMessage) {
             domConstruct.empty(this.erroMessageDiv);
+            window.location.hash = "";
             domConstruct.create("div", {
                 className: "alert alert-danger errorMessage",
                 id: "errorMessage",

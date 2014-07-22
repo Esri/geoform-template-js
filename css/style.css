@@ -265,3 +265,26 @@ body.modal-open,
     margin-right: 0;
     margin-top: 0;
 }
+.blue {
+    color: Blue !important;
+}
+.brown {
+    color: Maroon !important;
+}
+.green {
+    color: Green !important;
+}
+.grey {
+    color: Gray !important;
+}
+.orange {
+    color: Orange !important;
+}
+.purple {
+    color: Purple !important;
+}
+.red {
+    color: Red !important;
+}
+.yellow {
+}

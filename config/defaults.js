@@ -27,7 +27,8 @@ define({
     "sharinghost": location.protocol + "//" + "www.arcgis.com",
     "units": null,
     "disableJumbotron": false,
-    "shareOption": false,
+    "shareOption": true,
+    "pushpinColor": "blue",
     "helperServices": {
         "geometry": {
             "url": null

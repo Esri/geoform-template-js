@@ -2,7 +2,7 @@ define({
     root: ({
         builder: {
             invalidUser: "Sorry, you dont have permission to view this item",
-            invalidWebmapSelectionAlert: "The selected webmap does not contain a valid layer to use. Please add an editable FeatureLayer into your webmap to continue.",
+            invalidWebmapSelectionAlert: "The selected webmap does not contain a valid layer to use. Please add an editable FeatureLayer into your webmap to continue.</br>For More Information please refer <a target='_tab' href='http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000002w8000000'>What is Feature Service?</a>",
             selectFieldsText: "Select Form Fields",
             selectThemeText: "Select Form Theme",
             fieldLabelPlaceHolder: "Label this field",
@@ -16,9 +16,9 @@ define({
             previewText: "7. Preview",
             publishText: "8. Publish",
             optionsApplicationText: "Enable/Disable Jumbotron",
-            optionsDescriptionText: "The <a target='_blank' href='http://getbootstrap.com/components/#jumbotron'>Bootstrap Jumbotron</a> is too large for some applications. This can be disabled by checking this box.",
+            optionsDescriptionText: "The <a target='_tab' href='http://getbootstrap.com/components/#jumbotron'>Bootstrap Jumbotron</a> is too large for some applications. This can be disabled by checking this box.",
             titleText: "GeoForm Builder",
-            descriptionText: "GeoForm is a configurable template for form-based data editing of a <a target='_blank' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//0154000002w8000000'>Feature Service</a>. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the <a target='_blank' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//00sp0000001z000000'>Web Map</a> and editable Feature Services. Use this builder to customize and deploy your GeoForm following the steps on the left.",
+            descriptionText: "GeoForm is a configurable template for form-based data editing of a <a target='_tab' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//0154000002w8000000'>Feature Service</a>. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the <a target='_blank' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//00sp0000001z000000'>Web Map</a> and editable Feature Services. Use this builder to customize and deploy your GeoForm following the steps on the left.",
             btnPreviousText: "Previous",
             btnNextText: "Next",
             webmapTabTitleText: "Choose a Webmap",
@@ -54,7 +54,17 @@ define({
             styleTabText: "Style your GeoForm using the themes below based on your preference.",
             publishTabText: "Ifyou are finished customizing your GeoForm, save the application and begin sharing with your audience. You can always return to this builder and continue customizing it based on feedback.",
             smallHeader: "Use Small Headers",
-            shareApplication: "Share Application"
+            shareApplication: "Share Application",
+            pushpinBlueColor: "Blue",
+            pushpinBrownColor: "Brown",
+            pushpinGreenColor: "Green",
+            pushpinGreyColor: "Grey",
+            pushpinOrangeColor: "Orange",
+            pushpinPurpleColor: "Purple",
+            pushpinRedColor: "Red",
+            pushpinYellowColor: "Yellow",
+            pushpinText:"Push pin",
+            doneButtonText:"Done"
         }
     })
 });

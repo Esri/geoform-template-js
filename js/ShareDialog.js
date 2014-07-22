@@ -39,7 +39,6 @@ define([
                 bitlyAPI: location.protocol === "https:" ? "https://api-ssl.bitly.com/v3/shorten" : "http://api.bit.ly/v3/shorten",
                 bitlyLogin: "",
                 bitlyKey: "",
-                shareOption: ""
             },
             // lifecycle: 1
             constructor: function (options) {
@@ -83,17 +82,17 @@ define([
             },
             _init: function () {
                 if (this.shareOption) {
-                this.own(on(dom.byId("facebookIcon"), a11yclick, lang.hitch(this, function () {
-                    this._configureShareLink(this.get("facebookURL"));
-                })));
-                // twitter click
-                this.own(on(dom.byId("twitterIcon"), a11yclick, lang.hitch(this, function () {
-                    this._configureShareLink(this.get("twitterURL"));
-                })));
-                // google plus click
-                this.own(on(dom.byId("google-plusIcon"), a11yclick, lang.hitch(this, function () {
-                    this._configureShareLink(this.get("googlePlusURL"));
-                })));
+                    this.own(on(dom.byId("facebookIcon"), a11yclick, lang.hitch(this, function () {
+                        this._configureShareLink(this.get("facebookURL"));
+                    })));
+                    // twitter click
+                    this.own(on(dom.byId("twitterIcon"), a11yclick, lang.hitch(this, function () {
+                        this._configureShareLink(this.get("twitterURL"));
+                    })));
+                    // google plus click
+                    this.own(on(dom.byId("google-plusIcon"), a11yclick, lang.hitch(this, function () {
+                        this._configureShareLink(this.get("googlePlusURL"));
+                    })));
                 }
                 // email click
                 this.own(on(dom.byId("mailIcon"), a11yclick, lang.hitch(this, function () {
@@ -142,11 +141,12 @@ define([
             },
             _configureShareLink: function (Link, isMail) {
                 // replace strings
-                var fullLink = lang.replace(Link, {
+                var formattedText = this.get("summary").replace(/<\/?[^>]+(>|$)/g, ""), fullLink;
+                fullLink = lang.replace(Link, {
                     url: encodeURIComponent(this.get("bitlyUrl") ? this.get("bitlyUrl") : this.get("url")),
                     image: encodeURIComponent(this.get("image")),
                     title: encodeURIComponent(this.get("title")),
-                    summary: encodeURIComponent(this.get("summary")),
+                    summary: encodeURIComponent(formattedText.replace(/[\&nbsp;]/g, "")),
                     hashtags: encodeURIComponent(this.get("hashtags"))
                 });
                 // email link
