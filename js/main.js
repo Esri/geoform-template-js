@@ -610,17 +610,28 @@ define([
                 formContent = domConstruct.create("div", {
                     className: "form-group"
                 }, this.userForm);
+                
+                labelContent = domConstruct.create("label", {
+                    innerHTML: nls.user.attachment,
+                    "for": "geoFormAttachment"
+                }, formContent);
+                
                 fileUploadForm = domConstruct.create("form", {
                     className: "fileUploadField"
                 }, formContent);
-                domAttr.set(fileUploadForm, "id", "testForm");
+                domAttr.set(fileUploadForm, "id", "geoform_form");
                 fileInput = domConstruct.create("input", {
                     "type": "file",
                     "accept": "image/*",
                     "capture": "camera",
                     "name": "attachment"
                 }, fileUploadForm);
-                domAttr.set(fileInput, "id", "testFormFileInput");
+                domAttr.set(fileInput, "id", "geoFormAttachment");
+                
+                helpBlock = domConstruct.create("p", {
+                    className: "help-block",
+                    innerHTML: "todo: need builder to be able to set this text."
+                }, formContent);
             }
         },
 
@@ -954,8 +965,8 @@ define([
                     $("#myModal").modal('show');
                     _self.map.getLayer(config.form_layer.id).refresh();
                     _self._resetButton();
-                    if (dom.byId("testForm") && dom.byId("testForm")[0].value !== "" && _self.map.getLayer(config.form_layer.id).hasAttachments) {
-                        _self.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("testForm"), function () {}, function () {
+                    if (dom.byId("geoform_form") && dom.byId("geoform_form")[0].value !== "" && _self.map.getLayer(config.form_layer.id).hasAttachments) {
+                        _self.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("geoform_form"), function () {}, function () {
                             console.log(nls.user.addAttachmentFailedMessage);
                         });
                     }

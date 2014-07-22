@@ -40,6 +40,7 @@ define({
             floatFormat: "Enter a decimal number",
             setLocation: "Set location",
             find: "Zip Code, city, etc.",
+            attachment: "Attachment File",
             toggleDropdown: "Toggle Dropdown",
             invalidLatLong: "Please enter valid latitude and longitude coordinates."
         }
