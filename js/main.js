@@ -330,7 +330,8 @@ define([
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
             symbolUrl = "./images/pins/purple.png";
-            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(10, 0);
+            // create symbol and offset 10 to the left and 17 to the bottom so it points correctly
+            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(10, 17);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
             this.editToolbar.activate(editToolbar.MOVE, graphic, null);
