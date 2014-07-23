@@ -40,12 +40,20 @@ If you are not using ArcGIS Online applications, you can configure this template
 
 See the [ArcGIS Blog post](http://blogs.esri.com/esri/arcgis/2014/07/08/editing-via-pop-ups-got-you-down/) for additional informationa bout this application.
 
+## Offline Editing
+This template supports editing offline using the Esri [Offline Editor JS](https://github.com/Esri/offline-editor-js). For more information on web offline editing see the github project linked above.
+
+This template supports basic offline editing by saving the edits locally until a connection can be reestablished. As long as the browser window remains open or is reopened then the edits will get synched once an internet connection is restored.
+
+Attachments are stored locally as well.
+
+***IMPORTANT: If you want a full, robust offline solution then you should be using our ArcGIS Runtime SDKs for .NET, WPF, Java, iOS, Android and Qt.***
+
 ## Limitations
 
-* Only supports point editable feature layers.
+* Currently only supports point editable feature layers.
 * Offline editing only supports storing applyEdits and submitting upon reconnection.
-    * Attachment support currently not supported for offline.
-* Offline does not cache tiles. 
+* Offline does not cache tiles or services. 
 
 ## Requirements
 
