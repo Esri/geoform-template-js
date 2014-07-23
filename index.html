@@ -28,33 +28,19 @@
     <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.10/js/esri/css/esri.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <!-- Bootstrap theme -->
     <link rel="stylesheet" type="text/css" id="themeLink">
     <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.10/js/dojo/dijit/themes/claro/claro.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
         rel="stylesheet" />
+    <link href="//oss.maxcdn.com/summernote/0.5.1/summernote.css" rel="stylesheet" />
+    <link href="css/summernote.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
   <![endif]-->
-    <!-- Latest compiled and minified JavaScript -->
-    <!-- We have changed the position of scripts because it was failing after adding summernote plugin -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-    <!-- pulgin to support DND in touch enabled devices -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"
-        type="text/javascript"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
-    <script src="js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-    <link href="//oss.maxcdn.com/summernote/0.5.1/summernote.css" rel="stylesheet" />
-    <script src="//oss.maxcdn.com/summernote/0.5.1/summernote.min.js"></script>
-    <link href="css/summernote.css" />
-    <script src="js/summernote.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap-select.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css">
 </head>
 
 <body id="geoform" class="claro app-loading">
@@ -86,6 +72,9 @@
             }]
         };
     </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/summernote.min.js"></script>
     <script type="text/javascript" src="//js.arcgis.com/3.10compact"></script>
     <script type="text/javascript" src="js/edit/offline.min.js"></script>
     <script type="text/javascript" src="js/edit/offlineOptions.js"></script>
@@ -102,17 +91,17 @@
             Main,
             localStorageHelper
         ) {
-            // start template
-            var myTemplate = new Template(templateOptions);
-            // create my main application. Start placing your logic in the main.js file.
-            var myApp = new Main();
-            // create my main application. Start placing your logic in the main.js file.
-            myTemplate.startup().then(function (config) {
-                //The config object contains the following properties: helper services, (optionally)
-                //i18n, appid, webmap and any custom values defined by the application.
-                //In this example we have one called theme.
-                if (config.edit) {
-                    require([
+        // start template
+        var myTemplate = new Template(templateOptions);
+        // create my main application. Start placing your logic in the main.js file.
+        var myApp = new Main();
+        // create my main application. Start placing your logic in the main.js file.
+        myTemplate.startup().then(function (config) {
+            //The config object contains the following properties: helper services, (optionally)
+            //i18n, appid, webmap and any custom values defined by the application.
+            //In this example we have one called theme.
+            if (config.edit) {
+                require([
             "application/builder"
               ], function (builderMode) {
                   var builder = new builderMode(config, myTemplate.appResponse);
@@ -127,10 +116,15 @@
         });
     });
     </script>
+    <!-- pulgin to support DND in touch enabled devices -->
+    <script type="text/javascript"src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript"src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/bootstrap-select.min.js"></script>
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-215788-4']);
-         //_gaq.push(['_setDomainName', 'esri.com']);
+        //_gaq.push(['_setDomainName', 'esri.com']);
         _gaq.push(['_trackPageview']);
         _gaq.push(['_trackPageLoadTime']);
         (function () {

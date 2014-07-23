@@ -223,7 +223,7 @@ define([
                         dom.byId("parentContainter").appendChild(this.userMode);
                         var itemInfo = this.config.itemInfo || this.config.webmap;
                         this._createWebMap(itemInfo);
-                        if (this.config.disableJumbotron) {
+                        if (this.config.useSmallHeader) {
                             domClass.remove(this.jumbotronNode, "jumbotron");
                         }
                     }
@@ -754,8 +754,9 @@ define([
         _createWebMap: function (itemInfo) {
             var popup = new Popup(null, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
-            domConstruct.empty($("#mapDiv"));
-            arcgisUtils.createMap(itemInfo, "mapDiv", {
+           var mapDiv = dom.byId('mapDiv');
+           mapDiv.innerHTML = '';
+           arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
                     smartNavigation: false,
                     autoResize: true,
@@ -784,10 +785,6 @@ define([
                 if (this.config.details && this.config.details.Title) {
                     window.document.title = this.config.details.Title;
                 }
-                this.map.on("pan-end", lang.hitch(this, function () {
-                    this.map.resize();
-                    this.map.reposition();
-                }));
                 // bootstrap map functions
                 new bootstrapmap(this.map);
                 this._createForm(this.config.fields);
@@ -1029,7 +1026,7 @@ define([
                 title: this.config.details.Title || nls.user.geoformTitleText || '',
                 summary: this.config.details.Description || '',
                 hashtags: 'esriGeoForm',
-                shareOption: this.config.shareOption
+                shareOption: this.config.enableSharing
             });
             this._ShareDialog.startup();
             $("#myModal").modal('show');
@@ -1046,7 +1043,7 @@ define([
                 className: "share-dialog-subheader",
                 innerHTML: nls.user.shareUserTextMessage
             }, iconContainer);
-            if (this.config.shareOption) {
+            if (this.config.enableSharing) {
                 facebookIconHolder = domConstruct.create("div", {
                     className: "iconContent"
                 }, iconContainer);

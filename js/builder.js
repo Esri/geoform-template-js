@@ -13,6 +13,7 @@ define([
     "dojo/_base/lang",
     "dojo/Deferred",
     "dojo/DeferredList",
+    "dojo/number",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dojo/text!application/dijit/templates/modal.html",
@@ -27,7 +28,7 @@ define([
     "application/themes",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, localStorageHelper, signInHelper, nls, usernls, arcgisUtils, theme, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, localStorageHelper, signInHelper, nls, usernls, arcgisUtils, theme, FeatureLayer) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -54,6 +55,8 @@ define([
                     userInfo.token = loggedInUser.credential.token;
                     userInfo.portal = signIn.getPortal();
                     _self._initializeBuilder(config, userInfo, response);
+                    _self._setTabCaption();
+                    domClass.remove(document.body, "app-loading");
                 }
             }, function (error) {
                 _self._reportError(error);
@@ -92,10 +95,10 @@ define([
             }));
 
             $('#jumbotronOption').on('click', lang.hitch(this, function () {
-                this.currentConfig.disableJumbotron = $('#jumbotronOption')[0].checked;
+                this.currentConfig.useSmallHeader = $('#jumbotronOption')[0].checked;
             }));
             $('#shareOption').on('click', lang.hitch(this, function () {
-                this.currentConfig.shareOption = $('#shareOption')[0].checked;
+                this.currentConfig.enableSharing = $('#shareOption')[0].checked;
             }));
             this.previousConfig = lang.clone(this.config);
             this.currentConfig = config;
@@ -104,8 +107,8 @@ define([
             this.localStorageSupport = new localStorageHelper();
             this._addOperationalLayers();
             this._populateDetails();
-            this._populateJumbotronOption(this.currentConfig.disableJumbotron);
-            this._populateShareOption(this.currentConfig.shareOption);
+            this._populateJumbotronOption(this.currentConfig.useSmallHeader);
+            this._populateShareOption(this.currentConfig.enableSharing);
             this._populateThemes();
             this._initWebmapSelection();
             this._loadCSS("css/browseDialog.css");
@@ -143,6 +146,16 @@ define([
             $('.selectpicker').selectpicker();
             on($('.selectpicker'), 'change', lang.hitch(this, function (evt) {
                 this.currentConfig.pushpinColor = evt.currentTarget.value;
+            }));
+        },
+
+        _setTabCaption: function () {
+            //set sequence numbers to tabs
+            array.forEach(query(".navbar-right")[0].children, lang.hitch(this, function (currentTab, index) {
+                domAttr.set(currentTab.children[0], "innerHTML", number.format(++index) + ". " + currentTab.children[0].innerHTML);
+            }));
+            array.forEach(query(".nav-stacked")[0].children, lang.hitch(this, function (currentTab, index) {
+                domAttr.set(currentTab.children[0], "innerHTML", number.format(++index) + ". " + currentTab.children[0].innerHTML);
             }));
         },
 
@@ -201,8 +214,6 @@ define([
                     }));
                     domAttr.set(dom.byId("selectLayer"), "disabled", false);
                 }
-                //unblock the application after loading all the feature servers
-                domClass.remove(document.body, "app-loading");
             }));
         },
 

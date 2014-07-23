@@ -26,8 +26,8 @@ define({
     //Defaults to arcgis.com. Set this value to your portal or organization host name.
     "sharinghost": location.protocol + "//" + "www.arcgis.com",
     "units": null,
-    "disableJumbotron": false,
-    "shareOption": true,
+    "useSmallHeader": false,
+    "enableSharing": true,
     "pushpinColor": "blue",
     "helperServices": {
         "geometry": {

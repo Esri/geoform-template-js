@@ -104,12 +104,12 @@ define([
                     //Handle getting url param in _updateUrl
                     var currentUrl = this.get("url");
 
-                    //Remove edit=true from the query parameters 
+                    //Remove edit=true from the query parameters
                     if (location.href.indexOf("?") > -1) {
                         var queryUrl = location.href;
                         var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
                             newParams = lang.clone(urlParams);
-                        delete newParams.edit; //Remove edit parameter 
+                        delete newParams.edit; //Remove edit parameter
                         currentUrl = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                     }
 
@@ -166,12 +166,12 @@ define([
                 // create base url
                 url = window.location.protocol + '//' + window.location.host + window.location.pathname;
 
-                //Remove edit=true from the query parameters 
+                //Remove edit=true from the query parameters
                 if (location.href.indexOf("?") > -1) {
                     var queryUrl = location.href;
                     var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
                         newParams = lang.clone(urlParams);
-                    delete newParams.edit; //Remove edit parameter 
+                    delete newParams.edit; //Remove edit parameter
                     url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                 }
 
