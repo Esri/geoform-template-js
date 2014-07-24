@@ -345,7 +345,8 @@ define([
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
             symbolUrl = "./images/pins/" + this.config.pushpinColor + ".png";
-            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(10, 0);
+            // create symbol and offset 10 to the left and 17 to the bottom so it points correctly
+            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(9, 18);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
             this.map.graphics.add(graphic);
             this.editToolbar.activate(editToolbar.MOVE, graphic, null);
@@ -627,10 +628,16 @@ define([
                 formContent = domConstruct.create("div", {
                     className: "form-group"
                 }, this.userForm);
+                
+                labelContent = domConstruct.create("label", {
+                    innerHTML: nls.user.attachment,
+                    "for": "geoFormAttachment"
+                }, formContent);
+                
                 fileUploadForm = domConstruct.create("form", {
                     className: "fileUploadField"
                 }, formContent);
-                domAttr.set(fileUploadForm, "id", "testForm");
+                domAttr.set(fileUploadForm, "id", "geoform_form");
                 fileInput = domConstruct.create("input", {
                     className: "form-control",
                     "type": "file",
@@ -638,7 +645,12 @@ define([
                     "capture": "camera",
                     "name": "attachment"
                 }, fileUploadForm);
-                domAttr.set(fileInput, "id", "testFormFileInput");
+                domAttr.set(fileInput, "id", "geoFormAttachment");
+                
+                helpBlock = domConstruct.create("p", {
+                    className: "help-block",
+                    innerHTML: "todo: need builder to be able to set this text."
+                }, formContent);
             }
         },
 
@@ -978,8 +990,8 @@ define([
                     $("#myModal").modal('show');
                     _self.map.getLayer(config.form_layer.id).refresh();
                     _self._resetButton();
-                    if (dom.byId("testForm") && dom.byId("testForm")[0].value !== "" && _self.map.getLayer(config.form_layer.id).hasAttachments) {
-                        _self.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("testForm"), function () {}, function () {
+                    if (dom.byId("geoform_form") && dom.byId("geoform_form")[0].value !== "" && _self.map.getLayer(config.form_layer.id).hasAttachments) {
+                        _self.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("geoform_form"), function () {}, function () {
                             console.log(nls.user.addAttachmentFailedMessage);
                         });
                     }

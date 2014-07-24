@@ -4,10 +4,10 @@ define({
             error: "Unable to create map"
         },
         onlineStatus: {
-            title: "Network Connection",
             online: "You are currently online.",
             offline: "You are currently working offline. Form submissions will be saved locally until a connection to the server can be made.",
-            reconnecting: "Reconnecting&hellip;"
+            reconnecting: "Reconnecting&hellip;",
+            pending: "{total} pending edit(s) will be submitted when a network connection is re-established."
         },
         configure: {
             mapdlg: {

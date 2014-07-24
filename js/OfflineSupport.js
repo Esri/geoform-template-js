@@ -1,20 +1,24 @@
-/*global Offline, $ */
+/*global Offline */
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "dojo/on",
+    "dojo/dom",
     "dojo/dom-construct",
     "edit/offlineFeaturesManager",
     "esri/dijit/editing/Editor",
-    "dojo/i18n!application/nls/resources"
+    "dojo/i18n!application/nls/resources",
+    "edit/editsStore"
 ], function (
     declare,
     lang,
     on,
+    dom,
     domConstruct,
     OfflineFeaturesManager,
     Editor,
-    i18n
+    i18n,
+    editsStore
 ) {
     return declare(null, {
         // create class
@@ -42,34 +46,40 @@ define([
 
         // update online status
         updateConnectivityIndicator: function () {
-            var html;
+            var html = '';
             var status = this.offlineFeaturesManager.getOnlineStatus();
             switch (status) {
             case this.offlineFeaturesManager.OFFLINE:
-                html = '<span class="text-danger"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.offline + '</span>';
+                html = '<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.offline + '</div>';
                 break;
             case this.offlineFeaturesManager.RECONNECTING:
-                html = '<span class="text-warning"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.reconnecting + '</span>';
+                html = '<div class="alert alert-info"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.reconnecting + '</div>';
+                break;
+            case this.offlineFeaturesManager.ONLINE:
+                html = '';
                 break;
             }
-            var submitButton = $('#submit_container');
-            if (submitButton) {
-                submitButton.popover('destroy');
-                if (html) {
-                    var options = {
-                        html: true,
-                        animation: true,
-                        trigger: 'manual',
-                        title: i18n.onlineStatus.title,
-                        content: html
-                    };
-                    submitButton.popover(options);
-                    submitButton.popover('show');
-                    if (status !== this.offlineFeaturesManager.OFFLINE) {
-                        setTimeout(function () {
-                            submitButton.popover('hide');
-                        }, 5000);
-                    }
+            var node = dom.byId('connection_status');
+            if (node) {
+                node.innerHTML = html;
+            }
+        },
+        
+        updateStatus: function(){
+            var node = dom.byId('pending_edits');
+            // clear html
+            node.innerHTML = '';
+            // if we have edits
+            if(editsStore.hasPendingEdits()){
+                var edits = editsStore._retrieveEditsQueue();
+                var total = edits.length;
+                if(total){
+                    var html = '';
+                    html += '<div class="alert alert-warning" role="alert">';
+                    html += '<span class="glyphicon glyphicon-signal"></span> ';
+                    html += lang.replace(i18n.onlineStatus.pending, {total: total});
+                    html += '</div>';
+                    node.innerHTML = html;
                 }
             }
         },
@@ -80,6 +90,7 @@ define([
             this.offlineFeaturesManager.goOnline(lang.hitch(this, function () {
                 this.updateConnectivityIndicator();
             }));
+            this.updateConnectivityIndicator();
         },
 
         // now offline
@@ -91,6 +102,18 @@ define([
 
         // setup editing
         initEditor: function () {
+            
+            // status for pending edits
+            this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, lang.hitch(this, function(){
+                this.updateStatus();
+            }));
+            this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_SENT, lang.hitch(this, function(){
+                this.updateStatus();
+            }));
+            this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.ALL_EDITS_SENT, lang.hitch(this, function(){
+                this.updateStatus();
+            }));
+            
             
             /* handle errors that happen while storing offline edits */
             this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, function (results) {
