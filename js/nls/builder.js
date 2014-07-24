@@ -2,7 +2,7 @@ define({
     root: ({
         builder: {
             invalidUser: "Sorry, you dont have permission to view this item",
-            invalidWebmapSelectionAlert: "The selected webmap does not contain a valid layer to use. Please add an editable FeatureLayer into your webmap to continue.</br>For More Information please refer <a target='_tab' href='http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000002w8000000'>What is Feature Service?</a>",
+            invalidWebmapSelectionAlert: "The selected webmap does not contain a valid layer to use. Please add an editable FeatureLayer into your webmap to continue.</br>For More Information please refer to <a target='_tab' href='http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000002w8000000'>What is Feature Service?</a>",
             selectFieldsText: "Select Form Fields",
             selectThemeText: "Select Form Theme",
             fieldLabelPlaceHolder: "Label this field",
