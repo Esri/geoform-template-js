@@ -23,7 +23,7 @@ define([
     "application/localStorageHelper",
     "application/signInHelper",
     "dojo/i18n!application/nls/builder",
-    "dojo/i18n!application/nls/user", //We need this file to get string defined for modal dialog
+    "dojo/i18n!application/nls/resources", //We need this file to get string defined for modal dialog
     "esri/arcgis/utils",
     "application/themes",
     "esri/layers/FeatureLayer",
@@ -47,6 +47,7 @@ define([
         constructor: function () {},
 
         startup: function (config, response) {
+            var def = new Deferred();
             var signIn = new signInHelper(), userInfo = {}, _self = this;
             signIn.createPortal().then(function (loggedInUser) {
                 var isValidUser = signIn.authenticateUser(true, response, loggedInUser);
@@ -57,10 +58,15 @@ define([
                     _self._initializeBuilder(config, userInfo, response);
                     _self._setTabCaption();
                     domClass.remove(document.body, "app-loading");
+                    def.resolve();
+                }
+                else{
+                   def.reject(new Error("Invalid User")); 
                 }
             }, function (error) {
-                _self._reportError(error);
+                def.reject(error);
             });
+            return def.promise;
         },
 
         _initializeBuilder: function (config, userInfo, response) {
@@ -727,25 +733,6 @@ define([
                 className: "alert alert-danger errorMessage",
                 innerHTML: errorMessage
             }, this.erroMessageDiv);
-        },
-
-        _reportError: function (error) {
-            // remove loading class from body
-            domClass.remove(document.body, "app-loading");
-            domClass.add(document.body, "app-error");
-            // an error occurred - notify the user. In this example we pull the string from the
-            // resource.js file located in the nls folder because we've set the application up
-            // for localization. If you don't need to support multiple languages you can hardcode the
-            // strings here and comment out the call in index.html to get the localization strings.
-            // set message
-            var node = dom.byId("loading_message");
-            if (node) {
-                if (this.config && this.config.i18n) {
-                    node.innerHTML = this.config.i18n.map.error + ": " + error.message;
-                } else {
-                    node.innerHTML = "Unable to create map: " + error.message;
-                }
-            }
         }
     });
 });

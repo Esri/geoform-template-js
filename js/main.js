@@ -23,7 +23,7 @@ define([
     "dijit/_TemplatedMixin",
     "dojo/text!application/dijit/templates/modal.html",
     "dojo/text!application/dijit/templates/user.html",
-    "dojo/i18n!application/nls/user",
+    "dojo/i18n!application/nls/resources",
     "esri/geometry/webMercatorUtils",
     "esri/geometry/Point",
     "application/ShareDialog",
