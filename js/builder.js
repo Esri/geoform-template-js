@@ -611,7 +611,8 @@ define([
                             image: this.currentConfig.sharinghost + '/sharing/rest/content/items/' + this.currentConfig.itemInfo.item.id + '/info/' + this.currentConfig.itemInfo.item.thumbnail,
                             title: this.currentConfig.details.Title || nls.builder.geoformTitleText || '',
                             summary: this.currentConfig.details.Description || '',
-                            hashtags: 'esriGeoForm'
+                            hashtags: 'esriGeoForm',
+                            shareOption:this.currentConfig.enableSharing
                         });
                         this._ShareDialog.startup();
                     }

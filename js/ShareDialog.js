@@ -38,7 +38,7 @@ define([
                 googlePlusURL: "https://plus.google.com/share?url={url}",
                 bitlyAPI: location.protocol === "https:" ? "https://api-ssl.bitly.com/v3/shorten" : "http://api.bit.ly/v3/shorten",
                 bitlyLogin: "",
-                bitlyKey: "",
+                bitlyKey: ""
             },
             // lifecycle: 1
             constructor: function (options) {

@@ -43,7 +43,8 @@ define({
             attachment: "Attachment File",
             toggleDropdown: "Toggle Dropdown",
             invalidLatLong: "Please enter valid latitude and longitude coordinates.",
-            geoformTitleText: "Geo Form"
+            geoformTitleText: "Geo Form",
+            domainDefaultText:"Select Value"
         }
     })
 });

@@ -91,17 +91,17 @@
             Main,
             localStorageHelper
         ) {
-        // start template
-        var myTemplate = new Template(templateOptions);
-        // create my main application. Start placing your logic in the main.js file.
-        var myApp = new Main();
-        // create my main application. Start placing your logic in the main.js file.
-        myTemplate.startup().then(function (config) {
-            //The config object contains the following properties: helper services, (optionally)
-            //i18n, appid, webmap and any custom values defined by the application.
-            //In this example we have one called theme.
-            if (config.edit) {
-                require([
+            // start template
+            var myTemplate = new Template(templateOptions);
+            // create my main application. Start placing your logic in the main.js file.
+            var myApp = new Main();
+            // create my main application. Start placing your logic in the main.js file.
+            myTemplate.startup().then(function (config) {
+                //The config object contains the following properties: helper services, (optionally)
+                //i18n, appid, webmap and any custom values defined by the application.
+                //In this example we have one called theme.
+                if (config.edit) {
+                    require([
             "application/builder"
               ], function (builderMode) {
                   var builder = new builderMode(config, myTemplate.appResponse);

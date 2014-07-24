@@ -187,7 +187,6 @@ define([
                     // place modal code
                     domConstruct.place(modalTemplate, document.body, 'last');
                     //supply either the webmap id or, if available, the item info
-                    domStyle.set(this.userMode, 'display', 'none');
                     if (isPreview) {
                         var cssStyle;
                         if (this.localStorageSupport.supportsStorage()) {
@@ -302,7 +301,6 @@ define([
         _mapLoaded: function () {
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
-            domStyle.set(this.userMode, 'display', 'block');
             // your code here!
             // get editable layer
             var layer = this.map.getLayer(this.config.form_layer.id);
@@ -318,9 +316,6 @@ define([
                 this.map.infoWindow.hide();
             }));
             on(this.editToolbar, "graphic-move-stop", lang.hitch(this, function (evt) {
-                this.map.infoWindow.setTitle(nls.user.locationTabText);
-                this.map.infoWindow.setContent(nls.user.addressSearchText);
-                this.map.infoWindow.show(evt.graphic.geometry);
                 this.addressGeometry = evt.graphic.geometry;
             }));
             on(this.map, 'click', lang.hitch(this, function (evt) {
@@ -476,6 +471,9 @@ define([
                             className: "form-control selectDomain",
                             "id": fieldname
                         }, formContent);
+                        selectOptions = domConstruct.create("option", {}, inputContent);
+                        selectOptions.text = nls.user.domainDefaultText;
+                        selectOptions.value = "";
                         array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
                             selectOptions = domConstruct.create("option", {}, inputContent);
                             selectOptions.text = currentOption.name;
@@ -766,9 +764,9 @@ define([
         _createWebMap: function (itemInfo) {
             var popup = new Popup(null, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
-           var mapDiv = dom.byId('mapDiv');
-           mapDiv.innerHTML = '';
-           arcgisUtils.createMap(itemInfo, mapDiv, {
+            var mapDiv = dom.byId('mapDiv');
+            mapDiv.innerHTML = '';
+            arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
                     smartNavigation: false,
                     autoResize: true,
@@ -938,7 +936,7 @@ define([
                 this.map.infoWindow.show(evt.result.feature.geometry);
             }));
 
-            on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function () {
+            on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function (evt) {
                 domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
                 this._geocoderMenuItems();
             }));
@@ -962,15 +960,17 @@ define([
             if (this.addressGeometry) {
                 var key, value;
                 //condition to filter out radio inputs
-                array.forEach(query(".geoFormQuestionare .form-control"), lang.hitch(this, function (currentField) {
-                    var key = domAttr.get(currentField, "id");
-                    if (domClass.contains(currentField, "hasDatetimepicker")) {
-                        value = $(currentField).datetimepicker("getDate");
-                    } else {
-                        value = lang.trim(currentField.value);
+                array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
+                    if (currentField.value !== "") {
+                        key = domAttr.get(currentField, "id");
+                        if (domClass.contains(currentField, "hasDatetimepicker")) {
+                            value = $(currentField).datetimepicker("getDate");
+                        } else {
+                            value = lang.trim(currentField.value);
+                        }
+                        featureData.attributes[key] = value;
                     }
-                    featureData.attributes[key] = value;
-                }));
+                });
                 array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
                     if (query(".radioInput:checked", currentField).length !== 0) {
                         key = query(".radioInput:checked", currentField)[0].name;
