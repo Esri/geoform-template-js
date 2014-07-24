@@ -76,7 +76,7 @@ define([
             var hasEsri = false,
                 geocoders = lang.clone(this.config.helperServices.geocode);
 
-            array.forEach(geocoders, function (geocoder, index) {
+            array.forEach(geocoders, lang.hitch(this, function (geocoder, index) {
 
                 if (geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
                     hasEsri = true;
@@ -87,7 +87,7 @@ define([
                     geocoder.placeholder = nls.user.find;
                 }
 
-            });
+            }));
             //only use geocoders with a singleLineFieldName that allow placefinding
             geocoders = array.filter(geocoders, function (geocoder) {
                 return (esriLang.isDefined(geocoder.singleLineFieldName) && esriLang.isDefined(geocoder.placefinding) && geocoder.placefinding);
@@ -955,7 +955,6 @@ define([
 
         _addFeatureToLayer: function (config) {
             //To populate data for apply edits
-            var _self = this;
             var featureData = new Graphic();
             featureData.attributes = {};
             if (this.addressGeometry) {
@@ -982,24 +981,24 @@ define([
                 featureData.geometry = {};
                 featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
                 //code for apply-edits
-                this.map.getLayer(config.form_layer.id).applyEdits([featureData], null, null, function (addResults) {
-                    _self._clearSubmissionGraphic();
-                    _self.map.getLayer(config.form_layer.id).setEditable(false);
+                this.map.getLayer(config.form_layer.id).applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
+                    this._clearSubmissionGraphic();
+                    this.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
-                    _self._openShareDialog();
-                    _self.map.setExtent(_self.defaultExtent);
+                    this._openShareDialog();
+                    this.map.setExtent(this.defaultExtent);
                     $("#myModal").modal('show');
-                    _self.map.getLayer(config.form_layer.id).refresh();
-                    _self._resetButton();
-                    if (dom.byId("geoform_form") && dom.byId("geoform_form")[0].value !== "" && _self.map.getLayer(config.form_layer.id).hasAttachments) {
-                        _self.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("geoform_form"), function () {}, function () {
+                    this.map.getLayer(config.form_layer.id).refresh();
+                    this._resetButton();
+                    if (dom.byId("geoform_form") && dom.byId("geoform_form")[0].value !== "" && this.map.getLayer(config.form_layer.id).hasAttachments) {
+                        this.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("geoform_form"), function () {}, function () {
                             console.log(nls.user.addAttachmentFailedMessage);
                         });
                     }
-                    _self._clearFormFields();
-                }, function () {
+                    this._clearFormFields();
+                }), lang.hitch(this, function () {
                     console.log(nls.user.addFeatureFailedMessage);
-                });
+                }));
             } else {
                 this._resetButton();
                 this._showErrorMessageDiv(nls.user.selectLocation);
