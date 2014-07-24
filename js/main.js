@@ -67,6 +67,7 @@ define([
         editToolbar: null,
         themes: theme,
         localStorageSupport: null,
+        defaultValueAttributes: null,
         constructor: function () {
 
         },
@@ -167,6 +168,12 @@ define([
             return options;
         },
         startup: function (config, response, isPreview, node) {
+            var localStorageSupport = new localStorageHelper();
+            if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
+                config = JSON.parse(localStorage.getItem("geoform_config"));
+                localStorage.clear();
+            }
+
             // config will contain application and user defined info for the template such as i18n strings, the web map id
             // and application id
             // any url parameters and any application specific configuration information.
@@ -215,6 +222,9 @@ define([
                         dom.byId("parentContainter").appendChild(this.userMode);
                         var itemInfo = this.config.itemInfo || this.config.webmap;
                         this._createWebMap(itemInfo);
+                        if (this.config.useSmallHeader) {
+                            domClass.remove(this.jumbotronNode, "jumbotron");
+                        }
                     }
                 }));
             } else {
@@ -289,8 +299,6 @@ define([
         },
         // Map is ready
         _mapLoaded: function () {
-            this.map.resize();
-            this.map.reposition();
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
             // your code here!
@@ -326,10 +334,12 @@ define([
                 coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);
                 domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
             }));
+            this.map.resize();
+            this.map.reposition();
         },
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
-            symbolUrl = "./images/pins/purple.png";
+            symbolUrl = "./images/pins/" + this.config.pushpinColor + ".png";
             // create symbol and offset 10 to the left and 17 to the bottom so it points correctly
             pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(9, 18);
             graphic = new Graphic(point, pictureMarkerSymbol, null, null);
@@ -455,13 +465,15 @@ define([
                     domConstruct.place(requireField, labelContent, "after");
                 }
                 //code to make select boxes in case of a coded value
-                //code to make select boxes in case of a coded value
                 if (currentField.domain) {
                     if (currentField.domain.codedValues.length > 2) {
                         inputContent = domConstruct.create("select", {
                             className: "form-control selectDomain",
                             "id": fieldname
                         }, formContent);
+                        selectOptions = domConstruct.create("option", {}, inputContent);
+                        selectOptions.text = nls.user.domainDefaultText;
+                        selectOptions.value = "";
                         array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
                             selectOptions = domConstruct.create("option", {}, inputContent);
                             selectOptions.text = currentOption.name;
@@ -557,7 +569,7 @@ define([
                     case "esriFieldTypeDate":
                         inputContent = domConstruct.create("input", {
                             type: "text",
-                            className: "form-control",
+                            className: "form-control hasDatetimepicker",
                             placeholder: nls.user.dateFormat,
                             "inputType": "Date",
                             "id": fieldname
@@ -565,8 +577,11 @@ define([
                         domConstruct.create("span", {
                             className: "glyphicon form-control-feedback"
                         }, formContent);
-                        $(inputContent).datepicker({
-                            format: "mm/dd/yyyy",
+                            $(inputContent).datetimepicker({
+                                format: "dd MM yyyy - HH:ii P",
+                                showMeridian: true,
+                                autoclose: true,
+                                todayBtn: true,
                             onSelect: lang.hitch(this, function (evt, currentElement) {
                                 domClass.remove(currentElement.input[0].parentElement, "has-error");
                                 domClass.remove(query("span", currentElement.input[0].parentElement)[0], "glyphicon-remove");
@@ -622,6 +637,7 @@ define([
                 }, formContent);
                 domAttr.set(fileUploadForm, "id", "geoform_form");
                 fileInput = domConstruct.create("input", {
+                    className: "form-control",
                     "type": "file",
                     "accept": "image/*",
                     "capture": "camera",
@@ -767,6 +783,9 @@ define([
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
                 this.map = response.map;
+                this.defaultExtent = this.map.extent;
+                this.map.resize();
+                this.map.reposition();
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
@@ -826,6 +845,7 @@ define([
             }, domConstruct.create('div'));
             currentLocation.startup();
             on(currentLocation, "locate", lang.hitch(this, function (evt) {
+                domConstruct.empty(this.erroMessageDiv);
                 if (evt.error) {
                     alert(nls.user.locationNotFound);
                 } else {
@@ -846,6 +866,7 @@ define([
             }));
         },
         _searchGeocoder: function () {
+            domConstruct.empty(this.erroMessageDiv);
             this._clearSubmissionGraphic();
             var value = this.searchInput.value;
             var node = dom.byId('geocoder_spinner');
@@ -914,7 +935,7 @@ define([
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(evt.result.feature.geometry);
             }));
-            
+
             on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function (evt) {
                 domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
                 this._geocoderMenuItems();
@@ -940,13 +961,15 @@ define([
                 var key, value;
                 //condition to filter out radio inputs
                 array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
-                    var key = domAttr.get(currentField, "id");
-                    if (domClass.contains(currentField, "hasDatepicker")) {
-                        value = $(currentField).datepicker("getDate");
-                    } else {
-                        value = lang.trim(currentField.value);
+                    if (currentField.value !== "") {
+                        key = domAttr.get(currentField, "id");
+                        if (domClass.contains(currentField, "hasDatetimepicker")) {
+                            value = $(currentField).datetimepicker("getDate");
+                        } else {
+                            value = lang.trim(currentField.value);
+                        }
+                        featureData.attributes[key] = value;
                     }
-                    featureData.attributes[key] = value;
                 });
                 array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
                     if (query(".radioInput:checked", currentField).length !== 0) {
@@ -963,6 +986,7 @@ define([
                     _self.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
                     _self._openShareDialog();
+                    _self.map.setExtent(_self.defaultExtent);
                     $("#myModal").modal('show');
                     _self.map.getLayer(config.form_layer.id).refresh();
                     _self._resetButton();
@@ -1013,7 +1037,8 @@ define([
                 image: this.config.sharinghost + '/sharing/rest/content/items/' + this.config.itemInfo.item.id + '/info/' + this.config.itemInfo.item.thumbnail,
                 title: this.config.details.Title || nls.user.geoformTitleText || '',
                 summary: this.config.details.Description || '',
-                hashtags: 'esriGeoForm'
+                hashtags: 'esriGeoForm',
+                shareOption: this.config.enableSharing
             });
             this._ShareDialog.startup();
             $("#myModal").modal('show');
@@ -1030,27 +1055,29 @@ define([
                 className: "share-dialog-subheader",
                 innerHTML: nls.user.shareUserTextMessage
             }, iconContainer);
-            facebookIconHolder = domConstruct.create("div", {
-                className: "iconContent"
-            }, iconContainer);
-            domConstruct.create("a", {
-                className: "fa fa-facebook-square iconClass",
-                id: "facebookIcon"
-            }, facebookIconHolder);
-            twitterIconHolder = domConstruct.create("div", {
-                className: "iconContent"
-            }, iconContainer);
-            domConstruct.create("a", {
-                className: "fa fa-twitter-square iconClass",
-                id: "twitterIcon"
-            }, twitterIconHolder);
-            googlePlusIconHolder = domConstruct.create("div", {
-                className: "iconContent"
-            }, iconContainer);
-            domConstruct.create("a", {
-                className: "fa fa-google-plus-square iconClass",
-                id: "google-plusIcon"
-            }, googlePlusIconHolder);
+            if (this.config.enableSharing) {
+                facebookIconHolder = domConstruct.create("div", {
+                    className: "iconContent"
+                }, iconContainer);
+                domConstruct.create("a", {
+                    className: "fa fa-facebook-square iconClass",
+                    id: "facebookIcon"
+                }, facebookIconHolder);
+                twitterIconHolder = domConstruct.create("div", {
+                    className: "iconContent"
+                }, iconContainer);
+                domConstruct.create("a", {
+                    className: "fa fa-twitter-square iconClass",
+                    id: "twitterIcon"
+                }, twitterIconHolder);
+                googlePlusIconHolder = domConstruct.create("div", {
+                    className: "iconContent"
+                }, iconContainer);
+                domConstruct.create("a", {
+                    className: "fa fa-google-plus-square iconClass",
+                    id: "google-plusIcon"
+                }, googlePlusIconHolder);
+            }
             mailIconHolder = domConstruct.create("div", {
                 className: "iconContent"
             }, iconContainer);
@@ -1074,6 +1101,7 @@ define([
 
         _showErrorMessageDiv: function (errorMessage) {
             domConstruct.empty(this.erroMessageDiv);
+            window.location.hash = "";
             domConstruct.create("div", {
                 className: "alert alert-danger errorMessage",
                 id: "errorMessage",

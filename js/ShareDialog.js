@@ -58,6 +58,7 @@ define([
                 this.set("title", defaults.title);
                 this.set("summary", defaults.summary);
                 this.set("hashtags", defaults.hashtags);
+                this.set("shareOption", defaults.shareOption);
                 // listeners
                 this.watch("theme", this._updateThemeWatch);
                 this.watch("url", this._updateUrl);
@@ -80,17 +81,19 @@ define([
                 this.inherited(arguments);
             },
             _init: function () {
-                this.own(on(dom.byId("facebookIcon"), a11yclick, lang.hitch(this, function () {
-                    this._configureShareLink(this.get("facebookURL"));
-                })));
-                // twitter click
-                this.own(on(dom.byId("twitterIcon"), a11yclick, lang.hitch(this, function () {
-                    this._configureShareLink(this.get("twitterURL"));
-                })));
-                // google plus click
-                this.own(on(dom.byId("google-plusIcon"), a11yclick, lang.hitch(this, function () {
-                    this._configureShareLink(this.get("googlePlusURL"));
-                })));
+                if (this.shareOption) {
+                    this.own(on(dom.byId("facebookIcon"), a11yclick, lang.hitch(this, function () {
+                        this._configureShareLink(this.get("facebookURL"));
+                    })));
+                    // twitter click
+                    this.own(on(dom.byId("twitterIcon"), a11yclick, lang.hitch(this, function () {
+                        this._configureShareLink(this.get("twitterURL"));
+                    })));
+                    // google plus click
+                    this.own(on(dom.byId("google-plusIcon"), a11yclick, lang.hitch(this, function () {
+                        this._configureShareLink(this.get("googlePlusURL"));
+                    })));
+                }
                 // email click
                 this.own(on(dom.byId("mailIcon"), a11yclick, lang.hitch(this, function () {
                     this._configureShareLink(this.get("mailURL"), true);
@@ -101,12 +104,12 @@ define([
                     //Handle getting url param in _updateUrl
                     var currentUrl = this.get("url");
 
-                    //Remove edit=true from the query parameters 
+                    //Remove edit=true from the query parameters
                     if (location.href.indexOf("?") > -1) {
                         var queryUrl = location.href;
                         var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
                             newParams = lang.clone(urlParams);
-                        delete newParams.edit; //Remove edit parameter 
+                        delete newParams.edit; //Remove edit parameter
                         currentUrl = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                     }
 
@@ -138,11 +141,12 @@ define([
             },
             _configureShareLink: function (Link, isMail) {
                 // replace strings
-                var fullLink = lang.replace(Link, {
+                var formattedText = this.get("summary").replace(/<\/?[^>]+(>|$)/g, ""), fullLink;
+                fullLink = lang.replace(Link, {
                     url: encodeURIComponent(this.get("bitlyUrl") ? this.get("bitlyUrl") : this.get("url")),
                     image: encodeURIComponent(this.get("image")),
                     title: encodeURIComponent(this.get("title")),
-                    summary: encodeURIComponent(this.get("summary")),
+                    summary: encodeURIComponent(formattedText.replace(/[\&nbsp;]/g, "")),
                     hashtags: encodeURIComponent(this.get("hashtags"))
                 });
                 // email link
@@ -162,12 +166,12 @@ define([
                 // create base url
                 url = window.location.protocol + '//' + window.location.host + window.location.pathname;
 
-                //Remove edit=true from the query parameters 
+                //Remove edit=true from the query parameters
                 if (location.href.indexOf("?") > -1) {
                     var queryUrl = location.href;
                     var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
                         newParams = lang.clone(urlParams);
-                    delete newParams.edit; //Remove edit parameter 
+                    delete newParams.edit; //Remove edit parameter
                     url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                 }
 

@@ -42,7 +42,9 @@ define({
             find: "Zip Code, city, etc.",
             attachment: "Attachment File",
             toggleDropdown: "Toggle Dropdown",
-            invalidLatLong: "Please enter valid latitude and longitude coordinates."
+            invalidLatLong: "Please enter valid latitude and longitude coordinates.",
+            geoformTitleText: "Geo Form",
+            domainDefaultText:"Select Value"
         }
     })
 });

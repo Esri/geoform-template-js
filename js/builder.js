@@ -13,6 +13,7 @@ define([
     "dojo/_base/lang",
     "dojo/Deferred",
     "dojo/DeferredList",
+    "dojo/number",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dojo/text!application/dijit/templates/modal.html",
@@ -20,12 +21,14 @@ define([
     "application/browseIdDlg",
     "application/ShareDialog",
     "application/localStorageHelper",
+    "application/signInHelper",
     "dojo/i18n!application/nls/builder",
     "dojo/i18n!application/nls/user", //We need this file to get string defined for modal dialog
     "esri/arcgis/utils",
     "application/themes",
+    "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, localStorageHelper, nls, usernls, arcgisUtils, theme) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, localStorageHelper, signInHelper, nls, usernls, arcgisUtils, theme, FeatureLayer) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -43,7 +46,24 @@ define([
 
         constructor: function () {},
 
-        startup: function (config, userInfo, response) {
+        startup: function (config, response) {
+            var signIn = new signInHelper(), userInfo = {}, _self = this;
+            signIn.createPortal().then(function (loggedInUser) {
+                var isValidUser = signIn.authenticateUser(true, response, loggedInUser);
+                if (isValidUser) {
+                    userInfo.username = loggedInUser.username;
+                    userInfo.token = loggedInUser.credential.token;
+                    userInfo.portal = signIn.getPortal();
+                    _self._initializeBuilder(config, userInfo, response);
+                    _self._setTabCaption();
+                    domClass.remove(document.body, "app-loading");
+                }
+            }, function (error) {
+                _self._reportError(error);
+            });
+        },
+
+        _initializeBuilder: function (config, userInfo, response) {
             dom.byId("parentContainter").appendChild(this.authorMode);
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
@@ -69,6 +89,17 @@ define([
                 this._updateItem();
             }));
 
+            $('#done').on('click', lang.hitch(this, function () {
+                var detailsPageURL = this.currentConfig.sharinghost + "/home/item.html?id=" + this.currentConfig.appid;
+                window.open(detailsPageURL);
+            }));
+
+            $('#jumbotronOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.useSmallHeader = $('#jumbotronOption')[0].checked;
+            }));
+            $('#shareOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.enableSharing = $('#shareOption')[0].checked;
+            }));
             this.previousConfig = lang.clone(this.config);
             this.currentConfig = config;
             this.userInfo = userInfo;
@@ -76,6 +107,8 @@ define([
             this.localStorageSupport = new localStorageHelper();
             this._addOperationalLayers();
             this._populateDetails();
+            this._populateJumbotronOption(this.currentConfig.useSmallHeader);
+            this._populateShareOption(this.currentConfig.enableSharing);
             this._populateThemes();
             this._initWebmapSelection();
             this._loadCSS("css/browseDialog.css");
@@ -91,13 +124,13 @@ define([
                 this._populateFields(evt.currentTarget.value);
                 if (evt.currentTarget.value == nls.builder.selectLayerDefaultOptionText) {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
-                        if (domAttr.get(currentTab, "tab") == "fields" || domAttr.get(currentTab, "tab") == "preview" || domAttr.get(currentTab, "tab") == "publish") {
+                        if (domAttr.get(currentTab, "tab") == "fields" || domAttr.get(currentTab, "tab") == "preview" || domAttr.get(currentTab, "tab") == "publish" || domAttr.get(currentTab, "tab") == "options") {
                             this._disableTab(currentTab);
                         }
                     }));
                 } else {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
-                        if (domAttr.get(currentTab, "tab") == "fields" || ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish") && query(".fieldCheckbox:checked").length !== 0)) {
+                        if (domAttr.get(currentTab, "tab") == "fields" || ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish" || domAttr.get(currentTab, "tab") == "options") && query(".fieldCheckbox:checked").length !== 0)) {
                             this._enableTab(currentTab);
                         }
                     }));
@@ -109,6 +142,20 @@ define([
                     currentCheckBox.checked = evt.currentTarget.checked;
                 }));
                 this._getFieldCheckboxState();
+            }));
+            $('.selectpicker').selectpicker();
+            on($('.selectpicker'), 'change', lang.hitch(this, function (evt) {
+                this.currentConfig.pushpinColor = evt.currentTarget.value;
+            }));
+        },
+
+        _setTabCaption: function () {
+            //set sequence numbers to tabs
+            array.forEach(query(".navbar-right")[0].children, lang.hitch(this, function (currentTab, index) {
+                domAttr.set(currentTab.children[0], "innerHTML", number.format(++index) + ". " + currentTab.children[0].innerHTML);
+            }));
+            array.forEach(query(".nav-stacked")[0].children, lang.hitch(this, function (currentTab, index) {
+                domAttr.set(currentTab.children[0], "innerHTML", number.format(++index) + ". " + currentTab.children[0].innerHTML);
             }));
         },
 
@@ -174,7 +221,21 @@ define([
         _populateDetails: function () {
             dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
             dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
-            dom.byId("detailDescriptionInput").value = this.currentConfig.details.Description;
+            dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
+            array.some(dom.byId("pushpinInput").options, lang.hitch(this, function (currentOption) {
+                if (currentOption.value == this.currentConfig.pushpinColor) {
+                    currentOption.selected = "selected";
+                    return true;
+                }
+            }));
+            $(document).ready(function () {
+                $('#detailDescriptionInput').summernote({
+                    height: 200,
+                    minHeight: null,
+                    maxHeight: null,
+                    focus: true
+                });
+            });
         },
 
         //function to populate all available themes in application
@@ -215,6 +276,12 @@ define([
             }));
         },
 
+        _populateJumbotronOption: function (jumbotronOption) {
+            $("#jumbotronOption")[0].checked = jumbotronOption;
+        },
+        _populateShareOption: function (shareOption) {
+            $("#shareOption")[0].checked = shareOption;
+        },
         //function to select the previously configured theme.
         _configureTheme: function (selectedTheme) {
             this.currentConfig.theme = selectedTheme.currentTarget.getAttribute("themeName");
@@ -227,7 +294,7 @@ define([
                 fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
                 fieldCheckBoxInput, currentIndex = 0,
                 layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
-                newAddedFields = [];
+                newAddedFields = [], sortedFields = [];
             if (this.geoFormFieldsTable) {
                 domConstruct.empty(this.geoFormFieldsTable);
             }
@@ -264,7 +331,22 @@ define([
                 }));
             }
 
+            array.forEach(this.currentConfig.fields, lang.hitch(this, function (configField) {
+                array.some(newAddedFields, lang.hitch(this, function (currentField) {
+                    if (currentField.fieldName === configField.fieldName) {
+                        sortedFields.push(currentField);
+                        return true;
+                    }
+                }));
+            }));
             array.forEach(newAddedFields, lang.hitch(this, function (currentField) {
+                if (sortedFields.indexOf(currentField) === -1) {
+                    sortedFields.push(currentField);
+                }
+
+            }));
+            //newAddedFields & this.currentConfig.fields
+            array.forEach(sortedFields, lang.hitch(this, function (currentField) {
                 fieldRow = domConstruct.create("tr", {
                     rowIndex: currentIndex
                 }, this.geoFormFieldsTable);
@@ -339,6 +421,7 @@ define([
             $(document).ready(function () {
                 $("#tbodyDND").sortable({});
             });
+            this._updateAppConfiguration("fields");
         },
 
         //function to fetch the datatype of the field
@@ -352,36 +435,32 @@ define([
 
         //function to query layer in order to obtain all the information of layer
         _queryLayer: function (layerUrl, layerId) {
+            var capabilities = null;
+            var layer = new FeatureLayer(layerUrl);
             var layerDeferred = new Deferred();
-            esriRequest({
-                url: layerUrl,
-                content: {
-                    token: this.userInfo.token,
-                    f: 'json'
-                }
-            }, {
-                usePost: true
-            }).then(lang.hitch(this, function (result) {
-                    this._validateFeatureServer(result, layerUrl, layerId);
-                    layerDeferred.resolve(true);
-                }),
-                function () {
-                    layerDeferred.resolve(true);
-                });
+            on(layer, "load", lang.hitch(this, function () {
+                capabilities = layer.getEditCapabilities();
+                this._validateFeatureServer(layer, capabilities.canCreate, layerId);
+                layerDeferred.resolve(true);
+            }));
+            on(layer, "error", function () {
+                layerDeferred.resolve(true);
+            });
             return layerDeferred.promise;
         },
 
         //function to filter editable layers from all the layers in webmap
-        _validateFeatureServer: function (layerInfo, layerUrl, layerId) {
-            if (layerInfo.capabilities.search("Create") != -1 && layerInfo.capabilities.search("Update") != 1) {
+        _validateFeatureServer: function (layer, canCreate, layerId) {
+            if (canCreate) {
                 var filteredLayer;
                 filteredLayer = document.createElement("option");
-                filteredLayer.text = layerInfo.name;
+                filteredLayer.text = layer.name;
                 filteredLayer.value = layerId;
                 dom.byId("selectLayer").appendChild(filteredLayer);
                 this.fieldInfo[layerId] = {};
-                this.fieldInfo[layerId].Fields = layerInfo.fields;
-                this.fieldInfo[layerId].layerUrl = layerUrl;
+                this.fieldInfo[layerId].Fields = layer.fields;
+                this.fieldInfo[layerId].layerUrl = layer.url;
+                this.fieldInfo[layerId].defaultValues = layer.templates[0].prototype.attributes;
                 if (layerId == this.currentConfig.form_layer.id) {
                     this._populateFields(layerId);
                     filteredLayer.selected = "selected";
@@ -462,7 +541,7 @@ define([
             case "details":
                 this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
                 this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
-                this.currentConfig.details.Description = dom.byId("detailDescriptionInput").value;
+                this.currentConfig.details.Description = $('#detailDescriptionInput').code();
                 break;
             case "fields":
                 this.currentConfig.fields.length = 0;
@@ -472,12 +551,12 @@ define([
                     if (currentRow.getAttribute("rowIndex")) {
                         index = currentRow.getAttribute("rowIndex");
                         fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
-                        array.some(this.fieldInfo[this.currentConfig.form_layer.id].Fields, function (currentField) {
-                            if (currentField.name == fieldName) {
-                                defaultValue = currentField.defaultValue;
-                                return true;
+                            for (var key in this.fieldInfo[this.currentConfig.form_layer.id].defaultValues) {
+                                if (key == fieldName) {
+                                    defaultValue = this.fieldInfo[this.currentConfig.form_layer.id].defaultValues[key];
+                                    break;
+                                }
                             }
-                        });
                         fieldLabel = query(".fieldLabel", currentRow)[0].value;
                         fieldDescription = query(".fieldDescription", currentRow)[0].value;
                         visible = query(".fieldCheckbox", currentRow)[0].checked;
@@ -532,7 +611,8 @@ define([
                             image: this.currentConfig.sharinghost + '/sharing/rest/content/items/' + this.currentConfig.itemInfo.item.id + '/info/' + this.currentConfig.itemInfo.item.thumbnail,
                             title: this.currentConfig.details.Title || nls.builder.geoformTitleText || '',
                             summary: this.currentConfig.details.Description || '',
-                            hashtags: 'esriGeoForm'
+                            hashtags: 'esriGeoForm',
+                            shareOption:this.currentConfig.enableSharing
                         });
                         this._ShareDialog.startup();
                     }
@@ -545,11 +625,11 @@ define([
         //function to show a progress bar before the content of share dialog is loaded
         _addProgressBar: function () {
             var progressIndicatorContainer, progressIndicator;
-            domConstruct.empty(query(".modal-body")[0]);
+            domConstruct.empty($("#myModal .modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderInProgressTitleMessage);
             progressIndicatorContainer = domConstruct.create("div", {
                 className: "progress progress-striped active progress-remove-margin"
-            }, query(".modal-body")[0]);
+            }, $("#myModal .modal-body")[0]);
             progressIndicator = domConstruct.create("div", {
                 className: "progress-bar progress-percent",
                 innerHTML: nls.builder.shareBuilderProgressBarMessage
@@ -557,36 +637,38 @@ define([
         },
         _createShareDlgContent: function () {
             var iconContainer, facebookIconHolder, twitterIconHolder, googlePlusIconHolder, mailIconHolder;
-            domConstruct.empty(query(".modal-body")[0]);
+            domConstruct.empty($("#myModal .modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderTitleMessage);
             iconContainer = domConstruct.create("div", {
                 className: "iconContainer"
-            }, query(".modal-body")[0]);
+            }, $("#myModal .modal-body")[0]);
             domConstruct.create("div", {
                 className: "share-dialog-subheader",
                 innerHTML: nls.builder.shareBuilderTextMessage
             }, iconContainer);
-            facebookIconHolder = domConstruct.create("div", {
-                className: "iconContent"
-            }, iconContainer);
-            domConstruct.create("a", {
-                className: "fa fa-facebook-square iconClass",
-                id: "facebookIcon"
-            }, facebookIconHolder);
-            twitterIconHolder = domConstruct.create("div", {
-                className: "iconContent"
-            }, iconContainer);
-            domConstruct.create("a", {
-                className: "fa fa-twitter-square iconClass",
-                id: "twitterIcon"
-            }, twitterIconHolder);
-            googlePlusIconHolder = domConstruct.create("div", {
-                className: "iconContent"
-            }, iconContainer);
-            domConstruct.create("a", {
-                className: "fa fa-google-plus-square iconClass",
-                id: "google-plusIcon"
-            }, googlePlusIconHolder);
+            if ($("#shareOption")[0].checked) {
+                facebookIconHolder = domConstruct.create("div", {
+                    className: "iconContent"
+                }, iconContainer);
+                domConstruct.create("a", {
+                    className: "fa fa-facebook-square iconClass",
+                    id: "facebookIcon"
+                }, facebookIconHolder);
+                twitterIconHolder = domConstruct.create("div", {
+                    className: "iconContent"
+                }, iconContainer);
+                domConstruct.create("a", {
+                    className: "fa fa-twitter-square iconClass",
+                    id: "twitterIcon"
+                }, twitterIconHolder);
+                googlePlusIconHolder = domConstruct.create("div", {
+                    className: "iconContent"
+                }, iconContainer);
+                domConstruct.create("a", {
+                    className: "fa fa-google-plus-square iconClass",
+                    id: "google-plusIcon"
+                }, googlePlusIconHolder);
+            }
             mailIconHolder = domConstruct.create("div", {
                 className: "iconContent"
             }, iconContainer);
@@ -645,6 +727,25 @@ define([
                 className: "alert alert-danger errorMessage",
                 innerHTML: errorMessage
             }, this.erroMessageDiv);
+        },
+
+        _reportError: function (error) {
+            // remove loading class from body
+            domClass.remove(document.body, "app-loading");
+            domClass.add(document.body, "app-error");
+            // an error occurred - notify the user. In this example we pull the string from the
+            // resource.js file located in the nls folder because we've set the application up
+            // for localization. If you don't need to support multiple languages you can hardcode the
+            // strings here and comment out the call in index.html to get the localization strings.
+            // set message
+            var node = dom.byId("loading_message");
+            if (node) {
+                if (this.config && this.config.i18n) {
+                    node.innerHTML = this.config.i18n.map.error + ": " + error.message;
+                } else {
+                    node.innerHTML = "Unable to create map: " + error.message;
+                }
+            }
         }
     });
 });
