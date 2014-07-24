@@ -580,6 +580,7 @@ define([
                             $(inputContent).datetimepicker({
                                 format: "dd MM yyyy - HH:ii P",
                                 showMeridian: true,
+                                minuteStep: 5,
                                 autoclose: true,
                                 todayBtn: true,
                             onSelect: lang.hitch(this, function (evt, currentElement) {
