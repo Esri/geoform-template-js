@@ -65,8 +65,8 @@
                 name: "arcgis_templates",
                 location: package_path + '/..'
             }, {
-                name: "edit",
-                location: package_path + '/js/edit'
+                name: "offline",
+                location: package_path + '/js/offline'
             }]
         };
     </script>
@@ -74,9 +74,9 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/summernote/0.5.2/summernote.min.js"></script>
     <script type="text/javascript" src="//js.arcgis.com/3.10compact"></script>
-    <script type="text/javascript" src="js/edit/offline.min.js"></script>
-    <script type="text/javascript" src="js/edit/offlineOptions.js"></script>
-    <script type="text/javascript" src="js/edit/IndexedDBShim.min.js"></script>
+    <script type="text/javascript" src="js/offline/offline.min.js"></script>
+    <script type="text/javascript" src="js/offline/offlineOptions.js"></script>
+    <script type="text/javascript" src="js/offline/IndexedDBShim.min.js"></script>
     <script type="text/javascript">
     require(["application/templateOptions", "application/template", "application/main"], function (templateOptions, Template, Main) {
         // start template

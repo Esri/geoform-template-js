@@ -5,10 +5,10 @@ define([
     "dojo/on",
     "dojo/dom",
     "dojo/dom-construct",
-    "edit/offlineFeaturesManager",
+    "offline/offlineFeaturesManager",
     "esri/dijit/editing/Editor",
     "dojo/i18n!application/nls/resources",
-    "edit/editsStore"
+    "offline/editsStore"
 ], function (
     declare,
     lang,

@@ -13,7 +13,7 @@ define([
     "dojo/query",
     "dojo/io-query",
     "application/bootstrapmap",
-    "application/OfflineSupport",
+    "offline/OfflineSupport",
     "dojo/_base/array",
     "dojo/dom-construct",
     "dojo/dom-attr",

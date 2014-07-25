@@ -1,7 +1,7 @@
 
 define([
-    "edit/editsStore",
-    "edit/attachmentsStore",
+    "offline/editsStore",
+    "offline/attachmentsStore",
 
     "dojo/Evented",
     "dojo/_base/Deferred",
