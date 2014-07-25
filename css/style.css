@@ -12,7 +12,8 @@
     width: 100%;
 }
 /* Style for Loading Indicator*/
-.app-loading{
+
+.app-loading {
     overflow: hidden;
 }
 .app-loading .loading-indicator {
@@ -73,7 +74,7 @@
 #geoform .table > thead > tr > td,
 #geoform .table > tbody > tr > td,
 #geoform .table > tfoot > tr > td {
-    vertical-align: middle ;
+    vertical-align: middle;
 }
 #geoform .progress-remove-margin {
     margin-bottom: 0px;
