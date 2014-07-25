@@ -582,14 +582,13 @@ define([
                                 showMeridian: true,
                                 minuteStep: 5,
                                 autoclose: true,
-                                todayBtn: true,
-                            onSelect: lang.hitch(this, function (evt, currentElement) {
-                                domClass.remove(currentElement.input[0].parentElement, "has-error");
-                                domClass.remove(query("span", currentElement.input[0].parentElement)[0], "glyphicon-remove");
-                                domClass.add(currentElement.input[0].parentElement, "has-success");
-                                domClass.add(query("span", currentElement.input[0].parentElement)[0], "glyphicon-ok");
-                            })
-                        });
+                                todayBtn: true
+                            }).on('changeDate', function(evt){
+                                domClass.remove(evt.target.parentElement, "has-error");
+                                domClass.remove(query("span", evt.target.parentElement)[0], "glyphicon-remove");
+                                domClass.add(evt.target.parentElement, "has-success");
+                                domClass.add(query("span", evt.target.parentElement)[0], "glyphicon-ok");
+                            });
                         break;
                     }
                     //If present fetch default values
