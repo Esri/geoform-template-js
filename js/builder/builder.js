@@ -23,18 +23,18 @@ define([
     "application/localStorageHelper",
     "application/builder/signInHelper",
     "dojo/i18n!application/nls/builder",
+    "dojo/i18n!application/nls/resources",
     "esri/arcgis/utils",
     "application/themes",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, FeatureLayer) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
         currentState: "webmap",
         previousState: null,
         currentConfig: null,
-        previousConfig: null,
         response: null,
         userInfo: null,
         browseDlg: null,
@@ -43,28 +43,31 @@ define([
         themes: theme,
         localStorageSupport: null,
 
-        constructor: function () {},
+        constructor: function (config, response) {
+            this.config = config;
+            this.response = response;
+        },
 
         startup: function (config, response) {
             var def = new Deferred();
-            var signIn = new signInHelper(), userInfo = {}, _self = this;
-            signIn.createPortal().then(function (loggedInUser) {
-                var isValidUser = signIn.authenticateUser(true, response, loggedInUser);
+            var signIn = new signInHelper(), userInfo = {};
+            signIn.createPortal().then(lang.hitch(this, function (loggedInUser) {
+                var isValidUser = signIn.authenticateUser(true, this.response, loggedInUser);
                 if (isValidUser) {
                     userInfo.username = loggedInUser.username;
                     userInfo.token = loggedInUser.credential.token;
                     userInfo.portal = signIn.getPortal();
-                    _self._initializeBuilder(config, userInfo, response);
-                    _self._setTabCaption();
+                    this._initializeBuilder(this.config, userInfo, this.response);
+                    this._setTabCaption();
                     domClass.remove(document.body, "app-loading");
                     def.resolve();
                 }
                 else{
                    def.reject(new Error("Invalid User")); 
                 }
-            }, function (error) {
+            }), lang.hitch(this, function (error) {
                 def.reject(error);
-            });
+            }));
             return def.promise;
         },
 
@@ -74,7 +77,7 @@ define([
             domClass.add($('.navigationTabs')[0], "activeTab");
             // document ready
             ready(lang.hitch(this, function () {
-                modalTemplate = lang.replace(modalTemplate, config.i18n);
+                modalTemplate = lang.replace(modalTemplate, resources);
                 // place modal code
                 domConstruct.place(modalTemplate, document.body, 'last');
             }));
@@ -105,7 +108,7 @@ define([
             $('#shareOption').on('click', lang.hitch(this, function () {
                 this.currentConfig.enableSharing = $('#shareOption')[0].checked;
             }));
-            this.previousConfig = lang.clone(this.config);
+
             this.currentConfig = config;
             this.userInfo = userInfo;
             this.response = response;
@@ -168,7 +171,6 @@ define([
 
         //function to get the details of previously selected tab
         _getPrevTabDetails: function (evt) {
-            var _self = this;
             if (evt) {
                 this.previousState = this.currentState;
                 this.currentState = evt.currentTarget.getAttribute("tab");
@@ -176,10 +178,10 @@ define([
                 if (this.currentState == "preview") {
                     require([
                        "application/main"
-                      ], function (userMode) {
+                      ], lang.hitch(this, function (userMode) {
                         var index = new userMode();
-                        index.startup(_self.currentConfig, _self.response, true, query(".preview-frame")[0]);
-                    });
+                        index.startup(this.currentConfig, this.response, true, query(".preview-frame")[0]);
+                    }));
                 } else {
                     localStorage.clear();
                 }
@@ -541,7 +543,6 @@ define([
 
         //function takes the previous tab's details as input parameter and saves the setting to config
         _updateAppConfiguration: function (prevNavigationTab) {
-            var _self = this;
             switch (prevNavigationTab) {
             case "webmap":
                 break;
@@ -567,7 +568,7 @@ define([
                         fieldLabel = query(".fieldLabel", currentRow)[0].value;
                         fieldDescription = query(".fieldDescription", currentRow)[0].value;
                         visible = query(".fieldCheckbox", currentRow)[0].checked;
-                        _self.currentConfig.fields.push({
+                        this.currentConfig.fields.push({
                             fieldName: fieldName,
                             fieldLabel: fieldLabel,
                             fieldDescription: fieldDescription,

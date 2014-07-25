@@ -33,7 +33,6 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/summernote/0.5.2/summernote.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
@@ -90,8 +89,8 @@
             //In this example we have one called theme.
             if (config.edit) {
                 require(["application/builder/builder"], function (builderMode) {
-                    var builder = new builderMode();
-                    builder.startup(config, myTemplate.appResponse).otherwise(function(error){
+                    var builder = new builderMode(config, myTemplate.appResponse);
+                    builder.startup().otherwise(function(error){
                         // something went wrong. Let's report it.
                         myApp.reportError(error);
                     });
