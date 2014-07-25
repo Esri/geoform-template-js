@@ -72,6 +72,8 @@ define([
         },
 
         _initializeBuilder: function (config, userInfo, response) {
+            // set to default theme. (first in array)
+            dom.byId("themeLink").href = this.themes[0].url;
             dom.byId("parentContainter").appendChild(this.authorMode);
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
