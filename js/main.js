@@ -306,7 +306,7 @@ define([
             var layer = this.map.getLayer(this.config.form_layer.id);
             if (layer) {
                 // support basic offline editing
-                new OfflineSupport({
+                var offlineSupport = new OfflineSupport({
                     map: this.map,
                     layer: layer
                 });
@@ -796,7 +796,7 @@ define([
                     window.document.title = this.config.details.Title;
                 }
                 // bootstrap map functions
-                new bootstrapmap(this.map);
+                var bsm = new bootstrapmap(this.map);
                 this._createForm(this.config.fields);
                 this._createLocateButton();
                 this._createGeocoderButton();
