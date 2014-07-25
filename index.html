@@ -25,16 +25,14 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.10/js/esri/css/esri.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" id="themeLink">
     <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.10/js/dojo/dijit/themes/claro/claro.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
-        rel="stylesheet" />
-    <link href="//oss.maxcdn.com/summernote/0.5.1/summernote.css" rel="stylesheet" />
-    <link href="css/summernote.css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/summernote/0.5.2/summernote.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -74,7 +72,7 @@
     </script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/summernote.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/summernote/0.5.2/summernote.min.js"></script>
     <script type="text/javascript" src="//js.arcgis.com/3.10compact"></script>
     <script type="text/javascript" src="js/edit/offline.min.js"></script>
     <script type="text/javascript" src="js/edit/offlineOptions.js"></script>
@@ -91,7 +89,7 @@
             //i18n, appid, webmap and any custom values defined by the application.
             //In this example we have one called theme.
             if (config.edit) {
-                require(["application/builder"], function (builderMode) {
+                require(["application/builder/builder"], function (builderMode) {
                     var builder = new builderMode();
                     builder.startup(config, myTemplate.appResponse).otherwise(function(error){
                         // something went wrong. Let's report it.
@@ -110,8 +108,7 @@
     <!-- pulgin to support DND in touch enabled devices -->
     <script type="text/javascript"src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript"src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-    <script type="text/javascript" src="js/bootstrap-select.min.js"></script>
+    <script src="js/plugins/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-215788-4']);

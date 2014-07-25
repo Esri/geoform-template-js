@@ -18,10 +18,10 @@ define([
     "dijit/_TemplatedMixin",
     "dojo/text!application/dijit/templates/modal.html",
     "dojo/text!application/dijit/templates/author.html",
-    "application/browseIdDlg",
+    "application/builder/browseIdDlg",
     "application/ShareDialog",
     "application/localStorageHelper",
-    "application/signInHelper",
+    "application/builder/signInHelper",
     "dojo/i18n!application/nls/builder",
     "dojo/i18n!application/nls/resources", //We need this file to get string defined for modal dialog
     "esri/arcgis/utils",

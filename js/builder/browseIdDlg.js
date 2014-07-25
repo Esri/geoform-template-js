@@ -9,7 +9,7 @@ define([
   "dojo/query",
   "dojo/dom-style",
   "dojo/dom-class",
-  "application/grid",
+  "application/builder/grid",
   "dojo/i18n!./nls/resources",
   "dijit/_WidgetBase",
   "dijit/_TemplatedMixin",
