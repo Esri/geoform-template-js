@@ -48,7 +48,7 @@ define([
             this.response = response;
         },
 
-        startup: function (config, response) {
+        startup: function () {
             var def = new Deferred();
             var signIn = new signInHelper(), userInfo = {};
             signIn.createPortal().then(lang.hitch(this, function (loggedInUser) {
