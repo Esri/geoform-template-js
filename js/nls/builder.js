@@ -46,7 +46,7 @@ define({
             shareBuilderProgressBarMessage: "Please Wait&hellip;",
             shareBuilderTitleMessage: "Your GeoForm has been updated & published!",
             shareBuilderTextMessage: "You can start collecting information by sharing with others",
-            shareDialogFormText: "Form Link",
+            shareModalFormText: "Form Link",
             geoformTitleText: "Geo Form",
             layerTabText: "This is the layer that the GeoForm will be built from. The layer must be a feature service that is enabled for editing with sharing permissions appropriate for your audience.",
             detailsTabText: "Use the Form Detail boxes below to customize the Title, add a custom logo, and provide a short description for your GeoForm audience.",

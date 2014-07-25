@@ -22,9 +22,9 @@ define([
         esriRequest
     ) {
         var Widget = declare([_WidgetBase], {
-            declaredClass: "esri.dijit.ShareDialog",
+            declaredClass: "esri.dijit.ShareModal",
             options: {
-                theme: "ShareDialog",
+                theme: "ShareModal",
                 visible: true,
                 dialog: null,
                 url: window.location.href,

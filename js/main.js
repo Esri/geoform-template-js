@@ -26,7 +26,7 @@ define([
     "dojo/i18n!application/nls/resources",
     "esri/geometry/webMercatorUtils",
     "esri/geometry/Point",
-    "application/ShareDialog",
+    "application/ShareModal",
     "application/localStorageHelper",
     "esri/graphic",
     "esri/symbols/PictureMarkerSymbol",
@@ -57,7 +57,7 @@ define([
     _TemplatedMixin,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareDialog, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme) {
+    nls, webMercatorUtils, Point, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: userTemplate,
         nls: nls,
@@ -201,7 +201,7 @@ define([
                                 });
                             }
                         }));
-                        //Handle case where edit is first url parameter we'll use the same logic we used in sharedialog.js
+                        //Handle case where edit is first url parameter we'll use the same logic we used in ShareModal.js
                         var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
                         if (window.location.href.indexOf("?") > -1) {
                             var queryUrl = window.location.href;
@@ -985,7 +985,7 @@ define([
                     this._clearSubmissionGraphic();
                     this.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
-                    this._openShareDialog();
+                    this._openShareModal();
                     this.map.setExtent(this.defaultExtent);
                     $("#myModal").modal('show');
                     this.map.getLayer(config.form_layer.id).refresh();
@@ -1029,9 +1029,9 @@ define([
             }
         },
 
-        _openShareDialog: function () {
+        _openShareModal: function () {
             this._createShareDlgContent();
-            this._ShareDialog = new ShareDialog({
+            this._ShareModal = new ShareModal({
                 bitlyLogin: this.config.bitlyLogin,
                 bitlyKey: this.config.bitlyKey,
                 image: this.config.sharinghost + '/sharing/rest/content/items/' + this.config.itemInfo.item.id + '/info/' + this.config.itemInfo.item.thumbnail,
@@ -1040,7 +1040,7 @@ define([
                 hashtags: 'esriGeoForm',
                 shareOption: this.config.enableSharing
             });
-            this._ShareDialog.startup();
+            this._ShareModal.startup();
             $("#myModal").modal('show');
         },
 
@@ -1090,7 +1090,7 @@ define([
             domConstruct.create("br", {}, iconContainer);
             domConstruct.create("div", {
                 className: "share-dialog-subheader",
-                innerHTML: nls.user.shareDialogFormText
+                innerHTML: nls.user.shareModalFormText
             }, iconContainer);
             domConstruct.create("input", {
                 type: "text",

@@ -19,7 +19,7 @@ define([
     "dojo/text!application/dijit/templates/modal.html",
     "dojo/text!application/dijit/templates/author.html",
     "application/builder/browseIdDlg",
-    "application/ShareDialog",
+    "application/ShareModal",
     "application/localStorageHelper",
     "application/builder/signInHelper",
     "dojo/i18n!application/nls/builder",
@@ -28,7 +28,7 @@ define([
     "application/themes",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareDialog, localStorageHelper, signInHelper, nls, usernls, arcgisUtils, theme, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, usernls, arcgisUtils, theme, FeatureLayer) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -611,7 +611,7 @@ define([
                 }).then(lang.hitch(this, function (result) {
                     if (result.success) {
                         this._createShareDlgContent();
-                        this._ShareDialog = new ShareDialog({
+                        this._ShareModal = new ShareModal({
                             bitlyLogin: this.currentConfig.bitlyLogin,
                             bitlyKey: this.currentConfig.bitlyKey,
                             image: this.currentConfig.sharinghost + '/sharing/rest/content/items/' + this.currentConfig.itemInfo.item.id + '/info/' + this.currentConfig.itemInfo.item.thumbnail,
@@ -620,7 +620,7 @@ define([
                             hashtags: 'esriGeoForm',
                             shareOption:this.currentConfig.enableSharing
                         });
-                        this._ShareDialog.startup();
+                        this._ShareModal.startup();
                     }
                 }), function () {
                     $("#myModal").modal('hide');
@@ -687,7 +687,7 @@ define([
             domConstruct.create("br", {}, iconContainer);
             domConstruct.create("div", {
                 className: "share-dialog-subheader",
-                innerHTML: nls.builder.shareDialogFormText
+                innerHTML: nls.builder.shareModalFormText
             }, iconContainer);
             domConstruct.create("input", {
                 type: "text",

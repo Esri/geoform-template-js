@@ -69,7 +69,7 @@ define({
             finding: "Locating&hellip;",
             myLocationTitleText: 'My Location',
             addressSearchText: "Your submission will appear here. You can drag the pin to correct the location.",
-            shareDialogFormText: "Form Link",
+            shareModalFormText: "Form Link",
             close: "Close",
             dateFormat: "mm/dd/yyyy",
             integerFormat: "Enter a number",
