@@ -23,12 +23,11 @@ define([
     "application/localStorageHelper",
     "application/builder/signInHelper",
     "dojo/i18n!application/nls/builder",
-    "dojo/i18n!application/nls/resources", //We need this file to get string defined for modal dialog
     "esri/arcgis/utils",
     "application/themes",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, usernls, arcgisUtils, theme, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, FeatureLayer) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -75,7 +74,7 @@ define([
             domClass.add($('.navigationTabs')[0], "activeTab");
             // document ready
             ready(lang.hitch(this, function () {
-                modalTemplate = lang.replace(modalTemplate, usernls);
+                modalTemplate = lang.replace(modalTemplate, config.i18n);
                 // place modal code
                 domConstruct.place(modalTemplate, document.body, 'last');
             }));
@@ -149,10 +148,12 @@ define([
                 }));
                 this._getFieldCheckboxState();
             }));
+            /*
             $('.selectpicker').selectpicker();
             on($('.selectpicker'), 'change', lang.hitch(this, function (evt) {
                 this.currentConfig.pushpinColor = evt.currentTarget.value;
             }));
+            */
         },
 
         _setTabCaption: function () {

@@ -10,7 +10,7 @@ define([
   "dojo/dom-style",
   "dojo/dom-class",
   "application/builder/grid",
-  "dojo/i18n!./nls/resources",
+  "dojo/i18n!application/nls/resources",
   "dijit/_WidgetBase",
   "dijit/_TemplatedMixin",
   "dijit/_WidgetsInTemplateMixin",
