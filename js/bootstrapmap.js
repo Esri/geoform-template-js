@@ -1,17 +1,13 @@
 define([
     "dojo/_base/declare",
     "dojo/on",
-    "dojo/touch",
     "dojo/_base/lang",
-    "dojo/query",
     "dojo/domReady!"
 ],
     function (
         declare,
         on,
-        touch,
-        lang,
-        query
+        lang
     ) {
         return declare(null, {
             constructor: function (map) {
@@ -56,10 +52,6 @@ define([
                     // Default
                     this.map.disableScrollWheelZoom();
                 }
-                // Remove 300ms delay to close infoWindow on touch devices
-                this._handles.push(on(query(".titlePane .close", this.map.infoWindow.domNode), touch.press, lang.hitch(this, function () {
-                    this.map.infoWindow.hide();
-                })));
                 // FeatureLayers
                 if (this.map.infoWindow) {
                     this._handles.push(on(this.map.infoWindow, "selection-change, set-features, show", lang.hitch(this, function () {
