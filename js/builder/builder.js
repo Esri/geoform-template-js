@@ -62,8 +62,8 @@ define([
                     domClass.remove(document.body, "app-loading");
                     def.resolve();
                 }
-                else{
-                   def.reject(new Error("Invalid User")); 
+                else {
+                    def.reject(new Error("Invalid User"));
                 }
             }), lang.hitch(this, function (error) {
                 def.reject(error);
@@ -156,7 +156,7 @@ define([
             /*
             $('.selectpicker').selectpicker();
             on($('.selectpicker'), 'change', lang.hitch(this, function (evt) {
-                this.currentConfig.pushpinColor = evt.currentTarget.value;
+            this.currentConfig.pushpinColor = evt.currentTarget.value;
             }));
             */
         },
@@ -181,9 +181,9 @@ define([
                     require([
                        "application/main"
                       ], lang.hitch(this, function (userMode) {
-                        var index = new userMode();
-                        index.startup(this.currentConfig, this.response, true, query(".preview-frame")[0]);
-                    }));
+                          var index = new userMode();
+                          index.startup(this.currentConfig, this.response, true, query(".preview-frame")[0]);
+                      }));
                 } else {
                     localStorage.clear();
                 }
@@ -405,6 +405,24 @@ define([
                     placeholder: nls.builder.fieldDescPlaceHolder,
                     value: ""
                 }, fieldDescription);
+                fieldPlaceholder = domConstruct.create("td", {
+                    className: "tableDimension"
+                }, fieldRow);
+
+                if (!currentField.domain) {
+                    fieldPlaceholderInput = domConstruct.create("input", {
+                        className: "form-control fieldPlaceholder",
+                        index: currentIndex
+                    }, fieldPlaceholder);
+                    if (currentField.placeHolder) {
+                        fieldPlaceholderInput.value = currentField.placeHolder;
+                    }
+                }
+                fieldType = domConstruct.create("td", {
+                    style: "min-width: 100px",
+                    className: "fieldSqlType",
+                    innerHTML: currentField.type.replace("esriFieldType", "")
+                }, fieldRow);
                 if (this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo) {
                     array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
                         if (currentFieldPopupInfo.fieldName == currentField.name) {
@@ -471,7 +489,9 @@ define([
                 this.fieldInfo[layerId] = {};
                 this.fieldInfo[layerId].Fields = layer.fields;
                 this.fieldInfo[layerId].layerUrl = layer.url;
-                this.fieldInfo[layerId].defaultValues = layer.templates[0].prototype.attributes;
+                if (layer.templates[0]) {
+                    this.fieldInfo[layerId].defaultValues = layer.templates[0].prototype.attributes;
+                }
                 if (layerId == this.currentConfig.form_layer.id) {
                     this._populateFields(layerId);
                     filteredLayer.selected = "selected";
@@ -546,41 +566,44 @@ define([
         //function takes the previous tab's details as input parameter and saves the setting to config
         _updateAppConfiguration: function (prevNavigationTab) {
             switch (prevNavigationTab) {
-            case "webmap":
-                break;
-            case "details":
-                this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
-                this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
-                this.currentConfig.details.Description = $('#detailDescriptionInput').code();
-                break;
-            case "fields":
-                this.currentConfig.fields.length = 0;
-                var index, fieldName, fieldLabel, fieldDescription, layerName, visible, defaultValue;
-                layerName = dom.byId("selectLayer").value;
-                array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow) {
-                    if (currentRow.getAttribute("rowIndex")) {
-                        index = currentRow.getAttribute("rowIndex");
-                        fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
+                case "webmap":
+                    break;
+                case "details":
+                    this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
+                    this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
+                    this.currentConfig.details.Description = $('#detailDescriptionInput').code();
+                    break;
+                case "fields":
+                    this.currentConfig.fields.length = 0;
+                    var index, fieldName, fieldLabel, fieldDescription, layerName, visible, defaultValue;
+                    layerName = dom.byId("selectLayer").value;
+                    array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow, index) {
+                        if (currentRow.getAttribute("rowIndex")) {
+                            index = currentRow.getAttribute("rowIndex");
+                            fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
                             for (var key in this.fieldInfo[this.currentConfig.form_layer.id].defaultValues) {
                                 if (key == fieldName) {
                                     defaultValue = this.fieldInfo[this.currentConfig.form_layer.id].defaultValues[key];
                                     break;
                                 }
                             }
-                        fieldLabel = query(".fieldLabel", currentRow)[0].value;
-                        fieldDescription = query(".fieldDescription", currentRow)[0].value;
-                        visible = query(".fieldCheckbox", currentRow)[0].checked;
-                        this.currentConfig.fields.push({
-                            fieldName: fieldName,
-                            fieldLabel: fieldLabel,
-                            fieldDescription: fieldDescription,
-                            visible: visible,
-                            defaultValue: defaultValue
-                        });
-                    }
-                }));
-                break;
-            default:
+                            fieldLabel = query(".fieldLabel", currentRow)[0].value;
+                            fieldDescription = query(".fieldDescription", currentRow)[0].value;
+                            visible = query(".fieldCheckbox", currentRow)[0].checked;
+                            this.currentConfig.fields.push({
+                                fieldName: fieldName,
+                                fieldLabel: fieldLabel,
+                                fieldDescription: fieldDescription,
+                                visible: visible,
+                                defaultValue: defaultValue
+                            });
+                            if (query(".fieldPlaceholder", currentRow)[0]) {
+                                this.currentConfig.fields[index].placeHolder = query(".fieldPlaceholder", currentRow)[0].value;
+                            }
+                        }
+                    }));
+                    break;
+                default:
             }
         },
 
@@ -622,7 +645,7 @@ define([
                             title: this.currentConfig.details.Title || nls.builder.geoformTitleText || '',
                             summary: this.currentConfig.details.Description || '',
                             hashtags: 'esriGeoForm',
-                            shareOption:this.currentConfig.enableSharing
+                            shareOption: this.currentConfig.enableSharing
                         });
                         this._ShareModal.startup();
                     }

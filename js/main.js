@@ -508,6 +508,7 @@ define([
                             className: "form-control",
                             "inputType": "String",
                             "maxLength": currentField.length,
+                            placeholder: currentField.placeHolder,
                             "id": fieldname
                         }, formContent);
                         domConstruct.create("span", {
@@ -518,7 +519,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            placeholder: nls.user.integerFormat,
+                            placeholder: currentField.placeHolder,
                             "inputType": "smallInteger",
                             "id": fieldname,
                             "pattern": "[0-9]*"
@@ -531,7 +532,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            placeholder: nls.user.integerFormat,
+                            placeholder: currentField.placeHolder,
                             "inputType": "Integer",
                             "id": fieldname,
                             "pattern": "[0-9]*"
@@ -544,7 +545,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            placeholder: nls.user.floatFormat,
+                            placeholder: currentField.placeHolder,
                             "inputType": "Single",
                             "id": fieldname,
                             "pattern": "[0-9]*"
@@ -557,7 +558,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            placeholder: nls.user.floatFormat,
+                            placeholder: currentField.placeHolder,
                             "inputType": "Double",
                             "id": fieldname,
                             step: ".1"
@@ -570,7 +571,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control hasDatetimepicker",
-                            placeholder: nls.user.dateFormat,
+                            placeholder: currentField.placeHolder,
                             "inputType": "Date",
                             "id": fieldname
                         }, formContent);

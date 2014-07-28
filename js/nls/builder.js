@@ -49,7 +49,7 @@ define({
             shareModalFormText: "Form Link",
             geoformTitleText: "Geo Form",
             layerTabText: "This is the layer that the GeoForm will be built from. The layer must be a feature service that is enabled for editing with sharing permissions appropriate for your audience.",
-            detailsTabText: "Use the Form Detail boxes below to customize the Title, add a custom logo, and provide a short description for your GeoForm audience.",
+            detailsTabText: "Use the Form Detail boxes below to customize the Title, add a custom logo, and provide a short description for your GeoForm audience. In the description you can add links to other resources, contact information, and even point your audience to a web mapping application featuring all of the data collected with the GeoForm.",
             fieldsTabText: "Here you can select which fields will be visible to your GeoForm audience, edit the Labels they will see, and add a short Description to help with data entry.",
             styleTabText: "Style your GeoForm using the themes below based on your preference.",
             publishTabText: "Ifyou are finished customizing your GeoForm, save the application and begin sharing with your audience. You can always return to this builder and continue customizing it based on feedback.",
@@ -64,7 +64,9 @@ define({
             pushpinRedColor: "Red",
             pushpinYellowColor: "Yellow",
             pushpinText:"Push pin",
-            doneButtonText:"Done"
+            doneButtonText:"Done",
+            fieldTabPlaceHolderHeaderText:"Placeholder",
+            fieldTabTypeHeaderText: "Type"
         }
     })
 });
