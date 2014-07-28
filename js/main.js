@@ -842,6 +842,7 @@ define([
         _createLocateButton: function () {
             var currentLocation = new LocateButton({
                 map: this.map,
+                highlightLocation: false,
                 theme: "btn btn-default"
             }, domConstruct.create('div'));
             currentLocation.startup();
