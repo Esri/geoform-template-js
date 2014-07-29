@@ -44,10 +44,16 @@ define([
         themes: theme,
         localStorageSupport: null,
         pins: null,
+	onDemandResources: null,
 
         constructor: function (config, response) {
             this.config = config;
             this.response = response;
+	        this.onDemandResources = [
+                { "type": "css", "path": "css/browseDialog.css" },
+                { "type": "css", "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css" },
+                { "type": "script", "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js" }
+	        ];
             this.pins = [{
                 "id": "blue",
                 "url": "./images/pins/blue.png",
@@ -171,6 +177,7 @@ define([
             $('#defaultExtent').on('click', lang.hitch(this, function () {
                 this.currentConfig.defaultMapExtent = $('#defaultExtent')[0].checked;
             }));
+            this._loadResources();
             this.currentConfig = config;
             this.userInfo = userInfo;
             this.response = response;
@@ -183,7 +190,6 @@ define([
             this._populateThemes();
             this._populatePushpins();
             this._initWebmapSelection();
-            this._loadCSS("css/browseDialog.css");
             if (!this.localStorageSupport.supportsStorage()) {
                 array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                     if (domAttr.get(currentTab, "tab") == "preview") {
@@ -616,14 +622,25 @@ define([
             dom.byId("webmapLink").href = this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap;
         },
 
-        //function to load the css on runtime
-        _loadCSS: function (sourcePath) {
-            //Load browser dialog
-            var cssStyle = document.createElement('link');
-            cssStyle.rel = 'stylesheet';
-            cssStyle.type = 'text/css';
-            cssStyle.href = sourcePath;
-            document.getElementsByTagName('head')[0].appendChild(cssStyle);
+        //function to load the css/script dynamically
+        _loadResources: function () {
+            var cssStyle, scriptFile;
+            array.forEach(this.onDemandResources, lang.hitch(this, function (currentResource) {
+                if (currentResource.type === "css") {
+                    cssStyle = document.createElement('link');
+                    cssStyle.rel = 'stylesheet';
+                    cssStyle.type = 'text/css';
+                    cssStyle.href = currentResource.path;
+                    document.getElementsByTagName('head')[0].appendChild(cssStyle);
+                }
+                else {
+                    scriptFile = document.createElement('script');
+                    scriptFile.type = "text/javascript";
+                    scriptFile.src = currentResource.path;
+                    dom.byId("geoform").appendChild(scriptFile);
+                }
+            }));
+
         },
 
         //function to remove all the layers from the select box
