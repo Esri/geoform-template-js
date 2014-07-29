@@ -110,22 +110,6 @@
                             <div class="form-group">
                                 <label for="detailDescriptionInput">${nls.builder.detailDescriptionLabelText}</label>
                                 <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="pushpinInput">
-                                 ${nls.builder.pushpinText}</label>
-                            <div>
-                                <select class="selectpicker" id="pushpinInput">
-                                    <option data-icon="glyphicon-map-marker">${nls.builder.pushpinBlueColor}</option>
-                                    <option data-icon="glyphicon-map-marker">${nls.builder.pushpinBrownColor}</option>
-                                    <option data-icon="glyphicon-map-marker">${nls.builder.pushpinGreenColor}</option>
-                                    <option data-icon="glyphicon-map-marker">${nls.builder.pushpinGreyColor}</option>
-                                    <option data-icon="glyphicon-map-marker">${nls.builder.pushpinOrangeColor}</option>
-                                    <option data-icon="glyphicon-map-marker">${nls.builder.pushpinPurpleColor}</option>
-                                    <option data-icon="glyphicon-map-marker">${nls.builder.pushpinRedColor}</option>
-                                    <option data-icon="glyphicon-map-marker">${nls.builder.pushpinYellowColor}</option>
-                                </select>
-                            </div>
                             </div>
                         </form>
                         <p class="text-right">
@@ -157,6 +141,8 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div data-dojo-attach-point="attachmentDetails" class="form-group">
+                        </div>
                         <p class="text-right">
                             <a href="#" class="btn btn-default prevtab navigationTabs" tab="details">${nls.builder.btnPreviousText}</a>
                             <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${nls.builder.btnNextText}</a>
@@ -174,17 +160,61 @@
                     <div id="options" class="tab-pane">
                         <h2>
                             ${nls.builder.optionsApplicationText}</h2>
-                        <div class="descriptionText">
-                            ${nls.builder.optionsDescriptionText}</div>
-                        <div>
+                        <div class="form-group">
+                            <div>
+                                <h4>
+                                    ${nls.builder.jumbotron}</h4>
+                            </div>
+                            <div>
+                                <h5>
+                                    ${nls.builder.jumbotronDescription}
+                                </h5>
+                            </div>
                             <input id="jumbotronOption" type="checkbox" value="Use Small Header" />
                             <label for="jumbotronOption">
                                 ${nls.builder.smallHeader}</label>
                         </div>
-                        <div>
+                        <div class="form-group">
+                            <div>
+                                <h4>
+                                    ${nls.builder.shareGeoformText}</h4>
+                            </div>
+                            <div>
+                                <h5>
+                                    ${nls.builder.shareDescription}</h5>
+                            </div>
                             <input id="shareOption" type="checkbox" value="share" />
                             <label for="shareOption">
                                 ${nls.builder.shareApplication}</label>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <h4>
+                                    ${nls.builder.defaultMapExtent}</h4>
+                            </div>
+                            <div>
+                                <h5>
+                                    ${nls.builder.defaultMapExtentDescription}</h5>
+                            </div>
+                            <input id="defaultExtent" type="checkbox" value="share" />
+                            <label for="defaultExtent">
+                                Default Extent</label>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <h4>
+                                    ${nls.builder.pushpinText}</h4>
+                            </div>
+                            <div>
+                                <h5>
+                                    ${nls.builder.pushpinOptionsDescription}</h5>
+                            </div>
+                            <div id="pushpinSymbol">
+                            </div>
+                            <div class="form-group" style='display: table-cell;'>
+                                <select id="pushpinInput" class="form-control">
+                                </select>
+                            </div>
                         </div>
                           <p class="text-right">
                             <a href="#" class="btn btn-default prevtab navigationTabs" tab="style">${nls.builder.btnPreviousText}</a>

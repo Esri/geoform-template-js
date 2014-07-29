@@ -15,7 +15,7 @@ define({
             optionText: "Options",
             previewText: "Preview",
             publishText: "Publish",
-            optionsApplicationText: "Enable/Disable Jumbotron",
+            optionsApplicationText: "Options",
             optionsDescriptionText: "The <a target='_tab' href='http://getbootstrap.com/components/#jumbotron'>Bootstrap Jumbotron</a> is too large for some applications. This can be disabled by checking this box.",
             titleText: "GeoForm Builder",
             descriptionText: "GeoForm is a configurable template for form-based data editing of a <a target='_blank' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//0154000002w8000000'>Feature Service</a>. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the <a target='_blank' href='http://resources.arcgis.com/en/help/main/10.1/index.html#//00sp0000001z000000'>Web Map</a> and editable Feature Services. Use this builder to customize and deploy your GeoForm following the steps on the left.",
@@ -66,7 +66,17 @@ define({
             pushpinText:"Push pin",
             doneButtonText:"Done",
             fieldTabPlaceHolderHeaderText:"Placeholder",
-            fieldTabTypeHeaderText: "Type"
+            fieldTabTypeHeaderText: "Type",
+	    attachmentDescription: "Attachment Description",
+            attachmentHint: "Tell users what file type to attach.",
+            jumbotron: "Jumbotron",
+            jumbotronDescription: "The Bootstrap Jumbotron makes it easy to define the purpose of your application - this can be disabled at any time.",
+            shareGeoformText: "Share Geoform",
+            shareDescription: "The sharing panel makes it easy for your audience to share the GeoForm with other collaborators once they have made a submission - this can be disabled at any time.",
+            defaultMapExtent: "Default Map Extent",
+            defaultMapExtentDescription: "The map will reset to the default extent in your web map after submission - this can be disabled at any time.",
+            pushpinOptionsDescription: "Choose from a variety of colors for the map pushpin, it should be different from the map symbology to help the user put their submission on the map"
+	    
         }
     })
 });

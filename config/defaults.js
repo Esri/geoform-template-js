@@ -28,7 +28,9 @@ define({
     "units": null,
     "useSmallHeader": false,
     "enableSharing": true,
+    "defaultMapExtent": true,
     "pushpinColor": "blue",
+    "attachmentHelpText":"",
     "helperServices": {
         "geometry": {
             "url": null
