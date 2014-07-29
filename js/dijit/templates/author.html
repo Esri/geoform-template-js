@@ -223,7 +223,9 @@
                     </div>
                     <div id="preview" class="tab-pane">
                         <h2>${nls.builder.previewApplicationText}</h2>
-                        <iframe class="preview-frame" id="iframeContainer"></iframe>
+                        <div class="panel panel-default">
+                            <iframe frameborder="0" scrolling="yes" class="preview-frame" id="iframeContainer"></iframe>
+                        </div>
                         <p class="text-right">
                             <a href="#" class="btn btn-default prevtab navigationTabs" tab="style">${nls.builder.btnPreviousText}</a>
                             <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${nls.builder.btnNextText}</a>
