@@ -11,6 +11,11 @@
     height: 100%;
     width: 100%;
 }
+#pushpinSymbol {
+    background-repeat: no-repeat;
+    padding: 20px;
+    display: table-cell;
+}
 /* Style for Loading Indicator*/
 
 .app-loading {

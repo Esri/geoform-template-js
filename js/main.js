@@ -508,7 +508,6 @@ define([
                             className: "form-control",
                             "inputType": "String",
                             "maxLength": currentField.length,
-                            placeholder: currentField.placeHolder,
                             "id": fieldname
                         }, formContent);
                         domConstruct.create("span", {
@@ -519,7 +518,6 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            placeholder: currentField.placeHolder,
                             "inputType": "smallInteger",
                             "id": fieldname,
                             "pattern": "[0-9]*"
@@ -532,7 +530,6 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            placeholder: currentField.placeHolder,
                             "inputType": "Integer",
                             "id": fieldname,
                             "pattern": "[0-9]*"
@@ -545,7 +542,6 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            placeholder: currentField.placeHolder,
                             "inputType": "Single",
                             "id": fieldname,
                             "pattern": "[0-9]*"
@@ -558,7 +554,6 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            placeholder: currentField.placeHolder,
                             "inputType": "Double",
                             "id": fieldname,
                             step: ".1"
@@ -571,7 +566,6 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control hasDatetimepicker",
-                            placeholder: currentField.placeHolder,
                             "inputType": "Date",
                             "id": fieldname
                         }, formContent);
@@ -591,6 +585,10 @@ define([
                                 domClass.add(query("span", evt.target.parentElement)[0], "glyphicon-ok");
                             });
                         break;
+                    }
+                    //Add Placeholder if present
+                    if (currentField.placeHolder) {
+                        domAttr.set(inputContent, "placeholder", currentField.placeHolder);
                     }
                     //If present fetch default values
                     if (currentField.defaultValue) {
@@ -648,7 +646,7 @@ define([
                 
                 helpBlock = domConstruct.create("p", {
                     className: "help-block",
-                    innerHTML: "todo: need builder to be able to set this text."
+                    innerHTML: this.config.attachmentHelpText
                 }, formContent);
             }
         },
@@ -987,7 +985,9 @@ define([
                     this.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
                     this._openShareModal();
-                    this.map.setExtent(this.defaultExtent);
+                    if (this.config.defaultMapExtent) {
+                        this.map.setExtent(this.defaultExtent);
+                    }
                     $("#myModal").modal('show');
                     this.map.getLayer(config.form_layer.id).refresh();
                     this._resetButton();

@@ -10,6 +10,7 @@ define([
     "dojo/dom-attr",
     "dojo/query",
     "dojo/dom-class",
+    "dojo/dom-style",
     "dojo/_base/lang",
     "dojo/Deferred",
     "dojo/DeferredList",
@@ -28,7 +29,7 @@ define([
     "application/themes",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, FeatureLayer) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -42,10 +43,67 @@ define([
         layerInfo: null,
         themes: theme,
         localStorageSupport: null,
+        pins: null,
 
         constructor: function (config, response) {
             this.config = config;
             this.response = response;
+            this.pins = [{
+                "id": "blue",
+                "url": "./images/pins/blue.png",
+                "width": 36,
+                "height": 36,
+                "offset": { "x": 9, "y": 18 }
+            },
+            {
+                "id": "brown",
+                "url": "./images/pins/brown.png",
+                "width": 36,
+                "height": 36,
+                "offset": { "x": 9, "y": 18 }
+            },
+            {
+                "id": "green",
+                "url": "./images/pins/green.png",
+                "width": 36,
+                "height": 36,
+                "offset": { "x": 9, "y": 18 }
+            },
+            {
+                "id": "grey",
+                "url": "./images/pins/grey.png",
+                "width": 36,
+                "height": 36,
+                "offset": { "x": 9, "y": 18 }
+            },
+            {
+                "id": "orange",
+                "url": "./images/pins/orange.png",
+                "width": 36,
+                "height": 36,
+                "offset": { "x": 9, "y": 18 }
+            },
+            {
+                "id": "purple",
+                "url": "./images/pins/purple.png",
+                "width": 36,
+                "height": 36,
+                "offset": { "x": 9, "y": 18 }
+            },
+            {
+                "id": "red",
+                "url": "./images/pins/red.png",
+                "width": 36,
+                "height": 36,
+                "offset": { "x": 9, "y": 18 }
+            },
+            {
+                "id": "yellow",
+                "url": "./images/pins/yellow.png",
+                "width": 36,
+                "height": 36,
+                "offset": { "x": 9, "y": 18 }
+            }];
         },
 
         startup: function () {
@@ -110,7 +168,9 @@ define([
             $('#shareOption').on('click', lang.hitch(this, function () {
                 this.currentConfig.enableSharing = $('#shareOption')[0].checked;
             }));
-
+            $('#defaultExtent').on('click', lang.hitch(this, function () {
+                this.currentConfig.defaultMapExtent = $('#defaultExtent')[0].checked;
+            }));
             this.currentConfig = config;
             this.userInfo = userInfo;
             this.response = response;
@@ -119,7 +179,9 @@ define([
             this._populateDetails();
             this._populateJumbotronOption(this.currentConfig.useSmallHeader);
             this._populateShareOption(this.currentConfig.enableSharing);
+            this._populateDefaultExtentOption(this.currentConfig.defaultMapExtent);
             this._populateThemes();
+            this._populatePushpins();
             this._initWebmapSelection();
             this._loadCSS("css/browseDialog.css");
             if (!this.localStorageSupport.supportsStorage()) {
@@ -153,12 +215,15 @@ define([
                 }));
                 this._getFieldCheckboxState();
             }));
-            /*
-            $('.selectpicker').selectpicker();
-            on($('.selectpicker'), 'change', lang.hitch(this, function (evt) {
-            this.currentConfig.pushpinColor = evt.currentTarget.value;
+            on($('#pushpinInput'), 'change', lang.hitch(this, function (evt) {
+                this.currentConfig.pushpinColor = evt.currentTarget.value;
+                array.some(this.pins, lang.hitch(this, function (pin) {
+                    if (pin.id === evt.currentTarget.value) {
+                        domStyle.set(dom.byId("pushpinSymbol"), { "backgroundImage": 'url(' + pin.url + ')' });
+                        return true;
+                    }
+                }));
             }));
-            */
         },
 
         _setTabCaption: function () {
@@ -233,12 +298,6 @@ define([
             dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
             dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
             dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
-            array.some(dom.byId("pushpinInput").options, lang.hitch(this, function (currentOption) {
-                if (currentOption.value == this.currentConfig.pushpinColor) {
-                    currentOption.selected = "selected";
-                    return true;
-                }
-            }));
             $(document).ready(function () {
                 $('#detailDescriptionInput').summernote({
                     height: 200,
@@ -287,11 +346,24 @@ define([
             }));
         },
 
+        _populatePushpins: function () {
+            var currentOption;
+            array.forEach(this.pins, lang.hitch(this, function (currentPin) {
+                currentOption = domConstruct.create("option", { "value": currentPin.id, "innerHTML": currentPin.id }, dom.byId("pushpinInput"));
+                if (currentOption.value == this.currentConfig.pushpinColor) {
+                    currentOption.selected = "selected";
+                    domStyle.set(dom.byId("pushpinSymbol"), { "backgroundImage": 'url(' + currentPin.url + ')' });
+                }
+            }));
+        },
         _populateJumbotronOption: function (jumbotronOption) {
             $("#jumbotronOption")[0].checked = jumbotronOption;
         },
         _populateShareOption: function (shareOption) {
             $("#shareOption")[0].checked = shareOption;
+        },
+        _populateDefaultExtentOption: function (defaultExtentOption) {
+            $("#defaultExtent")[0].checked = defaultExtentOption;
         },
         //function to select the previously configured theme.
         _configureTheme: function (selectedTheme) {
@@ -305,7 +377,7 @@ define([
                 fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
                 fieldCheckBoxInput, currentIndex = 0,
                 layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
-                newAddedFields = [], sortedFields = [];
+                newAddedFields = [], sortedFields = [], fieldPlaceholder, fieldPlaceholderInput, fieldType;
             if (this.geoFormFieldsTable) {
                 domConstruct.empty(this.geoFormFieldsTable);
             }
@@ -451,6 +523,7 @@ define([
                 $("#tbodyDND").sortable({});
             });
             this._updateAppConfiguration("fields");
+            this._createAttachmentInput(this.fieldInfo[layerName].layerUrl);
         },
 
         //function to fetch the datatype of the field
@@ -600,6 +673,9 @@ define([
                             if (query(".fieldPlaceholder", currentRow)[0]) {
                                 this.currentConfig.fields[index].placeHolder = query(".fieldPlaceholder", currentRow)[0].value;
                             }
+                        }
+			if (dom.byId("attachmentDescription")) {
+                            this.currentConfig.attachmentHelpText = dom.byId("attachmentDescription").value;
                         }
                     }));
                     break;
@@ -760,6 +836,19 @@ define([
                 className: "alert alert-danger errorMessage",
                 innerHTML: errorMessage
             }, this.erroMessageDiv);
+        },
+
+        _createAttachmentInput: function (layerUrl) {
+            domConstruct.empty(this.attachmentDetails);
+            var fLayer = new FeatureLayer(layerUrl);
+            on(fLayer, 'load', lang.hitch(this, function () {
+                if (fLayer.hasAttachments) {
+                    var attachmentDetails = domConstruct.create("div", { "id": "attachmentDetails", "class": "form-group" }, this.attachmentDetails);
+                    domConstruct.create("label", { "for": "attachmentDescription", "innerHTML": nls.builder.attachmentDescription }, attachmentDetails);
+                    domConstruct.create("input", { "type": "text", "class": "form-control", "id": "attachmentDescription", "value": this.currentConfig.attachmentHelpText }, attachmentDetails);
+                    domConstruct.create("span", { "class": "attachmentHint", "innerHTML": nls.builder.attachmentHint }, attachmentDetails);
+                }
+            }));
         }
     });
 });
