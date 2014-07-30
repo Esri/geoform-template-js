@@ -108,7 +108,7 @@
                                 <input type="url" class="form-control" id="detailLogoInput" placeholder="${nls.builder.imageLogoPlaceholderText}">
                             </div>
                             <div class="form-group">
-                                <label for="detailDescriptionInput">${nls.builder.detailDescriptionLabelText}</label>
+                                <label for="detailDescriptionInput">${nls.builder.descriptionLabelText}</label>
                                 <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
                             </div>
                         </form>
@@ -130,11 +130,10 @@
                                             <input type="checkbox" data-dojo-attach-point="selectAll" class="selectAllCheckbox" />
                                         </th>
                                         <th>${nls.builder.fieldTabFieldHeaderText}</th>
-                                        <th>${nls.builder.fieldTabLabelHeaderText}
-                                        </th>
-                                        <th>${nls.builder.fieldTabDescriptionHeaderText}</th>
+                                        <th>${nls.builder.fieldTabLabelHeaderText}</th>
                                         <th>${nls.builder.fieldTabPlaceHolderHeaderText}</th>
                                         <th>${nls.builder.fieldTabTypeHeaderText}</th>
+                                        <th>${nls.builder.descriptionLabelText}</th>
                                     </tr>
                                 </thead>
                                 <tbody data-dojo-attach-point="geoFormFieldsTable" id="tbodyDND">
@@ -149,9 +148,15 @@
                         </p>
                     </div>
                     <div id="style" class="tab-pane">
-                        <h2>${nls.builder.selectThemeText}</h2>
-                        <div class="descriptionText">${nls.builder.styleTabText}</div>
-                        <div class="row show-grid" data-dojo-attach-point="stylesList"></div>
+                        <h2>
+                            ${nls.builder.selectThemeText}</h2>
+                        <div class="descriptionText">
+                            ${nls.builder.styleTabText}</div>
+                        <div data-dojo-attach-point="stylesList">
+                            <select id="themeSelector" class="form-control">
+                            </select>
+                        </div>
+                        <div data-dojo-attach-point="thumbnailContainer"></div>
                         <p class="text-right">
                             <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields">${nls.builder.btnPreviousText}</a>
                             <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${nls.builder.btnNextText}</a>
@@ -160,60 +165,46 @@
                     <div id="options" class="tab-pane">
                         <h2>
                             ${nls.builder.optionsApplicationText}</h2>
+                        <input id="jumbotronOption" type="checkbox" value="Use Small Header" />
+                        <label for="jumbotronOption">
+                            ${nls.builder.smallHeader}</label>
                         <div class="form-group">
                             <div>
-                                <h4>
-                                    ${nls.builder.jumbotron}</h4>
-                            </div>
-                            <div>
-                                <h5>
+                                <h5 class="help-block">
                                     ${nls.builder.jumbotronDescription}
                                 </h5>
                             </div>
-                            <input id="jumbotronOption" type="checkbox" value="Use Small Header" />
-                            <label for="jumbotronOption">
-                                ${nls.builder.smallHeader}</label>
                         </div>
                         <div class="form-group">
-                            <div>
-                                <h4>
-                                    ${nls.builder.shareGeoformText}</h4>
-                            </div>
-                            <div>
-                                <h5>
-                                    ${nls.builder.shareDescription}</h5>
-                            </div>
                             <input id="shareOption" type="checkbox" value="share" />
                             <label for="shareOption">
-                                ${nls.builder.shareApplication}</label>
+                                ${nls.builder.shareGeoformText}</label>
+                            <div>
+                                <h5 class="help-block">
+                                    ${nls.builder.shareDescription}</h5>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <div>
-                                <h4>
-                                    ${nls.builder.defaultMapExtent}</h4>
-                            </div>
-                            <div>
-                                <h5>
-                                    ${nls.builder.defaultMapExtentDescription}</h5>
-                            </div>
                             <input id="defaultExtent" type="checkbox" value="share" />
                             <label for="defaultExtent">
-                                Default Extent</label>
+                                ${nls.builder.defaultMapExtent}</label>
+                            <div>
+                                <h5 class="help-block">
+                                    ${nls.builder.defaultMapExtentDescription}</h5>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <div>
-                                <h4>
-                                    ${nls.builder.pushpinText}</h4>
-                            </div>
-                            <div>
-                                <h5>
-                                    ${nls.builder.pushpinOptionsDescription}</h5>
-                            </div>
+                            <label for="pushpinInput">
+                                ${nls.builder.pushpinText}</label>
                             <div id="pushpinSymbol">
                             </div>
                             <div class="form-group" style='display: table-cell;'>
                                 <select id="pushpinInput" class="form-control">
                                 </select>
+                            </div>
+                            <div>
+                                <h5 class="help-block">
+                                    ${nls.builder.pushpinOptionsDescription}</h5>
                             </div>
                         </div>
                           <p class="text-right">
