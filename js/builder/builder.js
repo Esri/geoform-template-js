@@ -27,9 +27,10 @@ define([
     "dojo/i18n!application/nls/resources",
     "esri/arcgis/utils",
     "application/themes",
+    "application/pushpins",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -43,8 +44,8 @@ define([
         layerInfo: null,
         themes: theme,
         localStorageSupport: null,
-        pins: null,
-	onDemandResources: null,
+        pins: pushpins,
+        onDemandResources: null,
 
         constructor: function (config, response) {
             this.config = config;
@@ -54,62 +55,6 @@ define([
                 { "type": "css", "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css" },
                 { "type": "script", "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js" }
 	        ];
-            this.pins = [{
-                "id": "blue",
-                "url": "./images/pins/blue.png",
-                "width": 36,
-                "height": 36,
-                "offset": { "x": 9, "y": 18 }
-            },
-            {
-                "id": "brown",
-                "url": "./images/pins/brown.png",
-                "width": 36,
-                "height": 36,
-                "offset": { "x": 9, "y": 18 }
-            },
-            {
-                "id": "green",
-                "url": "./images/pins/green.png",
-                "width": 36,
-                "height": 36,
-                "offset": { "x": 9, "y": 18 }
-            },
-            {
-                "id": "grey",
-                "url": "./images/pins/grey.png",
-                "width": 36,
-                "height": 36,
-                "offset": { "x": 9, "y": 18 }
-            },
-            {
-                "id": "orange",
-                "url": "./images/pins/orange.png",
-                "width": 36,
-                "height": 36,
-                "offset": { "x": 9, "y": 18 }
-            },
-            {
-                "id": "purple",
-                "url": "./images/pins/purple.png",
-                "width": 36,
-                "height": 36,
-                "offset": { "x": 9, "y": 18 }
-            },
-            {
-                "id": "red",
-                "url": "./images/pins/red.png",
-                "width": 36,
-                "height": 36,
-                "offset": { "x": 9, "y": 18 }
-            },
-            {
-                "id": "yellow",
-                "url": "./images/pins/yellow.png",
-                "width": 36,
-                "height": 36,
-                "offset": { "x": 9, "y": 18 }
-            }];
         },
 
         startup: function () {
@@ -316,40 +261,23 @@ define([
 
         //function to populate all available themes in application
         _populateThemes: function () {
-            var themesRadioButton, themesDivContainer, themesDivContent, themesLabel, themeThumbnail;
-            array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
-                themesDivContainer = domConstruct.create("div", {
-                    className: "col-md-4"
-                }, this.stylesList);
-                themesDivContent = domConstruct.create("div", {
-                    className: "radio"
-                }, themesDivContainer);
-                themesLabel = domConstruct.create("label", {
-                    innerHTML: currentTheme.name,
-                    "for": currentTheme.id
-                }, themesDivContent);
-                themesRadioButton = domConstruct.create("input", {
-                    type: "radio",
-                    id: currentTheme.id,
-                    name: "themesRadio",
-                    themeName: currentTheme.id,
-                    themeUrl: currentTheme.url
-                }, themesLabel);
-                if (currentTheme.id == this.currentConfig.theme) {
-                    themesRadioButton.checked = true;
-                }
-                on(themesRadioButton, "change", lang.hitch(this, function (evt) {
-                    this._configureTheme(evt);
-                }));
-                domConstruct.create("br", {}, themesLabel);
-                themeThumbnail = domConstruct.create("img", {
-                    src: currentTheme.thumbnail,
-                    className: "themeThubnail"
-                }, themesLabel);
-                on(themeThumbnail, "click", function () {
-                    window.open(currentTheme.refUrl);
-                });
+            var options;
+            on(dom.byId("themeSelector"), "change", lang.hitch(this, function (evt) {
+                this._configureTheme(evt.currentTarget.value);
             }));
+
+            array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
+                options = domConstruct.create("option", {
+                    id: currentTheme.id
+                }, dom.byId("themeSelector"));
+                options.text = currentTheme.name;
+                options.value = currentTheme.id;
+                if (currentTheme.id === this.currentConfig.theme) {
+                    domAttr.set(options, "selected", "selected");
+                    this._configureTheme(currentTheme.id);
+                }
+            }));
+            domConstruct.create("br", {}, this.stylesList);
         },
 
         _populatePushpins: function () {
@@ -373,7 +301,21 @@ define([
         },
         //function to select the previously configured theme.
         _configureTheme: function (selectedTheme) {
-            this.currentConfig.theme = selectedTheme.currentTarget.getAttribute("themeName");
+            var themeThumbnail;
+            this.currentConfig.theme = selectedTheme;
+            array.some(this.themes, lang.hitch(this, function (currentTheme) {
+                if (currentTheme.id === selectedTheme) {
+                    domConstruct.empty(this.thumbnailContainer);
+                    themeThumbnail = domConstruct.create("img", {
+                        src: currentTheme.thumbnail,
+                        className: "themeThumbnail img-responsive"
+                    }, this.thumbnailContainer);
+                    on(themeThumbnail, "click", function () {
+                        window.open(currentTheme.refUrl);
+                    });
+                    return true;
+                }
+            }));
         },
 
         //function will populate all editable fields with validations
@@ -667,7 +609,7 @@ define([
                     this.currentConfig.fields.length = 0;
                     var index, fieldName, fieldLabel, fieldDescription, layerName, visible, defaultValue;
                     layerName = dom.byId("selectLayer").value;
-                    array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow, index) {
+                    array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow) {
                         if (currentRow.getAttribute("rowIndex")) {
                             index = currentRow.getAttribute("rowIndex");
                             fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;

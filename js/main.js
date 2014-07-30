@@ -33,6 +33,7 @@ define([
     "esri/toolbars/edit",
     "esri/dijit/Popup",
     "application/themes",
+    "application/pushpins",
     "dojo/NodeList-traverse",
     "dojo/domReady!"
 ], function (
@@ -57,7 +58,7 @@ define([
     _TemplatedMixin,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme) {
+    nls, webMercatorUtils, Point, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme, pushpins) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: userTemplate,
         nls: nls,
@@ -66,13 +67,14 @@ define([
         addressGeometry: null,
         editToolbar: null,
         themes: theme,
+        pins: pushpins,
         localStorageSupport: null,
         defaultValueAttributes: null,
         constructor: function () {
 
         },
         _createGeocoderOptions: function () {
-            //Check for multiple geocoder support and setup options for geocoder widget. 
+            //Check for multiple geocoder support and setup options for geocoder widget.
             var hasEsri = false,
                 geocoders = lang.clone(this.config.helperServices.geocode);
 
@@ -207,7 +209,7 @@ define([
                             var queryUrl = window.location.href;
                             var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
                                 newParams = lang.clone(urlParams);
-                            delete newParams.edit; //Remove edit parameter 
+                            delete newParams.edit; //Remove edit parameter
                             url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                         }
                         node.src = url;
@@ -339,12 +341,18 @@ define([
         },
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
-            symbolUrl = "./images/pins/" + this.config.pushpinColor + ".png";
-            // create symbol and offset 10 to the left and 17 to the bottom so it points correctly
-            pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, 36, 36).setOffset(9, 18);
-            graphic = new Graphic(point, pictureMarkerSymbol, null, null);
-            this.map.graphics.add(graphic);
-            this.editToolbar.activate(editToolbar.MOVE, graphic, null);
+            array.some(this.pins, lang.hitch(this, function (currentPin) {
+                if (this.config.pushpinColor == currentPin.id) {
+                    symbolUrl = currentPin.url;
+                    // create symbol and offset 10 to the left and 17 to the bottom so it points correctly
+                    pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, currentPin.width, currentPin.height).setOffset(currentPin.offset.x, currentPin.offset.y);
+                    graphic = new Graphic(point, pictureMarkerSymbol, null, null);
+                    this.map.graphics.add(graphic);
+                    this.editToolbar.activate(editToolbar.MOVE, graphic, null);
+                    return true;
+                }
+            }));
+
         },
 
         _calculateLatLong: function (evt) {
@@ -625,12 +633,12 @@ define([
                 formContent = domConstruct.create("div", {
                     className: "form-group"
                 }, this.userForm);
-                
+
                 labelContent = domConstruct.create("label", {
                     innerHTML: nls.user.attachment,
                     "for": "geoFormAttachment"
                 }, formContent);
-                
+
                 fileUploadForm = domConstruct.create("form", {
                     className: "fileUploadField"
                 }, formContent);
@@ -643,7 +651,7 @@ define([
                     "name": "attachment"
                 }, fileUploadForm);
                 domAttr.set(fileInput, "id", "geoFormAttachment");
-                
+
                 helpBlock = domConstruct.create("p", {
                     className: "help-block",
                     innerHTML: this.config.attachmentHelpText
@@ -913,9 +921,9 @@ define([
                 domConstruct.place(html, node, 'last');
                 this._geocoderMenuItems();
             }
-            
+
             domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
-            
+
             on(this.searchInput, 'keyup', lang.hitch(this, function (evt) {
                 var keyCode = evt.charCode || evt.keyCode;
                 if (keyCode === 13) {
@@ -940,15 +948,13 @@ define([
                 domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
                 this._geocoderMenuItems();
             }));
-            
-            
             var gcMenu = dom.byId('geocoder_menu');
             if(gcMenu){
                 on(gcMenu, 'a:click', lang.hitch(this, function(evt){
                     var idx = parseInt(domAttr.get(evt.target, 'data-index'), 10);
                     this.geocodeAddress.set('activeGeocoderIndex', idx);
                     evt.preventDefault();
-                }));   
+                }));
             }
         },
 
