@@ -389,7 +389,7 @@ define([
 
         //function to validate and create the form
         _createForm: function (fields) {
-            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileUploadForm, fileInput, matchingField, newAddedFields = [],
+            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileInput, matchingField, newAddedFields = [],
                 fieldname, fieldLabelText, requireField, sortedArray;
             if (!this.map.getLayer(this.config.form_layer.id)) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
@@ -639,17 +639,13 @@ define([
                     "for": "geoFormAttachment"
                 }, formContent);
 
-                fileUploadForm = domConstruct.create("form", {
-                    className: "fileUploadField"
-                }, formContent);
-                domAttr.set(fileUploadForm, "id", "geoform_form");
                 fileInput = domConstruct.create("input", {
                     className: "form-control",
                     "type": "file",
                     "accept": "image/*",
                     "capture": "camera",
                     "name": "attachment"
-                }, fileUploadForm);
+                }, formContent);
                 domAttr.set(fileInput, "id", "geoFormAttachment");
 
                 helpBlock = domConstruct.create("p", {
@@ -997,8 +993,8 @@ define([
                     $("#myModal").modal('show');
                     this.map.getLayer(config.form_layer.id).refresh();
                     this._resetButton();
-                    if (dom.byId("geoform_form") && dom.byId("geoform_form")[0].value !== "" && this.map.getLayer(config.form_layer.id).hasAttachments) {
-                        this.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("geoform_form"), function () {}, function () {
+                    if (this.userForm[this.userForm.length - 1].value !== "" && this.map.getLayer(config.form_layer.id).hasAttachments) {
+                        this.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, this.userForm, function () {}, function () {
                             console.log(nls.user.addAttachmentFailedMessage);
                         });
                     }
