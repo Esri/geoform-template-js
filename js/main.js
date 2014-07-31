@@ -640,7 +640,6 @@ define([
                 }, formContent);
 
                 fileInput = domConstruct.create("input", {
-                    className: "form-control",
                     "type": "file",
                     "accept": "image/*",
                     "capture": "camera",
