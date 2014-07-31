@@ -77,7 +77,9 @@ define({
             toggleDropdown: "Toggle Dropdown",
             invalidLatLong: "Please enter valid latitude and longitude coordinates.",
             geoformTitleText: "Geo Form",
-            domainDefaultText:"Select Value"
+            domainDefaultText:"Select Value",
+            applyEditsFailedMessage: "Sorry your entry cannot be submitted. Please try again.",
+            applyEditsFailedTitle: "Error"
         }
     })
 });

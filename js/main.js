@@ -389,7 +389,7 @@ define([
 
         //function to validate and create the form
         _createForm: function (fields) {
-            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileUploadForm, fileInput, matchingField, newAddedFields = [],
+            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileInput, matchingField, newAddedFields = [],
                 fieldname, fieldLabelText, requireField, sortedArray;
             if (!this.map.getLayer(this.config.form_layer.id)) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
@@ -639,17 +639,13 @@ define([
                     "for": "geoFormAttachment"
                 }, formContent);
 
-                fileUploadForm = domConstruct.create("form", {
-                    className: "fileUploadField"
-                }, formContent);
-                domAttr.set(fileUploadForm, "id", "geoform_form");
                 fileInput = domConstruct.create("input", {
                     className: "form-control",
                     "type": "file",
                     "accept": "image/*",
                     "capture": "camera",
                     "name": "attachment"
-                }, fileUploadForm);
+                }, formContent);
                 domAttr.set(fileInput, "id", "geoFormAttachment");
 
                 helpBlock = domConstruct.create("p", {
@@ -990,6 +986,10 @@ define([
                     this._clearSubmissionGraphic();
                     this.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
+                    if (!addResults[0].success) {
+                        this._openErrorModal();
+                        return;
+                    }
                     this._openShareModal();
                     if (this.config.defaultMapExtent) {
                         this.map.setExtent(this.defaultExtent);
@@ -997,13 +997,17 @@ define([
                     $("#myModal").modal('show');
                     this.map.getLayer(config.form_layer.id).refresh();
                     this._resetButton();
-                    if (dom.byId("geoform_form") && dom.byId("geoform_form")[0].value !== "" && this.map.getLayer(config.form_layer.id).hasAttachments) {
-                        this.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, dom.byId("geoform_form"), function () {}, function () {
+                    if (this.userForm[this.userForm.length - 1].value !== "" && this.map.getLayer(config.form_layer.id).hasAttachments) {
+                        this.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, this.userForm, function () {}, function () {
                             console.log(nls.user.addAttachmentFailedMessage);
                         });
                     }
                     this._clearFormFields();
                 }), lang.hitch(this, function () {
+                    this._clearSubmissionGraphic();
+                    this.map.getLayer(this.config.form_layer.id).setEditable(false);
+                    domConstruct.destroy(query(".errorMessage")[0]);
+                    this._openErrorModal();
                     console.log(nls.user.addFeatureFailedMessage);
                 }));
             } else {
@@ -1049,6 +1053,21 @@ define([
             });
             this._ShareModal.startup();
             $("#myModal").modal('show');
+        },
+
+        _openErrorModal: function () {
+            var errorMsgContainer;
+            domConstruct.empty(query(".modal-body")[0]);
+            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.applyEditsFailedTitle);
+            errorMsgContainer = domConstruct.create("div", {
+            }, query(".modal-body")[0]);
+            domConstruct.create("div", {
+                className: "alert alert-danger errorMessage",
+                innerHTML: nls.user.applyEditsFailedMessage
+            }, errorMsgContainer);
+            $("#myModal").modal('show');
+            this._resetButton();
+            this._clearFormFields();
         },
 
         _createShareDlgContent: function () {
