@@ -986,6 +986,10 @@ define([
                     this._clearSubmissionGraphic();
                     this.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
+                    if (!addResults[0].success) {
+                        this._openErrorModal();
+                        return;
+                    }
                     this._openShareModal();
                     if (this.config.defaultMapExtent) {
                         this.map.setExtent(this.defaultExtent);
@@ -1000,6 +1004,10 @@ define([
                     }
                     this._clearFormFields();
                 }), lang.hitch(this, function () {
+                    this._clearSubmissionGraphic();
+                    this.map.getLayer(this.config.form_layer.id).setEditable(false);
+                    domConstruct.destroy(query(".errorMessage")[0]);
+                    this._openErrorModal();
                     console.log(nls.user.addFeatureFailedMessage);
                 }));
             } else {
@@ -1045,6 +1053,21 @@ define([
             });
             this._ShareModal.startup();
             $("#myModal").modal('show');
+        },
+
+        _openErrorModal: function () {
+            var errorMsgContainer;
+            domConstruct.empty(query(".modal-body")[0]);
+            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.applyEditsFailedTitle);
+            errorMsgContainer = domConstruct.create("div", {
+            }, query(".modal-body")[0]);
+            domConstruct.create("div", {
+                className: "alert alert-danger errorMessage",
+                innerHTML: nls.user.applyEditsFailedMessage
+            }, errorMsgContainer);
+            $("#myModal").modal('show');
+            this._resetButton();
+            this._clearFormFields();
         },
 
         _createShareDlgContent: function () {
