@@ -261,7 +261,7 @@ define([
 
                 if (erroneousFields.length !== 0) {
                     errorMessage = "";
-                    errorMessage += '<strong><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</strong>';
+                    errorMessage += '<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</p>';
                     errorMessage += "<ol>";
                     errorMessage += "<li>" + nls.user.formValidationMessageAlertText + "\n <ul>";
                     array.forEach(erroneousFields, function (erroneousField) {
