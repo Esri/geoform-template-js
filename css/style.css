@@ -13,8 +13,8 @@
 }
 #pushpinSymbol {
     background-repeat: no-repeat;
-    padding: 20px;
-    display: table-cell;
+    width:36px;
+    height: 36px;
 }
 /* Style for Loading Indicator*/
 
@@ -147,9 +147,6 @@
 .progress-percent {
     width: 100%;
     line-height: 50px;
-}
-.share-dialog-label {
-    display: initial;
 }
 .share-dialog-subheader {
     font-size: 19px;

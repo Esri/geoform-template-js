@@ -283,7 +283,7 @@ define([
         _populatePushpins: function () {
             var currentOption;
             array.forEach(this.pins, lang.hitch(this, function (currentPin) {
-                currentOption = domConstruct.create("option", { "value": currentPin.id, "innerHTML": currentPin.id }, dom.byId("pushpinInput"));
+                currentOption = domConstruct.create("option", { "value": currentPin.id, "innerHTML": currentPin.name }, dom.byId("pushpinInput"));
                 if (currentOption.value == this.currentConfig.pushpinColor) {
                     currentOption.selected = "selected";
                     domStyle.set(dom.byId("pushpinSymbol"), { "backgroundImage": 'url(' + currentPin.url + ')' });
