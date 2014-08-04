@@ -260,20 +260,23 @@ define([
                 }));
 
                 if (erroneousFields.length !== 0) {
-                    errorMessage = "1. " + nls.user.formValidationMessageAlertText + "\n <ul>";
-
+                    errorMessage = "";
+                    errorMessage += '<strong><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</strong>';
+                    errorMessage += "<ol>";
+                    errorMessage += "<li>" + nls.user.formValidationMessageAlertText + "\n <ul>";
                     array.forEach(erroneousFields, function (erroneousField) {
                         if (query(".form-control", erroneousField).length !== 0 && query(".form-control", erroneousField)[0].placeholder !== "")
                             errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
                         else
                             errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</a></li>";
                     });
-                    errorMessage += "</ul>";
+                    errorMessage += "</ul></li>";
 
                     //condition check to find whether the user has selected a point on map or not.
                     if (!this.addressGeometry) {
-                        errorMessage += "\n2. " + nls.user.selectLocation;
+                        errorMessage += "<li>" + nls.user.selectLocation + "</li>";
                     }
+                    errorMessage += "</ol>";
                     this._showErrorMessageDiv(errorMessage);
                     btn.button('reset');
                 } else {

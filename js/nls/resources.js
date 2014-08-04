@@ -51,7 +51,7 @@ define({
             submitButtonText: "Submit new entry",
             submitButtonTextLoading: "Submitting&hellip;",
             fieldvalidationMessageAlertText: "Please enter a valid number",
-            formValidationMessageAlertText: "The following fields are required. Please enter the following fields before submission:",
+            formValidationMessageAlertText: "The following fields are required:",
             selectLocation: "Please select a location for your submission.",
             emptylatitudeAlertMessage: "Please enter a latitude coordinate.",
             emptylongitudeAlertMessage: "Please enter a longitude coordinate.",
@@ -66,6 +66,7 @@ define({
             longitude: "Longitude",
             findMyLocation: "Find my location",
             finding: "Locating&hellip;",
+            backToTop: "Back to top",
             myLocationTitleText: 'My Location',
             addressSearchText: "Your submission will appear here. You can drag the pin to correct the location.",
             shareModalFormText: "Form Link",
@@ -79,6 +80,7 @@ define({
             geoformTitleText: "Geo Form",
             domainDefaultText:"Select Value",
             applyEditsFailedMessage: "Sorry your entry cannot be submitted. Please try again.",
+            requiredFields: "There are some errors. Please correct them below.",
             applyEditsFailedTitle: "Error"
         }
     })
