@@ -54,7 +54,7 @@ define({
             publishTabText: "Ifyou are finished customizing your GeoForm, save the application and begin sharing with your audience. You can always return to this builder and continue customizing it based on feedback.",
             smallHeader: "Use Small Header",
             pushpinText:"Push pin",
-            doneButtonText:"Done",
+            doneButtonText:"View Application Item",
             fieldTabPlaceHolderHeaderText:"Placeholder",
             attachmentDescription: "Attachment Description",
             attachmentHint: "Tell users what file type to attach.",
