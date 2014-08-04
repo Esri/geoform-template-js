@@ -268,3 +268,6 @@ body.modal-open,
     margin-right: 0;
     margin-top: 0;
 }
+.map-div table{
+    background: transparent;
+}
