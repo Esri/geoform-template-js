@@ -1014,7 +1014,10 @@ define([
                 }));
             } else {
                 this._resetButton();
-                this._showErrorMessageDiv(nls.user.selectLocation);
+                var errorMessage = '';
+                errorMessage += '<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</p>';
+                errorMessage += '<p>' + nls.user.selectLocation + '</p>';
+                this._showErrorMessageDiv(errorMessage);
             }
         },
         _clearSubmissionGraphic: function () {

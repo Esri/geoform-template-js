@@ -21,7 +21,7 @@
             <div class="col-xs-12 col-sm-12 col-md-8">
                 <h2>${nls.user.geoFormGeneralTabText}</h2>
                 <form role="form" data-dojo-attach-point="userForm"></form>
-                <h2>${nls.user.locationInformationText}</h2>
+                <h2 id="select_location">${nls.user.locationInformationText}</h2>
                 <p>${nls.user.locationDescription}</p>
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#myLocation" data-toggle="tab">${nls.user.myLocationText}</a>
@@ -47,12 +47,12 @@
                         </div>
                         <div id="coordinates" class="tab-pane">
                             <div class="form-group" data-dojo-attach-point="coordinatesContainer">
-                                <label>${nls.user.placeholderLatitude}</label>
-                                <input type="text" pattern="-?\d{1,3}\.\d+" data-dojo-attach-point="XCoordinate" class="form-control" type="text" placeholder="34" />
+                                <label for="lat_coord">${nls.user.placeholderLatitude}</label>
+                                <input id="lat_coord" type="text" pattern="-?\d{1,3}\.\d+" data-dojo-attach-point="XCoordinate" class="form-control" type="text" placeholder="34" />
                             </div>
                             <div class="form-group" data-dojo-attach-point="coordinatesContainer2">
-                                <label>${nls.user.placeholderLongitude}</label>
-                                <input type="text" pattern="-?\d{1,3}\.\d+" data-dojo-attach-point="YCoordinate" class="form-control" type="text" placeholder="-117" />
+                                <label for="lng_coord">${nls.user.placeholderLongitude}</label>
+                                <input id="lng_coord" type="text" pattern="-?\d{1,3}\.\d+" data-dojo-attach-point="YCoordinate" class="form-control" type="text" placeholder="-117" />
                             </div>
                             <div>
                                 <button data-dojo-attach-point="cordsSubmit" type="button" class="btn btn-default">${nls.user.setLocation}</button>
