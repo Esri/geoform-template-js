@@ -301,18 +301,16 @@ define([
         },
         //function to select the previously configured theme.
         _configureTheme: function (selectedTheme) {
-            var themeThumbnail;
+            var themeThumbnail, imageAnchor;
             this.currentConfig.theme = selectedTheme;
             array.some(this.themes, lang.hitch(this, function (currentTheme) {
                 if (currentTheme.id === selectedTheme) {
                     domConstruct.empty(this.thumbnailContainer);
+                    imageAnchor = domConstruct.create("a", { "target": "_blank", "href": currentTheme.refUrl }, this.thumbnailContainer);
                     themeThumbnail = domConstruct.create("img", {
                         src: currentTheme.thumbnail,
                         className: "themeThumbnail img-responsive"
-                    }, this.thumbnailContainer);
-                    on(themeThumbnail, "click", function () {
-                        window.open(currentTheme.refUrl);
-                    });
+                    }, imageAnchor);
                     return true;
                 }
             }));
