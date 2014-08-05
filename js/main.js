@@ -274,7 +274,10 @@ define([
 
                     //condition check to find whether the user has selected a point on map or not.
                     if (!this.addressGeometry) {
-                        errorMessage += "<li>" + nls.user.selectLocation + "</li>";
+                        errorMessage += "<li>" + lang.replace(nls.user.selectLocation, {
+                            openLink: '<a href="#select_location">',
+                            closeLink: "</a>"
+                        }) + "</li>";
                     }
                     errorMessage += "</ol>";
                     this._showErrorMessageDiv(errorMessage);
@@ -829,10 +832,16 @@ define([
         _evaluateCoordinates: function () {
             this._clearSubmissionGraphic();
             if (this.XCoordinate.value === "") {
-                this._showErrorMessageDiv(nls.user.emptylatitudeAlertMessage);
+                this._showErrorMessageDiv(lang.replace(nls.user.emptylatitudeAlertMessage, {
+                            openLink: '<a href="#lat_coord\">',
+                            closeLink: "</a>"
+                        }));
                 return;
             } else if (this.YCoordinate.value === "") {
-                this._showErrorMessageDiv(nls.user.emptylongitudeAlertMessage);
+                this._showErrorMessageDiv(lang.replace(nls.user.emptylongitudeAlertMessage, {
+                            openLink: '<a href="#lng_coord\">',
+                            closeLink: "</a>"
+                        }));
                 return;
             }
             this._locatePointOnMap(this.XCoordinate.value + "," + this.YCoordinate.value);
@@ -1018,7 +1027,10 @@ define([
                 this._resetButton();
                 var errorMessage = '';
                 errorMessage += '<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</p>';
-                errorMessage += '<p>' + nls.user.selectLocation + '</p>';
+                errorMessage += '<p>' + lang.replace(nls.user.selectLocation, {
+                    openLink: '<a href="#select_location">',
+                    closeLink: "</a>"
+                }) + '</p>';
                 this._showErrorMessageDiv(errorMessage);
             }
         },
@@ -1045,7 +1057,11 @@ define([
                 }));
                 domConstruct.empty(this.erroMessageDiv);
             } else {
-                this._showErrorMessageDiv(nls.user.invalidLatLong);
+                this._showErrorMessageDiv(lang.replace(nls.user.invalidLatLong, {
+                    latLink: '<a href="#lat_coord">',
+                    lngLink: '<a href="#lng_coord">',
+                    closeLink: "</a>"
+                }));
             }
         },
 
