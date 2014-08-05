@@ -74,7 +74,7 @@ define({
             locationNotFound: "Location could not be found.",
             setLocation: "Set location",
             find: "Zip Code, city, etc.",
-            attachment: "Attachment File",
+            attachment: "Attachment",
             toggleDropdown: "Toggle Dropdown",
             invalidLatLong: "Please enter valid <a href=\"#lat_coord\">latitude</a> and <a href=\"#lng_coord\">longitude</a> coordinates.",
             geoformTitleText: "Geo Form",
