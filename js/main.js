@@ -936,7 +936,9 @@ define([
             on(this.geocodeAddress, "select", lang.hitch(this, function (evt) {
                 this.addressGeometry = evt.result.feature.geometry;
                 this._setSymbol(evt.result.feature.geometry);
-                this.map.centerAt(evt.result.feature.geometry);
+                this.map.centerAt(evt.result.feature.geometry).then(lang.hitch(this, function(){
+                    this.map.resize();
+                }));
                 this.map.infoWindow.setTitle(nls.user.locationTabText);
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(evt.result.feature.geometry);
@@ -1038,7 +1040,9 @@ define([
                 this.map.infoWindow.setTitle(nls.user.locationTabText);
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(this.addressGeometry);
-                this.map.centerAt(this.addressGeometry);
+                this.map.centerAt(this.addressGeometry).then(lang.hitch(this, function(){
+                    this.map.resize();
+                }));
                 domConstruct.empty(this.erroMessageDiv);
             } else {
                 this._showErrorMessageDiv(nls.user.invalidLatLong);
