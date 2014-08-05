@@ -12,6 +12,7 @@ define([
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/_base/lang",
+    "dojo/string",
     "dojo/Deferred",
     "dojo/DeferredList",
     "dojo/number",
@@ -30,7 +31,7 @@ define([
     "application/pushpins",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: authorTemplate,
         nls: nls,
@@ -88,7 +89,7 @@ define([
             domClass.add($('.navigationTabs')[0], "activeTab");
             // document ready
             ready(lang.hitch(this, function () {
-                modalTemplate = lang.replace(modalTemplate, resources);
+                modalTemplate = string.substitute(modalTemplate, resources);
                 // place modal code
                 domConstruct.place(modalTemplate, document.body, 'last');
             }));

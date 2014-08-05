@@ -3,6 +3,7 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
+    "dojo/string",
     "dijit/_WidgetBase",
     "dijit/a11yclick",
     "dojo/on",
@@ -15,6 +16,7 @@ define([
     function (
         declare,
         lang,
+        string,
         _WidgetBase, a11yclick,
         on,
         ioQuery,
@@ -32,10 +34,10 @@ define([
                 title: window.document.title,
                 summary: '',
                 hashtags: '',
-                mailURL: 'mailto:%20?subject={title}&body={summary}%20{url}',
-                facebookURL: "https://www.facebook.com/sharer/sharer.php?s=100&p[url]={url}&p[images][0]={image}&p[title]={title}&p[summary]={summary}",
-                twitterURL: "https://twitter.com/intent/tweet?url={url}&text={title}&hashtags={hashtags}",
-                googlePlusURL: "https://plus.google.com/share?url={url}",
+                mailURL: 'mailto:%20?subject=${title}&body=${summary}%20${url}',
+                facebookURL: "https://www.facebook.com/sharer/sharer.php?s=100&p[url]=${url}&p[images][0]=${image}&p[title]=${title}&p[summary]=${summary}",
+                twitterURL: "https://twitter.com/intent/tweet?url=${url}&text=${title}&hashtags=${hashtags}",
+                googlePlusURL: "https://plus.google.com/share?url=${url}",
                 bitlyAPI: location.protocol === "https:" ? "https://api-ssl.bitly.com/v3/shorten" : "http://api.bit.ly/v3/shorten",
                 bitlyLogin: "",
                 bitlyKey: ""
@@ -142,7 +144,7 @@ define([
             _configureShareLink: function (Link, isMail) {
                 // replace strings
                 var formattedText = this.get("summary").replace(/<\/?[^>]+(>|$)/g, ""), fullLink;
-                fullLink = lang.replace(Link, {
+                fullLink = string.substitute(Link, {
                     url: encodeURIComponent(this.get("bitlyUrl") ? this.get("bitlyUrl") : this.get("url")),
                     image: encodeURIComponent(this.get("image")),
                     title: encodeURIComponent(this.get("title")),

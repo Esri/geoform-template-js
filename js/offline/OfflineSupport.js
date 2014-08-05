@@ -2,6 +2,7 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
+    "dojo/string",
     "dojo/on",
     "dojo/dom",
     "dojo/dom-construct",
@@ -12,6 +13,7 @@ define([
 ], function (
     declare,
     lang,
+    string,
     on,
     dom,
     domConstruct,
@@ -77,7 +79,7 @@ define([
                     var html = '';
                     html += '<div class="alert alert-warning" role="alert">';
                     html += '<span class="glyphicon glyphicon-signal"></span> ';
-                    html += lang.replace(i18n.onlineStatus.pending, {total: total});
+                    html += string.substitute(i18n.onlineStatus.pending, {total: total});
                     html += '</div>';
                     node.innerHTML = html;
                 }

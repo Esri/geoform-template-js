@@ -4,6 +4,7 @@ define([
     "dojo/ready",
     "dojo/_base/declare",
     "dojo/_base/lang",
+    "dojo/string",
     "esri/arcgis/utils",
     "esri/lang",
     "dojo/dom",
@@ -40,6 +41,7 @@ define([
     ready,
     declare,
     lang,
+    string,
     arcgisUtils,
     esriLang,
     dom,
@@ -185,7 +187,7 @@ define([
                 // document ready
                 ready(lang.hitch(this, function () {
                     // modal i18n
-                    modalTemplate = lang.replace(modalTemplate, nls);
+                    modalTemplate = string.substitute(modalTemplate, nls);
                     // place modal code
                     domConstruct.place(modalTemplate, document.body, 'last');
                     //supply either the webmap id or, if available, the item info
@@ -274,7 +276,7 @@ define([
 
                     //condition check to find whether the user has selected a point on map or not.
                     if (!this.addressGeometry) {
-                        errorMessage += "<li>" + lang.replace(nls.user.selectLocation, {
+                        errorMessage += "<li>" + string.substitute(nls.user.selectLocation, {
                             openLink: '<a href="#select_location">',
                             closeLink: "</a>"
                         }) + "</li>";
@@ -832,13 +834,13 @@ define([
         _evaluateCoordinates: function () {
             this._clearSubmissionGraphic();
             if (this.XCoordinate.value === "") {
-                this._showErrorMessageDiv(lang.replace(nls.user.emptylatitudeAlertMessage, {
+                this._showErrorMessageDiv(string.substitute(nls.user.emptylatitudeAlertMessage, {
                             openLink: '<a href="#lat_coord\">',
                             closeLink: "</a>"
                         }));
                 return;
             } else if (this.YCoordinate.value === "") {
-                this._showErrorMessageDiv(lang.replace(nls.user.emptylongitudeAlertMessage, {
+                this._showErrorMessageDiv(string.substitute(nls.user.emptylongitudeAlertMessage, {
                             openLink: '<a href="#lng_coord\">',
                             closeLink: "</a>"
                         }));
@@ -1027,7 +1029,7 @@ define([
                 this._resetButton();
                 var errorMessage = '';
                 errorMessage += '<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</p>';
-                errorMessage += '<p>' + lang.replace(nls.user.selectLocation, {
+                errorMessage += '<p>' + string.substitute(nls.user.selectLocation, {
                     openLink: '<a href="#select_location">',
                     closeLink: "</a>"
                 }) + '</p>';
@@ -1057,7 +1059,7 @@ define([
                 }));
                 domConstruct.empty(this.erroMessageDiv);
             } else {
-                this._showErrorMessageDiv(lang.replace(nls.user.invalidLatLong, {
+                this._showErrorMessageDiv(string.substitute(nls.user.invalidLatLong, {
                     latLink: '<a href="#lat_coord">',
                     lngLink: '<a href="#lng_coord">',
                     closeLink: "</a>"

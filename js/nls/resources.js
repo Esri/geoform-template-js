@@ -7,7 +7,7 @@ define({
             online: "You are currently online.",
             offline: "You are currently working offline. Form submissions will be saved locally until a connection to the server can be made.",
             reconnecting: "Reconnecting&hellip;",
-            pending: "{total} pending edit(s) will be submitted when a network connection is re-established."
+            pending: "${total} pending edit(s) will be submitted when a network connection is re-established."
         },
         configure: {
             mapdlg: {
@@ -52,9 +52,9 @@ define({
             submitButtonTextLoading: "Submitting&hellip;",
             fieldvalidationMessageAlertText: "Please enter a valid number",
             formValidationMessageAlertText: "The following fields are required:",
-            selectLocation: "Please select a {openLink}location{closeLink} for your submission.",
-            emptylatitudeAlertMessage: "Please enter a {openLink}latitude{closeLink} coordinate.",
-            emptylongitudeAlertMessage: "Please enter a {openLink}longitude{closeLink} coordinate.",
+            selectLocation: "Please select a ${openLink}location${closeLink} for your submission.",
+            emptylatitudeAlertMessage: "Please enter a ${openLink}latitude${closeLink} coordinate.",
+            emptylongitudeAlertMessage: "Please enter a ${openLink}longitude${closeLink} coordinate.",
             shareUserTitleMessage: "Thank you for your contribution!",
             shareUserTextMessage: "Your entry has been submitted. Share with others using the following options",
             addAttachmentFailedMessage: "Unable to add attachment to layer",
@@ -76,7 +76,7 @@ define({
             find: "Zip Code, city, etc.",
             attachment: "Attachment",
             toggleDropdown: "Toggle Dropdown",
-            invalidLatLong: "Please enter valid {latLink}latitude{closeLink} and {lngLink}longitude{closeLink} coordinates.",
+            invalidLatLong: "Please enter valid ${latLink}latitude${closeLink} and ${lngLink}longitude${closeLink} coordinates.",
             geoformTitleText: "Geo Form",
             domainDefaultText:"Select Value",
             applyEditsFailedMessage: "Sorry your entry cannot be submitted. Please try again.",
