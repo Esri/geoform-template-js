@@ -980,7 +980,8 @@ define([
                     if (currentField.value !== "") {
                         key = domAttr.get(currentField, "id");
                         if (domClass.contains(currentField, "hasDatetimepicker")) {
-                            value = $(currentField).datetimepicker("getDate");
+                            var picker = $(currentField).data('datetimepicker');
+                            value = picker.date;
                         } else {
                             value = lang.trim(currentField.value);
                         }
