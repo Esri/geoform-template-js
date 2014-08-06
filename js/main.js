@@ -1065,9 +1065,6 @@ define([
         },
 
         _locatePointOnMap: function (x, y) {
-            
-            console.log(x, y);
-            
             if (x >= -90 && x <= 90 && y >= -180 && y <= 180) {
                 var mapLocation = new Point(y, x);
                 var pt = webMercatorUtils.geographicToWebMercator(mapLocation);
