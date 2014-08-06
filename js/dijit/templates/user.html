@@ -30,6 +30,10 @@
                     </li>
                     <li><a href="#coordinates" data-toggle="tab">${nls.user.cooridnatesText}</a>
                     </li>
+                    <li><a href="#usng_mgrs" data-toggle="tab">${nls.user.usng_mgrs}</a>
+                    </li>
+                    <li><a href="#utm" data-toggle="tab">${nls.user.utm}</a>
+                    </li>
                 </ul>
                 <div class="myLocationOptions">
                     <div class="tab-content">
@@ -56,6 +60,32 @@
                             </div>
                             <div>
                                 <button data-dojo-attach-point="cordsSubmit" type="button" class="btn btn-default">${nls.user.setLocation}</button>
+                            </div>
+                        </div>
+                        <div id="usng_mgrs" class="tab-pane">
+                            <div class="form-group">
+                                <label for="usng_mgrs_coord">${nls.user.usng_mgrs}</label>
+                                <input id="usng_mgrs_coord" type="text" class="form-control" type="text" placeholder="NNC CC NNNNN NNNNN" />
+                            </div>
+                            <div>
+                                <button data-dojo-attach-point="usng_mgrs_submit" type="button" class="btn btn-default">${nls.user.setLocation}</button>
+                            </div>
+                        </div>
+                        <div id="utm" class="tab-pane">
+                            <div class="form-group">
+                                <label for="utm_northing">${nls.user.utm_northing}</label>
+                                <input id="utm_northing" type="text" class="form-control" type="text" placeholder="432001" />
+                            </div>
+                            <div class="form-group">
+                                 <label for="utm_easting">${nls.user.utm_easting}</label>
+                                <input id="utm_easting" type="text" class="form-control" type="text" placeholder="4000000" />
+                            </div>
+                            <div class="form-group">
+                                <label for="utm_zone_number">${nls.user.utm_zone_number}</label>
+                                <input id="utm_zone_number" type="text" class="form-control" type="text" placeholder="18" />
+                            </div>
+                            <div>
+                                <button data-dojo-attach-point="utm_submit" type="button" class="btn btn-default">${nls.user.setLocation}</button>
                             </div>
                         </div>
                     </div>

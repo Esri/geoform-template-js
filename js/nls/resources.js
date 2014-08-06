@@ -38,6 +38,11 @@ define({
             }
         },
         user: {
+            usng_mgrs: "USNG/MGRS",
+            utm: "UTM",
+            utm_northing: "Northing",
+            utm_easting: "Easting",
+            utm_zone_number: "Zone Number",
             geoFormGeneralTabText: "1. Enter Information",
             locationInformationText: "2. Select Location",
             submitInformationText: "3. Complete Form",

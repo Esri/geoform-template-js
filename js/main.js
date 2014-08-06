@@ -35,6 +35,7 @@ define([
     "esri/dijit/Popup",
     "application/themes",
     "application/pushpins",
+    "application/coordinator/coordinator",
     "dojo/NodeList-traverse",
     "dojo/domReady!"
 ], function (
@@ -60,7 +61,7 @@ define([
     _TemplatedMixin,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme, pushpins) {
+    nls, webMercatorUtils, Point, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme, pushpins, coordinator) {
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: userTemplate,
         nls: nls,
@@ -819,6 +820,24 @@ define([
                 on(this.cordsSubmit, "click", lang.hitch(this, function (evt) {
                     this._evaluateCoordinates(evt);
                 }));
+                
+                
+                on(this.usng_mgrs_submit, "click", lang.hitch(this, function (evt) {
+                    var value = dom.byId('usng_mgrs_coord').value;
+                    var fn = coordinator('mgrs', 'latlong');
+                    var converted = fn(value);
+                    this._locatePointOnMap(converted.latitude, converted.longitude);
+                }));
+                on(this.utm_submit, "click", lang.hitch(this, function (evt) {
+                    var northing = parseFloat(dom.byId('utm_northing').value);
+                    var easting = parseFloat(dom.byId('utm_easting').value);
+                    var zone = parseInt(dom.byId('utm_zone_number').value, 10);
+                    var fn = coordinator('utm', 'latlong');
+                    var converted = fn(northing, easting, zone);
+                    this._locatePointOnMap(converted.latitude, converted.longitude);
+                }));
+                
+                
                 // make sure map is loaded
                 if (this.map.loaded) {
                     // do something with the map
@@ -846,7 +865,7 @@ define([
                         }));
                 return;
             }
-            this._locatePointOnMap(this.XCoordinate.value + "," + this.YCoordinate.value);
+            this._locatePointOnMap(this.XCoordinate.value, this.YCoordinate.value);
         },
         _findLocation: function (evt) {
             var keyCode = evt.charCode || evt.keyCode;
@@ -1045,10 +1064,12 @@ define([
             }
         },
 
-        _locatePointOnMap: function (coordinates) {
-            var latLong = coordinates.split(",");
-            if (latLong[0] >= -90 && latLong[0] <= 90 && latLong[1] >= -180 && latLong[1] <= 180) {
-                var mapLocation = new Point(latLong[1], latLong[0]);
+        _locatePointOnMap: function (x, y) {
+            
+            console.log(x, y);
+            
+            if (x >= -90 && x <= 90 && y >= -180 && y <= 180) {
+                var mapLocation = new Point(y, x);
                 var pt = webMercatorUtils.geographicToWebMercator(mapLocation);
                 this.addressGeometry = pt;
                 this._setSymbol(this.addressGeometry);
