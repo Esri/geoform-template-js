@@ -1000,7 +1000,8 @@ define([
                         key = domAttr.get(currentField, "id");
                         if (domClass.contains(currentField, "hasDatetimepicker")) {
                             var picker = $(currentField).data('datetimepicker');
-                            value = picker.date;
+                            // need to get time of date in ms for service
+                            value = picker.date.getTime();
                         } else {
                             value = lang.trim(currentField.value);
                         }
