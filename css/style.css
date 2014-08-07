@@ -271,3 +271,6 @@ body.modal-open,
 .map-div table{
     background: transparent;
 }
+.drag-cursor{
+    cursor: ns-resize;
+}

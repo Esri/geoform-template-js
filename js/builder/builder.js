@@ -381,7 +381,9 @@ define([
                     rowIndex: currentIndex
                 }, this.geoFormFieldsTable);
                 domAttr.set(fieldRow, "visibleProp", currentField.visible);
-                fieldDNDIndicatorTD = domConstruct.create("td", {}, fieldRow);
+                fieldDNDIndicatorTD = domConstruct.create("td", {
+                    className: "drag-cursor"
+                }, fieldRow);
                 fieldDNDIndicatorIcon = domConstruct.create("span", {
                     className: "ui-icon ui-icon-arrowthick-2-n-s"
                 }, fieldDNDIndicatorTD);
