@@ -1,0 +1,17 @@
+{
+  "author": "",
+  "name": "examples",
+  "main": "main.js",
+  "version": "0.4.4",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/beatgammit/node-coordinator.git"
+  },
+  "engines": {
+    "node": "~0.4.7"
+  },
+  "dependencies": {
+      "jeesh": "~0.0"
+  },
+  "devDependencies": {}
+}
