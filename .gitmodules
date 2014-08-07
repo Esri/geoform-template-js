@@ -1,3 +1,0 @@
-[submodule "js/coordinator"]
-	path = js/coordinator
-	url = https://github.com/beatgammit/node-coordinator.git
