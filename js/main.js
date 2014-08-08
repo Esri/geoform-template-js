@@ -505,7 +505,6 @@ define([
                                 className: "radio"
                             }, radioContainer);
                             inputLabel = domConstruct.create("label", {
-                                innerHTML: currentOption.name,
                                 "for": currentOption.code + fieldname
                             }, radioContent);
                             inputContent = domConstruct.create("input", {
@@ -515,6 +514,8 @@ define([
                                 name: fieldname,
                                 value: currentOption.code
                             }, inputLabel);
+                            // add text after input
+                            inputLabel.innerHTML += currentOption.name;
                         }));
                     }
                 } else {
