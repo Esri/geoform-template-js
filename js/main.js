@@ -824,22 +824,36 @@ define([
                     this._evaluateCoordinates(evt);
                 }));
 
-
                 on(this.usng_mgrs_submit, "click", lang.hitch(this, function (evt) {
                     var value = dom.byId('usng_mgrs_coord').value;
                     var fn = coordinator('mgrs', 'latlong');
-                    var converted = fn(value);
-                    this._locatePointOnMap(converted.latitude, converted.longitude);
+                    var converted;
+                    try{
+                        converted = fn(value);
+                    }
+                    catch(e){
+                       this._coordinatesError('usng'); 
+                    }
+                    if(converted){
+                        this._locatePointOnMap(converted.latitude, converted.longitude, 'usng');
+                    }
                 }));
                 on(this.utm_submit, "click", lang.hitch(this, function (evt) {
                     var northing = parseFloat(dom.byId('utm_northing').value);
                     var easting = parseFloat(dom.byId('utm_easting').value);
                     var zone = parseInt(dom.byId('utm_zone_number').value, 10);
+                    var converted;
                     var fn = coordinator('utm', 'latlong');
-                    var converted = fn(northing, easting, zone);
-                    this._locatePointOnMap(converted.latitude, converted.longitude);
+                    try{
+                        converted = fn(northing, easting, zone);
+                    }
+                    catch(e){
+                        this._coordinatesError('utm');
+                    }
+                    if(converted){
+                        this._locatePointOnMap(converted.latitude, converted.longitude, 'utm');
+                    }
                 }));
-
 
                 // make sure map is loaded
                 if (this.map.loaded) {
@@ -868,7 +882,7 @@ define([
                         }));
                 return;
             }
-            this._locatePointOnMap(this.XCoordinate.value, this.YCoordinate.value);
+            this._locatePointOnMap(this.XCoordinate.value, this.YCoordinate.value, 'latlon');
         },
         _findLocation: function (evt) {
             var keyCode = evt.charCode || evt.keyCode;
@@ -1067,8 +1081,31 @@ define([
                 this.map.infoWindow.hide();
             }
         },
+        
+        _coordinatesError: function(type){
+            switch(type){
+                    case "utm":
+                        this._showErrorMessageDiv(string.substitute(nls.user.invalidUTM, {
+                            openLink: '<a href="#utm_northing">',
+                            closeLink: "</a>"
+                        }));
+                        break;
+                    case "usng":
+                        this._showErrorMessageDiv(string.substitute(nls.user.invalidUSNGMGRS, {
+                            openLink: '<a href="#usng_mgrs_coord">',
+                            closeLink: "</a>"
+                        }));
+                        break;
+                    default:
+                        this._showErrorMessageDiv(string.substitute(nls.user.invalidLatLong, {
+                            latLink: '<a href="#lat_coord">',
+                            lngLink: '<a href="#lng_coord">',
+                            closeLink: "</a>"
+                        }));       
+                }   
+        },
 
-        _locatePointOnMap: function (x, y) {
+        _locatePointOnMap: function (x, y, type) {
             if (x >= -90 && x <= 90 && y >= -180 && y <= 180) {
                 var mapLocation = new Point(y, x);
                 var pt = webMercatorUtils.geographicToWebMercator(mapLocation);
@@ -1082,11 +1119,7 @@ define([
                 }));
                 domConstruct.empty(this.erroMessageDiv);
             } else {
-                this._showErrorMessageDiv(string.substitute(nls.user.invalidLatLong, {
-                    latLink: '<a href="#lat_coord">',
-                    lngLink: '<a href="#lng_coord">',
-                    closeLink: "</a>"
-                }));
+                this._coordinatesError(type);
             }
         },
 

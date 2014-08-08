@@ -82,6 +82,8 @@ define({
             attachment: "Attachment",
             toggleDropdown: "Toggle Dropdown",
             invalidLatLong: "Please enter valid ${latLink}latitude${closeLink} and ${lngLink}longitude${closeLink} coordinates.",
+            invalidUTM: "Please enter valid ${openLink}UTM${closeLink} coordinates.",
+            invalidUSNGMGRS: "Please enter valid ${openLink}USNG/MGRS${closeLink} coordinates.",
             geoformTitleText: "Geo Form",
             domainDefaultText:"Select Value",
             applyEditsFailedMessage: "Sorry your entry cannot be submitted. Please try again.",
