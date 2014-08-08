@@ -573,14 +573,13 @@ define([
                             "id": fieldname
                         }, formContent);
                             $(inputContent).datetimepicker({
-                                format: "dd MM yyyy - HH:ii P",
-                                showMeridian: true,
-                                minuteStep: 5,
-                                autoclose: true,
-                                todayBtn: true
-                            }).on('changeDate', function(evt){
+                                useSeconds: false
+                            }).on('dp.change, dp.show', function(evt){
                                 domClass.remove(evt.target.parentElement, "has-error");
                                 domClass.add(evt.target.parentElement, "has-success");
+                            }).on('dp.error', function(evt){
+                                domClass.remove(evt.target.parentElement, "has-success");
+                                domClass.add(evt.target.parentElement, "has-error");
                             });
                         break;
                     }
@@ -995,9 +994,10 @@ define([
                     if (currentField.value !== "") {
                         key = domAttr.get(currentField, "id");
                         if (domClass.contains(currentField, "hasDatetimepicker")) {
-                            var picker = $(currentField).data('datetimepicker');
+                            var picker = $(currentField).data('DateTimePicker');
+                            var d = picker.getDate();
                             // need to get time of date in ms for service
-                            value = picker.date.getTime();
+                            value = d.valueOf();
                         } else {
                             value = lang.trim(currentField.value);
                         }
