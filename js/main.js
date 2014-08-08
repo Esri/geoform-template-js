@@ -528,9 +528,6 @@ define([
                             "maxLength": currentField.length,
                             "id": fieldname
                         }, formContent);
-                        domConstruct.create("span", {
-                            className: "glyphicon form-control-feedback"
-                        }, formContent);
                         break;
                     case "esriFieldTypeSmallInteger":
                         inputContent = domConstruct.create("input", {
@@ -539,9 +536,6 @@ define([
                             "inputType": "smallInteger",
                             "id": fieldname,
                             "pattern": "[0-9]*"
-                        }, formContent);
-                        domConstruct.create("span", {
-                            className: "glyphicon form-control-feedback"
                         }, formContent);
                         break;
                     case "esriFieldTypeInteger":
@@ -552,9 +546,6 @@ define([
                             "id": fieldname,
                             "pattern": "[0-9]*"
                         }, formContent);
-                        domConstruct.create("span", {
-                            className: "glyphicon form-control-feedback"
-                        }, formContent);
                         break;
                     case "esriFieldTypeSingle":
                         inputContent = domConstruct.create("input", {
@@ -563,9 +554,6 @@ define([
                             "inputType": "Single",
                             "id": fieldname,
                             "pattern": "[0-9]*"
-                        }, formContent);
-                        domConstruct.create("span", {
-                            className: "glyphicon form-control-feedback"
                         }, formContent);
                         break;
                     case "esriFieldTypeDouble":
@@ -576,9 +564,6 @@ define([
                             "id": fieldname,
                             step: ".1"
                         }, formContent);
-                        domConstruct.create("span", {
-                            className: "glyphicon form-control-feedback"
-                        }, formContent);
                         break;
                     case "esriFieldTypeDate":
                         inputContent = domConstruct.create("input", {
@@ -586,9 +571,6 @@ define([
                             className: "form-control hasDatetimepicker",
                             "inputType": "Date",
                             "id": fieldname
-                        }, formContent);
-                        domConstruct.create("span", {
-                            className: "glyphicon form-control-feedback"
                         }, formContent);
                             $(inputContent).datetimepicker({
                                 format: "dd MM yyyy - HH:ii P",
@@ -598,9 +580,7 @@ define([
                                 todayBtn: true
                             }).on('changeDate', function(evt){
                                 domClass.remove(evt.target.parentElement, "has-error");
-                                domClass.remove(query("span", evt.target.parentElement)[0], "glyphicon-remove");
                                 domClass.add(evt.target.parentElement, "has-success");
-                                domClass.add(query("span", evt.target.parentElement)[0], "glyphicon-ok");
                             });
                         break;
                     }
@@ -740,10 +720,6 @@ define([
                     domAttr.set(currentInput, "value", "");
                     domClass.remove(node, "has-error");
                     domClass.remove(node, "has-success");
-                    if (query("span", node)[0]) {
-                        domClass.remove(query("span", node)[0], "glyphicon-ok");
-                        domClass.remove(query("span", node)[0], "glyphicon-remove");
-                    }
                 } else {
                     currentInput.options[0].selected = true;
                 }
@@ -759,19 +735,13 @@ define([
             if (isValidInput) {
                 domClass.remove(node, "has-error");
                 domClass.add(node, "has-success");
-                domClass.add(query("span", node)[0], "glyphicon-ok");
-                domClass.remove(query("span", node)[0], "glyphicon-remove");
             } else {
                 domClass.add(node, "has-error");
                 domClass.remove(node, "has-success");
-                domClass.remove(query("span", node)[0], "glyphicon-ok");
-                domClass.add(query("span", node)[0], "glyphicon-remove");
             }
             if (iskeyPress && inputValue.length === 0) {
                 domClass.remove(node, "has-error");
                 domClass.remove(node, "has-success");
-                domClass.remove(query("span", node)[0], "glyphicon-ok");
-                domClass.remove(query("span", node)[0], "glyphicon-remove");
             }
         },
 
