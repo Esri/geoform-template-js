@@ -47,14 +47,16 @@ define([
         localStorageSupport: null,
         pins: pushpins,
         onDemandResources: null,
+        buttonConflict: null,
 
         constructor: function (config, response) {
             this.config = config;
             this.response = response;
-	        this.onDemandResources = [
-                { "type": "css", "path": "css/browseDialog.css" },
-                { "type": "css", "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css" },
-                { "type": "script", "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js" }
+            this.onDemandResources = [
+            { "type": "script", "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js" },
+            { "type": "css", "path": "css/browseDialog.css" },
+            { "type": "css", "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css" },
+            { "type": "script", "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js" }
 	        ];
         },
 
@@ -85,6 +87,7 @@ define([
             // set to default theme. (first in array)
             dom.byId("themeLink").href = this.themes[0].url;
             dom.byId("parentContainter").appendChild(this.authorMode);
+            this.buttonConflict = $.fn.button.noConflict();
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
             // document ready
@@ -376,7 +379,7 @@ define([
 
             }));
             //newAddedFields & this.currentConfig.fields
-            array.forEach(sortedFields, lang.hitch(this, function (currentField) {
+            array.forEach(sortedFields, lang.hitch(this, function (currentField, currentIndex) {
                 fieldRow = domConstruct.create("tr", {
                     rowIndex: currentIndex
                 }, this.geoFormFieldsTable);
@@ -453,7 +456,6 @@ define([
                         }
                     });
                 }
-                currentIndex++;
                 if (currentField.isNewField) {
                     domAttr.set(fieldLabelInput, "value", currentField.alias);
                 } else {
@@ -472,7 +474,9 @@ define([
                 $("#tbodyDND").sortable({});
             });
             this._updateAppConfiguration("fields");
-            this._createAttachmentInput(this.fieldInfo[layerName].layerUrl);
+            if (this.fieldInfo[layerName]) {
+                this._createAttachmentInput(this.fieldInfo[layerName].layerUrl);
+            }
         },
 
         //function to fetch the datatype of the field
@@ -526,7 +530,7 @@ define([
             var browseParams = {
                 portal: this.userInfo.portal,
                 galleryType: "webmap" //valid values are webmap or group
-            };
+            }, webmapButton, bootstrapButton;
             this.browseDlg = new BrowseIdDlg(browseParams, this.userInfo);
             on(this.browseDlg, "close", lang.hitch(this, function () {
                 if (this.browseDlg.get("selected") !== null && this.browseDlg.get("selectedWebmap") !== null) {
@@ -538,15 +542,17 @@ define([
                     }
                     this.currentConfig.webmap = this.browseDlg.get("selectedWebmap").id;
                     dom.byId("webmapLink").href = this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap;
-                    var btn = $(dom.byId("selectWebmapBtn"));
-                    btn.button('loading');
+                    webmapButton = $(dom.byId("selectWebmapBtn"));
+                    bootstrapButton = this.buttonConflict;
+                    $.fn.newButton = bootstrapButton;
+                    webmapButton.newButton('loading');
                     arcgisUtils.getItem(this.currentConfig.webmap).then(lang.hitch(this, function (itemInfo) {
                         this.currentConfig.fields.length = 0;
                         this.currentConfig.form_layer.id = "";
                         domConstruct.empty(this.geoFormFieldsTable);
                         this.currentConfig.itemInfo = itemInfo;
                         this._addOperationalLayers();
-                        btn.button('reset');
+                        webmapButton.newButton('reset');
                     }), function (error) {
                         console.log(error);
                     });
@@ -610,7 +616,7 @@ define([
                     this.currentConfig.fields.length = 0;
                     var index, fieldName, fieldLabel, fieldDescription, layerName, visible, defaultValue;
                     layerName = dom.byId("selectLayer").value;
-                    array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow) {
+                    array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow, currentFieldIndex) {
                         if (currentRow.getAttribute("rowIndex")) {
                             index = currentRow.getAttribute("rowIndex");
                             fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
@@ -630,8 +636,8 @@ define([
                                 visible: visible,
                                 defaultValue: defaultValue
                             });
-                            if (query(".fieldPlaceholder", currentRow)[0]) {
-                                this.currentConfig.fields[index].placeHolder = query(".fieldPlaceholder", currentRow)[0].value;
+                            if (query(".fieldPlaceholder", currentRow)[0] && query(".fieldPlaceholder", currentRow)[0].value) {
+                                this.currentConfig.fields[currentFieldIndex - 1].placeHolder = query(".fieldPlaceholder", currentRow)[0].value;
                             }
                         }
 			if (dom.byId("attachmentDescription")) {
