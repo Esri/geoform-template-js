@@ -750,6 +750,9 @@ define([
             array.forEach(query(".radioInput:checked"), function (currentField) {
                 domAttr.set(currentField, "checked", false);
             });
+            if (dom.byId("geoFormAttachment").value) {
+                dom.byId("geoFormAttachment").value = "";
+            }
         },
         _validateUserInput: function (isValidInput, node, inputValue, iskeyPress) {
             if (isValidInput) {
@@ -820,8 +823,8 @@ define([
                 on(this.cordsSubmit, "click", lang.hitch(this, function (evt) {
                     this._evaluateCoordinates(evt);
                 }));
-                
-                
+
+
                 on(this.usng_mgrs_submit, "click", lang.hitch(this, function (evt) {
                     var value = dom.byId('usng_mgrs_coord').value;
                     var fn = coordinator('mgrs', 'latlong');
@@ -836,8 +839,8 @@ define([
                     var converted = fn(northing, easting, zone);
                     this._locatePointOnMap(converted.latitude, converted.longitude);
                 }));
-                
-                
+
+
                 // make sure map is loaded
                 if (this.map.loaded) {
                     // do something with the map
