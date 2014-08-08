@@ -456,10 +456,10 @@ define([
                     formContent = domConstruct.create("div", {
                         className: "form-group has-feedback geoFormQuestionare mandatory"
                     }, this.userForm);
-                    requireField = domConstruct.create("div", {
+                    requireField = domConstruct.create("strong", {
                         className: 'text-danger requireFieldStyle',
                         innerHTML: "*"
-                    }, formContent);
+                    });
                 } else {
                     formContent = domConstruct.create("div", {
                         className: "form-group geoFormQuestionare has-feedback"
@@ -479,7 +479,7 @@ define([
                     id: fieldLabelText + "" + index
                 }, formContent);
                 if (requireField) {
-                    domConstruct.place(requireField, labelContent, "after");
+                    domConstruct.place(requireField, labelContent, "last");
                 }
                 //code to make select boxes in case of a coded value
                 if (currentField.domain) {
@@ -524,7 +524,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            "inputType": "String",
+                            "data-input-type": "String",
                             "maxLength": currentField.length,
                             "id": fieldname
                         }, formContent);
@@ -533,7 +533,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            "inputType": "smallInteger",
+                            "data-input-type": "smallInteger",
                             "id": fieldname,
                             "pattern": "[0-9]*"
                         }, formContent);
@@ -542,7 +542,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            "inputType": "Integer",
+                            "data-input-type": "Integer",
                             "id": fieldname,
                             "pattern": "[0-9]*"
                         }, formContent);
@@ -551,7 +551,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            "inputType": "Single",
+                            "data-input-type": "Single",
                             "id": fieldname,
                             "pattern": "[0-9]*"
                         }, formContent);
@@ -560,7 +560,7 @@ define([
                         inputContent = domConstruct.create("input", {
                             type: "text",
                             className: "form-control",
-                            "inputType": "Double",
+                            "data-input-type": "Double",
                             "id": fieldname,
                             step: ".1"
                         }, formContent);
@@ -568,19 +568,22 @@ define([
                     case "esriFieldTypeDate":
                         inputContent = domConstruct.create("input", {
                             type: "text",
+                            value: "",
                             className: "form-control hasDatetimepicker",
-                            "inputType": "Date",
+                            "data-input-type": "Date",
                             "id": fieldname
                         }, formContent);
-                            $(inputContent).datetimepicker({
-                                useSeconds: false
-                            }).on('dp.change, dp.show', function(evt){
-                                domClass.remove(evt.target.parentElement, "has-error");
-                                domClass.add(evt.target.parentElement, "has-success");
-                            }).on('dp.error', function(evt){
-                                domClass.remove(evt.target.parentElement, "has-success");
-                                domClass.add(evt.target.parentElement, "has-error");
-                            });
+                        $(inputContent).datetimepicker({
+                            useSeconds: false
+                        }).on('dp.change, dp.show', function(evt){
+                            domClass.remove(evt.target.parentElement, "has-error");
+                            domClass.add(evt.target.parentElement, "has-success");
+                        }).on('dp.error', function(evt){
+                            evt.target.value = '';
+                            $(this).data("DateTimePicker").hide();
+                            domClass.remove(evt.target.parentElement, "has-success");
+                            domClass.add(evt.target.parentElement, "has-error");
+                        });
                         break;
                     }
                     //Add Placeholder if present
@@ -591,13 +594,9 @@ define([
                     if (currentField.defaultValue) {
                         domAttr.set(inputContent, "value", currentField.defaultValue);
                     }
-                    //conditional check to attach keyup event to all the inputs except date and string field
-                    //as validation is not required for date field and string fields max-length is already set
-                    if (domAttr.get(inputContent, "inputType") !== "Date" || domAttr.get(inputContent, "inputType") !== "String") {
-                        on(inputContent, "keyup", lang.hitch(this, function (evt) {
-                            this._validateField(evt, true);
-                        }));
-                    }
+                    on(inputContent, "keyup", lang.hitch(this, function (evt) {
+                        this._validateField(evt, true);
+                    }));
                 }
 
                 var helpHTML;
@@ -656,7 +655,7 @@ define([
                 float = /^[-+]?[0-9]+\.[0-9]+$/;
             if (iskeyPress) {
                 inputValue = currentNode.currentTarget.value;
-                inputType = domAttr.get(currentNode.currentTarget, "inputType");
+                inputType = domAttr.get(currentNode.currentTarget, "data-input-type");
                 if ($(currentNode.target)) {
                     node = $(currentNode.target.parentNode)[0];
                 } else {
@@ -664,7 +663,7 @@ define([
                 }
             } else {
                 inputValue = query(".form-control", currentNode)[0].value;
-                inputType = domAttr.get(query(".form-control", currentNode)[0], "inputType");
+                inputType = domAttr.get(query(".form-control", currentNode)[0], "data-input-type");
                 node = query(".form-control", currentNode)[0].parentElement;
             }
             switch (inputType) {
@@ -709,13 +708,6 @@ define([
                     this._validateUserInput(true, node, inputValue, iskeyPress);
                 } else {
                     this._validateUserInput(false, node, inputValue, iskeyPress);
-                }
-                break;
-            case "Date":
-                if (inputValue.length === 0) {
-                    this._validateUserInput(false, node, inputValue, iskeyPress);
-                } else {
-                    this._validateUserInput(true, node, inputValue, iskeyPress);
                 }
                 break;
             }
