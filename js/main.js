@@ -600,24 +600,31 @@ define([
                         }));
                     }
                 }
-                helpBlock = domConstruct.create("p", {
-                    className: "help-block"
-                }, formContent);
+
+                var helpHTML;
                 if (currentField.isNewField) {
                     array.forEach(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                         if (currentLayer.id == this.config.form_layer.id) {
                             array.forEach(currentLayer.popupInfo.fieldInfos, function (currentFieldPopupInfo) {
                                 if (currentFieldPopupInfo.fieldName == currentField.name) {
                                     if (currentFieldPopupInfo.tooltip) {
-                                        helpBlock.innerHTML = currentFieldPopupInfo.tooltip;
+                                        helpHTML = currentFieldPopupInfo.tooltip;
                                     }
                                 }
                             });
                         }
                     }));
                 } else {
-                    helpBlock.innerHTML = currentField.fieldDescription;
+                    helpHTML = currentField.fieldDescription;
                 }
+                
+                if(helpHTML){
+                    helpBlock = domConstruct.create("p", {
+                        className: "help-block",
+                        innerHTML: helpHTML
+                    }, formContent);
+                }
+                
             }));
             if (this.map.getLayer(this.config.form_layer.id).hasAttachments) {
                 formContent = domConstruct.create("div", {
@@ -636,11 +643,12 @@ define([
                     "name": "attachment"
                 }, formContent);
                 domAttr.set(fileInput, "id", "geoFormAttachment");
-
-                helpBlock = domConstruct.create("p", {
-                    className: "help-block",
-                    innerHTML: this.config.attachmentHelpText
-                }, formContent);
+                if(this.config.attachmentHelpText){
+                    helpBlock = domConstruct.create("p", {
+                        className: "help-block",
+                        innerHTML: this.config.attachmentHelpText
+                    }, formContent);
+                }
             }
         },
 
