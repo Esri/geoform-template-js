@@ -81,7 +81,7 @@ define([
             var hasEsri = false,
                 geocoders = lang.clone(this.config.helperServices.geocode);
 
-            array.forEach(geocoders, lang.hitch(this, function (geocoder, index) {
+            array.forEach(geocoders, lang.hitch(this, function (geocoder) {
 
                 if (geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
                     hasEsri = true;
@@ -803,7 +803,7 @@ define([
                     this._evaluateCoordinates(evt);
                 }));
 
-                on(this.usng_mgrs_submit, "click", lang.hitch(this, function (evt) {
+                on(this.usng_mgrs_submit, "click", lang.hitch(this, function () {
                     var value = dom.byId('usng_mgrs_coord').value;
                     var fn = coordinator('mgrs', 'latlong');
                     var converted;
@@ -817,7 +817,7 @@ define([
                         this._locatePointOnMap(converted.latitude, converted.longitude, 'usng');
                     }
                 }));
-                on(this.utm_submit, "click", lang.hitch(this, function (evt) {
+                on(this.utm_submit, "click", lang.hitch(this, function () {
                     var northing = parseFloat(dom.byId('utm_northing').value);
                     var easting = parseFloat(dom.byId('utm_easting').value);
                     var zone = parseInt(dom.byId('utm_zone_number').value, 10);
@@ -970,7 +970,7 @@ define([
                 this.map.infoWindow.show(evt.result.feature.geometry);
             }));
 
-            on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function (evt) {
+            on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function () {
                 domAttr.set(this.searchInput, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
                 this._geocoderMenuItems();
             }));
