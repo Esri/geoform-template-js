@@ -13,7 +13,6 @@ define([
     "dojo/on",
     "dojo/query",
     "dojo/io-query",
-    "application/bootstrapmap",
     "offline/OfflineSupport",
     "dojo/_base/array",
     "dojo/dom-construct",
@@ -50,7 +49,6 @@ define([
     on,
     query,
     ioQuery,
-    bootstrapmap,
     OfflineSupport,
     array,
     domConstruct,
@@ -73,9 +71,7 @@ define([
         pins: pushpins,
         localStorageSupport: null,
         defaultValueAttributes: null,
-        constructor: function () {
-
-        },
+        
         _createGeocoderOptions: function () {
             //Check for multiple geocoder support and setup options for geocoder widget.
             var hasEsri = false,
@@ -345,8 +341,67 @@ define([
                 coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);
                 domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
             }));
-            this.map.resize();
+            
+            
+            // Add desireable touch behaviors here
+            if (this.map.hasOwnProperty("isScrollWheelZoom")) {
+                if (this.map.isScrollWheelZoom) {
+                    this.map.enableScrollWheelZoom();
+                } else {
+                    this.map.disableScrollWheelZoom();
+                }
+            } else {
+                // Default
+                this.map.disableScrollWheelZoom();
+            }
+            // FeatureLayers
+            if (this.map.infoWindow) {
+                on(this.map.infoWindow, "selection-change, set-features, show", lang.hitch(this, function () {
+                    this._resizeInfoWin();
+                }));
+            }
+            
+            on(window, 'resize', lang.hitch(this, function () {
+                this.map.reposition();
+                this.map.resize(true);
+                this._resizeInfoWin();
+                this._centerPopup();
+            }));
+
             this.map.reposition();
+            this.map.resize();
+        },
+        _centerPopup: function () {
+            if (this.map.infoWindow && this.map.infoWindow.isShowing) {
+                var location = this.map.infoWindow.location;
+                if (location) {
+                    this.map.centerAt(location);
+                }
+            }
+        },
+        _resizeInfoWin: function () {
+            if (this.map.infoWindow) {
+                var iw, ih;
+                var h = this.map.height;
+                var w = this.map.width;
+                // width
+                if (w < 300) {
+                    iw = 125;
+                } else if (w < 600) {
+                    iw = 200;
+                } else {
+                    iw = 300;
+                }
+                // height
+                if (h < 300) {
+                    ih = 75;
+                } else if (h < 600) {
+                    ih = 100;
+                } else {
+                    ih = 200;
+                }
+                this.map.infoWindow.resize(iw, ih);
+            }
         },
         _setSymbol: function (point) {
             var symbolUrl, pictureMarkerSymbol, graphic;
@@ -752,8 +807,6 @@ define([
             mapDiv.innerHTML = '';
             arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
-                    smartNavigation: false,
-                    autoResize: true,
                     infoWindow: popup
                     // Optionally define additional map config here for example you can
                     // turn the slider off, display info windows, disable wraparound 180, slider position and more.
@@ -768,8 +821,8 @@ define([
                 // console.log(this.config);
                 this.map = response.map;
                 this.defaultExtent = this.map.extent;
-                this.map.resize();
                 this.map.reposition();
+                this.map.resize();
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
@@ -779,8 +832,7 @@ define([
                 if (this.config.details && this.config.details.Title) {
                     window.document.title = this.config.details.Title;
                 }
-                // bootstrap map functions
-                var bsm = new bootstrapmap(this.map);
+
                 this._createForm(this.config.fields);
                 this._createLocateButton();
                 this._createGeocoderButton();
@@ -1188,8 +1240,8 @@ define([
                 innerHTML: errorMessage
             }, this.erroMessageDiv);
             window.location.hash = "#errorMessage";
-            this.map.resize();
             this.map.reposition();
+            this.map.resize();
         },
 
         _resetButton: function () {
