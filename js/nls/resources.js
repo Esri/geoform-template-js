@@ -82,7 +82,7 @@ define({
             invalidUTM: "Please enter valid ${openLink}UTM${closeLink} coordinates.",
             invalidUSNGMGRS: "Please enter valid ${openLink}USNG/MGRS${closeLink} coordinates.",
             geoformTitleText: "GeoForm",
-            domainDefaultText:"Select a value&hellip;",
+            domainDefaultText:"Select&hellip;",
             applyEditsFailedMessage: "Sorry your entry cannot be submitted. Please try again.",
             requiredFields: "There are some errors. Please correct them below.",
             error: "Error"
