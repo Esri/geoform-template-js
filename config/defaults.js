@@ -13,7 +13,7 @@ define({
         "Description": ""
     },
     "fields": [],
-    "theme": "bootstrap", // options: bootstrap, cerulean, cyborg, darkly, journal, readable
+    "theme": "bootstrap", // see values in themes.js
     "oauthappid": null,
     //Enter the url to the proxy if needed by the applcation. See the "Using the proxy page" help topic for details
     // //developers.arcgis.com/en/javascript/jshelp/ags_proxy.html

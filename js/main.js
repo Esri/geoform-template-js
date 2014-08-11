@@ -219,6 +219,11 @@ define([
                             domConstruct.place(cssStyle, frame.getElementsByTagName('head')[0], "last");
                         };
                     } else {
+                        // no theme set
+                        if(!this.config.theme){
+                            // lets use bootstrap!
+                            this.config.theme = "bootstrap";
+                        }
                         this._switchStyle(this.config.theme);
                         dom.byId("parentContainter").appendChild(this.userMode);
                         var itemInfo = this.config.itemInfo || this.config.webmap;
