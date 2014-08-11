@@ -543,13 +543,15 @@ define([
                             className: "form-control selectDomain",
                             "id": fieldname
                         }, formContent);
-                        selectOptions = domConstruct.create("option", {}, inputContent);
-                        selectOptions.text = nls.user.domainDefaultText;
-                        selectOptions.value = "";
+                        selectOptions = domConstruct.create("option", {
+                            innerHTML: nls.user.domainDefaultText,
+                            value: ""
+                        }, inputContent);
                         array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
-                            selectOptions = domConstruct.create("option", {}, inputContent);
-                            selectOptions.text = currentOption.name;
-                            selectOptions.value = currentOption.code;
+                            selectOptions = domConstruct.create("option", {
+                                innerHTML:currentOption.name,
+                                value: currentOption.code
+                            }, inputContent);
                         }));
                     } else {
                         radioContainer = domConstruct.create("div", {
@@ -1164,7 +1166,7 @@ define([
         _openErrorModal: function () {
             var errorMsgContainer;
             domConstruct.empty(query(".modal-body")[0]);
-            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.applyEditsFailedTitle);
+            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.error);
             errorMsgContainer = domConstruct.create("div", {
             }, query(".modal-body")[0]);
             domConstruct.create("div", {

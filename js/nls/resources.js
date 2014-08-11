@@ -4,7 +4,6 @@ define({
             error: "Unable to create map"
         },
         onlineStatus: {
-            online: "You are currently online.",
             offline: "You are currently working offline. Form submissions will be saved locally until a connection to the server can be made.",
             reconnecting: "Reconnecting&hellip;",
             pending: "${total} pending edit(s) will be submitted when a network connection is re-established."
@@ -50,12 +49,10 @@ define({
             myLocationText: "GPS",
             locationDescription: "Select a location for your submission using one of the following options or by clicking/tapping the map.",
             addressText: "Search",
-            cooridnatesText: "Coordinates",
+            geographic: "Geographic",
             locationTabText: "Location",
-            enterCoordinatesPlaceholder: "Enter Coordinates",
             submitButtonText: "Submit new entry",
             submitButtonTextLoading: "Submitting&hellip;",
-            fieldvalidationMessageAlertText: "Please enter a valid number",
             formValidationMessageAlertText: "The following fields are required:",
             selectLocation: "Please select a ${openLink}location${closeLink} for your submission.",
             emptylatitudeAlertMessage: "Please enter a ${openLink}latitude${closeLink} coordinate.",
@@ -84,11 +81,11 @@ define({
             invalidLatLong: "Please enter valid ${latLink}latitude${closeLink} and ${lngLink}longitude${closeLink} coordinates.",
             invalidUTM: "Please enter valid ${openLink}UTM${closeLink} coordinates.",
             invalidUSNGMGRS: "Please enter valid ${openLink}USNG/MGRS${closeLink} coordinates.",
-            geoformTitleText: "Geo Form",
-            domainDefaultText:"Select Value",
+            geoformTitleText: "GeoForm",
+            domainDefaultText:"Select a value&hellip;",
             applyEditsFailedMessage: "Sorry your entry cannot be submitted. Please try again.",
             requiredFields: "There are some errors. Please correct them below.",
-            applyEditsFailedTitle: "Error"
+            error: "Error"
         }
     })
 });
