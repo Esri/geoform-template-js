@@ -269,10 +269,11 @@ define([
                     errorMessage += "<ol>";
                     errorMessage += "<li>" + nls.user.formValidationMessageAlertText + "\n <ul>";
                     array.forEach(erroneousFields, function (erroneousField) {
-                        if (query(".form-control", erroneousField).length !== 0 && query(".form-control", erroneousField)[0].placeholder !== "")
-                            errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
-                        else
-                            errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split("*")[0] + "</a></li>";
+                        if (query(".form-control", erroneousField).length !== 0 && query(".form-control", erroneousField)[0].placeholder !== ""){
+                            errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split("*")[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
+                        } else{
+                            errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split("*")[0] + "</a></li>";
+                        }
                     });
                     errorMessage += "</ul></li>";
 
