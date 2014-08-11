@@ -855,6 +855,7 @@ define([
                 }));
 
                 on(this.usng_mgrs_submit, "click", lang.hitch(this, function () {
+                    this._clearSubmissionGraphic();
                     var value = dom.byId('usng_mgrs_coord').value;
                     var fn = coordinator('mgrs', 'latlong');
                     var converted;
@@ -869,6 +870,7 @@ define([
                     }
                 }));
                 on(this.utm_submit, "click", lang.hitch(this, function () {
+                    this._clearSubmissionGraphic();
                     var northing = parseFloat(dom.byId('utm_northing').value);
                     var easting = parseFloat(dom.byId('utm_easting').value);
                     var zone = parseInt(dom.byId('utm_zone_number').value, 10);
