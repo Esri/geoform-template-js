@@ -275,9 +275,3 @@ body.modal-open,
 .drag-cursor{
     cursor: ns-resize;
 }
-.searchLocationLabel {
-    font-weight: normal !important;
-}
-.searchOptionsContainer {
-    list-style-type: none;
-}

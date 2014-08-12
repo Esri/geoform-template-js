@@ -299,7 +299,7 @@ define([
         _populateLocations: function () {
             var currentInput, key, count = 0;
             for (key in this.currentConfig.locationSearchOptions) {
-                currentInput = query(".searchOptionsContainer input")[count];
+                currentInput = query("input", dom.byId('location_options'))[count];
                 if (this.currentConfig.locationSearchOptions[key]) {
                     currentInput.checked = true;
                 }

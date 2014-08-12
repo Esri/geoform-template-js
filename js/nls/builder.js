@@ -70,7 +70,7 @@ define({
 	        coordinatesText: "Latitude & Longitude Coordinates",
 	        usng_mgrs: "USMG/MGRS Coordinates",
 	        utm: "UTM Coordinates",
-	        selectLocationSDescription: "Allow users to select a location using the following."
+	        selectLocationSDescription: "Allow users to select a location using these methods."
         }
     })
 });
