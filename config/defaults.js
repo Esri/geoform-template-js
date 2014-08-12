@@ -31,6 +31,13 @@ define({
     "defaultMapExtent": true,
     "pushpinColor": "blue",
     "attachmentHelpText":"",
+    "locationSearchOptions": [{
+        "enableMyLocation": true,
+        "enableSearch": true,
+        "enableLatLng": true,
+        "enableUSMGMGRS": false,
+        "enableUTM": false
+    }],
     "helperServices": {
         "geometry": {
             "url": null

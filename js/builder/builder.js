@@ -138,6 +138,7 @@ define([
             this._populateDefaultExtentOption(this.currentConfig.defaultMapExtent);
             this._populateThemes();
             this._populatePushpins();
+            this._populateLocations();
             this._initWebmapSelection();
             if (!this.localStorageSupport.supportsStorage()) {
                 array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
@@ -294,6 +295,22 @@ define([
                 }
             }));
         },
+
+        _populateLocations: function () {
+            var currentInput, key, count = 0;
+            for (key in this.currentConfig.locationSearchOptions) {
+                currentInput = query(".searchOptionsContainer input")[count];
+                if (this.currentConfig.locationSearchOptions[key]) {
+                    currentInput.checked = true;
+                }
+                domAttr.set(currentInput, "checkedField", key);
+                this.own(on(currentInput, "change", lang.hitch(this, function (evt) {
+                    this.currentConfig.locationSearchOptions[domAttr.get(evt.currentTarget, "checkedField")] = evt.currentTarget.checked;
+                })));
+                count++;
+            }
+        },
+
         _populateJumbotronOption: function (jumbotronOption) {
             $("#jumbotronOption")[0].checked = jumbotronOption;
         },
@@ -325,8 +342,7 @@ define([
             var configuredFields = [],
                 configuredFieldName = [],
                 fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
-                fieldCheckBoxInput, currentIndex = 0,
-                layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
+                fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [], sortedFields = [], fieldPlaceholder, fieldPlaceholderInput, fieldType;
             if (this.geoFormFieldsTable) {
                 domConstruct.empty(this.geoFormFieldsTable);

@@ -63,8 +63,14 @@ define({
             shareDescription: "The sharing panel makes it easy for your audience to share the GeoForm with other collaborators once they have made a submission - this can be disabled at any time.",
             defaultMapExtent: "Default Map Extent",
             defaultMapExtentDescription: "The map will reset to the default extent in your web map after submission - this can be disabled at any time.",
-            pushpinOptionsDescription: "Choose from a variety of colors for the map pushpin, it should be different from the map symbology to help the user put their submission on the map"
-	    
+            pushpinOptionsDescription: "Choose from a variety of colors for the map pushpin, it should be different from the map symbology to help the user put their submission on the map",
+            selectLocationText: "Select Location By",
+            myLocationText: "My Location",
+	        searchText: "Search",
+	        coordinatesText: "Latitude & Longitude Coordinates",
+	        usng_mgrs: "USMG/MGRS Coordinates",
+	        utm: "UTM Coordinates",
+	        selectLocationSDescription: "Allow users to select a location using the following."
         }
     })
 });
