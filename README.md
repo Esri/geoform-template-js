@@ -25,7 +25,115 @@ The GeoForm template can be accessed via the ArcGIS template gallery or item det
 3. Access the .html page.
 4. See the readme.html page for configuration options.
 
+## Configuring defaults.js
+
+This topic will explain how to configure some of the more advanced settings in defaults.js
+
+### Webmap
+
+Specify the webmap ID to use for this template.
+
+    "webmap": "5fd247b0e5d844d99b7b9af36286a535",
+    
+### Application ID
+
+If you've configured an application instead of using just a webmap, place the application ID here.
+
+    "appid": "be338760de9249f8b15df22a8e4ee586",
+
+### Setting the layer to use
+
+Set the "form_layer" property to specify whic layer to use for generating the form. This is the ID of the layer as specified in a webmap. If you don't specify anything here, it will use the first feature layer it can find in the webmap.
+
+For example, to use the layer from [this webmap](http://www.arcgis.com/home/item.html?id=0c5cb13c4fc54b28bb26a125221ed96f), I would inspect the [webmap response](http://www.arcgis.com/sharing/rest/content/items/0c5cb13c4fc54b28bb26a125221ed96f/data?f=pjson) to get the layer ID as so:
+
+Setting the layer ID like so:
+    
+    "form_layer": {
+        "id": "GeoFormTryItLive_v3_7854"
+    },
+
+### Configuring Fields
+
+By default, the fields property is an empty array. When an empty array, all fields from the layer will be dispalyed and they will use the default values. These fields can be configured by setting this fields array to tell the GeoForm what fields show and their properties. You can set each fields label, help text (optional description), visibility, default populated value and hint text (placeholder).
+
+Default Fields property
+
+    "fields": [],
+    
+Modified fields property
+
+    "fields": [{
+        "fieldName": "issue_no",
+        "fieldLabel": "Issue",
+        "fieldDescription": "Specify the issue number.",
+        "visible": true,
+        "defaultValue": 0,
+        "placeHolder": "Enter an issue"
+    }]
+
+### Configuring Application Details
+
+The GeoForm title, description and logo can be customized. If they are left empty, they will use the webmap's default title, image and summary. If both are undefined, then the item will not show in the application.
+
+    "details": {
+        "Title": "My Custom Geoform",
+        "Logo": "http://www.mysite.com/MyLogo.png",
+        "Description": "Check out my GeoForm!"
+    }
+
+
+### Theme
+
+Change the way this app looks by changing the theme. See the file themes.js for all the options.
+
+    "theme": "bootstrap",
+
+### Reset Map Extent
+
+If you'd like the map to be reset after a submission, set this option to true. If you dont want the map extent to return to its default on a submission, set to false.
+
+    "defaultMapExtent": true,
+
+### Attachment Help Text
+
+Set this text to tell users what kind of file to attach.
+
+    "attachmentHelpText": "Select a cat photo!",
+
+### Use Small Header
+
+This option will use smaller text for the GeoForm title and description.
+
+    useSmallHeader": false,
+
+### Enable Sharing
+
+If you would not like the sharing links to show when a user submits an entry, set this to false.
+
+    "enableSharing": true,
+    
+### Symbol Color
+
+Set the color of the symbol to use when selecting an application. See the file pushpins.js for all the options.
+
+    "pushpinColor": "grey",
+
+### Bit.ly API Information
+
+In order to shorten shared URLs, the app uses the bit.ly URL shortening service. Sign up for an account to get API credentials to enter here.
+
+    "bitlyLogin": "myAccount",
+    "bitlyKey": "myKey",
+
+### Sharing Host
+
+Use this templated in an organization or portal by changing this URL to point to the portal/org.
+
+    "sharinghost": "http://www.arcgis.com",
+
 ## Adding The Template To Your ArcGIS Online Organization
+
 See how you can [add this template to your organization](http://blogs.esri.com/esri/arcgis/2014/04/21/be-an-early-adopter/) as an early adopter.
 
 ## Configuring The Template
