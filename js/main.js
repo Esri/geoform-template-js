@@ -460,7 +460,7 @@ define([
         //function to validate and create the form
         _createForm: function (fields) {
             var formContent, labelContent, inputContent, selectOptions, helpBlock, fileInput, matchingField, newAddedFields = [],
-                fieldname, fieldLabelText, requireField, sortedArray;
+                fieldname, fieldLabelText, requireField, sortedArray, radioButtonCounter = 0;
             if (!this.map.getLayer(this.config.form_layer.id)) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
@@ -559,11 +559,22 @@ define([
                                 value: currentOption.code
                             }, inputContent);
                         }));
+                        on(inputContent, "change", lang.hitch(this, function (evt) {
+                            if (evt.target.value !== "") {
+                                domClass.add($(evt.target.parentNode)[0], "has-success");
+                            } else {
+                                domClass.remove($(evt.target.parentNode)[0], "has-success");
+                            }
+                        }));
                     } else {
                         radioContainer = domConstruct.create("div", {
                             className: "radioContainer"
                         }, formContent);
-                        array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
+                        domAttr.set(radioContainer, "containerIndex", radioButtonCounter);
+                        array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption, btnIndex) {
+                            if (index === 1) {
+                                domAttr.set(radioContainer, "id", fieldname + "radioContainer");
+                            }
                             radioContent = domConstruct.create("div", {
                                 className: "radio"
                             }, radioContainer);
@@ -577,9 +588,20 @@ define([
                                 name: fieldname,
                                 value: currentOption.code
                             }, inputLabel);
+                            domAttr.set(inputContent, "radioContainerIndex", radioButtonCounter);
                             // add text after input
                             inputLabel.innerHTML += currentOption.name;
+                            on(dom.byId(currentOption.code + fieldname), "click", function (evt) {
+                                var i = domAttr.get(evt.target, "radioContainerIndex");
+                                var radiotButtonContainer = query(".radioContainer")[i];
+                                if (evt.target.checked) {
+                                    domClass.add(radiotButtonContainer.parentNode, "has-success");
+                                } else {
+                                    domClass.remove(radiotButtonContainer.parentNode, "has-success");
+                                }
+                            });
                         }));
+                        radioButtonCounter++;
                     }
                 } else {
                     switch (currentField.type) {
@@ -656,6 +678,7 @@ define([
                     //If present fetch default values
                     if (currentField.defaultValue) {
                         domAttr.set(inputContent, "value", currentField.defaultValue);
+                        domClass.add(formContent, "has-success");
                     }
                     on(inputContent, "keyup", lang.hitch(this, function (evt) {
                         this._validateField(evt, true);
@@ -784,10 +807,12 @@ define([
                     domClass.remove(node, "has-success");
                 } else {
                     currentInput.options[0].selected = true;
+                    domClass.remove(node, "has-success");
                 }
             });
             array.forEach(query(".radioInput:checked"), function (currentField) {
                 domAttr.set(currentField, "checked", false);
+                domClass.remove(query(".radioContainer")[domAttr.get(currentField, "radioContainerIndex")].parentNode, "has-success");
             });
             if (dom.byId("geoFormAttachment").value) {
                 dom.byId("geoFormAttachment").value = "";
@@ -886,7 +911,7 @@ define([
                         this._locatePointOnMap(converted.latitude, converted.longitude, 'utm');
                     }
                 }));
-
+                this._populateLocationsOptions();
                 // make sure map is loaded
                 if (this.map.loaded) {
                     // do something with the map
@@ -1271,6 +1296,25 @@ define([
                 if (currentLayer.url.split("/")[currentLayer.url.split("/").length - 2] == "FeatureServer") {
                     this.config.form_layer.id = currentLayer.id;
                     this.config.fields = this.map.getLayer(this.config.form_layer.id).fields;
+                    return true;
+                }
+            }));
+        },
+
+        _populateLocationsOptions: function () {
+            var count = 0;
+            var locationTabs = query(".nav-tabs li");
+            var tabContents = query(".tab-pane");
+            for (var key in this.config.locationSearchOptions) {
+                if (!this.config.locationSearchOptions[key]) {
+                    domStyle.set(locationTabs[count], 'display', 'none');
+                }
+                count++;
+            }
+            array.some(locationTabs, lang.hitch(this, function (tab, idx) {
+                if (domStyle.get(tab, 'display') == 'block') {
+                    domClass.add(tab, 'active');
+                    domClass.add(tabContents[idx], 'active');
                     return true;
                 }
             }));
