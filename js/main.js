@@ -542,6 +542,13 @@ define([
                 if (requireField) {
                     domConstruct.place(requireField, labelContent, "last");
                 }
+                if (this.map.getLayer(this.config.form_layer.id).templates[0]) {
+                    for (var fieldAttribute in this.map.getLayer(this.config.form_layer.id).templates[0].prototype.attributes) {
+                        if (fieldAttribute == fieldname) {
+                            currentField.defaultValue = this.map.getLayer(this.config.form_layer.id).templates[0].prototype.attributes[fieldname];
+                        }
+                    }
+                }
                 //code to make select boxes in case of a coded value
                 if (currentField.domain) {
                     if (currentField.domain.codedValues.length > 2) {
@@ -1308,9 +1315,15 @@ define([
             for (var key in this.config.locationSearchOptions) {
                 if (!this.config.locationSearchOptions[key]) {
                     domStyle.set(locationTabs[count], 'display', 'none');
+                } else {
+                    //resize the map to set the correct info-window anchor
+                    on(locationTabs[count], 'click', lang.hitch(this, function () {
+                        this.map.resize();
+                    }));
                 }
                 count++;
             }
+            //add 'active' class to first tab and its content
             array.some(locationTabs, lang.hitch(this, function (tab, idx) {
                 if (domStyle.get(tab, 'display') == 'block') {
                     domClass.add(tab, 'active');
