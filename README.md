@@ -41,7 +41,7 @@ If you've configured an application instead of using just a webmap, place the ap
 
     "appid": "be338760de9249f8b15df22a8e4ee586",
 
-### Setting the layer to use
+### Defining the FeatureService Layer
 
 Set the "form_layer" property to specify whic layer to use for generating the form. This is the ID of the layer as specified in a webmap. If you don't specify anything here, it will use the first feature layer it can find in the webmap.
 
@@ -81,10 +81,17 @@ The GeoForm title, description and logo can be customized. If they are left empt
         "Description": "Check out my GeoForm!"
     }
 
+If you don't want them to appear, set them to false.
+
+    "details": {
+        "Title": false,
+        "Logo": false,
+        "Description": false
+    }
 
 ### Theme
 
-Change the way this app looks by changing the theme. See the file themes.js for all the options.
+Change the way this app looks by changing the theme. See the file [themes.js](js/themes.js) for all the options.
 
     "theme": "bootstrap",
 
@@ -114,7 +121,7 @@ If you would not like the sharing links to show when a user submits an entry, se
     
 ### Symbol Color
 
-Set the color of the symbol to use when selecting an application. See the file pushpins.js for all the options.
+Set the color of the symbol to use when selecting an application. See the file [pushpins.js](js/pushpins.js) for all the options.
 
     "pushpinColor": "grey",
 

@@ -1306,9 +1306,10 @@ define([
             array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                 if (currentLayer.url.split("/")[currentLayer.url.split("/").length - 2] == "FeatureServer") {
                     this.config.form_layer.id = currentLayer.id;
-                    // need to merge fields
-                    var layerFields = this.map.getLayer(this.config.form_layer.id).fields;
-                    this.config.fields = this.map.getLayer(this.config.form_layer.id).fields;
+                    // if fields not set or empty
+                    if(!this.config.fields || (this.config.fields && this.config.fields.length === 0)){
+                        this.config.fields = this.map.getLayer(this.config.form_layer.id).fields;
+                    }
                     return true;
                 }
             }));
