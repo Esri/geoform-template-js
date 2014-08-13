@@ -68,7 +68,6 @@ Modified fields property
         "fieldLabel": "Issue",
         "fieldDescription": "Specify the issue number.",
         "visible": true,
-        "defaultValue": 0,
         "placeHolder": "Enter an issue"
     }]
 
