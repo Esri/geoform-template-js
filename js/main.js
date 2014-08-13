@@ -431,15 +431,15 @@ define([
         },
         //function to set the logo-path, application title and details
         _setAppConfigurations: function (appConfigurations) {
-            if (appConfigurations.Logo !== "")
+            if (appConfigurations.Logo)
                 this.appLogo.src = appConfigurations.Logo;
             else
                 domClass.add(this.appLogo, "hide");
-            if (appConfigurations.Title !== "")
+            if (appConfigurations.Title)
                 this.appTitle.innerHTML = appConfigurations.Title;
             else
                 domClass.add(this.appTitle, "hide");
-            if (appConfigurations.Description !== "")
+            if (appConfigurations.Description)
                 this.appDescription.innerHTML = appConfigurations.Description;
             else
                 domClass.add(this.appDescription, "hide");
@@ -1292,16 +1292,22 @@ define([
         },
 
         _setWebmapDefaults: function () {
-            this.config.details.Title = this.config.itemInfo.item.title;
-            this.config.details.Description = this.config.itemInfo.item.snippet;
-            if (this.config.itemInfo.item.thumbnail) {
+            if(this.config.details.Title !== false){
+                this.config.details.Title = this.config.itemInfo.item.title;
+            }
+            if(this.config.details.Description !== false){
+                this.config.details.Description = this.config.itemInfo.item.snippet;
+            }
+            if (this.config.itemInfo.item.thumbnail && this.config.details.Logo !== false) {
                 this.config.details.Logo = this.config.sharinghost + "/sharing/rest/content/items/" + this.config.webmap + '/info/' + this.config.itemInfo.item.thumbnail;
             } else {
-                this.config.details.Logo = "./images/default.png";
+                this.config.details.Logo = false;
             }
             array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                 if (currentLayer.url.split("/")[currentLayer.url.split("/").length - 2] == "FeatureServer") {
                     this.config.form_layer.id = currentLayer.id;
+                    // need to merge fields
+                    var layerFields = this.map.getLayer(this.config.form_layer.id).fields;
                     this.config.fields = this.map.getLayer(this.config.form_layer.id).fields;
                     return true;
                 }
@@ -1317,9 +1323,7 @@ define([
                     domStyle.set(locationTabs[count], 'display', 'none');
                 } else {
                     //resize the map to set the correct info-window anchor
-                    on(locationTabs[count], 'click', lang.hitch(this, function () {
-                        this.map.resize();
-                    }));
+                    on(locationTabs[count], 'click', lang.hitch(this, this.map.resize));
                 }
                 count++;
             }
