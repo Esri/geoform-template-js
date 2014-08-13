@@ -531,9 +531,6 @@ define([
                 this.fieldInfo[layerId] = {};
                 this.fieldInfo[layerId].Fields = layer.fields;
                 this.fieldInfo[layerId].layerUrl = layer.url;
-                if (layer.templates[0]) {
-                    this.fieldInfo[layerId].defaultValues = layer.templates[0].prototype.attributes;
-                }
                 if (layerId == this.currentConfig.form_layer.id) {
                     this._populateFields(layerId);
                     filteredLayer.selected = "selected";
