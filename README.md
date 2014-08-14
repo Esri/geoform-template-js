@@ -64,11 +64,22 @@ Default Fields property
 Modified fields property
 
     "fields": [{
-        "fieldName": "issue_no",
-        "fieldLabel": "Issue",
-        "fieldDescription": "Specify the issue number.",
-        "visible": true,
-        "placeHolder": "Enter an issue"
+        alias: "Cell Phone",
+        editable: true,
+        fieldDescription: "Enter your cell number.",
+        fieldLabel: "Cell",
+        fieldName: "CELLPHONE",
+        format: null,
+        isEditable: true,
+        label: "Cell Phone",
+        length: 12,
+        name: "CELLPHONE",
+        nullable: true,
+        placeHolder: "1-800-555-5555",
+        stringFieldOption: "textbox",
+        tooltip: "",
+        type: "esriFieldTypeString",
+        visible: true
     }]
 
 #### Configuring Application Details
@@ -91,52 +102,52 @@ If you don't want them to appear, set them to false.
 
 #### Theme
 
-Change the way this app looks by changing the theme. See the file [themes.js](js/themes.js) for all the options.
+Change the way this app looks by changing its theme. See the [themes.js](js/themes.js) file for all of the available options. These free themes for Bootstrap can be previewed on the [Bootswatch](http://bootswatch.com/) website.
 
     "theme": "bootstrap",
 
 #### Reset Map Extent
 
-If you'd like the map to be reset after a submission, set this option to true. If you dont want the map extent to return to its default on a submission, set to false.
+If you'd like the map to be reset after each submission, set this option to true. If you dont want the map extent to return to its default when a submission occurs, set to false.
 
     "defaultMapExtent": true,
 
 #### Attachment Help Text
 
-Set this text to tell users what kind of file to attach.
+Use this text option to tell users what kind of file to attach.
 
     "attachmentHelpText": "Select a cat photo!",
 
 #### Use Small Header
 
-This option will use smaller text for the GeoForm title and description.
+This option will use smaller sized text for the GeoForm title and description instead of the larger [Bootstrap Jumbotron](http://getbootstrap.com/examples/jumbotron/)([2](http://getbootstrap.com/components/#jumbotron)).
 
     useSmallHeader": false,
 
 #### Enable Sharing
 
-If you would not like the sharing links to show when a user submits an entry, set this to false.
+This option displays sharing links when a submission occurs. If you wouldn't like to display the sharing links when a user submits an entry, set this option to false.
 
     "enableSharing": true,
     
-#### Symbol Color
+#### Symbol
 
-Set the color of the symbol to use when selecting an application. See the file [pushpins.js](js/pushpins.js) for all the options.
+Set the symbol to use when a user selects a location. See the [pushpins.js](js/pushpins.js) file for all the available options. You can modify this file to add your own custom symbols.
 
     "pushpinColor": "grey",
 
-#### Bit.ly API Information
+#### Bit.ly API
 
-In order to shorten shared URLs, the app uses the bit.ly URL shortening service. Sign up for an account to get API credentials to enter here.
+In order to shorten the URL of the application, we use the bit.ly URL shortening service. Sign up for an account to get API credentials to enter here.
 
     "bitlyLogin": "myAccount",
     "bitlyKey": "myKey",
 
 #### Sharing Host
 
-Use this templated in an organization or portal by changing this URL to point to the portal/org.
+Use this template in an ArcGIS organization or portal application by changing this sharinghost URL to point to the location of the portal or organizaton.
 
-    "sharinghost": "http://www.arcgis.com",
+    "sharinghost": "http://myorg.maps.arcgis.com",
 
 ## Adding The Template To Your ArcGIS Online Organization
 
