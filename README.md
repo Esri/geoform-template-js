@@ -179,10 +179,6 @@ Attachments are stored locally as well.
 
 This application uses the [Bootstrap](http://getbootstrap.com/) framework for CSS, layout, components and theming. [Bootstrap](https://github.com/twbs/bootstrap) on GitHub.
 
-## Bootstrap Map
-
-The map portion is using code from Esri's [Bootstrap Map](https://github.com/Esri/bootstrap-map-js).
-
 ## Resources
 
 * [ArcGIS for JavaScript API Resource Center](http://help.arcgis.com/en/webapi/javascript/arcgis/index.html)
