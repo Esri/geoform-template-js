@@ -63,21 +63,17 @@ Default Fields property
     
 Modified fields property
 
-    "fields": [{
+    fields:[{
         alias: "Cell Phone",
         editable: true,
-        fieldDescription: "Enter your cell number.",
-        fieldLabel: "Cell",
-        fieldName: "CELLPHONE",
+        fieldDescription: "Enter a cell phone number.",
         format: null,
         isEditable: true,
-        label: "Cell Phone",
         length: 12,
         name: "CELLPHONE",
         nullable: true,
-        placeHolder: "1-800-555-5555",
         stringFieldOption: "textbox",
-        tooltip: "",
+        tooltip: "555-5555",
         type: "esriFieldTypeString",
         visible: true
     }]
