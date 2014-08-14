@@ -76,9 +76,9 @@ define([
             //Check for multiple geocoder support and setup options for geocoder widget.
             var hasEsri = false,
                 geocoders = lang.clone(this.config.helperServices.geocode);
-
+            // each geocoder
             array.forEach(geocoders, lang.hitch(this, function (geocoder) {
-
+                // if its the esri world geocoder
                 if (geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
                     hasEsri = true;
                     geocoder.name = "Esri World Geocoder";
@@ -87,13 +87,13 @@ define([
                     geocoder.esri = geocoder.placefinding = true;
                     geocoder.placeholder = nls.user.find;
                 }
-
             }));
             //only use geocoders with a singleLineFieldName that allow placefinding
             geocoders = array.filter(geocoders, function (geocoder) {
                 return (esriLang.isDefined(geocoder.singleLineFieldName) && esriLang.isDefined(geocoder.placefinding) && geocoder.placefinding);
             });
             var esriIdx;
+            // if we have the esri Geocoder
             if (hasEsri) {
                 for (var i = 0; i < geocoders.length; i++) {
                     if (esriLang.isDefined(geocoders[i].esri) && geocoders[i].esri === true) {
@@ -102,18 +102,16 @@ define([
                     }
                 }
             }
+            // options object
             var options = {
                 map: this.map,
                 autoComplete: hasEsri
             };
-
-
             //If there is a valid search id and field defined add the feature layer to the geocoder array
             var searchLayers = [];
             if (this.config.itemInfo.itemData && this.config.itemInfo.itemData.applicationProperties && this.config.itemInfo.itemData.applicationProperties.viewing && this.config.itemInfo.itemData.applicationProperties.viewing.search) {
                 var searchOptions = this.config.itemInfo.itemData.applicationProperties.viewing.search;
-
-
+                // add layers from webmap to geocoder widget
                 array.forEach(searchOptions.layers, lang.hitch(this, function (searchLayer) {
                     var operationalLayers = this.config.itemInfo.itemData.operationalLayers;
                     var layer = null;
@@ -123,10 +121,10 @@ define([
                             return true;
                         }
                     });
-
                     var url = layer.url;
                     var field = searchLayer.field.name;
                     var name = layer.title;
+                    // if its a sublayer
                     if (esriLang.isDefined(searchLayer.subLayer)) {
                         url = url + "/" + searchLayer.subLayer;
                         array.some(layer.layerObject.layerInfos, function (info) {
@@ -137,6 +135,7 @@ define([
 
                         });
                     }
+                    // create layer object 
                     searchLayers.push({
                         "name": name,
                         "url": url,
@@ -149,10 +148,8 @@ define([
                         "subLayerId": parseInt(searchLayer.subLayer) || null
                     });
                 }));
-
             }
-
-
+            // if we have esri geocoder and its first
             if (hasEsri && esriIdx === 0) { // Esri geocoder is primary
                 options.arcgisGeocoder = false;
                 if (geocoders.length > 0) {
@@ -164,8 +161,6 @@ define([
                 options.arcgisGeocoder = false;
                 options.geocoders = searchLayers.length ? searchLayers.concat(geocoders) : geocoders;
             }
-
-
             return options;
         },
         startup: function (config, response, isPreview, node) {
@@ -180,6 +175,7 @@ define([
             // any url parameters and any application specific configuration information.
             if (config) {
                 this.config = config;
+                // create localstorage helper
                 this.localStorageSupport = new localStorageHelper();
                 // document ready
                 ready(lang.hitch(this, function () {
@@ -190,9 +186,11 @@ define([
                     //supply either the webmap id or, if available, the item info
                     if (isPreview) {
                         var cssStyle;
+                        // if local storage supported
                         if (this.localStorageSupport.supportsStorage()) {
                             localStorage.setItem("geoform_config", JSON.stringify(config));
                         }
+                        // set theme to selected
                         array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
                             if (this.config.theme == currentTheme.id) {
                                 cssStyle = domConstruct.create('link', {
@@ -212,8 +210,7 @@ define([
                             url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                         }
                         node.src = url;
-
-
+                        // on iframe load
                         node.onload = function () {
                             var frame = document.getElementById("iframeContainer").contentWindow.document;
                             domConstruct.place(cssStyle, frame.getElementsByTagName('head')[0], "last");
@@ -221,14 +218,20 @@ define([
                     } else {
                         // no theme set
                         if(!this.config.theme){
-                            // lets use bootstrap!
+                            // lets use bootstrap theme!
                             this.config.theme = "bootstrap";
                         }
+                        // set theme
                         this._switchStyle(this.config.theme);
+                        // append user html to node
                         dom.byId("parentContainter").appendChild(this.userMode);
+                        // get item info from template
                         var itemInfo = this.config.itemInfo || this.config.webmap;
+                        // create map
                         this._createWebMap(itemInfo);
+                        // if small header is set
                         if (this.config.useSmallHeader) {
+                            // remove class
                             domClass.remove(this.jumbotronNode, "jumbotron");
                         }
                     }
