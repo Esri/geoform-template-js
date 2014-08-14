@@ -1320,13 +1320,15 @@ define([
             var locationTabs = query(".nav-tabs li");
             var tabContents = query(".tab-pane");
             for (var key in this.config.locationSearchOptions) {
-                if (!this.config.locationSearchOptions[key]) {
-                    domStyle.set(locationTabs[count], 'display', 'none');
-                } else {
-                    //resize the map to set the correct info-window anchor
-                    on(locationTabs[count], 'click', lang.hitch(this, this.map.resize));
+                if(this.config.locationSearchOptions.hasOwnProperty(key)){
+                    if (!this.config.locationSearchOptions[key]) {
+                        domStyle.set(locationTabs[count], 'display', 'none');
+                    } else {
+                        //resize the map to set the correct info-window anchor
+                        on(locationTabs[count], 'click', lang.hitch(this, this.map.resize));
+                    }
+                    count++;
                 }
-                count++;
             }
             //add 'active' class to first tab and its content
             array.some(locationTabs, lang.hitch(this, function (tab, idx) {
