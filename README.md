@@ -29,19 +29,19 @@ The GeoForm template can be accessed via the ArcGIS template gallery or item det
 
 This topic will explain how to configure some of the more advanced settings in defaults.js
 
-### Webmap
+#### Webmap
 
 Specify the webmap ID to use for this template.
 
     "webmap": "5fd247b0e5d844d99b7b9af36286a535",
     
-### Application ID
+#### Application ID
 
 If you've configured an application instead of using just a webmap, place the application ID here.
 
     "appid": "be338760de9249f8b15df22a8e4ee586",
 
-### Defining the FeatureService Layer
+#### Defining the FeatureService Layer
 
 Set the "form_layer" property to specify whic layer to use for generating the form. This is the ID of the layer as specified in a webmap. If you don't specify anything here, it will use the first feature layer it can find in the webmap.
 
@@ -53,7 +53,7 @@ Setting the layer ID like so:
         "id": "GeoFormTryItLive_v3_7854"
     },
 
-### Configuring Fields
+#### Configuring Fields
 
 By default, the fields property is an empty array. When an empty array, all fields from the layer will be dispalyed and they will use the default values. These fields can be configured by setting this fields array to tell the GeoForm what fields show and their properties. You can set each fields label, help text (optional description), visibility, default populated value and hint text (placeholder).
 
@@ -71,7 +71,7 @@ Modified fields property
         "placeHolder": "Enter an issue"
     }]
 
-### Configuring Application Details
+#### Configuring Application Details
 
 The GeoForm title, description and logo can be customized. If they are left empty, they will use the webmap's default title, image and summary. If both are undefined, then the item will not show in the application.
 
@@ -89,50 +89,50 @@ If you don't want them to appear, set them to false.
         "Description": false
     }
 
-### Theme
+#### Theme
 
 Change the way this app looks by changing the theme. See the file [themes.js](js/themes.js) for all the options.
 
     "theme": "bootstrap",
 
-### Reset Map Extent
+#### Reset Map Extent
 
 If you'd like the map to be reset after a submission, set this option to true. If you dont want the map extent to return to its default on a submission, set to false.
 
     "defaultMapExtent": true,
 
-### Attachment Help Text
+#### Attachment Help Text
 
 Set this text to tell users what kind of file to attach.
 
     "attachmentHelpText": "Select a cat photo!",
 
-### Use Small Header
+#### Use Small Header
 
 This option will use smaller text for the GeoForm title and description.
 
     useSmallHeader": false,
 
-### Enable Sharing
+#### Enable Sharing
 
 If you would not like the sharing links to show when a user submits an entry, set this to false.
 
     "enableSharing": true,
     
-### Symbol Color
+#### Symbol Color
 
 Set the color of the symbol to use when selecting an application. See the file [pushpins.js](js/pushpins.js) for all the options.
 
     "pushpinColor": "grey",
 
-### Bit.ly API Information
+#### Bit.ly API Information
 
 In order to shorten shared URLs, the app uses the bit.ly URL shortening service. Sign up for an account to get API credentials to enter here.
 
     "bitlyLogin": "myAccount",
     "bitlyKey": "myKey",
 
-### Sharing Host
+#### Sharing Host
 
 Use this templated in an organization or portal by changing this URL to point to the portal/org.
 
