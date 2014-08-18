@@ -370,14 +370,12 @@ define([
             }
             
             on(window, 'resize', lang.hitch(this, function () {
-                this.map.reposition();
-                this.map.resize(true);
+                this._resizeMap(true);
                 this._resizeInfoWin();
                 this._centerPopup();
             }));
 
-            this.map.reposition();
-            this.map.resize();
+            this._resizeMap();
         },
         _centerPopup: function () {
             if (this.map.infoWindow && this.map.infoWindow.isShowing) {
@@ -868,8 +866,7 @@ define([
                 // console.log(this.config);
                 this.map = response.map;
                 this.defaultExtent = this.map.extent;
-                this.map.reposition();
-                this.map.resize();
+                this._resizeMap();
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
@@ -1059,7 +1056,7 @@ define([
                 this.addressGeometry = evt.result.feature.geometry;
                 this._setSymbol(evt.result.feature.geometry);
                 this.map.centerAt(evt.result.feature.geometry).then(lang.hitch(this, function(){
-                    this.map.resize();
+                    this._resizeMap();
                 }));
                 this.map.infoWindow.setTitle(nls.user.locationTabText);
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
@@ -1192,7 +1189,7 @@ define([
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(this.addressGeometry);
                 this.map.centerAt(this.addressGeometry).then(lang.hitch(this, function(){
-                    this.map.resize();
+                    this._resizeMap();
                 }));
                 var errorMessageNode = dom.byId('errorMessageDiv');
                 domConstruct.empty(errorMessageNode);
@@ -1296,8 +1293,7 @@ define([
                 innerHTML: errorMessage
             }, errorMessageNode);
             window.location.hash = "#errorMessage";
-            this.map.reposition();
-            this.map.resize();
+            this._resizeMap();
         },
 
         _resetButton: function () {
@@ -1328,7 +1324,14 @@ define([
                 }
             }));
         },
-
+        
+        _resizeMap: function(force){
+            if(this.map){
+                this.map.reposition();
+                this.map.resize(force);   
+            }
+        },
+        
         _populateLocationsOptions: function () {
             var count = 0;
             var locationTabs = query(".nav-tabs li");
@@ -1339,9 +1342,7 @@ define([
                         domStyle.set(locationTabs[count], 'display', 'none');
                     } else {
                         //resize the map to set the correct info-window anchor
-                        on(locationTabs[count], 'click', lang.hitch(this, function(){
-                            this.map.resize();
-                        }));
+                        on(locationTabs[count], 'click', lang.hitch(this, this._resizeMap));
                     }
                     count++;
                 }
