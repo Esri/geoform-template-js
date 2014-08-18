@@ -1,117 +1,115 @@
-<div data-dojo-attach-point="userMode">
-    <div data-dojo-attach-point="jumbotronNode" class="jumbotron">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <img alt="" data-dojo-attach-point="appLogo" class="img-responsive img-rounded" />
-                    <h1 data-dojo-attach-point="appTitle"></h1>
-                    <p data-dojo-attach-point="appDescription"></p>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="jumbotronNode" class="jumbotron">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 errorMessageDiv">
-                <div data-dojo-attach-point="erroMessageDiv"></div>
+            <div class="col-xs-12">
+                <img alt="" id="appLogo" class="img-responsive img-rounded" />
+                <h1 id="appTitle"></h1>
+                <p id="appDescription"></p>
+                <div class="clearfix"></div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-8">
-                <h2>${nls.user.geoFormGeneralTabText}</h2>
-                <form role="form" data-dojo-attach-point="userForm"></form>
-                <h2 id="select_location">${nls.user.locationInformationText}</h2>
-                <p>${nls.user.locationDescription}</p>
-                <ul class="nav nav-tabs">
-                    <li><a href="#myLocation" data-toggle="tab">${nls.user.myLocationText}</a>
-                    </li>
-                    <li><a href="#address" data-toggle="tab">${nls.user.addressText}</a>
-                    </li>
-                    <li><a href="#coordinates" data-toggle="tab">${nls.user.geographic}</a>
-                    </li>
-                    <li><a href="#usng_mgrs" data-toggle="tab">${nls.user.usng_mgrs}</a>
-                    </li>
-                    <li><a href="#utm" data-toggle="tab">${nls.user.utm}</a>
-                    </li>
-                </ul>
-                <div class="myLocationOptions">
-                    <div class="tab-content">
-                        <div id="myLocation" class="tab-pane">
-                            <div id="geolocate_button" class="btn btn-default" data-loading-text="${nls.user.finding}">${nls.user.findMyLocation}</div>
-                        </div>
-                        <div id="address" class="tab-pane">
-                            <div class="input-group">
-                                <input data-dojo-attach-point="searchInput" type="text" class="form-control">
-                                <div class="input-group-btn" id="geocoder_buttons">
-                                    <button data-dojo-attach-point="searchSubmit" class="btn btn-default" type="button"><span id="geocoder_spinner" class="glyphicon glyphicon-search"></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="coordinates" class="tab-pane">
-                            <div class="form-group" data-dojo-attach-point="coordinatesContainer">
-                                <label for="lat_coord">${nls.user.placeholderLatitude}</label>
-                                <input id="lat_coord" type="text" pattern="-?\d{1,3}\.\d+" data-dojo-attach-point="XCoordinate" class="form-control" type="text" placeholder="34.05627" />
-                            </div>
-                            <div class="form-group" data-dojo-attach-point="coordinatesContainer2">
-                                <label for="lng_coord">${nls.user.placeholderLongitude}</label>
-                                <input id="lng_coord" type="text" pattern="-?\d{1,3}\.\d+" data-dojo-attach-point="YCoordinate" class="form-control" type="text" placeholder="-117.19569" />
-                            </div>
-                            <div>
-                                <button data-dojo-attach-point="cordsSubmit" type="button" class="btn btn-default">${nls.user.setLocation}</button>
-                            </div>
-                        </div>
-                        <div id="usng_mgrs" class="tab-pane">
-                            <div class="form-group">
-                                <label for="usng_mgrs_coord">${nls.user.usng_mgrs}</label>
-                                <input id="usng_mgrs_coord" type="text" class="form-control" type="text" placeholder="11S MT 81939 68413" />
-                            </div>
-                            <div>
-                                <button data-dojo-attach-point="usng_mgrs_submit" type="button" class="btn btn-default">${nls.user.setLocation}</button>
-                            </div>
-                        </div>
-                        <div id="utm" class="tab-pane">
-                            <div class="form-group">
-                                <label for="utm_northing">${nls.user.utm_northing}</label>
-                                <input id="utm_northing" type="text" class="form-control" type="text" placeholder="3768413" />
-                            </div>
-                            <div class="form-group">
-                                 <label for="utm_easting">${nls.user.utm_easting}</label>
-                                <input id="utm_easting" type="text" class="form-control" type="text" placeholder="481939" />
-                            </div>
-                            <div class="form-group">
-                                <label for="utm_zone_number">${nls.user.utm_zone_number}</label>
-                                <input id="utm_zone_number" type="text" class="form-control" type="text" placeholder="11" />
-                            </div>
-                            <div>
-                                <button data-dojo-attach-point="utm_submit" type="button" class="btn btn-default">${nls.user.setLocation}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="gf-map">
-                    <div id="mapDiv" class="map-div"></div>
-                </div>
-                <div id="coordinatesContainer">
-                    <span class="text-muted" id="coordinatesValue">&nbsp;</span>
-                </div>
-                <h2>${nls.user.submitInformationText}</h2>
-                <p>${nls.user.submitInstructions}</p>
-                <div id="connection_status"></div>
-                <div id="pending_edits"></div>
-                <div class="clearfix"></div>
-                <div class="form-group">
-                    <div class="submit-area">
-                        <div class="submit-container" id="submit_container">
-                            <button type="button" data-dojo-attach-point="submitButton" data-loading-text="${nls.user.submitButtonTextLoading}" class="btn btn-primary">${nls.user.submitButtonText}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr />
-        <footer><div class="panel-body text-center"><a href="#top">${nls.user.backToTop}</a></div></footer>
     </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 errorMessageDiv">
+            <div id="errorMessageDiv"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-8">
+            <h2>${user.geoFormGeneralTabText}</h2>
+            <form role="form" id="userForm"></form>
+            <h2 id="select_location">${user.locationInformationText}</h2>
+            <p>${user.locationDescription}</p>
+            <ul class="nav nav-tabs">
+                <li><a href="#myLocation" data-toggle="tab">${user.myLocationText}</a>
+                </li>
+                <li><a href="#address" data-toggle="tab">${user.addressText}</a>
+                </li>
+                <li><a href="#coordinates" data-toggle="tab">${user.geographic}</a>
+                </li>
+                <li><a href="#usng_mgrs" data-toggle="tab">${user.usng_mgrs}</a>
+                </li>
+                <li><a href="#utm" data-toggle="tab">${user.utm}</a>
+                </li>
+            </ul>
+            <div class="myLocationOptions">
+                <div class="tab-content">
+                    <div id="myLocation" class="tab-pane">
+                        <div id="geolocate_button" class="btn btn-default" data-loading-text="${user.finding}">${user.findMyLocation}</div>
+                    </div>
+                    <div id="address" class="tab-pane">
+                        <div class="input-group">
+                            <input id="searchInput" type="text" class="form-control">
+                            <div class="input-group-btn" id="geocoder_buttons">
+                                <button id="searchSubmit" class="btn btn-default" type="button"><span id="geocoder_spinner" class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="coordinates" class="tab-pane">
+                        <div class="form-group">
+                            <label for="lat_coord">${user.placeholderLatitude}</label>
+                            <input id="lat_coord" type="text" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" placeholder="34.05627" />
+                        </div>
+                        <div class="form-group">
+                            <label for="lng_coord">${user.placeholderLongitude}</label>
+                            <input id="lng_coord" type="text" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" placeholder="-117.19569" />
+                        </div>
+                        <div>
+                            <button id="cordsSubmit" type="button" class="btn btn-default">${user.setLocation}</button>
+                        </div>
+                    </div>
+                    <div id="usng_mgrs" class="tab-pane">
+                        <div class="form-group">
+                            <label for="usng_mgrs_coord">${user.usng_mgrs}</label>
+                            <input id="usng_mgrs_coord" type="text" class="form-control" type="text" placeholder="11S MT 81939 68413" />
+                        </div>
+                        <div>
+                            <button id="usng_mgrs_submit" type="button" class="btn btn-default">${user.setLocation}</button>
+                        </div>
+                    </div>
+                    <div id="utm" class="tab-pane">
+                        <div class="form-group">
+                            <label for="utm_northing">${user.utm_northing}</label>
+                            <input id="utm_northing" type="text" class="form-control" type="text" placeholder="3768413" />
+                        </div>
+                        <div class="form-group">
+                             <label for="utm_easting">${user.utm_easting}</label>
+                            <input id="utm_easting" type="text" class="form-control" type="text" placeholder="481939" />
+                        </div>
+                        <div class="form-group">
+                            <label for="utm_zone_number">${user.utm_zone_number}</label>
+                            <input id="utm_zone_number" type="text" class="form-control" type="text" placeholder="11" />
+                        </div>
+                        <div>
+                            <button id="utm_submit" type="button" class="btn btn-default">${user.setLocation}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="gf-map">
+                <div id="mapDiv" class="map-div"></div>
+            </div>
+            <div id="coordinatesContainer">
+                <span class="text-muted" id="coordinatesValue">&nbsp;</span>
+            </div>
+            <h2>${user.submitInformationText}</h2>
+            <p>${user.submitInstructions}</p>
+            <div id="connection_status"></div>
+            <div id="pending_edits"></div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+                <div class="submit-area">
+                    <div class="submit-container" id="submit_container">
+                        <button type="button" id="submitButton" data-loading-text="${user.submitButtonTextLoading}" class="btn btn-primary">${user.submitButtonText}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <footer><div class="panel-body text-center"><a href="#top">${user.backToTop}</a></div></footer>
 </div>

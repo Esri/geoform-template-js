@@ -16,8 +16,6 @@ define([
     "dojo/Deferred",
     "dojo/DeferredList",
     "dojo/number",
-    "dijit/_WidgetBase",
-    "dijit/_TemplatedMixin",
     "dojo/text!application/dijit/templates/modal.html",
     "dojo/text!application/dijit/templates/author.html",
     "application/builder/browseIdDlg",
@@ -31,9 +29,8 @@ define([
     "application/pushpins",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, DeferredList, number, _WidgetBase, _TemplatedMixin, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
-    return declare([_WidgetBase, _TemplatedMixin], {
-        templateString: authorTemplate,
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, DeferredList, number, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
+    return declare([], {
         nls: nls,
         currentState: "webmap",
         previousState: null,
@@ -86,7 +83,9 @@ define([
         _initializeBuilder: function (config, userInfo, response) {
             // set to default theme. (first in array)
             dom.byId("themeLink").href = this.themes[0].url;
-            dom.byId("parentContainter").appendChild(this.authorMode);
+            // set author html
+            var authorHTML = string.substitute(authorTemplate, nls);
+            dom.byId("parentContainter").innerHTML = authorHTML;
             this.buttonConflict = $.fn.button.noConflict();
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
@@ -165,7 +164,7 @@ define([
                 }
             }));
 
-            on(this.selectAll, "change", lang.hitch(this, function (evt) {
+            on(dom.byId('selectAll'), "change", lang.hitch(this, function (evt) {
                 array.forEach(query(".fieldCheckbox"), lang.hitch(this, function (currentCheckBox) {
                     currentCheckBox.checked = evt.currentTarget.checked;
                 }));
@@ -203,7 +202,7 @@ define([
                        "application/main"
                       ], lang.hitch(this, function (userMode) {
                           var index = new userMode();
-                          index.startup(this.currentConfig, this.response, true, query(".preview-frame")[0]);
+                          index.startup(this.currentConfig, this.response, true, dom.byId('iframeContainer'));
                       }));
                 } else {
                     localStorage.clear();
@@ -235,8 +234,9 @@ define([
                         }
                     }));
                 } else {
+                    var errorNode = dom.byId('builderMessageDiv');
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
-                        domConstruct.empty(this.erroMessageDiv);
+                        domConstruct.empty(errorNode);
                         attribute = currentTab.getAttribute("tab");
                         if (((attribute == "publish" || attribute == "preview") && (query(".fieldCheckbox:checked").length === 0)) || (attribute == "fields" && dom.byId("selectLayer").value === "Select Layer")) {
                             this._disableTab(currentTab);
@@ -282,7 +282,7 @@ define([
                     this._configureTheme(currentTheme.id);
                 }
             }));
-            domConstruct.create("br", {}, this.stylesList);
+            domConstruct.create("br", {}, dom.byId('stylesList'));
         },
 
         _populatePushpins: function () {
@@ -304,9 +304,9 @@ define([
                     currentInput.checked = true;
                 }
                 domAttr.set(currentInput, "checkedField", key);
-                this.own(on(currentInput, "change", lang.hitch(this, function (evt) {
+                on(currentInput, "change", lang.hitch(this, function (evt) {
                     this.currentConfig.locationSearchOptions[domAttr.get(evt.currentTarget, "checkedField")] = evt.currentTarget.checked;
-                })));
+                }));
                 count++;
             }
         },
@@ -326,8 +326,8 @@ define([
             this.currentConfig.theme = selectedTheme;
             array.some(this.themes, lang.hitch(this, function (currentTheme) {
                 if (currentTheme.id === selectedTheme) {
-                    domConstruct.empty(this.thumbnailContainer);
-                    imageAnchor = domConstruct.create("a", { "target": "_blank", "href": currentTheme.refUrl }, this.thumbnailContainer);
+                    domConstruct.empty(dom.byId('thumbnailContainer'));
+                    imageAnchor = domConstruct.create("a", { "target": "_blank", "href": currentTheme.refUrl }, dom.byId('thumbnailContainer'));
                     themeThumbnail = domConstruct.create("img", {
                         src: currentTheme.thumbnail,
                         className: "themeThumbnail img-responsive"
@@ -344,9 +344,18 @@ define([
                 fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
                 fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [], sortedFields = [], fieldPlaceholder, fieldPlaceholderInput, fieldType;
-            if (this.geoFormFieldsTable) {
-                domConstruct.empty(this.geoFormFieldsTable);
+            var formFieldsNode = dom.byId('geoFormFieldsTable');
+            
+            if (formFieldsNode) {
+                domConstruct.empty(formFieldsNode);
             }
+            
+            var sortInstance = $(formFieldsNode).data("sortable");
+            if(sortInstance){
+                sortInstance.destroy();
+            }
+            $(formFieldsNode).sortable();
+            
             array.forEach(this.currentConfig.fields, lang.hitch(this, function (currentField) {
                 configuredFieldName.push(currentField.fieldName);
                 configuredFields.push(currentField);
@@ -398,7 +407,7 @@ define([
             array.forEach(sortedFields, lang.hitch(this, function (currentField, currentIndex) {
                 fieldRow = domConstruct.create("tr", {
                     rowIndex: currentIndex
-                }, this.geoFormFieldsTable);
+                }, formFieldsNode);
                 domAttr.set(fieldRow, "visibleProp", currentField.visible);
                 fieldDNDIndicatorTD = domConstruct.create("td", {
                     className: "drag-cursor"
@@ -416,9 +425,9 @@ define([
 
                 on(fieldCheckBoxInput, "change", lang.hitch(this, function () {
                     if (query(".fieldCheckbox:checked").length == query(".fieldCheckbox").length) {
-                        this.selectAll.checked = true;
+                        dom.byId('selectAll').checked = true;
                     } else {
-                        this.selectAll.checked = false;
+                        dom.byId('selectAll').checked = false;
                     }
                     this._getFieldCheckboxState();
                 }));
@@ -482,13 +491,11 @@ define([
                 }
             }));
             if (query(".fieldCheckbox:checked").length == query(".fieldCheckbox").length) {
-                this.selectAll.checked = true;
+                dom.byId('selectAll').checked = true;
             } else {
-                this.selectAll.checked = false;
+                dom.byId('selectAll').checked = false;
             }
-            $(document).ready(function () {
-                $("#tbodyDND").sortable({});
-            });
+      
             this._updateAppConfiguration("fields");
             if (this.fieldInfo[layerName]) {
                 this._createAttachmentInput(this.fieldInfo[layerName].layerUrl);
@@ -562,7 +569,7 @@ define([
                     arcgisUtils.getItem(this.currentConfig.webmap).then(lang.hitch(this, function (itemInfo) {
                         this.currentConfig.fields.length = 0;
                         this.currentConfig.form_layer.id = "";
-                        domConstruct.empty(this.geoFormFieldsTable);
+                        domConstruct.empty(dom.byId('geoFormFieldsTable'));
                         this.currentConfig.itemInfo = itemInfo;
                         this._addOperationalLayers();
                         webmapButton.newButton('reset');
@@ -810,19 +817,20 @@ define([
         },
 
         _showErrorMessageDiv: function (errorMessage) {
-            domConstruct.empty(this.erroMessageDiv);
+            var errorNode = dom.byId('builderMessageDiv');
+            domConstruct.empty(errorNode);
             domConstruct.create("div", {
                 className: "alert alert-danger errorMessage",
                 innerHTML: errorMessage
-            }, this.erroMessageDiv);
+            }, errorNode);
         },
 
         _createAttachmentInput: function (layerUrl) {
-            domConstruct.empty(this.attachmentDetails);
+            domConstruct.empty(dom.byId('attachmentDetails'));
             var fLayer = new FeatureLayer(layerUrl);
             on(fLayer, 'load', lang.hitch(this, function () {
                 if (fLayer.hasAttachments) {
-                    var attachmentDetails = domConstruct.create("div", { "id": "attachmentDetails", "class": "form-group" }, this.attachmentDetails);
+                    var attachmentDetails = domConstruct.create("div", { "id": "attachmentDetails", "class": "form-group" }, dom.byId('attachmentDetails'));
                     domConstruct.create("label", { "for": "attachmentDescription", "innerHTML": nls.builder.attachmentDescription }, attachmentDetails);
                     domConstruct.create("input", { "type": "text", "class": "form-control", "id": "attachmentDescription", "value": this.currentConfig.attachmentHelpText }, attachmentDetails);
                     domConstruct.create("span", { "class": "attachmentHint", "innerHTML": nls.builder.attachmentHint }, attachmentDetails);
