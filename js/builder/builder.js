@@ -14,7 +14,7 @@ define([
     "dojo/_base/lang",
     "dojo/string",
     "dojo/Deferred",
-    "dojo/DeferredList",
+    "dojo/promise/all",
     "dojo/number",
     "dojo/text!application/dijit/templates/modal.html",
     "dojo/text!application/dijit/templates/author.html",
@@ -29,7 +29,7 @@ define([
     "application/pushpins",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, DeferredList, number, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
     return declare([], {
         nls: nls,
         currentState: "webmap",
@@ -212,16 +212,14 @@ define([
 
         //function will validate and add operational layers in dropdown
         _addOperationalLayers: function () {
-            var layerDefeeredListArr = [],
-                layerDefeeredList, attribute;
+            var layerListArray = [], attribute;
             this._clearLayerOptions();
             array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                 if (currentLayer.url && currentLayer.url.split("/")[currentLayer.url.split("/").length - 2].toLowerCase() == "featureserver") {
-                    layerDefeeredListArr.push(this._queryLayer(currentLayer.url, currentLayer.id));
+                    layerListArray.push(this._queryLayer(currentLayer.url, currentLayer.id));
                 }
             }));
-            layerDefeeredList = new DeferredList(layerDefeeredListArr);
-            layerDefeeredList.then(lang.hitch(this, function () {
+            all(layerListArray).then(lang.hitch(this, function () {
                 if (dom.byId("selectLayer").options.length <= 1) {
                     domAttr.set(dom.byId("selectLayer"), "disabled", true);
                     this._showErrorMessageDiv(nls.builder.invalidWebmapSelectionAlert);
