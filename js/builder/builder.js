@@ -45,6 +45,7 @@ define([
         pins: pushpins,
         onDemandResources: null,
         buttonConflict: null,
+        appSettings:null,
 
         constructor: function (config, response) {
             this.config = config;
@@ -669,9 +670,21 @@ define([
 
         //function to update the item on arcGis online
         _updateItem: function () {
-            this.currentConfig.edit = "";
-            lang.mixin(this.response.itemData.values, this.currentConfig);
-            delete this.response.itemData.values.itemInfo;
+            this.appSettings = {
+                "appid": this.currentConfig.appid,
+                "attachmentHelpText": this.currentConfig.attachmentHelpText,
+                "defaultMapExtent": this.currentConfig.defaultMapExtent,
+                "details": this.currentConfig.details,
+                "enableSharing": this.currentConfig.enableSharing,
+                "fields": this.currentConfig.fields,
+                "form_layer": this.currentConfig.form_layer,
+                "locationSearchOptions": this.currentConfig.locationSearchOptions,
+                "pushpinColor": this.currentConfig.pushpinColor,
+                "theme": this.currentConfig.theme,
+                "useSmallHeader": this.currentConfig.useSmallHeader,
+                "webmap": this.currentConfig.webmap
+            };
+            lang.mixin(this.response.itemData.values, this.appSettings);
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;
             this.response.item.typeKeywords = typeof (this.response.item.typeKeywords) == "object" ? this.response.item.typeKeywords.join(',') : this.response.item.typeKeywords;
             var rqData = lang.mixin(this.response.item, {
