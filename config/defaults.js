@@ -35,7 +35,8 @@ define({
         "enableMyLocation": true,
         "enableSearch": true,
         "enableLatLng": true,
-        "enableUSMGMGRS": false,
+        "enableUSNG": false,
+        "enableMGRS": true,
         "enableUTM": false
     },
     "helperServices": {

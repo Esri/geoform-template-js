@@ -29,7 +29,9 @@
                 </li>
                 <li><a href="#coordinates" data-toggle="tab">${user.geographic}</a>
                 </li>
-                <li><a href="#usng_mgrs" data-toggle="tab">${user.usng_mgrs}</a>
+                <li><a href="#usng" data-toggle="tab">${user.usng}</a>
+                </li>
+                <li><a href="#mgrs" data-toggle="tab">${user.mgrs}</a>
                 </li>
                 <li><a href="#utm" data-toggle="tab">${user.utm}</a>
                 </li>
@@ -61,13 +63,22 @@
                             <button id="cordsSubmit" type="button" class="btn btn-default">${user.setLocation}</button>
                         </div>
                     </div>
-                    <div id="usng_mgrs" class="tab-pane">
+                    <div id="usng" class="tab-pane">
                         <div class="form-group">
-                            <label for="usng_mgrs_coord">${user.usng_mgrs}</label>
-                            <input id="usng_mgrs_coord" type="text" class="form-control" type="text" placeholder="11S MT 81939 68413" />
+                            <label for="usng_coord">${user.usng}</label>
+                            <input id="usng_coord" type="text" class="form-control" type="text" placeholder="11S MT 81939 68413" />
                         </div>
                         <div>
-                            <button id="usng_mgrs_submit" type="button" class="btn btn-default">${user.setLocation}</button>
+                            <button id="usng_submit" type="button" class="btn btn-default">${user.setLocation}</button>
+                        </div>
+                    </div>
+                    <div id="mgrs" class="tab-pane">
+                        <div class="form-group">
+                            <label for="mgrs_coord">${user.mgrs}</label>
+                            <input id="mgrs_coord" type="text" class="form-control" type="text" placeholder="11S MT 81939 68413" />
+                        </div>
+                        <div>
+                            <button id="mgrs_submit" type="button" class="btn btn-default">${user.setLocation}</button>
                         </div>
                     </div>
                     <div id="utm" class="tab-pane">
