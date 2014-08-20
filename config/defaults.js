@@ -36,7 +36,7 @@ define({
         "enableSearch": true,
         "enableLatLng": true,
         "enableUSNG": false,
-        "enableMGRS": true,
+        "enableMGRS": false,
         "enableUTM": false
     },
     "helperServices": {
