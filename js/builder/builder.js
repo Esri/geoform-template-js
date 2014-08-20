@@ -46,6 +46,7 @@ define([
         onDemandResources: null,
         buttonConflict: null,
         appSettings:null,
+        locationSearchOption: null,
 
         constructor: function (config, response) {
             this.config = config;
@@ -61,6 +62,14 @@ define([
         startup: function () {
             var def = new Deferred();
             var signIn = new signInHelper(), userInfo = {};
+            this.locationSearchOption = {
+                "enableMyLocation": true,
+                "enableSearch": true,
+                "enableLatLng": true,
+                "enableUSMGMGRS": false,
+                "enableUTM": false
+            };
+
             signIn.createPortal().then(lang.hitch(this, function (loggedInUser) {
                 var isValidUser = signIn.authenticateUser(true, this.response, loggedInUser);
                 if (isValidUser) {
@@ -138,6 +147,22 @@ define([
             this._populateDefaultExtentOption(this.currentConfig.defaultMapExtent);
             this._populateThemes();
             this._populatePushpins();
+            //Check if the object is messed up with other type.if yes replace it with default object
+            if (!this.currentConfig.locationSearchOptions.length) {
+                for (var searchOption in this.locationSearchOption) {
+                    if (!this.currentConfig.locationSearchOptions.hasOwnProperty(searchOption)) {
+                        this.currentConfig.locationSearchOptions[searchOption] = this.locationSearchOption[searchOption];
+                    }
+                }
+            } else {
+                this.currentConfig.locationSearchOptions = this.locationSearchOption;
+            }
+            //check for the invalid options and delete them
+            for (var locationKey in this.currentConfig.locationSearchOptions) {
+                if (!this.locationSearchOption.hasOwnProperty(locationKey)) {
+                    delete this.currentConfig.locationSearchOptions[locationKey];
+                }
+            }
             this._populateLocations();
             this._initWebmapSelection();
             if (!this.localStorageSupport.supportsStorage()) {
@@ -299,13 +324,15 @@ define([
             var currentInput, key, count = 0;
             for (key in this.currentConfig.locationSearchOptions) {
                 currentInput = query("input", dom.byId('location_options'))[count];
-                if (this.currentConfig.locationSearchOptions[key]) {
-                    currentInput.checked = true;
+                if (currentInput) {
+                    if (this.currentConfig.locationSearchOptions[key]) {
+                        currentInput.checked = true;
+                    }
+                    domAttr.set(currentInput, "checkedField", key);
+                    on(currentInput, "change", lang.hitch(this, function (evt) {
+                        this.currentConfig.locationSearchOptions[domAttr.get(evt.currentTarget, "checkedField")] = evt.currentTarget.checked;
+                    }));
                 }
-                domAttr.set(currentInput, "checkedField", key);
-                on(currentInput, "change", lang.hitch(this, function (evt) {
-                    this.currentConfig.locationSearchOptions[domAttr.get(evt.currentTarget, "checkedField")] = evt.currentTarget.checked;
-                }));
                 count++;
             }
         },
