@@ -951,21 +951,23 @@ define([
             }), this.reportError);
         },
         _evaluateCoordinates: function () {
+            var latNode = dom.byId('lat_coord');
+            var lngNode = dom.byId('lng_coord');
             this._clearSubmissionGraphic();
-            if (dom.byId('lat_coord').value === "") {
+            if (latNode.value === "") {
                 this._showErrorMessageDiv(string.substitute(nls.user.emptylatitudeAlertMessage, {
                             openLink: '<a href="#lat_coord\">',
                             closeLink: '</a>'
                         }));
                 return;
-            } else if (dom.byId('lng_coord').value === "") {
+            } else if (lngNode.value === "") {
                 this._showErrorMessageDiv(string.substitute(nls.user.emptylongitudeAlertMessage, {
                             openLink: '<a href="#lng_coord\">',
                             closeLink: '</a>'
                         }));
                 return;
             }
-            this._locatePointOnMap(dom.byId('lat_coord').value, dom.byId('lng_coord').value, 'latlon');
+            this._locatePointOnMap(latNode.value, lngNode.value, 'latlon');
         },
         _findLocation: function (evt) {
             var keyCode = evt.charCode || evt.keyCode;
