@@ -889,54 +889,49 @@ define([
                 on(dom.byId('cordsSubmit'), "click", lang.hitch(this, function (evt) {
                     this._evaluateCoordinates(evt);
                 }));
-
+                // USNG
                 on(dom.byId('usng_submit'), "click", lang.hitch(this, function () {
-                    this._clearSubmissionGraphic();
-                    var value = dom.byId('usng_coord').value;
-                    var fn = coordinator('usng', 'latlong');
-                    var converted;
-                    try{
-                        converted = fn(value);
-                    }
-                    catch(e){
-                       this._coordinatesError('usng'); 
-                    }
-                    if(converted){
-                        this._locatePointOnMap(converted.latitude, converted.longitude, 'usng');
+                    this._convertUSNG();
+                }));
+                on(dom.byId('usng_coord'), "keypress", lang.hitch(this, function (evt) {
+                    var keyCode = evt.charCode || evt.keyCode;
+                    if (keyCode === 13) {
+                        this._convertUSNG();
                     }
                 }));
+                // MGRS
                 on(dom.byId('mgrs_submit'), "click", lang.hitch(this, function () {
-                    this._clearSubmissionGraphic();
-                    var value = dom.byId('mgrs_coord').value;
-                    var fn = coordinator('mgrs', 'latlong');
-                    var converted;
-                    try{
-                        converted = fn(value);
-                    }
-                    catch(e){
-                       this._coordinatesError('mgrs'); 
-                    }
-                    if(converted){
-                        this._locatePointOnMap(converted.latitude, converted.longitude, 'mgrs');
+                    this._convertMGRS();
+                }));
+                on(dom.byId('mgrs_coord'), "keypress", lang.hitch(this, function (evt) {
+                    var keyCode = evt.charCode || evt.keyCode;
+                    if (keyCode === 13) {
+                        this._convertMGRS();
                     }
                 }));
+                // UTM
                 on(dom.byId('utm_submit'), "click", lang.hitch(this, function () {
-                    this._clearSubmissionGraphic();
-                    var northing = parseFloat(dom.byId('utm_northing').value);
-                    var easting = parseFloat(dom.byId('utm_easting').value);
-                    var zone = parseInt(dom.byId('utm_zone_number').value, 10);
-                    var converted;
-                    var fn = coordinator('utm', 'latlong');
-                    try{
-                        converted = fn(northing, easting, zone);
-                    }
-                    catch(e){
-                        this._coordinatesError('utm');
-                    }
-                    if(converted){
-                        this._locatePointOnMap(converted.latitude, converted.longitude, 'utm');
+                    this._convertUTM();
+                }));
+                on(dom.byId('utm_northing'), "keypress", lang.hitch(this, function (evt) {
+                    var keyCode = evt.charCode || evt.keyCode;
+                    if (keyCode === 13) {
+                        this._convertUTM();
                     }
                 }));
+                on(dom.byId('utm_easting'), "keypress", lang.hitch(this, function (evt) {
+                    var keyCode = evt.charCode || evt.keyCode;
+                    if (keyCode === 13) {
+                        this._convertUTM();
+                    }
+                }));
+                on(dom.byId('utm_zone_number'), "keypress", lang.hitch(this, function (evt) {
+                    var keyCode = evt.charCode || evt.keyCode;
+                    if (keyCode === 13) {
+                        this._convertUTM();
+                    }
+                }));
+                // set location options
                 this._populateLocationsOptions();
                 // make sure map is loaded
                 if (this.map.loaded) {
@@ -949,6 +944,53 @@ define([
                     }));
                 }
             }), this.reportError);
+        },
+        _convertUTM: function(){
+            this._clearSubmissionGraphic();
+            var northing = parseFloat(dom.byId('utm_northing').value);
+            var easting = parseFloat(dom.byId('utm_easting').value);
+            var zone = parseInt(dom.byId('utm_zone_number').value, 10);
+            var converted;
+            var fn = coordinator('utm', 'latlong');
+            try{
+                converted = fn(northing, easting, zone);
+            }
+            catch(e){
+                this._coordinatesError('utm');
+            }
+            if(converted){
+                this._locatePointOnMap(converted.latitude, converted.longitude, 'utm');
+            }   
+        },
+        _convertUSNG: function(){
+            this._clearSubmissionGraphic();
+            var value = dom.byId('usng_coord').value;
+            var fn = coordinator('usng', 'latlong');
+            var converted;
+            try{
+                converted = fn(value);
+            }
+            catch(e){
+               this._coordinatesError('usng'); 
+            }
+            if(converted){
+                this._locatePointOnMap(converted.latitude, converted.longitude, 'usng');
+            }
+        },
+        _convertMGRS: function(){
+            this._clearSubmissionGraphic();
+            var value = dom.byId('mgrs_coord').value;
+            var fn = coordinator('mgrs', 'latlong');
+            var converted;
+            try{
+                converted = fn(value);
+            }
+            catch(e){
+               this._coordinatesError('mgrs'); 
+            }
+            if(converted){
+                this._locatePointOnMap(converted.latitude, converted.longitude, 'mgrs');
+            }
         },
         _evaluateCoordinates: function () {
             var latNode = dom.byId('lat_coord');
