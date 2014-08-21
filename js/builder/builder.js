@@ -45,7 +45,7 @@ define([
         pins: pushpins,
         onDemandResources: null,
         buttonConflict: null,
-        appSettings:null,
+        appSettings: null,
         locationSearchOption: null,
 
         constructor: function (config, response) {
@@ -66,7 +66,8 @@ define([
                 "enableMyLocation": true,
                 "enableSearch": true,
                 "enableLatLng": true,
-                "enableUSMGMGRS": false,
+                "enableUSNG": false,
+                "enableMGRS": false,
                 "enableUTM": false
             };
 
@@ -698,7 +699,6 @@ define([
         //function to update the item on arcGis online
         _updateItem: function () {
             this.appSettings = {
-                "appid": this.currentConfig.appid,
                 "attachmentHelpText": this.currentConfig.attachmentHelpText,
                 "defaultMapExtent": this.currentConfig.defaultMapExtent,
                 "details": this.currentConfig.details,
@@ -711,7 +711,7 @@ define([
                 "useSmallHeader": this.currentConfig.useSmallHeader,
                 "webmap": this.currentConfig.webmap
             };
-            lang.mixin(this.response.itemData.values, this.appSettings);
+            this.response.itemData.values = this.appSettings;
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;
             this.response.item.typeKeywords = typeof (this.response.item.typeKeywords) == "object" ? this.response.item.typeKeywords.join(',') : this.response.item.typeKeywords;
             var rqData = lang.mixin(this.response.item, {
