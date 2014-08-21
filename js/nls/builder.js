@@ -68,7 +68,8 @@ define({
             myLocationText: "My Location",
 	        searchText: "Search",
 	        coordinatesText: "Latitude & Longitude Coordinates",
-	        usng_mgrs: "USMG/MGRS Coordinates",
+	        usng: "USNG Coordinates",
+            mgrs: "MGRS Coordinates",
 	        utm: "UTM Coordinates",
 	        selectLocationSDescription: "Allow users to select a location using these methods."
         }

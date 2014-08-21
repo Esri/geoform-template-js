@@ -37,7 +37,8 @@ define({
             }
         },
         user: {
-            usng_mgrs: "USNG/MGRS",
+            mgrs: "MGRS",
+            usng: "USNG",
             utm: "UTM",
             utm_northing: "Northing",
             utm_easting: "Easting",
@@ -80,7 +81,8 @@ define({
             toggleDropdown: "Toggle Dropdown",
             invalidLatLong: "Please enter valid ${latLink}latitude${closeLink} and ${lngLink}longitude${closeLink} coordinates.",
             invalidUTM: "Please enter valid ${openLink}UTM${closeLink} coordinates.",
-            invalidUSNGMGRS: "Please enter valid ${openLink}USNG/MGRS${closeLink} coordinates.",
+            invalidUSNG: "Please enter valid ${openLink}USNG${closeLink} coordinates.",
+            invalidMGRS: "Please enter valid ${openLink}MGRS${closeLink} coordinates.",
             geoformTitleText: "GeoForm",
             domainDefaultText:"Select&hellip;",
             applyEditsFailedMessage: "Sorry your entry cannot be submitted. Please try again.",
