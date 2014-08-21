@@ -108,10 +108,11 @@ If you'd like the map to be reset after each submission, set this option to true
 
     "defaultMapExtent": true,
 
-#### Attachment Help Text
+#### Attachment Text
 
 Use this text option to tell users what kind of file to attach.
 
+    "attachmentLabel": "Cat Image",
     "attachmentHelpText": "Select a cat photo!",
 
 #### Use Small Header

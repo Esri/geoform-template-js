@@ -727,7 +727,7 @@ define([
                 }, userFormNode);
 
                 labelContent = domConstruct.create("label", {
-                    innerHTML: nls.user.attachment,
+                    innerHTML: this.config.attachmentLabel || nls.user.attachment,
                     "for": "geoFormAttachment"
                 }, formContent);
 
