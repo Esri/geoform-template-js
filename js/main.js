@@ -266,9 +266,9 @@ define([
                                 errorMessage += "<li>" + nls.user.formValidationMessageAlertText + "\n <ul>";
                                 array.forEach(erroneousFields, function (erroneousField) {
                                     if (query(".form-control", erroneousField).length !== 0 && query(".form-control", erroneousField)[0].placeholder !== ""){
-                                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split("*")[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
+                                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split(nls.user.requiredField)[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
                                     } else{
-                                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split("*")[0] + "</a></li>";
+                                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split(nls.user.requiredField)[0] + "</a></li>";
                                     }
                                 });
                                 errorMessage += "</ul></li>";
@@ -522,9 +522,9 @@ define([
                 }, userFormNode);
                 if (!currentField.nullable || currentField.typeField) {
                     domClass.add(formContent, "form-group has-feedback geoFormQuestionare mandatory");
-                    requireField = domConstruct.create("div", {
-                        className: 'text-danger requireFieldStyle',
-                        innerHTML: "*"
+                    requireField = domConstruct.create("small", {
+                        className: 'requireFieldStyle',
+                        innerHTML: nls.user.requiredField
                     }, formContent);
                 }
                 else {

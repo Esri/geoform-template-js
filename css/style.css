@@ -202,6 +202,7 @@ input::-ms-clear {
 .requireFieldStyle {
     display: inline-block;
     margin-left: 5px;
+    font-weight: normal;
 }
 /* fix for popup close */
 

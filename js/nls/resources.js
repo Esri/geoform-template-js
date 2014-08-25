@@ -87,6 +87,7 @@ define({
             domainDefaultText:"Select&hellip;",
             applyEditsFailedMessage: "Sorry your entry cannot be submitted. Please try again.",
             requiredFields: "There are some errors. Please correct them below.",
+            requiredField: "(required)",
             error: "Error"
         }
     })
