@@ -483,7 +483,7 @@ define([
                 array.forEach(fields, lang.hitch(this, function (currentField) {
                     if (layerField.name == currentField.fieldName && currentField.visible) {
                         if (currentField.typeField) {
-                            layerField["subTypes"] = this.map.getLayer(this.config.form_layer.id).types;
+                            layerField.subTypes = this.map.getLayer(this.config.form_layer.id).types;
                         }
                         newAddedFields.push(lang.mixin(layerField, currentField));
                         matchingField = true;
