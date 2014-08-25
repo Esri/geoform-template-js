@@ -370,7 +370,7 @@ define([
                 configuredFieldName = [],
                 fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
                 fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
-                newAddedFields = [], sortedFields = [], fieldPlaceholder, fieldPlaceholderInput, fieldType;
+                newAddedFields = [], sortedFields = [], fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect;
             var formFieldsNode = dom.byId('geoFormFieldsTable');
             
             if (formFieldsNode) {
@@ -448,8 +448,13 @@ define([
                     type: "checkbox",
                     index: currentIndex
                 }, fieldCheckBox);
-                domAttr.set(fieldCheckBoxInput, "checked", currentField.visible);
-
+                if (currentField.name !== this.fieldInfo[layerName].typeIdField) {
+                    domAttr.set(fieldCheckBoxInput, "checked", currentField.visible);
+                }
+                else {
+                    domAttr.set(fieldCheckBoxInput, "checked", true);
+                    domAttr.set(fieldCheckBoxInput, "disabled", true);
+                }
                 on(fieldCheckBoxInput, "change", lang.hitch(this, function () {
                     if (query(".fieldCheckbox:checked").length == query(".fieldCheckbox").length) {
                         dom.byId('selectAll').checked = true;
@@ -496,9 +501,39 @@ define([
                 }
                 fieldType = domConstruct.create("td", {
                     style: "min-width: 100px",
-                    className: "fieldSqlType",
-                    innerHTML: currentField.type.replace("esriFieldType", "")
+                    className: "fieldSqlType"
                 }, fieldRow);
+                if (currentField.type === "esriFieldTypeDate") {
+                    return;
+                }
+                if ((currentField.domain && currentField.domain.codedValues) || (currentField.name === this.fieldInfo[layerName].typeIdField)) {
+                    if ((currentField.domain && currentField.domain.codedValues.length <= 4) || (this.fieldInfo[layerName].types && this.fieldInfo[layerName].types.length <= 4)) {
+                        typeSelect = domConstruct.create("select", { "class": "form-control displayType" }, fieldType);
+                        domConstruct.create("option", { innerHTML: nls.builder.defaultSelectOption, value: "" }, typeSelect);
+                        domConstruct.create("option", { innerHTML: nls.builder.selectMenuOption, value: "dropdown" }, typeSelect);
+                        domConstruct.create("option", { innerHTML: nls.builder.selectRadioOption, value: "radioBtn" }, typeSelect);
+                    }
+                } else {
+                    if (!currentField.domain) {
+                        typeSelect = domConstruct.create("select", { "class": "form-control displayType" }, fieldType);
+                        if (currentField.type == "esriFieldTypeSmallInteger" || currentField.type == "esriFieldTypeInteger" || currentField.type == "esriFieldTypeSingle" || currentField.type == "esriFieldTypeDouble") {
+                            domConstruct.create("option", { innerHTML: nls.builder.defaultSelectOption, value: "" }, typeSelect);
+                            domConstruct.create("option", { innerHTML: nls.builder.selectTextOption, value: "textbox" }, typeSelect);
+                            domConstruct.create("option", { innerHTML: nls.builder.selectCheckboxOption, value: "checkbox" }, typeSelect);
+                        } else {
+                            if (currentField.type == "esriFieldTypeString") {
+                                domConstruct.create("option", { innerHTML: nls.builder.defaultSelectOption, value: "" }, typeSelect);
+                                domConstruct.create("option", { innerHTML: nls.builder.selectTextOption, value: "text" }, typeSelect);
+                                domConstruct.create("option", { innerHTML: nls.builder.selectMailOption, value: "email" }, typeSelect);
+                                domConstruct.create("option", { innerHTML: nls.builder.selectUrlOption, value: "url" }, typeSelect);
+                                domConstruct.create("option", { innerHTML: nls.builder.selectTextAreaOption, value: "textarea" }, typeSelect);
+                            }
+                        }
+                    }
+                }
+                if (currentField.displayType) {
+                    this._setSelectedDisplayText(currentField.displayType, typeSelect);
+                }
                 if (this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo) {
                     array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
                         if (currentFieldPopupInfo.fieldName == currentField.name) {
@@ -529,13 +564,14 @@ define([
             }
         },
 
-        //function to fetch the datatype of the field
-        _createFieldDataTypeOptions: function (currentField, fieldTypeSelect) {
-            var fieldTypeSelectOption;
-            fieldTypeSelectOption = domConstruct.create("option", {}, null);
-            fieldTypeSelectOption.text = currentField.type.split("esriFieldType")[1];
-            fieldTypeSelectOption.value = currentField.type.split("esriFieldType")[1];
-            fieldTypeSelect.appendChild(fieldTypeSelectOption);
+        //To make the configured type as selected
+        _setSelectedDisplayText: function (displayText, typeSelect) {
+            array.some(typeSelect.options, function (currentOption) {
+                if (currentOption.value == displayText) {
+                    domAttr.set(currentOption, 'selected', 'selected');
+                    return true;
+                }
+            });
         },
 
         //function to query layer in order to obtain all the information of layer
@@ -661,30 +697,28 @@ define([
                     break;
                 case "fields":
                     this.currentConfig.fields.length = 0;
-                    var index, fieldName, fieldLabel, fieldDescription, layerName, visible, defaultValue;
+                    var fieldName, fieldLabel, fieldDescription, layerName, visible, typeField;
                     layerName = dom.byId("selectLayer").value;
                     array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow, currentFieldIndex) {
                         if (currentRow.getAttribute("rowIndex")) {
-                            index = currentRow.getAttribute("rowIndex");
                             fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
-                            for (var key in this.fieldInfo[this.currentConfig.form_layer.id].defaultValues) {
-                                if (key == fieldName) {
-                                    defaultValue = this.fieldInfo[this.currentConfig.form_layer.id].defaultValues[key];
-                                    break;
-                                }
-                            }
+
                             fieldLabel = query(".fieldLabel", currentRow)[0].value;
                             fieldDescription = query(".fieldDescription", currentRow)[0].value;
                             visible = query(".fieldCheckbox", currentRow)[0].checked;
+                            typeField = query(".fieldCheckbox", currentRow)[0].checked && query(".fieldCheckbox", currentRow)[0].disabled;
                             this.currentConfig.fields.push({
                                 fieldName: fieldName,
                                 fieldLabel: fieldLabel,
                                 fieldDescription: fieldDescription,
                                 visible: visible,
-                                defaultValue: defaultValue
+                                typeField: typeField
                             });
                             if (query(".fieldPlaceholder", currentRow)[0] && query(".fieldPlaceholder", currentRow)[0].value) {
                                 this.currentConfig.fields[currentFieldIndex - 1].placeHolder = query(".fieldPlaceholder", currentRow)[0].value;
+                            }
+                            if (query(".displayType", currentRow)[0]) {
+                                this.currentConfig.fields[currentFieldIndex - 1].displayType = query(".displayType", currentRow)[0].value;
                             }
                         }
 			if (dom.byId("attachmentDescription")) {
