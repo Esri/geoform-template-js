@@ -509,7 +509,6 @@ define([
                 if ((currentField.domain && currentField.domain.codedValues) || (currentField.name === this.fieldInfo[layerName].typeIdField)) {
                     if ((currentField.domain && currentField.domain.codedValues.length <= 4) || (this.fieldInfo[layerName].types && this.fieldInfo[layerName].types.length <= 4)) {
                         typeSelect = domConstruct.create("select", { "class": "form-control displayType" }, fieldType);
-                        domConstruct.create("option", { innerHTML: nls.builder.defaultSelectOption, value: "" }, typeSelect);
                         domConstruct.create("option", { innerHTML: nls.builder.selectMenuOption, value: "dropdown" }, typeSelect);
                         domConstruct.create("option", { innerHTML: nls.builder.selectRadioOption, value: "radioBtn" }, typeSelect);
                     }
@@ -517,12 +516,10 @@ define([
                     if (!currentField.domain) {
                         typeSelect = domConstruct.create("select", { "class": "form-control displayType" }, fieldType);
                         if (currentField.type == "esriFieldTypeSmallInteger" || currentField.type == "esriFieldTypeInteger" || currentField.type == "esriFieldTypeSingle" || currentField.type == "esriFieldTypeDouble") {
-                            domConstruct.create("option", { innerHTML: nls.builder.defaultSelectOption, value: "" }, typeSelect);
                             domConstruct.create("option", { innerHTML: nls.builder.selectTextOption, value: "textbox" }, typeSelect);
                             domConstruct.create("option", { innerHTML: nls.builder.selectCheckboxOption, value: "checkbox" }, typeSelect);
                         } else {
                             if (currentField.type == "esriFieldTypeString") {
-                                domConstruct.create("option", { innerHTML: nls.builder.defaultSelectOption, value: "" }, typeSelect);
                                 domConstruct.create("option", { innerHTML: nls.builder.selectTextOption, value: "text" }, typeSelect);
                                 domConstruct.create("option", { innerHTML: nls.builder.selectMailOption, value: "email" }, typeSelect);
                                 domConstruct.create("option", { innerHTML: nls.builder.selectUrlOption, value: "url" }, typeSelect);
@@ -724,6 +721,9 @@ define([
 			if (dom.byId("attachmentDescription")) {
                             this.currentConfig.attachmentHelpText = dom.byId("attachmentDescription").value;
                         }
+                        if (dom.byId("attachmentLabelInfo")) {
+                            this.currentConfig.attachmentLabel = dom.byId("attachmentLabelInfo").value;
+                        }
                     }));
                     break;
                 default:
@@ -898,11 +898,16 @@ define([
         },
 
         _createAttachmentInput: function (layerUrl) {
+            var fLayer, attachmentDetails, attachmentLabel;
             domConstruct.empty(dom.byId('attachmentDetails'));
-            var fLayer = new FeatureLayer(layerUrl);
+            fLayer = new FeatureLayer(layerUrl);
             on(fLayer, 'load', lang.hitch(this, function () {
                 if (fLayer.hasAttachments) {
-                    var attachmentDetails = domConstruct.create("div", { "id": "attachmentDetails", "class": "form-group" }, dom.byId('attachmentDetails'));
+                    attachmentLabel = domConstruct.create("div", { "id": "attachmentLabel", "class": "form-group" }, dom.byId('attachmentDetails'));
+                    domConstruct.create("label", { "for": "attachmentLabel", "innerHTML": nls.builder.attachmentLabelText }, attachmentLabel);
+                    domConstruct.create("input", { "type": "text", "class": "form-control", "id": "attachmentLabelInfo", "value": this.currentConfig.attachmentLabel }, attachmentLabel);
+                    domConstruct.create("span", { "class": "attachmentHint", "innerHTML": nls.builder.attachmentLabelHint }, attachmentLabel);
+                    attachmentDetails = domConstruct.create("div", { "id": "attachmentDetails", "class": "form-group" }, dom.byId('attachmentDetails'));
                     domConstruct.create("label", { "for": "attachmentDescription", "innerHTML": nls.builder.attachmentDescription }, attachmentDetails);
                     domConstruct.create("input", { "type": "text", "class": "form-control", "id": "attachmentDescription", "value": this.currentConfig.attachmentHelpText }, attachmentDetails);
                     domConstruct.create("span", { "class": "attachmentHint", "innerHTML": nls.builder.attachmentHint }, attachmentDetails);
