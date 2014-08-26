@@ -251,9 +251,9 @@ define([
                                         erroneousFields.push(currentField);
                                     }
                                 }
-                                //handle errors in radio fields here.
+                                //handle errors in radio and checkbox fields here.
                                 else {
-                                    if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0) {
+                                    if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length==0) {
                                         erroneousFields.push(currentField);
                                     }
                                 }
@@ -555,7 +555,7 @@ define([
                 }
                 //code to make select boxes in case of a coded value
                 if (currentField.domain || currentField.typeField) {
-                    if (currentField.domain.type == 'codedValue') {
+                    if ((currentField.domain && currentField.domain.type === 'codedValue') || currentField.typeField) {
                         radioInput = false;
                         if (currentField.displayType && currentField.displayType === "radioBtn") {
                             radioInput = true;
