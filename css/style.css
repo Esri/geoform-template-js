@@ -132,12 +132,6 @@
     color: #007ac2;
     cursor: pointer;
 }
-#geoform .fieldCheckbox,
-#geoform .selectAllCheckbox {
-    margin-right: 5px;
-    vertical-align: top;
-    margin-left: 8px;
-}
 .progress-percent {
     width: 100%;
     line-height: 50px;
@@ -159,7 +153,7 @@
     margin: 0 7px 0px;
 }
 .myLocationOptions {
-    padding: 20px 0px;
+    padding: 20px 0;
 }
 #geoform .has-feedback .form-control {
     padding-right: 10px;

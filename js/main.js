@@ -315,6 +315,8 @@ define([
         },
         // Map is ready
         _mapLoaded: function () {
+            // add border radius to map
+            domClass.add(this.map.root, 'panel');
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
             // your code here!
