@@ -1550,21 +1550,21 @@ define([
             }, iconContainer);
             if (this.config.enableSharing) {
                 facebookIconHolder = domConstruct.create("div", {
-                    className: "iconContent"
+                    className: "pull-left"
                 }, iconContainer);
                 domConstruct.create("a", {
                     className: "fa fa-facebook-square iconClass",
                     id: "facebookIcon"
                 }, facebookIconHolder);
                 twitterIconHolder = domConstruct.create("div", {
-                    className: "iconContent"
+                    className: "pull-left"
                 }, iconContainer);
                 domConstruct.create("a", {
                     className: "fa fa-twitter-square iconClass",
                     id: "twitterIcon"
                 }, twitterIconHolder);
                 googlePlusIconHolder = domConstruct.create("div", {
-                    className: "iconContent"
+                    className: "pull-left"
                 }, iconContainer);
                 domConstruct.create("a", {
                     className: "fa fa-google-plus-square iconClass",
@@ -1572,7 +1572,7 @@ define([
                 }, googlePlusIconHolder);
             }
             mailIconHolder = domConstruct.create("div", {
-                className: "iconContent"
+                className: "pull-left"
             }, iconContainer);
             domConstruct.create("a", {
                 className: "fa fa-envelope iconClass",

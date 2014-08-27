@@ -13,7 +13,7 @@
 }
 #pushpinSymbol {
     background-repeat: no-repeat;
-    width:36px;
+    width: 36px;
     height: 36px;
 }
 /* Style for Loading Indicator*/
@@ -85,9 +85,6 @@
     margin-bottom: 0px;
     margin-top: 10px;
 }
-.myDragClass {
-    background-color: gray;
-}
 /* Extra Small Devices, Phones */
 
 @media (min-width: 480px) {
@@ -135,9 +132,6 @@
     color: #007ac2;
     cursor: pointer;
 }
-.iconContent {
-    float: left;
-}
 #geoform .fieldCheckbox,
 #geoform .selectAllCheckbox {
     margin-right: 5px;
@@ -167,9 +161,6 @@
 .myLocationOptions {
     padding: 20px 0px;
 }
-.select-webmap-button {
-    margin-top: 10px;
-}
 #geoform .has-feedback .form-control {
     padding-right: 10px;
 }
@@ -190,10 +181,6 @@ input::-ms-clear {
 }
 .tableDimension {
     min-width: 180px;
-}
-.descriptionText {
-    font-size: 18px;
-    margin-bottom: 10px;
 }
 .geocoder-container {
     position: relative;
@@ -219,9 +206,6 @@ input::-ms-clear {
 }
 .webmap-thumb {
     display: inline-block;
-}
-.webmap-thumb-container {
-    margin-bottom: 5px;
 }
 /*** Esri Map ***/
 
@@ -270,9 +254,9 @@ body.modal-open,
     margin-right: 0;
     margin-top: 0;
 }
-.map-div table{
+.map-div table {
     background: transparent;
 }
-.drag-cursor{
+.drag-cursor {
     cursor: ns-resize;
 }
