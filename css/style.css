@@ -176,6 +176,9 @@ input::-ms-clear {
 .tableDimension {
     min-width: 180px;
 }
+.tableDimension2 {
+    min-width: 100px;
+}
 .geocoder-container {
     position: relative;
     z-index: 50;

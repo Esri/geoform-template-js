@@ -66,7 +66,7 @@ define({
             attachmentLabelText: "Attchment Label",
             attachmentLabelHint:"Tell users what type of file to attach.",
             attachmentDescription: "Attachment Description",
-            attachmentHint: "Optionally, you can provide additional attachment instructions here.",
+            attachmentHint: "If necessary, you can provide additional attachment instructions here.",
             jumbotronDescription: "The Bootstrap Jumbotron makes it easy to define the purpose of your application. This can be disabled at any time.",
             shareGeoformText: "Share Geoform",
             shareDescription: "The sharing panel makes it easy for your audience to share the GeoForm with other collaborators once they have made a submission - this can be disabled at any time.",

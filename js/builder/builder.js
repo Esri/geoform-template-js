@@ -470,7 +470,6 @@ define([
                     index: currentIndex
                 }, fieldRow);
                 fieldLabel = domConstruct.create("td", {
-                    className: "tableDimension"
                 }, fieldRow);
                 fieldLabelInput = domConstruct.create("input", {
                     className: "form-control fieldLabel",
@@ -479,7 +478,6 @@ define([
                     value: currentField.alias
                 }, fieldLabel);
                 fieldDescription = domConstruct.create("td", {
-                    className: "tableDimension"
                 }, fieldRow);
                 fieldDescriptionInput = domConstruct.create("input", {
                     className: "form-control fieldDescription",
@@ -487,7 +485,6 @@ define([
                     value: ""
                 }, fieldDescription);
                 fieldPlaceholder = domConstruct.create("td", {
-                    className: "tableDimension"
                 }, fieldRow);
 
                 if (!currentField.domain) {
@@ -500,8 +497,6 @@ define([
                     }
                 }
                 fieldType = domConstruct.create("td", {
-                    style: "min-width: 100px",
-                    className: "fieldSqlType"
                 }, fieldRow);
                 if (currentField.type === "esriFieldTypeDate") {
                     return;
@@ -734,6 +729,7 @@ define([
         _updateItem: function () {
             this.appSettings = {
                 "attachmentHelpText": this.currentConfig.attachmentHelpText,
+                "attachmentLabel": this.currentConfig.attachmentLabel,
                 "defaultMapExtent": this.currentConfig.defaultMapExtent,
                 "details": this.currentConfig.details,
                 "enableSharing": this.currentConfig.enableSharing,
