@@ -373,19 +373,16 @@ define([
                 fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [], sortedFields = [], fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect;
             var formFieldsNode = dom.byId('geoFormFieldsTable');
-            
             if (formFieldsNode) {
                 domConstruct.empty(formFieldsNode);
             }
-            
             var sortInstance = $(formFieldsNode).data("sortable");
             if(sortInstance){
                 sortInstance.destroy();
             }
             $(formFieldsNode).sortable();
-            
             array.forEach(this.currentConfig.fields, lang.hitch(this, function (currentField) {
-                configuredFieldName.push(currentField.fieldName);
+                configuredFieldName.push(currentField.name);
                 configuredFields.push(currentField);
             }));
 
@@ -400,7 +397,7 @@ define([
                 array.forEach(this.fieldInfo[layerName].Fields, lang.hitch(this, function (currentField) {
                     matchingField = false;
                     array.forEach(this.currentConfig.fields, lang.hitch(this, function (configLayerField) {
-                        if ((currentField.editable && configLayerField.fieldName == currentField.name)) {
+                        if ((currentField.editable && configLayerField.name == currentField.name)) {
                             matchingField = true;
                             if (!(currentField.type === "esriFieldTypeOID" || currentField.type === "esriFieldTypeGeometry" || currentField.type === "esriFieldTypeBlob" || currentField.type === "esriFieldTypeRaster" || currentField.type === "esriFieldTypeGUID" || currentField.type === "esriFieldTypeGlobalID" || currentField.type === "esriFieldTypeXML")) {
                                 newAddedFields.push(lang.mixin(currentField, configLayerField));
@@ -419,7 +416,7 @@ define([
 
             array.forEach(this.currentConfig.fields, lang.hitch(this, function (configField) {
                 array.some(newAddedFields, lang.hitch(this, function (currentField) {
-                    if (currentField.fieldName === configField.fieldName) {
+                    if (currentField.name === configField.name) {
                         sortedFields.push(currentField);
                         return true;
                     }
@@ -493,8 +490,8 @@ define([
                         className: "form-control fieldPlaceholder",
                         index: currentIndex
                     }, fieldPlaceholder);
-                    if (currentField.placeHolder) {
-                        fieldPlaceholderInput.value = currentField.placeHolder;
+                    if (currentField.tooltip) {
+                        fieldPlaceholderInput.value = currentField.tooltip;
                     }
                 }
                 fieldType = domConstruct.create("td", {
@@ -517,8 +514,10 @@ define([
                         } else {
                             if (currentField.type == "esriFieldTypeString") {
                                 domConstruct.create("option", { innerHTML: nls.builder.selectTextOption, value: "text" }, typeSelect);
-                                domConstruct.create("option", { innerHTML: nls.builder.selectMailOption, value: "email" }, typeSelect);
-                                domConstruct.create("option", { innerHTML: nls.builder.selectUrlOption, value: "url" }, typeSelect);
+                                if (currentField.length >= 30) {
+                                    domConstruct.create("option", { innerHTML: nls.builder.selectMailOption, value: "email" }, typeSelect);
+                                    domConstruct.create("option", { innerHTML: nls.builder.selectUrlOption, value: "url" }, typeSelect);
+                                }
                                 domConstruct.create("option", { innerHTML: nls.builder.selectTextAreaOption, value: "textarea" }, typeSelect);
                             }
                         }
@@ -536,11 +535,7 @@ define([
                         }
                     });
                 }
-                if (currentField.isNewField) {
-                    domAttr.set(fieldLabelInput, "value", currentField.alias);
-                } else {
-                    domAttr.set(fieldLabelInput, "value", currentField.fieldLabel);
-                }
+                domAttr.set(fieldLabelInput, "value", currentField.alias);
                 if (currentField.fieldDescription) {
                     domAttr.set(fieldDescriptionInput, "value", currentField.fieldDescription);
                 }
@@ -550,7 +545,6 @@ define([
             } else {
                 dom.byId('selectAll').checked = false;
             }
-      
             this._updateAppConfiguration("fields");
             if (this.fieldInfo[layerName]) {
                 this._createAttachmentInput(this.fieldInfo[layerName].layerUrl);
@@ -701,14 +695,14 @@ define([
                             visible = query(".fieldCheckbox", currentRow)[0].checked;
                             typeField = query(".fieldCheckbox", currentRow)[0].checked && query(".fieldCheckbox", currentRow)[0].disabled;
                             this.currentConfig.fields.push({
-                                fieldName: fieldName,
-                                fieldLabel: fieldLabel,
+                                name: fieldName,
+                                alias: fieldLabel,
                                 fieldDescription: fieldDescription,
                                 visible: visible,
                                 typeField: typeField
                             });
                             if (query(".fieldPlaceholder", currentRow)[0] && query(".fieldPlaceholder", currentRow)[0].value) {
-                                this.currentConfig.fields[currentFieldIndex - 1].placeHolder = query(".fieldPlaceholder", currentRow)[0].value;
+                                this.currentConfig.fields[currentFieldIndex - 1].tooltip = query(".fieldPlaceholder", currentRow)[0].value;
                             }
                             if (query(".displayType", currentRow)[0]) {
                                 this.currentConfig.fields[currentFieldIndex - 1].displayType = query(".displayType", currentRow)[0].value;

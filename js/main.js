@@ -253,7 +253,7 @@ define([
                                 }
                                 //handle errors in radio and checkbox fields here.
                                 else {
-                                    if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length==0) {
+                                    if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length===0) {
                                         erroneousFields.push(currentField);
                                     }
                                 }
@@ -464,7 +464,7 @@ define([
         //function to validate and create the form
         _createForm: function (fields) {
             var formContent, labelContent, inputContent, selectOptions, helpBlock, fileInput, matchingField, newAddedFields = [],
-                fieldname, fieldLabelText, requireField, sortedArray, radioButtonCounter = 0,checkboxContainer,checkboxContent, checkBoxCounter = 0;
+                fieldname, fieldLabelText, sortedArray, radioButtonCounter = 0,checkboxContainer,checkboxContent, checkBoxCounter = 0;
             if (!this.map.getLayer(this.config.form_layer.id)) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
@@ -483,13 +483,13 @@ define([
                 matchingField = false;
                 sortedArray = [];
                 array.forEach(fields, lang.hitch(this, function (currentField) {
-                    if (layerField.name == currentField.fieldName && currentField.visible) {
+                    if (layerField.name == currentField.name && currentField.visible) {
                         if (currentField.typeField) {
                             layerField.subTypes = this.map.getLayer(this.config.form_layer.id).types;
                         }
                         newAddedFields.push(lang.mixin(layerField, currentField));
                         matchingField = true;
-                    } else if (layerField.name == currentField.fieldName && !currentField.visible) {
+                    } else if (layerField.name == currentField.name && !currentField.visible) {
                         matchingField = true;
                     }
                 }));
@@ -502,9 +502,9 @@ define([
             }));
             array.forEach(fields, lang.hitch(this, function (sortedElement) {
                 array.some(newAddedFields, lang.hitch(this, function (newElement) {
-                    var fName = newElement.name ? newElement.name : newElement.fieldName;
+                    var fName = newElement.name;
                     if (this.config.appid) {
-                        if (sortedElement.fieldName == fName) {
+                        if (sortedElement.name == fName) {
                             sortedArray.push(newElement);
                             return true;
                         }
@@ -518,7 +518,7 @@ define([
             }));
             var userFormNode = dom.byId('userForm');
             array.forEach(sortedArray, lang.hitch(this, function (currentField, index) {
-                var radioContainer, radioContent, inputLabel, radioInput, formContent, requireField;
+                var radioContainer, radioContent, inputLabel, radioInput, formContent, requireField, rangeHelpText;
                 //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
                 formContent = domConstruct.create("div", {
                 }, userFormNode);
@@ -532,19 +532,16 @@ define([
                 else {
                     domClass.add(formContent, "form-group geoFormQuestionare has-feedback");
                 }
-                if (currentField.isNewField) {
-                    fieldLabelText = currentField.alias;
-                    fieldname = currentField.name;
-                } else {
-                    fieldLabelText = currentField.fieldLabel;
-                    fieldname = currentField.fieldName;
+                fieldLabelText = currentField.alias;
+                fieldname = currentField.name;
+                if (currentField.displayType !== "checkbox") {
+                    labelContent = domConstruct.create("label", {
+                        "for": fieldname,
+                        className: "control-label",
+                        innerHTML: fieldLabelText,
+                        id: fieldLabelText + "" + index
+                    }, formContent);
                 }
-                labelContent = domConstruct.create("label", {
-                    "for": fieldname,
-                    className: "control-label",
-                    innerHTML: fieldLabelText,
-                    id: fieldLabelText + "" + index
-                }, formContent);
                 if (requireField) {
                     domConstruct.place(requireField, labelContent, "last");
                 }
@@ -710,9 +707,14 @@ define([
                                 $(inputContent).data("DateTimePicker").setDate(rangeDefaultDate);
                                 domClass.add(inputContent.parentNode, "has-success");
                             }
+                            rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
+                                minValue: locale.format(new Date(currentField.domain.minValue)),
+                                maxValue: locale.format(new Date(currentField.domain.maxValue))
+                            });
+
                         } else {
                             //if field type is integer
-                            this._setRangeForm(currentField, formContent, fieldname);
+                            rangeHelpText = this._setRangeForm(currentField, formContent, fieldname);
                         }
                     }
                 }
@@ -759,7 +761,8 @@ define([
                                 "id": fieldname
                             }, inputLabel);
                             domAttr.set(inputContent, "checkboxContainerIndex", checkBoxCounter);
-                            on(inputContent, "change", function () {
+                            inputLabel.innerHTML += fieldLabelText;
+                            on($("input[id= " + fieldname + "]"), 'change', function () {
                                 if (this.checked) {
                                     domClass.add(checkboxContainer.parentNode, "has-success");
                                 } else {
@@ -832,8 +835,8 @@ define([
                             break;
                     }
                     //Add Placeholder if present
-                    if (currentField.placeHolder) {
-                        domAttr.set(inputContent, "placeholder", currentField.placeHolder);
+                    if (currentField.tooltip) {
+                        domAttr.set(inputContent, "placeholder", currentField.tooltip);
                     }
                     //If present fetch default values
                     if (currentField.defaultValue) {
@@ -848,7 +851,10 @@ define([
                         this._validateField(evt, true);
                     }));
                 }
-
+                if (!currentField.nullable) {
+                    inputContent.setAttribute("aria-required", true);
+                    inputContent.setAttribute("required", "");
+                }
                 var helpHTML;
                 if (currentField.isNewField) {
                     array.forEach(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
@@ -865,11 +871,10 @@ define([
                 } else {
                     helpHTML = currentField.fieldDescription;
                 }
-
-                if(helpHTML){
+                if (helpHTML || rangeHelpText) {
                     helpBlock = domConstruct.create("p", {
                         className: "help-block",
-                        innerHTML: helpHTML
+                        innerHTML: (helpHTML + rangeHelpText).trim()
                     }, formContent);
                 }
 
@@ -926,58 +931,17 @@ define([
                     domClass.remove(evt.currentTarget.parentNode, "has-success");
                 }
             }));
+            if (!currentField.nullable) {
+                inputContent.setAttribute("aria-required", true);
+                inputContent.setAttribute("required", "");
+            }
+            rangeHelpText = string.substitute(nls.user.textRangeHintMessage, {
+                minValue: currentField.domain.minValue.toString(),
+                maxValue: currentField.domain.maxValue.toString()
+            });
+            return rangeHelpText;
         },
 
-        //function to validate the fields defined within subtypes
-        _validateTypeFields: function (currentTarget, currentField, configuredFields) {
-            var selectedType;
-            array.some(currentField.subTypes, function (currentSelection) {
-                if (currentTarget.value === currentSelection.id.toString()) {
-                    selectedType = currentSelection;
-                    return true;
-                }
-            });
-            array.forEach(configuredFields, lang.hitch(this, function (field) {
-                array.some(this.map.getLayer(this.config.form_layer.id).fields, function (layerField) {
-                    if (layerField.name === field.fieldName) {
-                        field = lang.mixin(layerField, field);
-                        return true;
-                    }
-                });
-                //condition to check that the field is not a type field
-                if (!field.typeField) {
-                    for (var i in selectedType.domains) {
-                        if (i === field.fieldName) {
-                            //for inherited domains we need to populate the domains from the layer.
-                            if (selectedType.domains[i].type === "inherited") {
-                                domConstruct.empty(dom.byId(field.fieldName));
-                                var option = domConstruct.create("option", {}, dom.byId(field.fieldName));
-                                option.text = nls.user.domainDefaultText;
-                                option.value = "";
-                                array.forEach(field.domain.codedValues, function (currentOption) {
-                                    option = domConstruct.create("option", {}, dom.byId(field.fieldName));
-                                    option.text = currentOption.name;
-                                    option.value = currentOption.code;
-                                });
-                            }
-                            else {
-                                if (selectedType.domains[i].type === "codedValue") {
-                                    domConstruct.empty(dom.byId(field.fieldName));
-                                    var selectOption = domConstruct.create("option", {}, dom.byId(field.fieldName));
-                                    selectOption.text = nls.user.domainDefaultText;
-                                    selectOption.value = "";
-                                    array.forEach(selectedType.domains[i].codedValues, function (currentOption) {
-                                        selectOption = domConstruct.create("option", {}, dom.byId(field.fieldName));
-                                        selectOption.text = currentOption.name;
-                                        selectOption.value = currentOption.code;
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            }));
-        },
         _validateField: function (currentNode, iskeyPress) {
             var inputType, inputValue, displayType = null, node, typeCastedInputValue, decimal = /^[-+]?[0-9]+$/,
                 float = /^[-+]?[0-9]+\.[0-9]+$/, email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, url = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
