@@ -937,7 +937,7 @@ define([
                 inputContent.setAttribute("aria-required", true);
                 inputContent.setAttribute("required", "");
             }
-            rangeHelpText = string.substitute(nls.user.textRangeHintMessage, {
+            var rangeHelpText = string.substitute(nls.user.textRangeHintMessage, {
                 minValue: currentField.domain.minValue.toString(),
                 maxValue: currentField.domain.maxValue.toString(),
                 openStrong: "<strong>",
