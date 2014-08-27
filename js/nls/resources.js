@@ -89,8 +89,8 @@ define({
             requiredFields: "There are some errors. Please correct them below.",
             requiredField: "(required)",
             error: "Error",
-            textRangeHintMessage: "<b> Hint: </b> Minimum value ${minValue} and Maximum value ${maxValue}",
-            dateRangeHintMessage: "<b> Hint: </b> Minimum Date ${minValue} and Maximum Date ${maxValue}"
+            textRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum value ${minValue} and Maximum value ${maxValue}",
+            dateRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum Date ${minValue} and Maximum Date ${maxValue}"
         }
     })
 });

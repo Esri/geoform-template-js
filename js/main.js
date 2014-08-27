@@ -542,7 +542,7 @@ define([
                         id: fieldLabelText + "" + index
                     }, formContent);
                 }
-                if (requireField) {
+                if (requireField && labelContent) {
                     domConstruct.place(requireField, labelContent, "last");
                 }
                 if (this.map.getLayer(this.config.form_layer.id).templates[0]) {
@@ -709,7 +709,9 @@ define([
                             }
                             rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
                                 minValue: locale.format(new Date(currentField.domain.minValue)),
-                                maxValue: locale.format(new Date(currentField.domain.maxValue))
+                                maxValue: locale.format(new Date(currentField.domain.maxValue)),
+                                openStrong: "<strong>",
+                                closeStrong: "</strong>"
                             });
 
                         } else {
@@ -937,7 +939,9 @@ define([
             }
             rangeHelpText = string.substitute(nls.user.textRangeHintMessage, {
                 minValue: currentField.domain.minValue.toString(),
-                maxValue: currentField.domain.maxValue.toString()
+                maxValue: currentField.domain.maxValue.toString(),
+                openStrong: "<strong>",
+                closeStrong: "</strong>"
             });
             return rangeHelpText;
         },
