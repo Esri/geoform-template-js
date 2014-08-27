@@ -95,7 +95,8 @@ define([
             // set to default theme. (first in array)
             dom.byId("themeLink").href = this.themes[0].url;
             // set author html
-            var authorHTML = string.substitute(authorTemplate, nls);
+            var combinedNLS = lang.mixin(nls, resources);
+            var authorHTML = string.substitute(authorTemplate, combinedNLS);
             dom.byId("parentContainter").innerHTML = authorHTML;
             this.buttonConflict = $.fn.button.noConflict();
             var $tabs = $('.tab-links li');
