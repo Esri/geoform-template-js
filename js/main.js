@@ -25,6 +25,7 @@ define([
     "esri/geometry/webMercatorUtils",
     "esri/geometry/Point",
     "application/ShareModal",
+    "application/FullScreenMap",
     "application/localStorageHelper",
     "esri/graphic",
     "esri/symbols/PictureMarkerSymbol",
@@ -56,7 +57,7 @@ define([
     Geocoder,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme, pushpins, coordinator, locale) {
+    nls, webMercatorUtils, Point, ShareModal, FullScreenMap, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme, pushpins, coordinator, locale) {
     return declare([], {
         nls: nls,
         config: {},
@@ -340,7 +341,7 @@ define([
                 if (!evt.graphic) {
                     this._clearSubmissionGraphic();
                     this.addressGeometry = evt.mapPoint;
-                    this.map.infoWindow.setTitle(nls.user.locationTabText);
+                    this.map.infoWindow.setTitle(nls.user.locationPopupTitle);
                     this.map.infoWindow.setContent(nls.user.addressSearchText);
                     this.map.infoWindow.show(this.addressGeometry);
                     this._setSymbol(this.addressGeometry);
@@ -1059,7 +1060,7 @@ define([
             var popup = new Popup(null, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
             var mapDiv = dom.byId('mapDiv');
-            mapDiv.innerHTML = '';
+            mapDiv.innerHTML = '<div id="fullscreen"></div>';
             arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
                     infoWindow: popup
@@ -1077,6 +1078,11 @@ define([
                 this.map = response.map;
                 this.defaultExtent = this.map.extent;
                 this._resizeMap();
+                // fullscreen button
+                var fs = new FullScreenMap({
+                    map: this.map
+                }, dom.byId("fullscreen"));
+                fs.startup();
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
@@ -1327,7 +1333,7 @@ define([
                 this.map.centerAt(evt.result.feature.geometry).then(lang.hitch(this, function(){
                     this._resizeMap();
                 }));
-                this.map.infoWindow.setTitle(nls.user.locationTabText);
+                this.map.infoWindow.setTitle(nls.user.locationPopupTitle);
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(evt.result.feature.geometry);
             }));
@@ -1465,7 +1471,7 @@ define([
                 var pt = webMercatorUtils.geographicToWebMercator(mapLocation);
                 this.addressGeometry = pt;
                 this._setSymbol(this.addressGeometry);
-                this.map.infoWindow.setTitle(nls.user.locationTabText);
+                this.map.infoWindow.setTitle(nls.user.locationPopupTitle);
                 this.map.infoWindow.setContent(nls.user.addressSearchText);
                 this.map.infoWindow.show(this.addressGeometry);
                 this.map.centerAt(this.addressGeometry).then(lang.hitch(this, function(){

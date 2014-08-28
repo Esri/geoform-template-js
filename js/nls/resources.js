@@ -52,6 +52,7 @@ define({
             addressText: "Search",
             geographic: "Geographic",
             locationTabText: "Location",
+            locationPopupTitle: "Selected Location",
             submitButtonText: "Submit entry",
             submitButtonTextLoading: "Submitting&hellip;",
             formValidationMessageAlertText: "The following fields are required:",
