@@ -489,7 +489,7 @@ define([
                         }
                         newAddedFields.push(lang.mixin(layerField, currentField));
                         matchingField = true;
-                    } else if (layerField.name == currentField.name && !currentField.visible) {
+                    } else if (layerField.name == currentField.name && currentField.hasOwnProperty("visible") && !currentField.visible) {
                         matchingField = true;
                     }
                 }));
@@ -522,7 +522,7 @@ define([
                 //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
                 formContent = domConstruct.create("div", {
                 }, userFormNode);
-                if (!currentField.nullable || currentField.typeField) {
+                if (!currentField.nullable || currentField.typeField && currentField.displayType !== "checkbox") {
                     domClass.add(formContent, "form-group has-feedback geoFormQuestionare mandatory");
                     requireField = domConstruct.create("small", {
                         className: 'requireFieldStyle',
@@ -532,7 +532,11 @@ define([
                 else {
                     domClass.add(formContent, "form-group geoFormQuestionare has-feedback");
                 }
-                fieldLabelText = currentField.alias;
+                if (currentField.alias) {
+                    fieldLabelText = currentField.alias;
+                } else {
+                    fieldLabelText = currentField.name;
+                }
                 fieldname = currentField.name;
                 if (currentField.displayType !== "checkbox") {
                     labelContent = domConstruct.create("label", {
@@ -764,13 +768,6 @@ define([
                             }, inputLabel);
                             domAttr.set(inputContent, "checkboxContainerIndex", checkBoxCounter);
                             inputLabel.innerHTML += fieldLabelText;
-                            on($("input[id= " + fieldname + "]"), 'change', function () {
-                                if (this.checked) {
-                                    domClass.add(checkboxContainer.parentNode, "has-success");
-                                } else {
-                                    domClass.remove(checkboxContainer.parentNode, "has-success");
-                                }
-                            });
                             checkBoxCounter++;
                             break;
 
@@ -874,9 +871,12 @@ define([
                     helpHTML = currentField.fieldDescription;
                 }
                 if (helpHTML || rangeHelpText) {
+                    if (!rangeHelpText) {
+                        rangeHelpText = "";
+                    }
                     helpBlock = domConstruct.create("p", {
                         className: "help-block",
-                        innerHTML: (helpHTML + rangeHelpText).trim()
+                        innerHTML: lang.trim(helpHTML + rangeHelpText)
                     }, formContent);
                 }
 
