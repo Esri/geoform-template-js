@@ -5,9 +5,7 @@ define([
     "dojo/string",
     "dojo/on",
     "dojo/dom",
-    "dojo/dom-construct",
     "offline/offlineFeaturesManager",
-    "esri/dijit/editing/Editor",
     "dojo/i18n!application/nls/resources",
     "offline/editsStore"
 ], function (
@@ -16,9 +14,7 @@ define([
     string,
     on,
     dom,
-    domConstruct,
     OfflineFeaturesManager,
-    Editor,
     i18n,
     editsStore
 ) {
@@ -139,19 +135,6 @@ define([
             /* extend layer with offline detection functionality */
             this.offlineFeaturesManager.extend(this.defaults.layer);
             
-            // editor settings
-            var settings = {
-                map: this.defaults.map,
-                layerInfos: [{
-                    featureLayer: this.defaults.layer
-                }]
-            };
-            // create editor
-            var editor = new Editor({
-                settings: settings
-            }, domConstruct.create('div'));
-            // start editor
-            editor.startup();
             // update indicator and check status
             this.updateConnectivityIndicator();
         }
