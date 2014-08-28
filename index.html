@@ -90,7 +90,7 @@
                 //The config object contains the following properties: helper services, (optionally)
                 //i18n, appid, webmap and any custom values defined by the application.
                 //In this example we have one called theme.
-                if (config.edit) {
+                if (config.edit && config.appid) {
                     // get the app builder code
                     require(["application/builder/builder"], function (builderMode) {
                         // create configuration app builder
