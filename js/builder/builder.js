@@ -308,7 +308,6 @@ define([
                     this._configureTheme(currentTheme.id);
                 }
             }));
-            domConstruct.create("br", {}, dom.byId('stylesList'));
         },
 
         _populatePushpins: function () {
@@ -358,7 +357,7 @@ define([
                     imageAnchor = domConstruct.create("a", { "target": "_blank", "href": currentTheme.refUrl }, dom.byId('thumbnailContainer'));
                     themeThumbnail = domConstruct.create("img", {
                         src: currentTheme.thumbnail,
-                        className: "themeThumbnail img-responsive"
+                        className: "img-thumbnail img-responsive"
                     }, imageAnchor);
                     return true;
                 }
@@ -472,14 +471,12 @@ define([
                 fieldLabelInput = domConstruct.create("input", {
                     className: "form-control fieldLabel",
                     index: currentIndex,
-                    placeholder: nls.builder.fieldLabelPlaceHolder,
                     value: currentField.alias
                 }, fieldLabel);
                 fieldDescription = domConstruct.create("td", {
                 }, fieldRow);
                 fieldDescriptionInput = domConstruct.create("input", {
                     className: "form-control fieldDescription",
-                    placeholder: nls.builder.fieldDescPlaceHolder,
                     value: ""
                 }, fieldDescription);
                 fieldPlaceholder = domConstruct.create("td", {

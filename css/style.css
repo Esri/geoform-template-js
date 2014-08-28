@@ -15,6 +15,7 @@
     background-repeat: no-repeat;
     width: 36px;
     height: 36px;
+    margin-left: 10px;
 }
 /* Style for Loading Indicator*/
 
@@ -167,11 +168,6 @@ input::-ms-clear {
 #geoform .layerFieldsName {
     color: #555;
     vertical-align: center;
-}
-.themeThumbnail {
-    width: 200px;
-    height: 133px;
-    border: 1px solid #555;
 }
 .tableDimension {
     min-width: 180px;
