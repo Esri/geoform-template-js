@@ -26,6 +26,12 @@
 .app-loading .loading-indicator {
     display: block;
 }
+.app-loading .app-content{
+    visibility: hidden;
+}
+.app-content{
+    visibility: visible;
+}
 .submit-area {
     margin-bottom: 40px;
 }
@@ -37,6 +43,8 @@
     position: absolute;
     top: 0;
     left: 0;
+    bottom:0;
+    right:0;
     overflow: hidden;
     background: #fff;
     color: #000;
