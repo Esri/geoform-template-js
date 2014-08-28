@@ -522,7 +522,7 @@ define([
                 //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
                 formContent = domConstruct.create("div", {
                 }, userFormNode);
-                if (!currentField.nullable || currentField.typeField && currentField.displayType !== "checkbox") {
+                if ((!currentField.nullable || currentField.typeField) && currentField.displayType !== "checkbox") {
                     domClass.add(formContent, "form-group has-feedback geoFormQuestionare mandatory");
                     requireField = domConstruct.create("small", {
                         className: 'requireFieldStyle',
