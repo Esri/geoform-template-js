@@ -64,18 +64,13 @@ Default Fields property
 Modified fields property
 
     fields:[{
-        alias: "Cell Phone",
-        editable: true,
-        fieldDescription: "Enter a cell phone number.",
-        format: null,
-        isEditable: true,
-        length: 12,
-        name: "CELLPHONE",
-        nullable: true,
-        stringFieldOption: "textbox",
-        tooltip: "555-5555",
-        type: "esriFieldTypeString",
-        visible: true
+        "name": "email", // field ID
+        "alias": "Email", // label
+        "fieldDescription": "Let us contact you.", // help text
+        "visible": true, // show this field?
+        "typeField": false, // subtype field?
+        "tooltip": "test@test.com", // placeholder text
+        "displayType": "email" // text, checkbox, radio, textarea, url, email
     }]
 
 #### Configuring Application Details

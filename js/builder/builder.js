@@ -500,7 +500,7 @@ define([
                     if ((currentField.domain && currentField.domain.codedValues.length <= 4) || (this.fieldInfo[layerName].types && this.fieldInfo[layerName].types.length <= 4)) {
                         typeSelect = domConstruct.create("select", { "class": "form-control displayType" }, fieldType);
                         domConstruct.create("option", { innerHTML: nls.builder.selectMenuOption, value: "dropdown" }, typeSelect);
-                        domConstruct.create("option", { innerHTML: nls.builder.selectRadioOption, value: "radioBtn" }, typeSelect);
+                        domConstruct.create("option", { innerHTML: nls.builder.selectRadioOption, value: "radio" }, typeSelect);
                     }
                 } else {
                     if (!currentField.domain) {

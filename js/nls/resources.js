@@ -67,7 +67,7 @@ define({
             placeholderLongitude: "Longitude (X)",
             latitude: "Latitude",
             longitude: "Longitude",
-            findMyLocation: "Find my location",
+            findMyLocation: "Locate me",
             finding: "Locating&hellip;",
             backToTop: "Back to top",
             myLocationTitleText: 'My Location',

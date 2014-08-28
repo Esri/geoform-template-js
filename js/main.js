@@ -560,7 +560,7 @@ define([
                 if (currentField.domain || currentField.typeField) {
                     if ((currentField.domain && currentField.domain.type === 'codedValue') || currentField.typeField) {
                         radioInput = false;
-                        if (currentField.displayType && currentField.displayType === "radioBtn") {
+                        if (currentField.displayType && currentField.displayType === "radio") {
                             radioInput = true;
                         }
                         //check for fieldType: if not present create dropdown
