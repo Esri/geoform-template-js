@@ -1391,6 +1391,7 @@ define([
                 //code for apply-edits
                 this.map.getLayer(config.form_layer.id).applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
                     this._clearSubmissionGraphic();
+                    this._clearFormFields();
                     this.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
                     if (!addResults[0].success) {
@@ -1401,7 +1402,6 @@ define([
                     if (this.config.defaultMapExtent) {
                         this.map.setExtent(this.defaultExtent);
                     }
-                    $("#myModal").modal('show');
                     this.map.getLayer(config.form_layer.id).refresh();
                     this._resetButton();
                     if (userFormNode[userFormNode.length - 1].value !== "" && this.map.getLayer(config.form_layer.id).hasAttachments) {
@@ -1409,7 +1409,7 @@ define([
                             console.log(nls.user.addAttachmentFailedMessage);
                         });
                     }
-                    this._clearFormFields();
+                    window.location.href = '#top';
                 }), lang.hitch(this, function () {
                     this._clearSubmissionGraphic();
                     this.map.getLayer(this.config.form_layer.id).setEditable(false);
@@ -1485,6 +1485,9 @@ define([
         },
 
         _openShareModal: function () {
+            if(this._ShareModal){
+                this._ShareModal.destroy();   
+            }
             this._createShareDlgContent();
             this._ShareModal = new ShareModal({
                 bitlyLogin: this.config.bitlyLogin,
@@ -1515,57 +1518,51 @@ define([
         },
 
         _createShareDlgContent: function () {
-            var iconContainer, facebookIconHolder, twitterIconHolder, googlePlusIconHolder, mailIconHolder;
+            var iconContainer;
             domConstruct.empty(query(".modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.shareUserTitleMessage);
             iconContainer = domConstruct.create("div", {
                 className: "iconContainer"
             }, query(".modal-body")[0]);
             domConstruct.create("div", {
-                className: "share-dialog-subheader",
-                innerHTML: nls.user.shareUserTextMessage
+                className: "alert alert-success",
+                role: "alert",
+                innerHTML: nls.user.entrySubmitted
             }, iconContainer);
             if (this.config.enableSharing) {
-                facebookIconHolder = domConstruct.create("div", {
-                    className: "pull-left"
+                domConstruct.create("h3", {
+                    innerHTML: nls.user.shareThisForm
+                }, iconContainer);
+                domConstruct.create("p", {
+                    innerHTML: nls.user.shareUserTextMessage
                 }, iconContainer);
                 domConstruct.create("a", {
-                    className: "fa fa-facebook-square iconClass",
+                    className: "fa fa-facebook-square iconClass text-primary",
                     id: "facebookIcon"
-                }, facebookIconHolder);
-                twitterIconHolder = domConstruct.create("div", {
-                    className: "pull-left"
                 }, iconContainer);
                 domConstruct.create("a", {
-                    className: "fa fa-twitter-square iconClass",
+                    className: "fa fa-twitter-square iconClass text-primary",
                     id: "twitterIcon"
-                }, twitterIconHolder);
-                googlePlusIconHolder = domConstruct.create("div", {
-                    className: "pull-left"
                 }, iconContainer);
                 domConstruct.create("a", {
-                    className: "fa fa-google-plus-square iconClass",
+                    className: "fa fa-google-plus-square iconClass text-primary",
                     id: "google-plusIcon"
-                }, googlePlusIconHolder);
+                }, iconContainer);
             }
-            mailIconHolder = domConstruct.create("div", {
-                className: "pull-left"
-            }, iconContainer);
             domConstruct.create("a", {
-                className: "fa fa-envelope iconClass",
+                className: "fa fa-envelope iconClass text-primary",
                 id: "mailIcon"
-            }, mailIconHolder);
-            domConstruct.create("br", {}, iconContainer);
-            domConstruct.create("br", {}, iconContainer);
-            domConstruct.create("br", {}, iconContainer);
+            }, iconContainer);
             domConstruct.create("div", {
-                className: "share-dialog-subheader",
+                className: "clearfix"
+            }, iconContainer);
+            domConstruct.create("h3", {
                 innerHTML: nls.user.shareModalFormText
             }, iconContainer);
             domConstruct.create("input", {
                 type: "text",
-                className: "share-map-url",
-                id: "_shareMapUrlText"
+                className: "form-control",
+                id: "shareMapUrlText"
             }, iconContainer);
         },
 

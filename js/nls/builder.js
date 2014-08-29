@@ -51,6 +51,7 @@ define({
             shareBuilderTitleMessage: "Your GeoForm has been updated & published!",
             shareBuilderTextMessage: "You can start collecting information by sharing with others",
             shareModalFormText: "Form Link",
+            shareBuilderSuccess: "Success! Item saved.",
             geoformTitleText: "Geo Form",
             layerTabText: "This is the layer that the GeoForm will be built from. The layer must be a feature service that is enabled for editing with sharing permissions appropriate for your audience.",
             detailsTabText: "Use the Form Detail boxes below to customize the Title, add a custom logo, and provide a short description for your GeoForm audience. In the description you can add links to other resources, contact information, and even point your audience to a web mapping application featuring all of the data collected with the GeoForm.",

@@ -1,4 +1,4 @@
-/*global $,define */
+/*global,define */
 /*jslint sloppy:true,nomen:true */
 define([
     "dojo/_base/declare",
@@ -10,7 +10,6 @@ define([
     "dojo/io-query",
     "dojo/dom",
     "dojo/dom-class",
-    "dojo/dom-attr",
     "esri/request"
 ],
     function (
@@ -20,7 +19,7 @@ define([
         _WidgetBase, a11yclick,
         on,
         ioQuery,
-        dom, domClass, domAttr,
+        dom, domClass,
         esriRequest
     ) {
         var Widget = declare([_WidgetBase], {
@@ -75,11 +74,9 @@ define([
                 this._shareLink();
                 this._updateUrl();
                 this._init();
-                $('#myModal').modal('show');
             },
             // connections/subscriptions will be cleaned up during the destroy() lifecycle phase
             destroy: function () {
-                this._removeEvents();
                 this.inherited(arguments);
             },
             _init: function () {
@@ -176,16 +173,15 @@ define([
                     delete newParams.edit; //Remove edit parameter
                     url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
                 }
-
                 // update url
                 this.set("url", url);
                 // set url value
-                domAttr.set(dom.byId("_shareMapUrlText"), "value", url);
+                dom.byId("shareMapUrlText").value = url;
             },
             _updateBitlyUrl: function () {
                 var bitly = this.get("bitlyUrl");
                 if (bitly) {
-                    domAttr.set(dom.byId("_shareMapUrlText"), "value", bitly);
+                    dom.byId("shareMapUrlText").value = bitly;
                 }
             },
             _updateThemeWatch: function () {

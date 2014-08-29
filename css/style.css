@@ -136,31 +136,14 @@
     }
 }
 #geoform .iconClass {
-    font-size: 34px;
-    padding: 10px;
+    font-size: 40px;
+    margin-right: 20px;
     text-decoration: none;
-    color: #007ac2;
     cursor: pointer;
 }
 .progress-percent {
     width: 100%;
     line-height: 50px;
-}
-.share-dialog-subheader {
-    font-size: 19px;
-    margin: 0 0 5px;
-    font-weight: 400;
-    margin-left: 8px;
-}
-.share-map-url {
-    width: 50%;
-    min-width: 30%;
-    max-width: 90%;
-    height: 25px;
-    font-size: 14px;
-    color: #777;
-    border: 1px solid #dcdcdc;
-    margin: 0 7px 0px;
 }
 .myLocationOptions {
     padding: 20px 0;
