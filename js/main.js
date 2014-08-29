@@ -24,12 +24,14 @@ define([
     "dojo/i18n!application/nls/resources",
     "esri/geometry/webMercatorUtils",
     "esri/geometry/Point",
+    "esri/layers/GraphicsLayer",
     "application/ShareModal",
     "application/FullScreenMap",
     "application/localStorageHelper",
     "esri/graphic",
     "esri/symbols/PictureMarkerSymbol",
     "esri/toolbars/edit",
+    "esri/InfoTemplate",
     "esri/dijit/Popup",
     "application/themes",
     "application/pushpins",
@@ -57,7 +59,7 @@ define([
     Geocoder,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, ShareModal, FullScreenMap, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, Popup, theme, pushpins, coordinator, locale) {
+    nls, webMercatorUtils, Point, GraphicsLayer, ShareModal, FullScreenMap, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, coordinator, locale) {
     return declare([], {
         nls: nls,
         config: {},
@@ -316,6 +318,9 @@ define([
         },
         // Map is ready
         _mapLoaded: function () {
+            // make graphics layer
+            this._gl = new GraphicsLayer();
+            this.map.addLayer(this._gl);
             // add border radius to map
             domClass.add(this.map.root, 'panel');
             // remove loading class from body
@@ -337,13 +342,16 @@ define([
             on(this.editToolbar, "graphic-move-stop", lang.hitch(this, function (evt) {
                 this.addressGeometry = evt.graphic.geometry;
             }));
+            // show info window on graphic click
+            on(this.editToolbar, "graphic-click", lang.hitch(this, function (evt) {
+                var graphic = evt.graphic;
+                this.map.infoWindow.setFeatures([graphic]);
+                this.map.infoWindow.show(graphic.geometry);
+            }));
             on(this.map, 'click', lang.hitch(this, function (evt) {
                 if (!evt.graphic) {
                     this._clearSubmissionGraphic();
                     this.addressGeometry = evt.mapPoint;
-                    this.map.infoWindow.setTitle(nls.user.locationPopupTitle);
-                    this.map.infoWindow.setContent(nls.user.addressSearchText);
-                    this.map.infoWindow.show(this.addressGeometry);
                     this._setSymbol(this.addressGeometry);
                 }
             }));
@@ -412,14 +420,19 @@ define([
             }
         },
         _setSymbol: function (point) {
-            var symbolUrl, pictureMarkerSymbol, graphic;
+            var symbolUrl, pictureMarkerSymbol, graphic, it;
             array.some(this.pins, lang.hitch(this, function (currentPin) {
                 if (this.config.pushpinColor == currentPin.id) {
                     symbolUrl = currentPin.url;
                     // create symbol and offset 10 to the left and 17 to the bottom so it points correctly
                     pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, currentPin.width, currentPin.height).setOffset(currentPin.offset.x, currentPin.offset.y);
-                    graphic = new Graphic(point, pictureMarkerSymbol, null, null);
-                    this.map.graphics.add(graphic);
+                    it = new InfoTemplate(nls.user.locationPopupTitle, "${text}");
+                    graphic = new Graphic(point, pictureMarkerSymbol, {
+                        text: nls.user.addressSearchText
+                    }, it);
+                    this._gl.add(graphic);
+                    this.map.infoWindow.setFeatures([graphic]);
+                    this.map.infoWindow.show(graphic.geometry);
                     this.editToolbar.activate(editToolbar.MOVE, graphic, null);
                     return true;
                 }
@@ -1249,9 +1262,6 @@ define([
                     var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
                     evt.graphic.setGeometry(pt);
                     this.addressGeometry = pt;
-                    this.map.infoWindow.setTitle(nls.user.myLocationTitleText);
-                    this.map.infoWindow.setContent(nls.user.addressSearchText);
-                    this.map.infoWindow.show(this.addressGeometry);
                     this._setSymbol(evt.graphic.geometry);
                 }
                 $('#geolocate_button').button('reset');
@@ -1333,9 +1343,6 @@ define([
                 this.map.centerAt(evt.result.feature.geometry).then(lang.hitch(this, function(){
                     this._resizeMap();
                 }));
-                this.map.infoWindow.setTitle(nls.user.locationPopupTitle);
-                this.map.infoWindow.setContent(nls.user.addressSearchText);
-                this.map.infoWindow.show(evt.result.feature.geometry);
             }));
 
             on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function () {
@@ -1430,7 +1437,7 @@ define([
         },
         _clearSubmissionGraphic: function () {
             this.addressGeometry = null;
-            this.map.graphics.clear();
+            this._gl.clear();
             if (this.map.infoWindow.isShowing) {
                 this.map.infoWindow.hide();
             }
@@ -1471,9 +1478,6 @@ define([
                 var pt = webMercatorUtils.geographicToWebMercator(mapLocation);
                 this.addressGeometry = pt;
                 this._setSymbol(this.addressGeometry);
-                this.map.infoWindow.setTitle(nls.user.locationPopupTitle);
-                this.map.infoWindow.setContent(nls.user.addressSearchText);
-                this.map.infoWindow.show(this.addressGeometry);
                 this.map.centerAt(this.addressGeometry).then(lang.hitch(this, function(){
                     this._resizeMap();
                 }));
