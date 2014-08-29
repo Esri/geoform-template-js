@@ -60,7 +60,7 @@ define({
             emptylatitudeAlertMessage: "Please enter a ${openLink}latitude${closeLink} coordinate.",
             emptylongitudeAlertMessage: "Please enter a ${openLink}longitude${closeLink} coordinate.",
             shareUserTitleMessage: "Thank you for your contribution!",
-            entrySubmitted: "Your entry has been submitted.",
+            entrySubmitted: "Your entry has been submitted to the map.",
             shareThisForm: "Share This Form",
             shareUserTextMessage: "Tell others to contribute using the following options.",
             addAttachmentFailedMessage: "Unable to add attachment to layer",
