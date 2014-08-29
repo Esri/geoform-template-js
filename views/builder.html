@@ -76,8 +76,8 @@
                     <div class="form-group">
                         <button type="button" id="selectWebmapBtn" class="btn btn-default" data-loading-text="${builder.btnSelectWebmapTextLoading}">${builder.btnSelectWebmapText}</button>
                     </div>
-                    <p class="text-right"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText}</a>
-                    </p>
+                    <div class="form-group"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText}</a>
+                    </div>
                 </div>
                 <div id="layer" class="tab-pane">
                     <h2>${builder.layerTabTitleText}</h2>
@@ -89,10 +89,10 @@
                             <option selected="selected">${builder.selectLayerDefaultOptionText}</option>
                         </select>
                     </div>
-                    <p class="text-right">
+                    <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="webmap">${builder.btnPreviousText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="details">${builder.btnNextText}</a>
-                    </p>
+                    </div>
                 </div>
                 <div id="details" class="tab-pane">
                     <h2>${builder.detailsTabTitleText}</h2>
@@ -109,10 +109,10 @@
                         <label for="detailDescriptionInput">${builder.descriptionLabelText}</label>
                         <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
                     </div>
-                    <p class="text-right">
+                    <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="layer">${builder.btnPreviousText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="fields">${builder.btnNextText}</a>
-                    </p>
+                    </div>
                 </div>
                 <div id="fields" class="tab-pane">
                     <h2>${builder.selectFieldsText}</h2>
@@ -136,10 +136,10 @@
                         </table>
                     </div>
                     <div id="attachmentDetails"></div>
-                    <p class="text-right">
+                    <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="details">${builder.btnPreviousText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${builder.btnNextText}</a>
-                    </p>
+                    </div>
                 </div>
                 <div id="style" class="tab-pane">
                     <h2>${builder.selectThemeText}</h2>
@@ -158,10 +158,10 @@
                             </div>
                         </div>
                     </div>
-                    <p class="text-right">
+                    <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields">${builder.btnPreviousText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${builder.btnNextText}</a>
-                    </p>
+                    </div>
                 </div>
                 <div id="options" class="tab-pane">
                     <h2>${builder.optionsApplicationText}</h2>
@@ -236,29 +236,29 @@
                         </div>
                         <div class="help-block">${builder.selectLocationSDescription}</div>
                     </div>
-                    <p class="text-right">
+                    <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="style">${builder.btnPreviousText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${builder.btnNextText}</a>
-                    </p>
+                    </div>
                 </div>
                 <div id="preview" class="tab-pane">
                     <h2>${builder.previewApplicationText}</h2>
                     <div class="panel panel-default">
                         <iframe frameborder="0" scrolling="yes" class="preview-frame" id="iframeContainer"></iframe>
                     </div>
-                    <p class="text-right">
+                    <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="style">${builder.btnPreviousText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${builder.btnNextText}</a>
-                    </p>
+                    </div>
                 </div>
                 <div id="save" class="tab-pane">
                     <h2>${builder.saveApplicationText}</h2>
                     <p>${builder.publishTabText}</p>
-                    <p>
+                    <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview">${builder.btnPreviousText}</a>
                         <button id="done" type="button" class="btn btn-default">${builder.doneButtonText}</button>
                         <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton">${builder.saveText}</button>
-                    </p>
+                    </div>
                 </div>
             </div>
         </div>
