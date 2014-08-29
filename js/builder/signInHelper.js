@@ -9,7 +9,7 @@ define([
     "esri/arcgis/Portal",
     "dojo/Deferred",
     "dojo/cookie",
-    "dojo/i18n!application/nls/builder"
+    "dojo/i18n!application/nls/resources"
 ],
     function (declare, lang, domClass, _WidgetBase, dom, on, arcgisUtils, portal, Deferred, cookie, nls) {
         var Widget = declare([_WidgetBase], {

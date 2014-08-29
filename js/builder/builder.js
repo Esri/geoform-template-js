@@ -22,14 +22,13 @@ define([
     "application/ShareModal",
     "application/localStorageHelper",
     "application/builder/signInHelper",
-    "dojo/i18n!application/nls/builder",
     "dojo/i18n!application/nls/resources",
     "esri/arcgis/utils",
     "application/themes",
     "application/pushpins",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer) {
     return declare([], {
         nls: nls,
         currentState: "webmap",
@@ -95,15 +94,14 @@ define([
             // set to default theme. (first in array)
             dom.byId("themeLink").href = this.themes[0].url;
             // set builder html
-            var combinedNLS = lang.mixin(nls, resources);
-            var builderHTML = string.substitute(builderTemplate, combinedNLS);
+            var builderHTML = string.substitute(builderTemplate, nls);
             dom.byId("parentContainter").innerHTML = builderHTML;
             this.buttonConflict = $.fn.button.noConflict();
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
             // document ready
             ready(lang.hitch(this, function () {
-                modalTemplate = string.substitute(modalTemplate, resources);
+                modalTemplate = string.substitute(modalTemplate, nls);
                 // place modal code
                 domConstruct.place(modalTemplate, document.body, 'last');
             }));
