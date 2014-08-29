@@ -23,12 +23,18 @@
             <h2 id="select_location">${user.locationInformationText}</h2>
             <p>${user.locationDescription}</p>
             <ul class="nav nav-tabs">
-                <li><a href="#myLocation" data-toggle="tab">${user.myLocationText}</a></li>
-                <li><a href="#address" data-toggle="tab">${user.addressText}</a></li>
-                <li><a href="#coordinates" data-toggle="tab">${user.geographic}</a></li>
-                <li><a href="#usng" data-toggle="tab">${user.usng}</a></li>
-                <li><a href="#mgrs" data-toggle="tab">${user.mgrs}</a></li>
-                <li><a href="#utm" data-toggle="tab">${user.utm}</a></li>
+                <li><a href="#myLocation" data-toggle="tab">${user.myLocationText}</a>
+                </li>
+                <li><a href="#address" data-toggle="tab">${user.addressText}</a>
+                </li>
+                <li><a href="#coordinates" data-toggle="tab">${user.geographic}</a>
+                </li>
+                <li><a href="#usng" data-toggle="tab">${user.usng}</a>
+                </li>
+                <li><a href="#mgrs" data-toggle="tab">${user.mgrs}</a>
+                </li>
+                <li><a href="#utm" data-toggle="tab">${user.utm}</a>
+                </li>
             </ul>
             <div class="myLocationOptions">
                 <div class="tab-content">
@@ -42,7 +48,8 @@
                             <div class="input-group">
                                 <input id="searchInput" type="text" class="form-control">
                                 <div class="input-group-btn" id="geocoder_buttons">
-                                    <button id="searchSubmit" class="btn btn-default" type="button"><span id="geocoder_spinner" class="glyphicon glyphicon-search"></span></button>
+                                    <button id="searchSubmit" class="btn btn-default" type="button"><span id="geocoder_spinner" class="glyphicon glyphicon-search"></span>
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -96,6 +96,11 @@ define([
             // set builder html
             var builderHTML = string.substitute(builderTemplate, nls);
             dom.byId("parentContainter").innerHTML = builderHTML;
+            dom.byId('builder_description').innerHTML = string.substitute(nls.builder.descriptionText, {
+                link1: "<a target=\"_blank\" href=\"http://resources.arcgis.com/en/help/main/10.1/index.html#//0154000002w8000000\">",
+                link2: "<a target=\"_blank\" href=\"http://resources.arcgis.com/en/help/main/10.1/index.html#//00sp0000001z000000\">",
+                closeLink: "</a>"
+            });
             this.buttonConflict = $.fn.button.noConflict();
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
@@ -248,7 +253,13 @@ define([
             all(layerListArray).then(lang.hitch(this, function () {
                 if (dom.byId("selectLayer").options.length <= 1) {
                     domAttr.set(dom.byId("selectLayer"), "disabled", true);
-                    this._showErrorMessageDiv(nls.builder.invalidWebmapSelectionAlert);
+                    var html = '';
+                    html += "<p>" + nls.builder.invalidWebmapSelectionAlert + "</p>";
+                    html += "<p>" + string.substitute(nls.builder.invalidWebmapSelectionAlert2, {
+                        openLink: "<a target=\"_blank\" href=\"http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000002w8000000\">",
+                        closeLink: "</a>"
+                    }) + "</p>";
+                    this._showErrorMessageDiv(html);
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         attribute = currentTab.getAttribute("tab");
                         if (attribute === "webmap" || attribute === "layer") {
@@ -318,7 +329,11 @@ define([
                 }
             }));
         },
-
+        
+        _locationInputChange: function(evt){
+            this.currentConfig.locationSearchOptions[domAttr.get(evt.currentTarget, "checkedField")] = evt.currentTarget.checked;
+        },
+        
         _populateLocations: function () {
             var currentInput, key, count = 0;
             for (key in this.currentConfig.locationSearchOptions) {
@@ -328,9 +343,7 @@ define([
                         currentInput.checked = true;
                     }
                     domAttr.set(currentInput, "checkedField", key);
-                    on(currentInput, "change", lang.hitch(this, function (evt) {
-                        this.currentConfig.locationSearchOptions[domAttr.get(evt.currentTarget, "checkedField")] = evt.currentTarget.checked;
-                    }));
+                    on(currentInput, "change", lang.hitch(this, this._locationInputChange));
                 }
                 count++;
             }

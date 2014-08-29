@@ -12,14 +12,22 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="tab-links nav navbar-nav navbar-right">
-                <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${builder.webmapText}</a></li>
-                <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${builder.layerText}</a></li>
-                <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${builder.detailsText}</a></li>
-                <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a></li>
-                <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a></li>
-                <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a></li>
-                <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${builder.previewText}</a></li>
-                <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${builder.publishText}</a></li>
+                <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${builder.webmapText}</a>
+                </li>
+                <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${builder.layerText}</a>
+                </li>
+                <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${builder.detailsText}</a>
+                </li>
+                <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a>
+                </li>
+                <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a>
+                </li>
+                <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a>
+                </li>
+                <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${builder.previewText}</a>
+                </li>
+                <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${builder.publishText}</a>
+                </li>
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -31,21 +39,29 @@
         <div class="col-xs-12">
             <div class="page-header">
                 <h2>${builder.titleText}</h2>
-                <p class="lead">${builder.descriptionText}</p>
+                <p class="lead" id="builder_description"></p>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="hidden-xs col-sm-3">
             <ul class="tab-links nav nav-pills nav-stacked">
-                <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${builder.webmapText}</a></li>
-                <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${builder.layerText}</a></li>
-                <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${builder.detailsText}</a></li>
-                <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a></li>
-                <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a></li>
-                <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a></li>
-                <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${builder.previewText}</a></li>
-                <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${builder.publishText}</a></li>
+                <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${builder.webmapText}</a>
+                </li>
+                <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${builder.layerText}</a>
+                </li>
+                <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${builder.detailsText}</a>
+                </li>
+                <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a>
+                </li>
+                <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a>
+                </li>
+                <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a>
+                </li>
+                <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${builder.previewText}</a>
+                </li>
+                <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${builder.publishText}</a>
+                </li>
             </ul>
         </div>
         <div class="col-xs-12 col-sm-9">
@@ -60,7 +76,8 @@
                     <div class="form-group">
                         <button type="button" id="selectWebmapBtn" class="btn btn-default" data-loading-text="${builder.btnSelectWebmapTextLoading}">${builder.btnSelectWebmapText}</button>
                     </div>
-                    <p class="text-right"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText}</a></p>
+                    <p class="text-right"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText}</a>
+                    </p>
                 </div>
                 <div id="layer" class="tab-pane">
                     <h2>${builder.layerTabTitleText}</h2>
@@ -86,7 +103,7 @@
                     </div>
                     <div class="form-group">
                         <label for="detailLogoInput">${builder.detailLogoLabelText}</label>
-                        <input type="url" class="form-control" id="detailLogoInput" placeholder="${builder.imageLogoPlaceholderText}">
+                        <input type="url" class="form-control" id="detailLogoInput" placeholder="http://www.mysite.com/myimage.png">
                     </div>
                     <div class="form-group">
                         <label for="detailDescriptionInput">${builder.descriptionLabelText}</label>
@@ -150,19 +167,22 @@
                     <h2>${builder.optionsApplicationText}</h2>
                     <div class="form-group">
                         <div class="checkbox">
-                            <label for="jumbotronOption"><input id="jumbotronOption" type="checkbox" value="Use Small Header" />${builder.smallHeader}</label>
+                            <label for="jumbotronOption">
+                                <input id="jumbotronOption" type="checkbox" value="Use Small Header" />${builder.smallHeader}</label>
                         </div>
                         <div class="help-block">${builder.jumbotronDescription}</div>
                     </div>
                     <div class="form-group">
                         <div class="checkbox">
-                            <label for="shareOption"><input id="shareOption" type="checkbox" value="share" />${builder.shareGeoformText}</label>
+                            <label for="shareOption">
+                                <input id="shareOption" type="checkbox" value="share" />${builder.shareGeoformText}</label>
                         </div>
                         <div class="help-block">${builder.shareDescription}</div>
                     </div>
                     <div class="form-group">
                         <div class="checkbox">
-                            <label for="defaultExtent"><input id="defaultExtent" type="checkbox" value="share" />${builder.defaultMapExtent}</label>
+                            <label for="defaultExtent">
+                                <input id="defaultExtent" type="checkbox" value="share" />${builder.defaultMapExtent}</label>
                         </div>
                         <div class="help-block">${builder.defaultMapExtentDescription}</div>
                     </div>
