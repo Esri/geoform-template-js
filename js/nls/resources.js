@@ -79,7 +79,7 @@ define({
             close: "Close",
             locationNotFound: "Location could not be found.",
             setLocation: "Set Location",
-            find: "Zip Code, city, Address, etc.",
+            find: "Zip Code, city, Street, etc.",
             attachment: "Attachment",
             toggleDropdown: "Toggle Dropdown",
             invalidLatLong: "Please enter valid ${latLink}latitude${closeLink} and ${lngLink}longitude${closeLink} coordinates.",
