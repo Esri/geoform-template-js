@@ -17,7 +17,7 @@ define([
     "dojo/promise/all",
     "dojo/number",
     "dojo/text!views/modal.html",
-    "dojo/text!views/author.html",
+    "dojo/text!views/builder.html",
     "application/builder/browseIdDlg",
     "application/ShareModal",
     "application/localStorageHelper",
@@ -29,7 +29,7 @@ define([
     "application/pushpins",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, authorTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
+], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, resources, arcgisUtils, theme, pushpins, FeatureLayer) {
     return declare([], {
         nls: nls,
         currentState: "webmap",
@@ -94,10 +94,10 @@ define([
         _initializeBuilder: function (config, userInfo, response) {
             // set to default theme. (first in array)
             dom.byId("themeLink").href = this.themes[0].url;
-            // set author html
+            // set builder html
             var combinedNLS = lang.mixin(nls, resources);
-            var authorHTML = string.substitute(authorTemplate, combinedNLS);
-            dom.byId("parentContainter").innerHTML = authorHTML;
+            var builderHTML = string.substitute(builderTemplate, combinedNLS);
+            dom.byId("parentContainter").innerHTML = builderHTML;
             this.buttonConflict = $.fn.button.noConflict();
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
