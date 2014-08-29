@@ -26,10 +26,10 @@
 .app-loading .loading-indicator {
     display: block;
 }
-.app-loading .app-content{
+.app-loading .app-content {
     visibility: hidden;
 }
-.app-content{
+.app-content {
     visibility: visible;
 }
 .submit-area {
@@ -43,8 +43,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    bottom:0;
-    right:0;
+    bottom: 0;
+    right: 0;
     overflow: hidden;
     background: #fff;
     color: #000;
@@ -148,18 +148,11 @@
 .myLocationOptions {
     padding: 20px 0;
 }
-#geoform .has-feedback .form-control {
-    padding-right: 10px;
-}
 input::-ms-clear {
     display: none;
 }
 #geoform .esriSimpleSlider {
     z-index: 0;
-}
-#geoform .layerFieldsName {
-    color: #555;
-    vertical-align: center;
 }
 .tableDimension {
     min-width: 180px;

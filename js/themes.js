@@ -3,97 +3,109 @@ define(
         "id": "bootstrap",
         "name": "Bootstrap (Default)",
         "url": "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap-theme.min.css",
-        "thumbnail": "images/themes/default.jpg",
+        "thumbnail": "images/themes/default.png",
         "refUrl": "http://bootswatch.com/default/"
     }, {
         "id": "amelia",
         "name": "Amelia",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/amelia/bootstrap.min.css",
-        "thumbnail": "images/themes/amelia.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/amelia/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/amelia/thumbnail.png",
         "refUrl": "http://bootswatch.com/amelia/"
     }, {
         "id": "cerulean",
         "name": "Cerulean",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/cerulean/bootstrap.min.css",
-        "thumbnail": "images/themes/cerulean.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cerulean/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cerulean/thumbnail.png",
         "refUrl": "http://bootswatch.com/cerulean/"
     }, {
         "id": "cosmo",
         "name": "Cosmo",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/cosmo/bootstrap.min.css",
-        "thumbnail": "images/themes/cosmo.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cosmo/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cosmo/thumbnail.png",
         "refUrl": "http://bootswatch.com/cosmo/"
     }, {
         "id": "cyborg",
         "name": "Cyborg",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/cyborg/bootstrap.min.css",
-        "thumbnail": "images/themes/cyborg.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cyborg/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cyborg/thumbnail.png",
         "refUrl": "http://bootswatch.com/cyborg/"
     }, {
         "id": "darkly",
         "name": "Darkly",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/darkly/bootstrap.min.css",
-        "thumbnail": "images/themes/darkly.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/darkly/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/darkly/thumbnail.png",
         "refUrl": "http://bootswatch.com/darkly/"
     }, {
         "id": "flatly",
         "name": "Flatly",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/flatly/bootstrap.min.css",
-        "thumbnail": "images/themes/flatly.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/flatly/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/flatly/thumbnail.png",
         "refUrl": "http://bootswatch.com/flatly/"
     }, {
         "id": "journal",
         "name": "Journal",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/journal/bootstrap.min.css",
-        "thumbnail": "images/themes/journal.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/journal/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/journal/thumbnail.png",
         "refUrl": "http://bootswatch.com/journal/"
     }, {
         "id": "lumen",
         "name": "Lumen",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/lumen/bootstrap.min.css",
-        "thumbnail": "images/themes/lumen.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/lumen/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/lumen/thumbnail.png",
         "refUrl": "http://bootswatch.com/lumen/"
+    }, {
+        "id": "paper",
+        "name": "Paper",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/paper/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/paper/thumbnail.png",
+        "refUrl": "http://bootswatch.com/paper/"
     }, {
         "id": "readable",
         "name": "Readable",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/readable/bootstrap.min.css",
-        "thumbnail": "images/themes/readable.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/readable/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/readable/thumbnail.png",
         "refUrl": "http://bootswatch.com/readable/"
+    }, {
+        "id": "sandstone",
+        "name": "Sandstone",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/sandstone/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/sandstone/thumbnail.png",
+        "refUrl": "http://bootswatch.com/sandstone/"
     }, {
         "id": "simplex",
         "name": "Simplex",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/simplex/bootstrap.min.css",
-        "thumbnail": "images/themes/simplex.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/simplex/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/simplex/thumbnail.png",
         "refUrl": "http://bootswatch.com/simplex/"
     }, {
         "id": "slate",
         "name": "Slate",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/slate/bootstrap.min.css",
-        "thumbnail": "images/themes/slate.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/slate/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/slate/thumbnail.png",
         "refUrl": "http://bootswatch.com/slate/"
     }, {
         "id": "spacelab",
         "name": "Spacelab",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/spacelab/bootstrap.min.css",
-        "thumbnail": "images/themes/spacelab.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/spacelab/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/spacelab/thumbnail.png",
         "refUrl": "http://bootswatch.com/spacelab/"
     }, {
         "id": "superhero",
         "name": "Superhero",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/superhero/bootstrap.min.css",
-        "thumbnail": "images/themes/superhero.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/superhero/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/superhero/thumbnail.png",
         "refUrl": "http://bootswatch.com/superhero/"
     }, {
         "id": "united",
         "name": "United",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/united/bootstrap.min.css",
-        "thumbnail": "images/themes/united.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/united/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/united/thumbnail.png",
         "refUrl": "http://bootswatch.com/united/"
     }, {
         "id": "yeti",
         "name": "Yeti",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+1/yeti/bootstrap.min.css",
-        "thumbnail": "images/themes/yeti.jpg",
+        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/yeti/bootstrap.min.css",
+        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/yeti/thumbnail.png",
         "refUrl": "http://bootswatch.com/yeti/"
     }]
 );

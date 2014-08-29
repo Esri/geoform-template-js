@@ -30,8 +30,8 @@ define({
     "enableSharing": true,
     "defaultMapExtent": true,
     "pushpinColor": "blue",
-    "attachmentLabel":"",
-    "attachmentHelpText":"",
+    "attachmentLabel": "",
+    "attachmentHelpText": "",
     "locationSearchOptions": {
         "enableMyLocation": true,
         "enableSearch": true,
