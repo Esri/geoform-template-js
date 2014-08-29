@@ -50,7 +50,7 @@ define({
             myLocationText: "Current Location",
             locationDescription: "Specify the location for this entry by clicking/tapping the map or by using one of the following options.",
             addressText: "Search",
-            geographic: "Geographic",
+            geographic: "Lat/Lon",
             locationTabText: "Location",
             locationPopupTitle: "Selected Location",
             submitButtonText: "Submit entry",
