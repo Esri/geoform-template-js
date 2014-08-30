@@ -904,7 +904,7 @@ define([
                 }, userFormNode);
 
                 labelContent = domConstruct.create("label", {
-                    innerHTML: this.config.attachmentLabel || nls.user.attachment,
+                    innerHTML: "<span class=\"glyphicon glyphicon-paperclip\"></span> " + this.config.attachmentLabel || nls.user.attachment,
                     "for": "geoFormAttachment"
                 }, formContent);
 
@@ -1523,7 +1523,7 @@ define([
         },
 
         _createShareDlgContent: function () {
-            var iconContainer;
+            var iconContainer, group;
             domConstruct.empty(query(".modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.shareUserTitleMessage);
             iconContainer = domConstruct.create("div", {
@@ -1564,11 +1564,21 @@ define([
             domConstruct.create("h3", {
                 innerHTML: nls.user.shareModalFormText
             }, iconContainer);
+            
+            group = domConstruct.create("div", {
+                className: "input-group"
+            }, iconContainer);
+            
+            domConstruct.create("span", {
+                className: "input-group-addon",
+                innerHTML: "<span class=\"glyphicon glyphicon-link\"></span>"
+            }, group);
+            
             domConstruct.create("input", {
                 type: "text",
                 className: "form-control",
                 id: "shareMapUrlText"
-            }, iconContainer);
+            }, group);
         },
 
         _showErrorMessageDiv: function (errorMessage) {

@@ -805,7 +805,7 @@ define([
             }, progressIndicatorContainer);
         },
         _createShareDlgContent: function () {
-            var iconContainer;
+            var iconContainer, group;
             domConstruct.empty($("#myModal .modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderTitleMessage);
             iconContainer = domConstruct.create("div", {
@@ -846,11 +846,18 @@ define([
             domConstruct.create("h3", {
                 innerHTML: nls.user.shareModalFormText
             }, iconContainer);
+            group = domConstruct.create("div", {
+                className: "input-group"
+            }, iconContainer);
+            domConstruct.create("span", {
+                className: "input-group-addon",
+                innerHTML: "<span class=\"glyphicon glyphicon-link\"></span>"
+            }, group);
             domConstruct.create("input", {
                 type: "text",
                 className: "form-control",
                 id: "shareMapUrlText"
-            }, iconContainer);
+            }, group);
         },
         //function to enable the tab passed in input parameter
         _enableTab: function (currentTab) {
