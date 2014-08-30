@@ -53,7 +53,7 @@ define({
             geographic: "Lat/Lon",
             locationTabText: "Location",
             locationPopupTitle: "Selected Location",
-            submitButtonText: "Submit entry",
+            submitButtonText: "Submit Entry",
             submitButtonTextLoading: "Submitting&hellip;",
             formValidationMessageAlertText: "The following fields are required:",
             selectLocation: "Please select a ${openLink}location${closeLink} for your submission.",
