@@ -193,6 +193,10 @@ function (
             });
             // resize map
             this.map.resize();
+            // resize after half second
+            setTimeout(lang.hitch(this, function(){
+                this.map.resize();
+            }), 500);
         },
         _toggle: function () {
             if (this.get("fullscreen")) {
