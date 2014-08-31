@@ -902,9 +902,13 @@ define([
                 formContent = domConstruct.create("div", {
                     className: "form-group"
                 }, userFormNode);
-
+                
+                var labelHTML = "";
+                labelHTML += "<span class=\"glyphicon glyphicon-paperclip\"></span> ";
+                labelHTML += (this.config.attachmentLabel || nls.user.attachment);
+                
                 labelContent = domConstruct.create("label", {
-                    innerHTML: "<span class=\"glyphicon glyphicon-paperclip\"></span> " + this.config.attachmentLabel || nls.user.attachment,
+                    innerHTML: labelHTML,
                     "for": "geoFormAttachment"
                 }, formContent);
 
