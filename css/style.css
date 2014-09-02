@@ -238,9 +238,3 @@ body.modal-open,
 .drag-cursor {
     cursor: ns-resize;
 }
-#fullscreen {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 999;
-}

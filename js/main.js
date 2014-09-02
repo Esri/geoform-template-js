@@ -26,7 +26,6 @@ define([
     "esri/geometry/Point",
     "esri/layers/GraphicsLayer",
     "application/ShareModal",
-    "application/FullScreenMap",
     "application/localStorageHelper",
     "esri/graphic",
     "esri/symbols/PictureMarkerSymbol",
@@ -59,7 +58,7 @@ define([
     Geocoder,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, GraphicsLayer, ShareModal, FullScreenMap, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, coordinator, locale) {
+    nls, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, coordinator, locale) {
     return declare([], {
         nls: nls,
         config: {},
@@ -1012,7 +1011,7 @@ define([
                 array.some(currentField.subTypes, function (currentSelection) {
                     if (currentTarget.value === currentSelection.id.toString()) {
                         selectedType = currentSelection;
-                        return true
+                        return true;
                     }
                 });
             }
@@ -1038,12 +1037,12 @@ define([
                     for (var fieldAttribute in selectedType.templates[0].prototype.attributes) {
                         if (fieldAttribute.toLowerCase() === field.name.toLowerCase()) {
                             defaultValue = selectedType.templates[0].prototype.attributes[fieldAttribute];
-                            field.defaultValue = defaultValue
+                            field.defaultValue = defaultValue;
                             break;
                         }
                     }
                 }
-                for (i in selectedType.domains) {
+                for (var i in selectedType.domains) {
                     //condition to find the domain properties for current field
                     if (i === field.name) {
                         switchDomainType = selectedType.domains[i].type;
@@ -1062,8 +1061,8 @@ define([
                                 if (!field.domain) {
                                     field.domain = {};
                                 }
-                                field.domain.codedValues = selectedType.domains[i].codedValues
-                                domain = selectedType.domains[i].codedValues
+                                field.domain.codedValues = selectedType.domains[i].codedValues;
+                                domain = selectedType.domains[i].codedValues;
                                 break;
                             case "range":
                                 //Condition to change the range domain values of field already having domain.
@@ -1205,7 +1204,7 @@ define([
             var popup = new Popup(null, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
             var mapDiv = dom.byId('mapDiv');
-            mapDiv.innerHTML = '<div id="fullscreen"></div>';
+            mapDiv.innerHTML = '';
             arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
                     infoWindow: popup
@@ -1223,11 +1222,6 @@ define([
                 this.map = response.map;
                 this.defaultExtent = this.map.extent;
                 this._resizeMap();
-                // fullscreen button
-                var fs = new FullScreenMap({
-                    map: this.map
-                }, dom.byId("fullscreen"));
-                fs.startup();
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
@@ -1546,7 +1540,7 @@ define([
                     window.location.href = '#top';
                     //After moving geoform to top, map was not getting resized properly.
                     //And pushpin was not getting placed correctly.
-                    this.map.resize();
+                    this._resizeMap();
                 }), lang.hitch(this, function () {
                     this._clearSubmissionGraphic();
                     this.map.getLayer(this.config.form_layer.id).setEditable(false);
