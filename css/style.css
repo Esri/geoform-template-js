@@ -145,9 +145,6 @@
     width: 100%;
     line-height: 50px;
 }
-.myLocationOptions {
-    padding: 20px 0;
-}
 input::-ms-clear {
     display: none;
 }
