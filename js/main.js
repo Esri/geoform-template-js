@@ -578,7 +578,7 @@ define([
 
         //function to create elements of form.
         _createFormElements: function (currentField, index, referenceNode) {
-            var radioContainer, fieldname, radioContent, inputContent, labelContent, fieldLabelText, selectOptions, inputLabel, radioInput, formContent, requireField, radioButtonCounter = 0, userFormNode,
+            var radioContainer, fieldname, radioContent, inputContent, labelContent, fieldLabelText, selectOptions, inputLabel, radioInput, formContent, requireField, userFormNode,
                checkboxContainer, checkboxContent, checkBoxCounter = 0, helpBlock, rangeHelpText;
             userFormNode = dom.byId('userForm');
             //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
@@ -1000,7 +1000,7 @@ define([
         },
         //function to validate the fields defined within subtypes
         _validateTypeFields: function (currentTarget, currentField) {
-            var selectedType, defaultValue, switchTag, switchDomainType, referenceNode;
+            var selectedType, defaultValue, switchDomainType, referenceNode;
             if (currentTarget.value === "") {
                 //no type is selected, so the code to remove the type dependent fields will come here
                 array.forEach(this.sortedFields, lang.hitch(this, function (currentInput) {
