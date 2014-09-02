@@ -1795,9 +1795,9 @@ define([
                     return true;
                 }
             }));
-            // hide well if no tabs to display
-            if(total === 0){
-                var node = dom.byId('location_row');
+            // hide tab nav if zero or one tabs
+            if(total < 2){
+                var node = dom.byId('location_nav');
                 if(node){
                     domStyle.set(node, 'display', 'none');
                 }
