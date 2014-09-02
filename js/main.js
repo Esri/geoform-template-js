@@ -1754,6 +1754,7 @@ define([
 
         _populateLocationsOptions: function () {
             var count = 0;
+            var total = 0;
             var locationTabs = query("#location_pills li");
             var tabContents = query("#location_tabs .tab-pane");
             for (var key in this.config.locationSearchOptions) {
@@ -1763,6 +1764,7 @@ define([
                     } else {
                         //resize the map to set the correct info-window anchor
                         on(locationTabs[count], 'click', lang.hitch(this, this._resizeMap));
+                        total++;
                     }
                     count++;
                 }
@@ -1775,6 +1777,13 @@ define([
                     return true;
                 }
             }));
+            // hide well if no tabs to display
+            if(total === 0){
+                var node = dom.byId('location_row');
+                if(node){
+                    domStyle.set(node, 'display', 'none');
+                }
+            }
         }
     });
 });
