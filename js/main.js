@@ -1754,8 +1754,8 @@ define([
 
         _populateLocationsOptions: function () {
             var count = 0;
-            var locationTabs = query(".nav-tabs li");
-            var tabContents = query(".tab-pane");
+            var locationTabs = query("#location_pills li");
+            var tabContents = query("#location_tabs .tab-pane");
             for (var key in this.config.locationSearchOptions) {
                 if (this.config.locationSearchOptions.hasOwnProperty(key)) {
                     if (!this.config.locationSearchOptions[key]) {
