@@ -161,7 +161,10 @@ define([
             }
             return options;
         },
-        startup: function (config, response, isPreview, node) {
+        startup: function () {
+            var config = arguments[0];
+            var isPreview = arguments[2];
+            var node = arguments[3];
             var localStorageSupport = new localStorageHelper();
             if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
                 config = JSON.parse(localStorage.getItem("geoform_config"));
@@ -236,7 +239,7 @@ define([
 
                     var submitButtonNode = dom.byId('submitButton');
                     if (submitButtonNode) {
-                        on(submitButtonNode, "click", lang.hitch(this, function (evt) {
+                        on(submitButtonNode, "click", lang.hitch(this, function () {
                             var btn = $(submitButtonNode);
                             btn.button('loading');
                             var erroneousFields = [],
@@ -286,7 +289,7 @@ define([
                                 this._showErrorMessageDiv(errorMessage);
                                 btn.button('reset');
                             } else {
-                                this._addFeatureToLayer(this.config);
+                                this._addFeatureToLayer();
                             }
                         }));
                     }
@@ -327,7 +330,7 @@ define([
             // editable layer
             if (this._formLayer) {
                 // support basic offline editing
-                var offlineSupport = new OfflineSupport({
+                this._offlineSupport = new OfflineSupport({
                     map: this.map,
                     layer: this._formLayer
                 });
@@ -1175,7 +1178,8 @@ define([
             });
             array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
                 domClass.remove(currentField.parentNode, "has-success");
-                array.forEach(query("input", currentField), function (element, index) {
+                array.forEach(query("input", currentField), function () {
+                    var index = arguments[1];
                     domAttr.set(query("input", currentField)[index], "checked", false);
                 });
             });
@@ -1487,7 +1491,7 @@ define([
             }
         },
 
-        _addFeatureToLayer: function (config) {
+        _addFeatureToLayer: function () {
             var userFormNode = dom.byId('userForm');
             //To populate data for apply edits
             var featureData = new Graphic();
