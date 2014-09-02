@@ -1622,7 +1622,7 @@ define([
                 bitlyKey: this.config.bitlyKey,
                 image: this.config.sharinghost + '/sharing/rest/content/items/' + this.config.itemInfo.item.id + '/info/' + this.config.itemInfo.item.thumbnail,
                 title: this.config.details.Title || nls.user.geoformTitleText || '',
-                summary: this.config.details.Description || '',
+                summary: this.config.itemInfo.item.snippet || '',
                 hashtags: 'esriGeoForm',
                 shareOption: this.config.enableSharing
             });
