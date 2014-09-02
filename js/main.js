@@ -324,14 +324,12 @@ define([
             domClass.add(this.map.root, 'panel');
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
-            // your code here!
-            // get editable layer
-            var layer = this.map.getLayer(this.config.form_layer.id);
-            if (layer) {
+            // editable layer
+            if (this._formLayer) {
                 // support basic offline editing
                 var offlineSupport = new OfflineSupport({
                     map: this.map,
-                    layer: layer
+                    layer: this._formLayer
                 });
             }
             this.editToolbar = new editToolbar(this.map);
@@ -477,7 +475,7 @@ define([
         //function to validate and create the form
         _createForm: function (fields) {
             var formContent, labelContent, helpBlock, fileInput, matchingField, newAddedFields = [], userFormNode;
-            if (!this.map.getLayer(this.config.form_layer.id)) {
+            if (!this._formLayer) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
                     if (currentNode.children) {
@@ -491,12 +489,12 @@ define([
                 }));
                 return;
             }
-            array.forEach(this.map.getLayer(this.config.form_layer.id).fields, lang.hitch(this, function (layerField) {
+            array.forEach(this._formLayer.fields, lang.hitch(this, function (layerField) {
                 matchingField = false;
                 array.forEach(fields, lang.hitch(this, function (currentField) {
                     if (layerField.name == currentField.name && currentField.visible) {
                         if (currentField.typeField) {
-                            layerField.subTypes = this.map.getLayer(this.config.form_layer.id).types;
+                            layerField.subTypes = this._formLayer.types;
                         }
                         newAddedFields.push(lang.mixin(layerField, currentField));
                         matchingField = true;
@@ -530,7 +528,7 @@ define([
             array.forEach(this.sortedFields, lang.hitch(this, function (currentField, index) {
                 //code to set true/false value to property 'isTypeDependent' of the field.
                 currentField.isTypeDependent = false;
-                array.forEach(this.map.getLayer(this.config.form_layer.id).types, function (currentType) {
+                array.forEach(this._formLayer.types, function (currentType) {
                     var hasDomainValue = null, hasDefaultValue = null;
                     hasDomainValue = currentType.domains[currentField.name];
                     hasDefaultValue = currentType.templates[0].prototype.attributes[currentField.name];
@@ -544,7 +542,7 @@ define([
                 //function to create form elements(referenceNode is passed null)
                 this._createFormElements(currentField, index, null);
             }));
-            if (this.map.getLayer(this.config.form_layer.id).hasAttachments) {
+            if (this._formLayer.hasAttachments) {
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group"
@@ -619,10 +617,10 @@ define([
             if (requireField && labelContent) {
                 domConstruct.place(requireField, labelContent, "last");
             }
-            if (this.map.getLayer(this.config.form_layer.id).templates[0] && !currentField.defaultValue) {
-                for (var fieldAttribute in this.map.getLayer(this.config.form_layer.id).templates[0].prototype.attributes) {
+            if (this._formLayer.templates[0] && !currentField.defaultValue) {
+                for (var fieldAttribute in this._formLayer.templates[0].prototype.attributes) {
                     if (fieldAttribute.toLowerCase() == fieldname.toLowerCase()) {
-                        currentField.defaultValue = this.map.getLayer(this.config.form_layer.id).templates[0].prototype.attributes[fieldAttribute];
+                        currentField.defaultValue = this._formLayer.templates[0].prototype.attributes[fieldAttribute];
                     }
                 }
             }
@@ -1022,7 +1020,7 @@ define([
             }
 
             //initial point of reference to put elements
-            referenceNode = dom.byId(this.map.getLayer(this.config.form_layer.id).typeIdField).parentNode;
+            referenceNode = dom.byId(this._formLayer.typeIdField).parentNode;
 
             //code to populate type dependent fields
             array.forEach(this.sortedFields, lang.hitch(this, function (currentInput, index) {
@@ -1031,7 +1029,7 @@ define([
                 if (!currentInput.isTypeDependent) {
                     return true;
                 }
-                array.some(this.map.getLayer(this.config.form_layer.id).fields, function (layerField) {
+                array.some(this._formLayer.fields, function (layerField) {
                     if (layerField.name === currentInput.name) {
                         field = lang.clone(lang.mixin(layerField, currentInput));
                         return true;
@@ -1227,6 +1225,8 @@ define([
                 this.map = response.map;
                 this.defaultExtent = this.map.extent;
                 this._resizeMap();
+                // get editable layer
+                this._formLayer = this.map.getLayer(this.config.form_layer.id);
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
@@ -1524,7 +1524,7 @@ define([
                 featureData.geometry = {};
                 featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
                 //code for apply-edits
-                this.map.getLayer(config.form_layer.id).applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
+                this._formLayer.applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
                     this._clearSubmissionGraphic();
                     this._clearFormFields();
                     domConstruct.destroy(query(".errorMessage")[0]);
@@ -1537,8 +1537,8 @@ define([
                         this.map.setExtent(this.defaultExtent);
                     }
                     this._resetButton();
-                    if (userFormNode[userFormNode.length - 1].value !== "" && this.map.getLayer(config.form_layer.id).hasAttachments) {
-                        this.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, userFormNode, function () {}, function () {
+                    if (userFormNode[userFormNode.length - 1].value !== "" && this._formLayer.hasAttachments) {
+                        this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () {}, function () {
                             console.log(nls.user.addAttachmentFailedMessage);
                         });
                     }
@@ -1548,7 +1548,7 @@ define([
                     this._resizeMap();
                 }), lang.hitch(this, function () {
                     this._clearSubmissionGraphic();
-                    this.map.getLayer(this.config.form_layer.id).setEditable(false);
+                    this._formLayer.setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
                     this._openErrorModal();
                     console.log(nls.user.addFeatureFailedMessage);
@@ -1743,7 +1743,7 @@ define([
                     this.config.form_layer.id = currentLayer.id;
                     // if fields not set or empty
                     if (!this.config.fields || (this.config.fields && this.config.fields.length === 0)) {
-                        this.config.fields = this.map.getLayer(this.config.form_layer.id).fields;
+                        this.config.fields = this._formLayer.fields;
                     }
                     return true;
                 }
