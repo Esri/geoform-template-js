@@ -197,7 +197,9 @@ define([
 
             on(dom.byId('selectAll'), "change", lang.hitch(this, function (evt) {
                 array.forEach(query(".fieldCheckbox"), lang.hitch(this, function (currentCheckBox) {
-                    currentCheckBox.checked = evt.currentTarget.checked;
+                    if (!currentCheckBox.disabled) {
+                        currentCheckBox.checked = evt.currentTarget.checked;
+                    }
                 }));
                 this._getFieldCheckboxState();
             }));
@@ -508,7 +510,7 @@ define([
                     return;
                 }
                 if ((currentField.domain && currentField.domain.codedValues) || (currentField.name === this.fieldInfo[layerName].typeIdField)) {
-                    if ((currentField.domain && currentField.domain.codedValues.length <= 4) || (this.fieldInfo[layerName].types && this.fieldInfo[layerName].types.length <= 4)) {
+                    if ((currentField.domain && currentField.domain.codedValues.length <= 4) || (currentField.name === this.fieldInfo[layerName].typeIdField && this.fieldInfo[layerName].types && this.fieldInfo[layerName].types.length <= 4)) {
                         typeSelect = domConstruct.create("select", { "class": "form-control displayType" }, fieldType);
                         domConstruct.create("option", { innerHTML: nls.builder.selectMenuOption, value: "dropdown" }, typeSelect);
                         domConstruct.create("option", { innerHTML: nls.builder.selectRadioOption, value: "radio" }, typeSelect);
@@ -596,6 +598,10 @@ define([
                 this.fieldInfo[layerId] = {};
                 this.fieldInfo[layerId].Fields = layer.fields;
                 this.fieldInfo[layerId].layerUrl = layer.url;
+                if (layer.typeIdField !== "") {
+                    this.fieldInfo[layerId].types = layer.types;
+                    this.fieldInfo[layerId].typeIdField = layer.typeIdField;
+                }
                 if (layerId == this.currentConfig.form_layer.id) {
                     this._populateFields(layerId);
                     filteredLayer.selected = "selected";

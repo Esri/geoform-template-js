@@ -70,7 +70,7 @@ define([
         pins: pushpins,
         localStorageSupport: null,
         defaultValueAttributes: null,
-
+        sortedFields: [],
         _createGeocoderOptions: function () {
             //Check for multiple geocoder support and setup options for geocoder widget.
             var hasEsri = false,
@@ -477,9 +477,7 @@ define([
 
         //function to validate and create the form
         _createForm: function (fields) {
-            var formContent, labelContent, inputContent, selectOptions, helpBlock, fileInput, matchingField, newAddedFields = [],
-                fieldname, fieldLabelText, sortedArray, radioButtonCounter = 0,
-                checkboxContainer, checkboxContent, checkBoxCounter = 0;
+            var formContent, labelContent, helpBlock, fileInput, matchingField, newAddedFields = [], userFormNode;
             if (!this.map.getLayer(this.config.form_layer.id)) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
@@ -496,7 +494,6 @@ define([
             }
             array.forEach(this.map.getLayer(this.config.form_layer.id).fields, lang.hitch(this, function (layerField) {
                 matchingField = false;
-                sortedArray = [];
                 array.forEach(fields, lang.hitch(this, function (currentField) {
                     if (layerField.name == currentField.name && currentField.visible) {
                         if (currentField.typeField) {
@@ -520,221 +517,281 @@ define([
                     var fName = newElement.name;
                     if (this.config.appid) {
                         if (sortedElement.name == fName) {
-                            sortedArray.push(newElement);
+                            this.sortedFields.push(newElement);
                             return true;
                         }
                     } else {
                         if (sortedElement.name == fName) {
-                            sortedArray.push(newElement);
+                            this.sortedFields.push(newElement);
                             return true;
                         }
                     }
                 }));
             }));
-            var userFormNode = dom.byId('userForm');
-            array.forEach(sortedArray, lang.hitch(this, function (currentField, index) {
-                var radioContainer, radioContent, inputLabel, radioInput, formContent, requireField, rangeHelpText;
-                //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
-                formContent = domConstruct.create("div", {}, userFormNode);
-                if ((!currentField.nullable || currentField.typeField) && currentField.displayType !== "checkbox") {
-                    domClass.add(formContent, "form-group has-feedback geoFormQuestionare mandatory");
-                    requireField = domConstruct.create("small", {
-                        className: 'requireFieldStyle',
-                        innerHTML: nls.user.requiredField
+            array.forEach(this.sortedFields, lang.hitch(this, function (currentField, index) {
+                //code to set true/false value to property 'isTypeDependent' of the field.
+                currentField.isTypeDependent = false;
+                array.forEach(this.map.getLayer(this.config.form_layer.id).types, function (currentType) {
+                    var hasDomainValue = null, hasDefaultValue = null;
+                    hasDomainValue = currentType.domains[currentField.name];
+                    hasDefaultValue = currentType.templates[0].prototype.attributes[currentField.name];
+                    if ((hasDomainValue && hasDomainValue.type !== "inherited") || (hasDefaultValue && !currentField.typeField)) {
+                        currentField.isTypeDependent = true;
+                    }
+                });
+                if (currentField.isTypeDependent) {
+                    return true;
+                }
+                //function to create form elements(referenceNode is passed null)
+                this._createFormElements(currentField, index, null);
+            }));
+            if (this.map.getLayer(this.config.form_layer.id).hasAttachments) {
+                userFormNode = dom.byId('userForm');
+                formContent = domConstruct.create("div", {
+                    className: "form-group"
+                }, userFormNode);
+
+                labelContent = domConstruct.create("label", {
+                    innerHTML: this.config.attachmentLabel || nls.user.attachment,
+                    "for": "geoFormAttachment"
+                }, formContent);
+
+                fileInput = domConstruct.create("input", {
+                    "type": "file",
+                    "id": "geoFormAttachment",
+                    "accept": "image/*",
+                    //"capture": "camera",
+                    "name": "attachment"
+                }, formContent);
+                if (this.config.attachmentHelpText) {
+                    helpBlock = domConstruct.create("p", {
+                        className: "help-block",
+                        innerHTML: this.config.attachmentHelpText
                     }, formContent);
-                } else {
-                    domClass.add(formContent, "form-group geoFormQuestionare has-feedback");
                 }
-                if (currentField.alias) {
-                    fieldLabelText = currentField.alias;
-                } else {
-                    fieldLabelText = currentField.name;
-                }
-                fieldname = currentField.name;
-                if (currentField.displayType !== "checkbox") {
-                    labelContent = domConstruct.create("label", {
-                        "for": fieldname,
-                        className: "control-label",
-                        innerHTML: fieldLabelText,
-                        id: fieldLabelText + "" + index
-                    }, formContent);
-                }
-                if (requireField && labelContent) {
-                    domConstruct.place(requireField, labelContent, "last");
-                }
-                if (this.map.getLayer(this.config.form_layer.id).templates[0]) {
-                    for (var fieldAttribute in this.map.getLayer(this.config.form_layer.id).templates[0].prototype.attributes) {
-                        if (fieldAttribute.toLowerCase() == fieldname.toLowerCase()) {
-                            currentField.defaultValue = this.map.getLayer(this.config.form_layer.id).templates[0].prototype.attributes[fieldAttribute];
-                        }
+            }
+        },
+
+        //function to create elements of form.
+        _createFormElements: function (currentField, index, referenceNode) {
+            var radioContainer, fieldname, radioContent, inputContent, labelContent, fieldLabelText, selectOptions, inputLabel, radioInput, formContent, requireField, radioButtonCounter = 0, userFormNode,
+               checkboxContainer, checkboxContent, checkBoxCounter = 0, helpBlock, rangeHelpText;
+            userFormNode = dom.byId('userForm');
+            //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
+            formContent = domConstruct.create("div", {
+            }, userFormNode);
+            if (referenceNode) {
+                domConstruct.place(formContent, referenceNode, "after");
+                domClass.add(formContent, "fade");
+                setTimeout(function () {
+                    domClass.add(formContent, "in");
+                }, 100);
+            }
+            if ((!currentField.nullable || currentField.typeField) && currentField.displayType !== "checkbox") {
+                domClass.add(formContent, "form-group has-feedback geoFormQuestionare mandatory");
+                requireField = domConstruct.create("small", {
+                    className: 'requireFieldStyle',
+                    innerHTML: nls.user.requiredField
+                }, formContent);
+            }
+            else {
+                domClass.add(formContent, "form-group geoFormQuestionare has-feedback");
+            }
+            if (currentField.alias) {
+                fieldLabelText = currentField.alias;
+            }
+            else {
+                fieldLabelText = currentField.name;
+            }
+            fieldname = currentField.name;
+            if (currentField.displayType !== "checkbox") {
+                labelContent = domConstruct.create("label", {
+                    "for": fieldname,
+                    className: "control-label",
+                    innerHTML: fieldLabelText,
+                    id: fieldLabelText + "" + index
+                }, formContent);
+            }
+            if (requireField && labelContent) {
+                domConstruct.place(requireField, labelContent, "last");
+            }
+            if (this.map.getLayer(this.config.form_layer.id).templates[0] && !currentField.defaultValue) {
+                for (var fieldAttribute in this.map.getLayer(this.config.form_layer.id).templates[0].prototype.attributes) {
+                    if (fieldAttribute.toLowerCase() == fieldname.toLowerCase()) {
+                        currentField.defaultValue = this.map.getLayer(this.config.form_layer.id).templates[0].prototype.attributes[fieldAttribute];
                     }
                 }
-                //code to make select boxes in case of a coded value
-                if (currentField.domain || currentField.typeField) {
-                    if ((currentField.domain && currentField.domain.type === 'codedValue') || currentField.typeField) {
-                        radioInput = false;
-                        if (currentField.displayType && currentField.displayType === "radio") {
-                            radioInput = true;
-                        }
-                        //check for fieldType: if not present create dropdown
-                        //If present check for fieldType value and accordingly populate the control
-                        if (!radioInput) {
-                            inputContent = domConstruct.create("select", {
-                                className: "form-control selectDomain",
-                                "id": fieldname
-                            }, formContent);
-                            selectOptions = domConstruct.create("option", {
-                                innerHTML: nls.user.domainDefaultText,
-                                value: ""
-                            }, inputContent);
-                            if (currentField.domain && !currentField.typeField) {
-                                array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
-                                    selectOptions = domConstruct.create("option", {
-                                        innerHTML: currentOption.name,
-                                        value: currentOption.code
-                                    }, inputContent);
-                                    //if field contain default value, make that option selected
-                                    if (currentField.defaultValue === currentOption.code) {
-                                        domAttr.set(selectOptions, "selected", true);
-                                        domClass.add(inputContent.parentNode, "has-success");
-                                    }
-                                }));
-                            } else {
-                                array.forEach(currentField.subTypes, lang.hitch(this, function (currentOption) {
-                                    selectOptions = domConstruct.create("option", {}, inputContent);
-                                    selectOptions.text = currentOption.name;
-                                    selectOptions.value = currentOption.id;
-                                    //default values for subtypes(if any) has to be handled here
-                                }));
-                            }
-                            on(inputContent, "change", lang.hitch(this, function (evt) {
-                                if (evt.target.value !== "") {
-                                    domClass.add($(evt.target.parentNode)[0], "has-success");
-                                } else {
-                                    domClass.remove($(evt.target.parentNode)[0], "has-success");
+            }
+            //code to make select boxes in case of a coded value
+            if (currentField.domain || currentField.typeField) {
+                if ((currentField.domain && currentField.domain.type === 'codedValue') || currentField.typeField) {
+                    radioInput = false;
+                    if (currentField.displayType && currentField.displayType === "radio") {
+                        radioInput = true;
+                    }
+                    //check for fieldType: if not present create dropdown
+                    //If present check for fieldType value and accordingly populate the control
+                    if (!radioInput) {
+                        inputContent = domConstruct.create("select", {
+                            className: "form-control selectDomain",
+                            "id": fieldname
+                        }, formContent);
+                        selectOptions = domConstruct.create("option", {
+                            innerHTML: nls.user.domainDefaultText,
+                            value: ""
+                        }, inputContent);
+                        if (currentField.domain && !currentField.typeField) {
+                            array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
+                                selectOptions = domConstruct.create("option", {
+                                    innerHTML: currentOption.name,
+                                    value: currentOption.code
+                                }, inputContent);
+                                //if field contain default value, make that option selected
+                                if (currentField.defaultValue === currentOption.code) {
+                                    domAttr.set(selectOptions, "selected", true);
+                                    domClass.add(inputContent.parentNode, "has-success");
                                 }
                             }));
                         } else {
-                            radioContainer = domConstruct.create("div", {
-                                className: "radioContainer"
-                            }, formContent);
-                            if (currentField.domain && !currentField.typeField) {
-                                array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
-                                    //Code to validate for applying has-success class
-                                    if (index === 1) {
-                                        domAttr.set(radioContainer, "id", fieldname + "radioContainer");
-                                    }
-                                    radioContent = domConstruct.create("div", {
-                                        className: "radio"
-                                    }, radioContainer);
-                                    inputLabel = domConstruct.create("label", {
-                                        "for": currentOption.code + fieldname
-                                    }, radioContent);
-                                    inputContent = domConstruct.create("input", {
-                                        "id": currentOption.code + fieldname,
-                                        className: "radioInput",
-                                        type: "radio",
-                                        name: fieldname,
-                                        value: currentOption.code
-                                    }, inputLabel);
-                                    domAttr.set(inputContent, "radioContainerIndex", radioButtonCounter);
-                                    //if field has default value,set radio button checked by default
-                                    if (currentOption.code === currentField.defaultValue) {
-                                        domAttr.set(inputContent, "checked", "checked");
-                                        domClass.add(radioContainer.parentNode, "has-success");
-                                    }
-                                    // add text after input
-                                    inputLabel.innerHTML += currentOption.name;
-                                    //code to assign has-success class on click of a radio button
-                                    on(dom.byId(currentOption.code + fieldname), "click", function (evt) {
-                                        var i = domAttr.get(evt.target, "radioContainerIndex");
-                                        var radiotButtonContainer = query(".radioContainer")[i];
-                                        if (evt.target.checked) {
-                                            domClass.add(radiotButtonContainer.parentNode, "has-success");
-                                        } else {
-                                            domClass.remove(radiotButtonContainer.parentNode, "has-success");
-                                        }
-                                    });
-                                }));
-                            } else {
-                                array.forEach(currentField.subTypes, lang.hitch(this, function (currentOption) {
-                                    //Code to validate for applying has-success class
-                                    if (index === 1) {
-                                        domAttr.set(radioContainer, "id", fieldname + "radioContainer");
-                                    }
-                                    radioContent = domConstruct.create("div", {
-                                        className: "radio"
-                                    }, radioContainer);
-                                    inputLabel = domConstruct.create("label", {
-                                        "for": currentOption.id + fieldname
-                                    }, radioContent);
-                                    inputContent = domConstruct.create("input", {
-                                        "id": currentOption.id + fieldname,
-                                        className: "radioInput",
-                                        type: "radio",
-                                        name: fieldname,
-                                        value: currentOption.id
-                                    }, inputLabel);
-                                    domAttr.set(inputContent, "radioContainerIndex", radioButtonCounter);
-                                    //if field has default value,set radio button checked by default
-                                    if (currentOption.code === currentField.defaultValue) {
-                                        domAttr.set(inputContent, "checked", "checked");
-                                        domClass.add(radioContainer.parentNode, "has-success");
-                                    }
-                                    // add text after input
-                                    inputLabel.innerHTML += currentOption.name;
-                                    on(dom.byId(currentOption.code + fieldname), "click", function (evt) {
-                                        var i = domAttr.get(evt.target, "radioContainerIndex");
-                                        var radiotButtonContainer = query(".radioContainer")[i];
-                                        if (evt.target.checked) {
-                                            domClass.add(radiotButtonContainer.parentNode, "has-success");
-                                        } else {
-                                            domClass.remove(radiotButtonContainer.parentNode, "has-success");
-                                        }
-                                    });
-                                }));
-                            }
-                            radioButtonCounter++;
+                            array.forEach(currentField.subTypes, lang.hitch(this, function (currentOption) {
+                                selectOptions = domConstruct.create("option", {}, inputContent);
+                                selectOptions.text = currentOption.name;
+                                selectOptions.value = currentOption.id;
+                                //default values for subtypes(if any) has to be handled here
+                            }));
                         }
-                    } else {
-                        //if field type is date
-                        if (currentField.type == "esriFieldTypeDate") {
-                            inputContent = domConstruct.create("input", {
-                                type: "text",
-                                id: fieldname,
-                                className: "form-control hasDatetimepicker"
-                            }, formContent);
-                            $(inputContent).datetimepicker({
-                                useSeconds: false,
-                                maxDate: locale.format(new Date(currentField.domain.maxValue), {
-                                    fullYear: true
-                                }),
-                                minDate: locale.format(new Date(currentField.domain.minValue), {
-                                    fullYear: true
-                                })
-                            }).on("dp.hide", function (evt) {
-                                if (evt.currentTarget.value === "") {
-                                    domClass.remove(evt.target.parentElement, "has-success");
-                                    domClass.remove(evt.target.parentElement, "has-error");
-                                }
-                            }).on("dp.change", function (evt) {
-                                domClass.add(evt.target.parentElement, "has-success");
-                                domClass.remove(evt.target.parentElement, "has-error");
-                            });
-                            if (currentField.defaultValue) {
-                                var m = new Date(currentField.defaultValue);
-                                var rangeDefaultDate = locale.format(m, {
-                                    fullYear: true
-                                });
-                                $(inputContent).data("DateTimePicker").setDate(rangeDefaultDate);
-                                domClass.add(inputContent.parentNode, "has-success");
+                        on(inputContent, "change", lang.hitch(this, function (evt) {
+                            //function call to take appropriate actions on selection of a subtypes
+                            if (currentField.typeField) {
+                                this._validateTypeFields(evt.currentTarget, currentField);
                             }
-                            rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
-                                minValue: locale.format(new Date(currentField.domain.minValue)),
-                                maxValue: locale.format(new Date(currentField.domain.maxValue)),
-                                openStrong: "<strong>",
-                                closeStrong: "</strong>"
+                            //To apply has-success class on selection of a valid option
+                            if (evt.target.value !== "") {
+                                domClass.add($(evt.target.parentNode)[0], "has-success");
+                            } else {
+                                domClass.remove($(evt.target.parentNode)[0], "has-success");
+                            }
+                        }));
+                    } else {
+                        radioContainer = domConstruct.create("div", {
+                            className: "radioContainer",
+                            id: fieldname
+                        }, formContent);
+                        if (currentField.domain && !currentField.typeField) {
+                            array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
+                                //Code to validate for applying has-success class
+                                if (index === 1) {
+                                    domAttr.set(radioContainer, "id", fieldname + "radioContainer");
+                                }
+                                radioContent = domConstruct.create("div", {
+                                    className: "radio"
+                                }, radioContainer);
+                                inputLabel = domConstruct.create("label", {
+                                    "for": fieldname + currentOption.code
+                                }, radioContent);
+                                inputContent = domConstruct.create("input", {
+                                    "id": fieldname + currentOption.code,
+                                    className: "radioInput",
+                                    type: "radio",
+                                    name: fieldname,
+                                    value: currentOption.code
+                                }, inputLabel);
+                                //if field has default value,set radio button checked by default
+                                if (currentOption.code === currentField.defaultValue) {
+                                    domAttr.set(inputContent, "checked", "checked");
+                                    domClass.add(radioContainer.parentNode, "has-success");
+                                }
+                                // add text after input
+                                inputLabel.innerHTML += currentOption.name;
+                                //code to assign has-success class on click of a radio button
+                                on(dom.byId(fieldname + currentOption.code), "click", function (evt) {
+                                    if (evt.target.checked) {
+                                        domClass.add(formContent, "has-success");
+                                    } else {
+                                        domClass.remove(formContent, "has-success");
+                                    }
+                                });
+                            }));
+                        } else {
+                            array.forEach(currentField.subTypes, lang.hitch(this, function (currentOption) {
+                                //Code to validate for applying has-success class
+                                if (index === 1) {
+                                    domAttr.set(radioContainer, "id", fieldname + "radioContainer");
+                                }
+                                radioContent = domConstruct.create("div", {
+                                    className: "radio"
+                                }, radioContainer);
+                                inputLabel = domConstruct.create("label", {
+                                    "for": fieldname + currentOption.id
+                                }, radioContent);
+                                inputContent = domConstruct.create("input", {
+                                    "id": fieldname + currentOption.id,
+                                    className: "radioInput",
+                                    type: "radio",
+                                    name: fieldname,
+                                    value: currentOption.id
+                                }, inputLabel);
+                                //if field has default value,set radio button checked by default
+                                if (currentOption.id === currentField.defaultValue) {
+                                    domAttr.set(inputContent, "checked", "checked");
+                                    domClass.add(radioContainer.parentNode, "has-success");
+                                }
+                                // add text after input
+                                inputLabel.innerHTML += currentOption.name;
+                                on(dom.byId(fieldname + currentOption.id), "click", lang.hitch(this, function (evt) {
+                                    //function call to take appropriate actions on selection of a subtypes
+                                    if (currentField.typeField) {
+                                        this._validateTypeFields(evt.currentTarget, currentField);
+                                    }
+                                    if (evt.target.checked) {
+                                        domClass.add(formContent, "has-success");
+                                    } else {
+                                        domClass.remove(formContent, "has-success");
+                                    }
+                                }));
+                            }));
+                        }
+                    }
+                }
+                else {
+                    //if field type is date
+                    if (currentField.type == "esriFieldTypeDate") {
+                        inputContent = domConstruct.create("input", {
+                            type: "text",
+                            id: fieldname,
+                            className: "form-control hasDatetimepicker"
+                        }, formContent);
+                        $(inputContent).datetimepicker({
+                            useSeconds: false,
+                            maxDate: locale.format(new Date(currentField.domain.maxValue), {
+                                fullYear: true
+                            }),
+                            minDate: locale.format(new Date(currentField.domain.minValue), {
+                                fullYear: true
+                            })
+                        }).on("dp.hide", function (evt) {
+                            if (evt.currentTarget.value === "") {
+                                domClass.remove(evt.target.parentElement, "has-success");
+                                domClass.remove(evt.target.parentElement, "has-error");
+                            }
+                        }).on("dp.change", function (evt) {
+                            domClass.add(evt.target.parentElement, "has-success");
+                            domClass.remove(evt.target.parentElement, "has-error");
+                        });
+                        if (currentField.defaultValue) {
+                            var m = new Date(currentField.defaultValue);
+                            var rangeDefaultDate = locale.format(m, {
+                                fullYear: true
                             });
+                            $(inputContent).data("DateTimePicker").setDate(rangeDefaultDate);
+                            domClass.add(inputContent.parentNode, "has-success");
+                        }
+                        rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
+                            minValue: locale.format(new Date(currentField.domain.minValue)),
+                            maxValue: locale.format(new Date(currentField.domain.maxValue)),
+                            openStrong: "<strong>",
+                            closeStrong: "</strong>"
+                        });
 
                         } else {
                             //if field type is integer
@@ -897,35 +954,6 @@ define([
                     }, formContent);
                 }
 
-            }));
-            if (this.map.getLayer(this.config.form_layer.id).hasAttachments) {
-                formContent = domConstruct.create("div", {
-                    className: "form-group"
-                }, userFormNode);
-                
-                var labelHTML = "";
-                labelHTML += "<span class=\"glyphicon glyphicon-paperclip\"></span> ";
-                labelHTML += (this.config.attachmentLabel || nls.user.attachment);
-                
-                labelContent = domConstruct.create("label", {
-                    innerHTML: labelHTML,
-                    "for": "geoFormAttachment"
-                }, formContent);
-
-                fileInput = domConstruct.create("input", {
-                    "type": "file",
-                    "id": "geoFormAttachment",
-                    "accept": "image/*",
-                    "capture": "camera",
-                    "name": "attachment"
-                }, formContent);
-                if (this.config.attachmentHelpText) {
-                    helpBlock = domConstruct.create("p", {
-                        className: "help-block",
-                        innerHTML: this.config.attachmentHelpText
-                    }, formContent);
-                }
-            }
         },
 
         _setRangeForm: function (currentField, formContent, fieldname) {
@@ -965,6 +993,99 @@ define([
                 closeStrong: "</strong>"
             });
             return rangeHelpText;
+        },
+        //function to validate the fields defined within subtypes
+        _validateTypeFields: function (currentTarget, currentField) {
+            var selectedType, defaultValue, switchTag, switchDomainType, referenceNode;
+            if (currentTarget.value === "") {
+                //no type is selected, so the code to remove the type dependent fields will come here
+                array.forEach(this.sortedFields, lang.hitch(this, function (currentInput) {
+                    if (!currentInput.isTypeDependent) {
+                        return true;
+                    }
+                    domConstruct.destroy(dom.byId(currentInput.name).parentNode);
+                }));
+                return true;
+            }
+            else {
+                //code to get all the domains and default values of the selected subtype
+                array.some(currentField.subTypes, function (currentSelection) {
+                    if (currentTarget.value === currentSelection.id.toString()) {
+                        selectedType = currentSelection;
+                        return true
+                    }
+                });
+            }
+
+            //initial point of reference to put elements
+            referenceNode = dom.byId(this.map.getLayer(this.config.form_layer.id).typeIdField).parentNode;
+
+            //code to populate type dependent fields
+            array.forEach(this.sortedFields, lang.hitch(this, function (currentInput, index) {
+                var field = null, domain, minValue, maxValue;
+                //condition to filter out fields independent of subtypes
+                if (!currentInput.isTypeDependent) {
+                    return true;
+                }
+                array.some(this.map.getLayer(this.config.form_layer.id).fields, function (layerField) {
+                    if (layerField.name === currentInput.name) {
+                        field = lang.clone(lang.mixin(layerField, currentInput));
+                        return true;
+                    }
+                });
+                //code to fetch the default value of a field for selected subtype.
+                if (selectedType.templates[0]) {
+                    for (var fieldAttribute in selectedType.templates[0].prototype.attributes) {
+                        if (fieldAttribute.toLowerCase() === field.name.toLowerCase()) {
+                            defaultValue = selectedType.templates[0].prototype.attributes[fieldAttribute];
+                            field.defaultValue = defaultValue
+                            break;
+                        }
+                    }
+                }
+                for (i in selectedType.domains) {
+                    //condition to find the domain properties for current field
+                    if (i === field.name) {
+                        switchDomainType = selectedType.domains[i].type;
+                        switch (switchDomainType) {
+                            case "inherited":
+                                //for inherited domains we need to populate the domains from the layer.
+                                if (field.domain.type === "range") {
+                                    minValue = field.domain.minValue;
+                                    maxValue = field.domain.maxValue;
+                                }
+                                else {
+                                    domain = field.domain.codedValues;
+                                }
+                                break;
+                            case "codedValue":
+                                if (!field.domain) {
+                                    field.domain = {};
+                                }
+                                field.domain.codedValues = selectedType.domains[i].codedValues
+                                domain = selectedType.domains[i].codedValues
+                                break;
+                            case "range":
+                                //Condition to change the range domain values of field already having domain.
+                                if (!field.domain) {
+                                    field.domain = {};
+                                }
+                                field.domain.minValue = selectedType.domains[i].minValue;
+                                field.domain.maxValue = selectedType.domains[i].maxValue;
+                                minValue = selectedType.domains[i].minValue;
+                                maxValue = selectedType.domains[i].maxValue;
+                                break;
+                        }
+                    }
+                }
+
+                //code to be executed when the input is already present
+                if (dom.byId(field.name)) {
+                    domConstruct.destroy(dom.byId(field.name).parentNode);
+                }
+                this._createFormElements(field, index, referenceNode);
+                referenceNode = dom.byId(field.name).parentNode;
+            }));
         },
 
         _validateField: function (currentNode, iskeyPress) {
@@ -1050,9 +1171,11 @@ define([
                     domClass.remove(node, "has-success");
                 }
             });
-            array.forEach(query(".radioInput:checked"), function (currentField) {
-                domAttr.set(currentField, "checked", false);
-                domClass.remove(query(".radioContainer")[domAttr.get(currentField, "radioContainerIndex")].parentNode, "has-success");
+            array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
+                domClass.remove(currentField.parentNode, "has-success");
+                array.forEach(query("input", currentField), function (element, index) {
+                    domAttr.set(query("input", currentField)[index], "checked", false);
+                });
             });
             array.forEach(query(".checkboxInput:checked"), function (currentField) {
                 domAttr.set(currentField, "checked", false);
@@ -1405,7 +1528,6 @@ define([
                 this.map.getLayer(config.form_layer.id).applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
                     this._clearSubmissionGraphic();
                     this._clearFormFields();
-                    this.map.getLayer(config.form_layer.id).setEditable(false);
                     domConstruct.destroy(query(".errorMessage")[0]);
                     if (!addResults[0].success) {
                         this._openErrorModal();
@@ -1415,7 +1537,6 @@ define([
                     if (this.config.defaultMapExtent) {
                         this.map.setExtent(this.defaultExtent);
                     }
-                    this.map.getLayer(config.form_layer.id).refresh();
                     this._resetButton();
                     if (userFormNode[userFormNode.length - 1].value !== "" && this.map.getLayer(config.form_layer.id).hasAttachments) {
                         this.map.getLayer(config.form_layer.id).addAttachment(addResults[0].objectId, userFormNode, function () {}, function () {
@@ -1423,6 +1544,9 @@ define([
                         });
                     }
                     window.location.href = '#top';
+                    //After moving geoform to top, map was not getting resized properly.
+                    //And pushpin was not getting placed correctly.
+                    this.map.resize();
                 }), lang.hitch(this, function () {
                     this._clearSubmissionGraphic();
                     this.map.getLayer(this.config.form_layer.id).setEditable(false);
@@ -1568,16 +1692,16 @@ define([
             domConstruct.create("h3", {
                 innerHTML: nls.user.shareModalFormText
             }, iconContainer);
-            
+
             group = domConstruct.create("div", {
                 className: "input-group"
             }, iconContainer);
-            
+
             domConstruct.create("span", {
                 className: "input-group-addon",
                 innerHTML: "<span class=\"glyphicon glyphicon-link\"></span>"
             }, group);
-            
+
             domConstruct.create("input", {
                 type: "text",
                 className: "form-control",
