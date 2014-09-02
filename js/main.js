@@ -1225,12 +1225,12 @@ define([
                 this.map = response.map;
                 this.defaultExtent = this.map.extent;
                 this._resizeMap();
-                // get editable layer
-                this._formLayer = this.map.getLayer(this.config.form_layer.id);
                 //Check for the appid if it is not present load entire application with webmap defaults
                 if (!this.config.appid && this.config.webmap) {
                     this._setWebmapDefaults();
                 }
+                // default layer
+                this._setLayerDefaults();
                 this._setAppConfigurations(this.config.details);
                 // window title
                 if (this.config.details && this.config.details.Title) {
@@ -1725,7 +1725,26 @@ define([
             var btn = $(dom.byId('submitButton'));
             btn.button('reset');
         },
-
+        _setLayerDefaults: function(){
+            // if no layer id is set, try to use first feature layer
+            if(!this.config.form_layer || !this.config.form_layer.id){
+                array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
+                    if (currentLayer.url.indexOf("/FeatureServer/") > -1) {
+                        this.config.form_layer.id = currentLayer.id;
+                        return true;
+                    }
+                }));
+            }
+            // get editable layer
+            this._formLayer = this.map.getLayer(this.config.form_layer.id);
+            // if we have a layer
+            if(this._formLayer){
+                // if fields not set or empty
+                if (!this.config.fields || (this.config.fields && this.config.fields.length === 0)) {
+                    this.config.fields = this._formLayer.fields;
+                }   
+            }
+        },
         _setWebmapDefaults: function () {
             if (this.config.details.Title !== false) {
                 this.config.details.Title = this.config.itemInfo.item.title;
@@ -1738,16 +1757,6 @@ define([
             } else {
                 this.config.details.Logo = false;
             }
-            array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
-                if (currentLayer.url.split("/")[currentLayer.url.split("/").length - 2] == "FeatureServer") {
-                    this.config.form_layer.id = currentLayer.id;
-                    // if fields not set or empty
-                    if (!this.config.fields || (this.config.fields && this.config.fields.length === 0)) {
-                        this.config.fields = this._formLayer.fields;
-                    }
-                    return true;
-                }
-            }));
         },
 
         _resizeMap: function (force) {
