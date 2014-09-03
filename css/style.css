@@ -83,17 +83,17 @@
 .app-error .loading-error {
     display: block;
 }
-#geoform .table > thead > tr > th,
-#geoform .table > tbody > tr > th,
-#geoform .table > tfoot > tr > th,
-#geoform .table > thead > tr > td,
-#geoform .table > tbody > tr > td,
-#geoform .table > tfoot > tr > td {
+#tableDND th,
+#tableDND td {
     vertical-align: middle;
 }
 #geoform .progress-remove-margin {
     margin-bottom: 0px;
     margin-top: 10px;
+}
+.progress-percent {
+    width: 100%;
+    line-height: 50px;
 }
 /* Extra Small Devices, Phones */
 
@@ -141,10 +141,6 @@
     text-decoration: none;
     cursor: pointer;
 }
-.progress-percent {
-    width: 100%;
-    line-height: 50px;
-}
 input::-ms-clear {
     display: none;
 }
@@ -175,9 +171,6 @@ input::-ms-clear {
     font-size: inherit;
     font-weight: normal;
     text-shadow: none;
-}
-.submit-container {
-    display: inline-block;
 }
 .webmap-thumb {
     display: inline-block;

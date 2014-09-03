@@ -827,7 +827,7 @@ define([
                         inputContent = domConstruct.create("textarea", {
                             className: "form-control",
                             "data-input-type": "String",
-                            "rows": 5,
+                            "rows": 4,
                             "maxLength": currentField.length,
                             "id": fieldname
                         }, formContent);
