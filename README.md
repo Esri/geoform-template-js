@@ -25,6 +25,47 @@ The GeoForm template can be accessed via the ArcGIS template gallery or item det
 3. Access the .html page.
 4. See the readme.html page for configuration options.
 
+## Adding The Template To Your ArcGIS Online Organization
+
+See how you can [add this template to your organization](http://blogs.esri.com/esri/arcgis/2014/04/21/be-an-early-adopter/) as an early adopter.
+
+## More Information
+
+See the [ArcGIS Blog post](http://blogs.esri.com/esri/arcgis/2014/07/08/editing-via-pop-ups-got-you-down/) for additional informationa bout this application.
+
+## Offline Editing
+This template supports editing offline using the Esri [Offline Editor JS](https://github.com/Esri/offline-editor-js). For more information on web offline editing see the github project linked above.
+
+This template supports basic offline editing by saving the edits locally until a connection can be reestablished. As long as the browser window remains open or is reopened then the edits will get synched once an internet connection is restored.
+
+Attachments are stored locally as well.
+
+***IMPORTANT: If you want a full, robust offline solution then you should be using our ArcGIS Runtime SDKs for .NET, WPF, Java, iOS, Android and Qt.***
+
+## Limitations
+
+* Currently only supports point editable feature layers.
+* Offline editing only supports storing applyEdits and submitting upon reconnection.
+* Offline does not cache tiles or services. 
+
+## Requirements
+
+* Notepad or HTML editor
+* A little background with Javascript
+* Experience with the [ArcGIS Javascript API](http://www.esri.com/) would help.
+
+## Bootstrap
+
+This application uses the [Bootstrap](http://getbootstrap.com/) framework for CSS, layout, components and theming. [Bootstrap](https://github.com/twbs/bootstrap) on GitHub.
+
+## Configuring The Template
+
+This template includes an application builder. If you're using this template via ArcGIS.com, you can take advantage of this builder while logged into ArcGIS and by configuring the published application.
+
+If you are not using ArcGIS Online applications, you can configure this template by editing the defaults.js in the config folder.
+
+ [New to Github? Get started here.](https://github.com/)
+
 ## Configuring defaults.js
 
 This topic will explain how to configure some of the more advanced settings in defaults.js
@@ -140,47 +181,6 @@ In order to shorten the URL of the application, we use the bit.ly URL shortening
 Use this template in an ArcGIS organization or portal application by changing this sharinghost URL to point to the location of the portal or organizaton.
 
     "sharinghost": "http://myorg.maps.arcgis.com",
-
-## Adding The Template To Your ArcGIS Online Organization
-
-See how you can [add this template to your organization](http://blogs.esri.com/esri/arcgis/2014/04/21/be-an-early-adopter/) as an early adopter.
-
-## Configuring The Template
-
-This template includes an application builder. If you're using this template via ArcGIS.com, you can take advantage of this builder while logged into ArcGIS and by configuring the published application.
-
-If you are not using ArcGIS Online applications, you can configure this template by editing the defaults.js in the config folder.
-
- [New to Github? Get started here.](https://github.com/)
-
-## More Information
-
-See the [ArcGIS Blog post](http://blogs.esri.com/esri/arcgis/2014/07/08/editing-via-pop-ups-got-you-down/) for additional informationa bout this application.
-
-## Offline Editing
-This template supports editing offline using the Esri [Offline Editor JS](https://github.com/Esri/offline-editor-js). For more information on web offline editing see the github project linked above.
-
-This template supports basic offline editing by saving the edits locally until a connection can be reestablished. As long as the browser window remains open or is reopened then the edits will get synched once an internet connection is restored.
-
-Attachments are stored locally as well.
-
-***IMPORTANT: If you want a full, robust offline solution then you should be using our ArcGIS Runtime SDKs for .NET, WPF, Java, iOS, Android and Qt.***
-
-## Limitations
-
-* Currently only supports point editable feature layers.
-* Offline editing only supports storing applyEdits and submitting upon reconnection.
-* Offline does not cache tiles or services. 
-
-## Requirements
-
-* Notepad or HTML editor
-* A little background with Javascript
-* Experience with the [ArcGIS Javascript API](http://www.esri.com/) would help.
-
-## Bootstrap
-
-This application uses the [Bootstrap](http://getbootstrap.com/) framework for CSS, layout, components and theming. [Bootstrap](https://github.com/twbs/bootstrap) on GitHub.
 
 ## Resources
 
