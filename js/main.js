@@ -431,7 +431,7 @@ define([
                     // create symbol and offset 10 to the left and 17 to the bottom so it points correctly
                     pictureMarkerSymbol = new PictureMarkerSymbol(symbolUrl, currentPin.width, currentPin.height).setOffset(currentPin.offset.x, currentPin.offset.y);
                     // text info template
-                    it = new InfoTemplate("", "${text}");
+                    it = new InfoTemplate(nls.user.locationPopupTitle, "${text}");
                     // graphic for point
                     graphic = new Graphic(point, pictureMarkerSymbol, {
                         text: nls.user.addressSearchText
