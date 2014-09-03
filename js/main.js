@@ -170,7 +170,6 @@ define([
                 config = JSON.parse(localStorage.getItem("geoform_config"));
                 localStorage.clear();
             }
-
             // config will contain application and user defined info for the template such as i18n strings, the web map id
             // and application id
             // any url parameters and any application specific configuration information.
@@ -992,7 +991,6 @@ define([
                     innerHTML: lang.trim(helpHTML + rangeHelpText)
                 }, formContent);
             }
-
         },
         // date range field
         _setRangeForm: function (currentField, formContent, fieldname) {
