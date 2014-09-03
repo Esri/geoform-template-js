@@ -248,7 +248,7 @@ define([
             var layerListArray = [], attribute;
             this._clearLayerOptions();
             array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
-                if (currentLayer.url && currentLayer.url.split("/")[currentLayer.url.split("/").length - 2].toLowerCase() == "featureserver") {
+                if (currentLayer.layerType && currentLayer.layerType === "ArcGISFeatureLayer") {
                     layerListArray.push(this._queryLayer(currentLayer.url, currentLayer.id));
                 }
             }));

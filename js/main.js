@@ -1748,7 +1748,7 @@ define([
             // if no layer id is set, try to use first feature layer
             if(!this.config.form_layer || !this.config.form_layer.id){
                 array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
-                    if (currentLayer.url.indexOf("/FeatureServer/") > -1) {
+                    if (currentLayer.layerType && currentLayer.layerType === "ArcGISFeatureLayer") {
                         this.config.form_layer.id = currentLayer.id;
                         return true;
                     }
