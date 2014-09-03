@@ -580,7 +580,7 @@ define([
         //function to create elements of form.
         _createFormElements: function (currentField, index, referenceNode) {
             var radioContainer, fieldname, radioContent, inputContent, labelContent, fieldLabelText, selectOptions, inputLabel, radioInput, formContent, requireField, userFormNode,
-               checkboxContainer, checkboxContent, checkBoxCounter = 0, helpBlock, rangeHelpText;
+               checkboxContainer, checkboxContent, checkBoxCounter = 0, helpBlock, rangeHelpText, inputGroupContainer, inputGroupAddOn;
             userFormNode = dom.byId('userForm');
             //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
             formContent = domConstruct.create("div", {
@@ -819,13 +819,22 @@ define([
                                 "id": fieldname
                             }, formContent);
                         } else {
+                            if (currentField.displayType && currentField.displayType === "email") {
+                                inputGroupContainer = domConstruct.create("div", { className: "input-group" }, formContent);
+                                inputGroupAddOn = domConstruct.create("span", { className: "input-group-addon" }, inputGroupContainer);
+                                domConstruct.create("span", { className: "glyphicon glyphicon-envelope" }, inputGroupAddOn);
+                            } else if (currentField.displayType && currentField.displayType === "url") {
+                                inputGroupContainer = domConstruct.create("div", { className: "input-group" }, formContent);
+                                inputGroupAddOn = domConstruct.create("span", { className: "input-group-addon" }, inputGroupContainer);
+                                domConstruct.create("span", { className: "glyphicon glyphicon-link" }, inputGroupAddOn);
+                            }
                             inputContent = domConstruct.create("input", {
                                 type: "text",
                                 className: "form-control",
                                 "data-input-type": "String",
                                 "maxLength": currentField.length,
                                 "id": fieldname
-                            }, formContent);
+                            }, inputGroupContainer ? inputGroupContainer : formContent);
                         }
                         break;
                     case "binaryInteger":
@@ -1105,10 +1114,16 @@ define([
                 if (domAttr.get(currentNode.currentTarget, "displayType") !== null) {
                     displayType = domAttr.get(currentNode.currentTarget, "displayType");
                 }
-                if ($(currentNode.target)) {
-                    node = $(currentNode.target.parentNode)[0];
+                //Since we are adding a new div inside formContent in case of email and url
+                //We need to traverse one step more
+                if (displayType === "email" || displayType === "url") {
+                    node = $(currentNode.target.parentNode.parentNode)[0];
                 } else {
-                    node = $(currentNode.srcElement.parentNode)[0];
+                    if ($(currentNode.target)) {
+                        node = $(currentNode.target.parentNode)[0];
+                    } else {
+                        node = $(currentNode.srcElement.parentNode)[0];
+                    }
                 }
             } else {
                 inputValue = query(".form-control", currentNode)[0].value;
