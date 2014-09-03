@@ -102,7 +102,7 @@ define([
                 }
                 return true;
             }
-            alert("The File APIs are not fully supported in this browser.");
+            console.log("The File APIs are not fully supported in this browser.");
             return false;
         },
 

@@ -609,13 +609,13 @@ define([
                 }, 100);
             }
             if ((!currentField.nullable || currentField.typeField) && currentField.displayType !== "checkbox") {
-                domClass.add(formContent, "form-group has-feedback geoFormQuestionare mandatory");
+                domClass.add(formContent, "form-group geoFormQuestionare mandatory");
                 requireField = domConstruct.create("small", {
                     className: 'requireFieldStyle',
                     innerHTML: nls.user.requiredField
                 }, formContent);
             } else {
-                domClass.add(formContent, "form-group geoFormQuestionare has-feedback");
+                domClass.add(formContent, "form-group geoFormQuestionare");
             }
             if (currentField.alias) {
                 fieldLabelText = currentField.alias;
