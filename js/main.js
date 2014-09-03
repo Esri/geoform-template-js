@@ -450,6 +450,7 @@ define([
         },
         // create lat lon point
         _calculateLatLong: function (evt) {
+            // todo: assuming mercator. may need to project
             var normalizedVal = webMercatorUtils.xyToLngLat(evt.mapPoint.x, evt.mapPoint.y);
             return normalizedVal;
         },
