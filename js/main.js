@@ -1912,6 +1912,14 @@ define([
                 if (node) {
                     domStyle.set(node, 'display', 'none');
                 }
+                var panelNode = dom.byId('location_panel');
+                if(panelNode){
+                    domClass.remove(panelNode, 'panel panel-default');   
+                }
+                var panelBodyNode = dom.byId('location_panel_body');
+                if(panelBodyNode){
+                    domClass.remove(panelBodyNode, 'panel-body');   
+                }
             }
         }
     });
