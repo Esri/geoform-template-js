@@ -61,6 +61,10 @@ define([
                 },
                 {
                     "type": "css",
+                    "path": this.themes[0].url
+                },
+                {
+                    "type": "css",
                     "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css"
                 },
                 {
@@ -103,8 +107,6 @@ define([
         },
 
         _initializeBuilder: function (config, userInfo, response) {
-            // set to default theme. (first in array)
-            dom.byId("themeLink").href = this.themes[0].url;
             // set builder html
             var builderHTML = string.substitute(builderTemplate, nls);
             dom.byId("parentContainter").innerHTML = builderHTML;
@@ -708,18 +710,20 @@ define([
         //function to load the css/script dynamically
         _loadResources: function () {
             var cssStyle, scriptFile;
+            var head = query('head')[0];
+            var geoForm = dom.byId("geoform");
             array.forEach(this.onDemandResources, lang.hitch(this, function (currentResource) {
                 if (currentResource.type === "css") {
                     cssStyle = document.createElement('link');
                     cssStyle.rel = 'stylesheet';
                     cssStyle.type = 'text/css';
                     cssStyle.href = currentResource.path;
-                    document.getElementsByTagName('head')[0].appendChild(cssStyle);
+                    domConstruct.place(cssStyle, head);
                 } else {
                     scriptFile = document.createElement('script');
                     scriptFile.type = "text/javascript";
                     scriptFile.src = currentResource.path;
-                    dom.byId("geoform").appendChild(scriptFile);
+                    domConstruct.place(scriptFile, geoForm);
                 }
             }));
 

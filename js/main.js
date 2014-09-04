@@ -412,7 +412,12 @@ define([
         _switchStyle: function (themeName) {
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
                 if (themeName == currentTheme.id) {
-                    dom.byId("themeLink").href = currentTheme.url;
+                    var themeNode = domConstruct.create("link", {
+                        rel: "stylesheet",
+                        type: "text/css",
+                        href: currentTheme.url
+                    });
+                    domConstruct.place(themeNode, query("head")[0]);
                 }
             }));
         },
