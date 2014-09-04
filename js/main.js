@@ -314,80 +314,6 @@ define([
                 }
             }
         },
-        // Map is ready
-        _mapLoaded: function () {
-            // make graphics layer
-            this._gl = new GraphicsLayer();
-            this.map.addLayer(this._gl);
-            // add border radius to map
-            domClass.add(this.map.root, 'panel');
-            // remove loading class from body
-            domClass.remove(document.body, "app-loading");
-            // editable layer
-            if (this._formLayer) {
-                // support basic offline editing
-                this._offlineSupport = new OfflineSupport({
-                    map: this.map,
-                    layer: this._formLayer
-                });
-            }
-            // drag point edit toolbar
-            this.editToolbar = new editToolbar(this.map);
-            // start moving
-            on(this.editToolbar, "graphic-move-start", lang.hitch(this, function () {
-                this.map.infoWindow.hide();
-            }));
-            // stop moving
-            on(this.editToolbar, "graphic-move-stop", lang.hitch(this, function (evt) {
-                this.addressGeometry = evt.graphic.geometry;
-            }));
-            // show info window on graphic click
-            on(this.editToolbar, "graphic-click", lang.hitch(this, function (evt) {
-                var graphic = evt.graphic;
-                this.map.infoWindow.setFeatures([graphic]);
-                this.map.infoWindow.show(graphic.geometry);
-            }));
-            // map click
-            on(this.map, 'click', lang.hitch(this, function (evt) {
-                if (!evt.graphic) {
-                    this._clearSubmissionGraphic();
-                    this.addressGeometry = evt.mapPoint;
-                    this._setSymbol(this.addressGeometry);
-                }
-            }));
-            // mouse move and click, show lat lon
-            on(this.map, 'mouse-move, click', lang.hitch(this, function (evt) {
-                var coords = this._calculateLatLong(evt);
-                var coordinatesValue = nls.user.latitude + ': ' + coords[1].toFixed(5) + ', ';
-                coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);
-                domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
-            }));
-            // Add desireable touch behaviors here
-            if (this.map.hasOwnProperty("isScrollWheelZoom")) {
-                if (this.map.isScrollWheelZoom) {
-                    this.map.enableScrollWheelZoom();
-                } else {
-                    this.map.disableScrollWheelZoom();
-                }
-            } else {
-                // Default
-                this.map.disableScrollWheelZoom();
-            }
-            // FeatureLayers
-            if (this.map.infoWindow) {
-                // resize popup
-                on(this.map.infoWindow, "selection-change, set-features, show", lang.hitch(this, function () {
-                    this._resizeInfoWin();
-                }));
-            }
-            // When window resizes
-            on(window, 'resize', lang.hitch(this, function () {
-                this._resizeMap(true);
-                this._resizeInfoWin();
-                this._centerPopup();
-            }));
-            this._resizeMap();
-        },
         _centerPopup: function () {
             if (this.map.infoWindow && this.map.infoWindow.isShowing) {
                 var location = this.map.infoWindow.location;
@@ -1285,6 +1211,78 @@ define([
                 this._createLocateButton();
                 // create geocoder button
                 this._createGeocoderButton();
+                // make graphics layer
+                this._gl = new GraphicsLayer();
+                this.map.addLayer(this._gl);
+                // add border radius to map
+                domClass.add(this.map.root, 'panel');
+                // remove loading class from body
+                domClass.remove(document.body, "app-loading");
+                // editable layer
+                if (this._formLayer) {
+                    // support basic offline editing
+                    this._offlineSupport = new OfflineSupport({
+                        map: this.map,
+                        layer: this._formLayer
+                    });
+                }
+                // drag point edit toolbar
+                this.editToolbar = new editToolbar(this.map);
+                // start moving
+                on(this.editToolbar, "graphic-move-start", lang.hitch(this, function () {
+                    this.map.infoWindow.hide();
+                }));
+                // stop moving
+                on(this.editToolbar, "graphic-move-stop", lang.hitch(this, function (evt) {
+                    this.addressGeometry = evt.graphic.geometry;
+                }));
+                // show info window on graphic click
+                on(this.editToolbar, "graphic-click", lang.hitch(this, function (evt) {
+                    var graphic = evt.graphic;
+                    this.map.infoWindow.setFeatures([graphic]);
+                    this.map.infoWindow.show(graphic.geometry);
+                }));
+                // map click
+                on(this.map, 'click', lang.hitch(this, function (evt) {
+                    if (!evt.graphic) {
+                        this._clearSubmissionGraphic();
+                        this.addressGeometry = evt.mapPoint;
+                        this._setSymbol(this.addressGeometry);
+                    }
+                }));
+                // mouse move and click, show lat lon
+                on(this.map, 'mouse-move, click', lang.hitch(this, function (evt) {
+                    var coords = this._calculateLatLong(evt);
+                    var coordinatesValue = nls.user.latitude + ': ' + coords[1].toFixed(5) + ', ';
+                    coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);
+                    domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
+                }));
+                // Add desireable touch behaviors here
+                if (this.map.hasOwnProperty("isScrollWheelZoom")) {
+                    if (this.map.isScrollWheelZoom) {
+                        this.map.enableScrollWheelZoom();
+                    } else {
+                        this.map.disableScrollWheelZoom();
+                    }
+                } else {
+                    // Default
+                    this.map.disableScrollWheelZoom();
+                }
+                // FeatureLayers
+                if (this.map.infoWindow) {
+                    // resize popup
+                    on(this.map.infoWindow, "selection-change, set-features, show", lang.hitch(this, function () {
+                        this._resizeInfoWin();
+                    }));
+                }
+                // When window resizes
+                on(window, 'resize', lang.hitch(this, function () {
+                    this._resizeMap(true);
+                    this._resizeInfoWin();
+                    this._centerPopup();
+                }));
+                this._resizeMap();
+                // Lat/Lng coordinate events
                 on(dom.byId('lat_coord'), "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
                 }));
@@ -1338,16 +1336,6 @@ define([
                 }));
                 // set location options
                 this._populateLocationsOptions();
-                // make sure map is loaded
-                if (this.map.loaded) {
-                    // do something with the map
-                    this._mapLoaded();
-                } else {
-                    on.once(this.map, "load", lang.hitch(this, function () {
-                        // do something with the map
-                        this._mapLoaded();
-                    }));
-                }
             }), this.reportError);
         },
         // utm to lat lon
