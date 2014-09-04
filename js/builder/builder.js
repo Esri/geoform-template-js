@@ -393,6 +393,7 @@ define([
                     }, dom.byId('thumbnailContainer'));
                     themeThumbnail = domConstruct.create("img", {
                         src: currentTheme.thumbnail,
+                        alt: "",
                         className: "img-thumbnail img-responsive"
                     }, imageAnchor);
                     return true;
