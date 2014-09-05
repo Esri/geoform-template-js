@@ -116,7 +116,7 @@ Modified fields property
 
 #### Configuring Application Details
 
-The GeoForm title, description and logo can be customized. If they are left empty, they will use the webmap's default title, image and summary. If both are undefined, then the item will not show in the application.
+The GeoForm title, description and logo can be customized. If they are left empty, they will use the webmap's default title, image and summary. If both are empty or undefined, then the item will not show in the application.
 
     "details": {
         "Title": "My Custom Geoform",
@@ -124,13 +124,7 @@ The GeoForm title, description and logo can be customized. If they are left empt
         "Description": "Check out my GeoForm!"
     }
 
-If you don't want them to appear, set them to false.
-
-    "details": {
-        "Title": false,
-        "Logo": false,
-        "Description": false
-    }
+If you don't want them to appear, set both the application and webmap values to an empty string.
 
 #### Theme
 

@@ -762,34 +762,34 @@ define([
                     currentField.type = "binaryInteger";
                 }
                 switch (currentField.type) {
-                    case "esriFieldTypeString":
-                        if (currentField.displayType && currentField.displayType === "textarea") {
-                            inputContent = domConstruct.create("textarea", {
-                                className: "form-control",
-                                "data-input-type": "String",
-                                "rows": 4,
-                                "maxLength": currentField.length,
-                                "id": fieldname
-                            }, formContent);
-                        } else {
-                            if (currentField.displayType && currentField.displayType === "email") {
-                                inputGroupContainer = this._addNotationIcon(formContent, "glyphicon-envelope");
-                            } else if (currentField.displayType && currentField.displayType === "url") {
-                                inputGroupContainer = this._addNotationIcon(formContent, "glyphicon-link");
-                            }
-                            inputContent = domConstruct.create("input", {
-                                type: "text",
-                                className: "form-control",
-                                "data-input-type": "String",
-                                "maxLength": currentField.length,
-                                "id": fieldname
-                            }, inputGroupContainer ? inputGroupContainer : formContent);
-                        }
-                        break;
-                    case "binaryInteger":
-                        checkboxContainer = domConstruct.create("div", {
-                            className: "checkboxContainer"
+                case "esriFieldTypeString":
+                    if (currentField.displayType && currentField.displayType === "textarea") {
+                        inputContent = domConstruct.create("textarea", {
+                            className: "form-control",
+                            "data-input-type": "String",
+                            "rows": 4,
+                            "maxLength": currentField.length,
+                            "id": fieldname
                         }, formContent);
+                    } else {
+                        if (currentField.displayType && currentField.displayType === "email") {
+                            inputGroupContainer = this._addNotationIcon(formContent, "glyphicon-envelope");
+                        } else if (currentField.displayType && currentField.displayType === "url") {
+                            inputGroupContainer = this._addNotationIcon(formContent, "glyphicon-link");
+                        }
+                        inputContent = domConstruct.create("input", {
+                            type: "text",
+                            className: "form-control",
+                            "data-input-type": "String",
+                            "maxLength": currentField.length,
+                            "id": fieldname
+                        }, inputGroupContainer ? inputGroupContainer : formContent);
+                    }
+                    break;
+                case "binaryInteger":
+                    checkboxContainer = domConstruct.create("div", {
+                        className: "checkboxContainer"
+                    }, formContent);
 
                     checkboxContent = domConstruct.create("div", {
                         className: "checkbox"
@@ -803,7 +803,7 @@ define([
                         "data-input-type": "binaryInteger",
                         "id": fieldname
                     }, inputLabel);
-                        domAttr.set(inputContent, "data-checkbox-index", checkBoxCounter);
+                    domAttr.set(inputContent, "data-checkbox-index", checkBoxCounter);
                     inputLabel.innerHTML += fieldLabelText;
                     checkBoxCounter++;
                     break;
@@ -815,7 +815,7 @@ define([
                         "data-input-type": "SmallInteger",
                         "id": fieldname,
                         "pattern": "[0-9]*"
-                        }, formContent);
+                    }, formContent);
                     break;
                 case "esriFieldTypeInteger":
                     inputContent = domConstruct.create("input", {
@@ -865,8 +865,8 @@ define([
                         domClass.add(query(evt.target).parents(".geoFormQuestionare")[0], "has-error");
                     }).on("dp.hide", function (evt) {
                         if (evt.currentTarget.value === "") {
-                        domClass.remove(query(evt.target).parents(".geoFormQuestionare")[0], "has-success");
-                        domClass.remove(query(evt.target).parents(".geoFormQuestionare")[0], "has-error");
+                            domClass.remove(query(evt.target).parents(".geoFormQuestionare")[0], "has-success");
+                            domClass.remove(query(evt.target).parents(".geoFormQuestionare")[0], "has-error");
                         }
                     });
                     break;
@@ -1204,16 +1204,10 @@ define([
                 this.map = response.map;
                 this.defaultExtent = this.map.extent;
                 this._resizeMap();
-                //Check for the appid if it is not present load entire application with webmap defaults
-                if (!this.config.appid && this.config.webmap) {
-                    this._setWebmapDefaults();
-                }
+                // webmap defaults
+                this._setWebmapDefaults();
                 // default layer
                 this._setLayerDefaults();
-                // if details not defined
-                if(!this.config.details){
-                    this.config.details = {};   
-                }
                 // set configuration
                 this._setAppConfigurations(this.config.details);
                 // window title
@@ -1845,6 +1839,11 @@ define([
             if (!this.config.form_layer || !this.config.form_layer.id) {
                 array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                     if (currentLayer.layerType && currentLayer.layerType === "ArcGISFeatureLayer") {
+                        // if no object present
+                        if (!this.config.form_layer) {
+                            this.config.form_layer = {};
+                        }
+                        // set id
                         this.config.form_layer.id = currentLayer.id;
                         return true;
                     }
@@ -1862,16 +1861,33 @@ define([
         },
         // set defaults for app settings
         _setWebmapDefaults: function () {
-            if (this.config.details.Title !== false) {
-                this.config.details.Title = this.config.itemInfo.item.title;
+            // if details not defined
+            if (!this.config.details) {
+                this.config.details = {};
             }
-            if (this.config.details.Description !== false) {
-                this.config.details.Description = this.config.itemInfo.item.snippet;
+            // if no app title
+            if (!this.config.details.Title) {
+                // if item
+                if (this.config.itemInfo && this.config.itemInfo.item) {
+                    // use webmap title
+                    this.config.details.Title = this.config.itemInfo.item.title;
+                }
             }
-            if (this.config.itemInfo.item.thumbnail && this.config.details.Logo !== false) {
-                this.config.details.Logo = this.config.sharinghost + "/sharing/rest/content/items/" + this.config.webmap + '/info/' + this.config.itemInfo.item.thumbnail;
-            } else {
-                this.config.details.Logo = false;
+            // if no app description
+            if (!this.config.details.Description) {
+                // if item
+                if (this.config.itemInfo && this.config.itemInfo.item) {
+                    // use webmap snippet
+                    this.config.details.Description = this.config.itemInfo.item.snippet;
+                }
+            }
+            // if no app logo
+            if (!this.config.details.Logo) {
+                // if item and thumb
+                if (this.config.itemInfo && this.config.itemInfo.item && this.config.itemInfo.item.thumbnail) {
+                    // use webmap logo
+                    this.config.details.Logo = this.config.sharinghost + "/sharing/rest/content/items/" + this.config.webmap + '/info/' + this.config.itemInfo.item.thumbnail;
+                }
             }
         },
         // resize map
@@ -1887,6 +1903,16 @@ define([
             var total = 0;
             var locationTabs = query("#location_pills li");
             var tabContents = query("#location_tabs .tab-pane");
+            if (!this.config.locationSearchOptions) {
+                this.config.locationSearchOptions = {
+                    "enableMyLocation": true,
+                    "enableSearch": true,
+                    "enableLatLng": true,
+                    "enableUSNG": false,
+                    "enableMGRS": false,
+                    "enableUTM": false
+                };
+            }
             for (var key in this.config.locationSearchOptions) {
                 if (this.config.locationSearchOptions.hasOwnProperty(key)) {
                     if (!this.config.locationSearchOptions[key]) {
@@ -1914,11 +1940,11 @@ define([
                     domStyle.set(node, 'display', 'none');
                 }
                 var panelNode = dom.byId('location_panel');
-                if(panelNode){
+                if (panelNode) {
                     domClass.remove(panelNode, 'panel panel-default');
                 }
                 var panelBodyNode = dom.byId('location_panel_body');
-                if(panelBodyNode){
+                if (panelBodyNode) {
                     domClass.remove(panelBodyNode, 'panel-body');
                 }
             }
