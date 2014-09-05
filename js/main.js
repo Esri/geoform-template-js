@@ -1210,6 +1210,11 @@ define([
                 }
                 // default layer
                 this._setLayerDefaults();
+                // if details not defined
+                if(!this.config.details){
+                    this.config.details = {};   
+                }
+                // set configuration
                 this._setAppConfigurations(this.config.details);
                 // window title
                 if (this.config.details && this.config.details.Title) {
