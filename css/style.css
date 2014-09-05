@@ -27,10 +27,8 @@
     display: block;
 }
 .app-loading .app-content {
-    visibility: hidden;
-}
-.app-content {
-    visibility: visible;
+    height: 0;
+    overflow: hidden;
 }
 .submit-area {
     margin-bottom: 40px;

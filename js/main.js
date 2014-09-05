@@ -375,9 +375,17 @@ define([
         },
         // create lat lon point
         _calculateLatLong: function (evt) {
-            // todo: assuming mercator. may need to project
-            var normalizedVal = webMercatorUtils.xyToLngLat(evt.mapPoint.x, evt.mapPoint.y);
-            return normalizedVal;
+            // return string
+            var str = '';
+            var sr = evt.mapPoint.spatialReference;
+            // if spatial ref is web mercator
+            if(sr.isWebMercator()){
+                // convert to lat/lon
+                var ll = webMercatorUtils.xyToLngLat(evt.mapPoint.x, evt.mapPoint.y);
+                // create string
+                str = nls.user.latitude + ': ' + ll[1].toFixed(5) + ', ' + '&nbsp;' + nls.user.longitude + ': ' + ll[0].toFixed(5);
+            }
+            return str;
         },
         //function to set the logo-path, application title and details
         _setAppConfigurations: function (appConfigurations) {
@@ -1261,10 +1269,9 @@ define([
                 }));
                 // mouse move and click, show lat lon
                 on(this.map, 'mouse-move, click', lang.hitch(this, function (evt) {
+                    // get coords string
                     var coords = this._calculateLatLong(evt);
-                    var coordinatesValue = nls.user.latitude + ': ' + coords[1].toFixed(5) + ', ';
-                    coordinatesValue += '&nbsp;' + nls.user.longitude + ': ' + coords[0].toFixed(5);
-                    domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coordinatesValue);
+                    domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
                 }));
                 // Add desireable touch behaviors here
                 if (this.map.hasOwnProperty("isScrollWheelZoom")) {
