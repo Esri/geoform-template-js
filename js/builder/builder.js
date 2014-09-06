@@ -228,6 +228,16 @@ define([
                     }
                 }));
             }));
+            var appTitle = '';
+            // if app has a title
+            if(this.currentConfig.details && this.currentConfig.details.Title){
+                // add title
+                appTitle += this.currentConfig.details.Title + ' - ';
+            }
+            // builder text
+            appTitle += nls.user.geoformTitleText + ' ' + nls.builder.titleText;
+            // set title
+            window.document.title = appTitle;
         },
 
         _setTabCaption: function () {

@@ -1218,7 +1218,6 @@ define([
                 // console.log(this.config);
                 this.map = response.map;
                 this.defaultExtent = this.map.extent;
-                this._resizeMap();
                 // webmap defaults
                 this._setWebmapDefaults();
                 // default layer
