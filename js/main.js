@@ -182,120 +182,117 @@ define([
                 this.config = config;
                 // create localstorage helper
                 this.localStorageSupport = new localStorageHelper();
-                // document ready
-                ready(lang.hitch(this, function () {
-                    // modal i18n
-                    modalTemplate = string.substitute(modalTemplate, nls);
-                    // place modal code
-                    domConstruct.place(modalTemplate, document.body, 'last');
-                    //supply either the webmap id or, if available, the item info
-                    if (isPreview) {
-                        var cssStyle;
-                        // if local storage supported
-                        if (this.localStorageSupport.supportsStorage()) {
-                            localStorage.setItem("geoform_config", JSON.stringify(config));
+                // modal i18n
+                modalTemplate = string.substitute(modalTemplate, nls);
+                // place modal code
+                domConstruct.place(modalTemplate, document.body, 'last');
+                //supply either the webmap id or, if available, the item info
+                if (isPreview) {
+                    var cssStyle;
+                    // if local storage supported
+                    if (this.localStorageSupport.supportsStorage()) {
+                        localStorage.setItem("geoform_config", JSON.stringify(config));
+                    }
+                    // set theme to selected
+                    array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
+                        if (this.config.theme == currentTheme.id) {
+                            cssStyle = domConstruct.create('link', {
+                                rel: 'stylesheet',
+                                type: 'text/css',
+                                href: currentTheme.url
+                            });
                         }
-                        // set theme to selected
-                        array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
-                            if (this.config.theme == currentTheme.id) {
-                                cssStyle = domConstruct.create('link', {
-                                    rel: 'stylesheet',
-                                    type: 'text/css',
-                                    href: currentTheme.url
-                                });
+                    }));
+                    //Handle case where edit is first url parameter we'll use the same logic we used in ShareModal.js
+                    var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+                    if (window.location.href.indexOf("?") > -1) {
+                        var queryUrl = window.location.href;
+                        var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
+                            newParams = lang.clone(urlParams);
+                        delete newParams.edit; //Remove edit parameter
+                        url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
+                    }
+                    node.src = url;
+                    // on iframe load
+                    node.onload = function () {
+                        var frame = document.getElementById("iframeContainer").contentWindow.document;
+                        domConstruct.place(cssStyle, frame.getElementsByTagName('head')[0], "last");
+                    };
+                } else {
+                    // no theme set
+                    if (!this.config.theme) {
+                        // lets use bootstrap theme!
+                        this.config.theme = "bootstrap";
+                    }
+                    // set theme
+                    this._switchStyle(this.config.theme);
+                    var userHTML = string.substitute(userTemplate, nls);
+                    dom.byId("parentContainter").innerHTML = userHTML;
+                    // get item info from template
+                    var itemInfo = this.config.itemInfo || this.config.webmap;
+                    // create map
+                    this._createWebMap(itemInfo);
+                    // if small header is set
+                    if (this.config.useSmallHeader) {
+                        // remove class
+                        domClass.remove(dom.byId('jumbotronNode'), "jumbotron");
+                    }
+                }
+                // finished button
+                var submitButtonNode = dom.byId('submitButton');
+                if (submitButtonNode) {
+                    on(submitButtonNode, "click", lang.hitch(this, function () {
+                        var btn = $(submitButtonNode);
+                        btn.button('loading');
+                        var erroneousFields = [],
+                            errorMessage;
+                        array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
+                            //to check for errors in form before submitting.
+                            //condition check to filter out radio fields
+                            if ((query(".form-control", currentField)[0])) {
+                                //if condition to check for conditions where mandatory fields are kept empty or the entered values are erroneous.
+                                if ((query(".form-control", currentField)[0].value === "" && domClass.contains(currentField, "mandatory")) || domClass.contains(currentField, "has-error")) {
+                                    //need to check if this condition can be removed
+                                    //this._validateField(currentField, false);
+                                    erroneousFields.push(currentField);
+                                }
+                            }
+                            //handle errors in radio and checkbox fields here.
+                            else {
+                                if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length === 0) {
+                                    erroneousFields.push(currentField);
+                                }
                             }
                         }));
-                        //Handle case where edit is first url parameter we'll use the same logic we used in ShareModal.js
-                        var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
-                        if (window.location.href.indexOf("?") > -1) {
-                            var queryUrl = window.location.href;
-                            var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
-                                newParams = lang.clone(urlParams);
-                            delete newParams.edit; //Remove edit parameter
-                            url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
-                        }
-                        node.src = url;
-                        // on iframe load
-                        node.onload = function () {
-                            var frame = document.getElementById("iframeContainer").contentWindow.document;
-                            domConstruct.place(cssStyle, frame.getElementsByTagName('head')[0], "last");
-                        };
-                    } else {
-                        // no theme set
-                        if (!this.config.theme) {
-                            // lets use bootstrap theme!
-                            this.config.theme = "bootstrap";
-                        }
-                        // set theme
-                        this._switchStyle(this.config.theme);
-                        var userHTML = string.substitute(userTemplate, nls);
-                        dom.byId("parentContainter").innerHTML = userHTML;
-                        // get item info from template
-                        var itemInfo = this.config.itemInfo || this.config.webmap;
-                        // create map
-                        this._createWebMap(itemInfo);
-                        // if small header is set
-                        if (this.config.useSmallHeader) {
-                            // remove class
-                            domClass.remove(dom.byId('jumbotronNode'), "jumbotron");
-                        }
-                    }
-                    // finished button
-                    var submitButtonNode = dom.byId('submitButton');
-                    if (submitButtonNode) {
-                        on(submitButtonNode, "click", lang.hitch(this, function () {
-                            var btn = $(submitButtonNode);
-                            btn.button('loading');
-                            var erroneousFields = [],
-                                errorMessage;
-                            array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
-                                //to check for errors in form before submitting.
-                                //condition check to filter out radio fields
-                                if ((query(".form-control", currentField)[0])) {
-                                    //if condition to check for conditions where mandatory fields are kept empty or the entered values are erroneous.
-                                    if ((query(".form-control", currentField)[0].value === "" && domClass.contains(currentField, "mandatory")) || domClass.contains(currentField, "has-error")) {
-                                        //need to check if this condition can be removed
-                                        //this._validateField(currentField, false);
-                                        erroneousFields.push(currentField);
-                                    }
+                        // if fields
+                        if (erroneousFields.length !== 0) {
+                            errorMessage = "";
+                            errorMessage += '<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</p>';
+                            errorMessage += "<ol>";
+                            errorMessage += "<li>" + nls.user.formValidationMessageAlertText + "\n <ul>";
+                            array.forEach(erroneousFields, function (erroneousField) {
+                                if (query(".form-control", erroneousField).length !== 0 && query(".form-control", erroneousField)[0].placeholder) {
+                                    errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split(nls.user.requiredField)[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
+                                } else {
+                                    errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split(nls.user.requiredField)[0] + "</a></li>";
                                 }
-                                //handle errors in radio and checkbox fields here.
-                                else {
-                                    if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length === 0) {
-                                        erroneousFields.push(currentField);
-                                    }
-                                }
-                            }));
-                            // if fields
-                            if (erroneousFields.length !== 0) {
-                                errorMessage = "";
-                                errorMessage += '<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</p>';
-                                errorMessage += "<ol>";
-                                errorMessage += "<li>" + nls.user.formValidationMessageAlertText + "\n <ul>";
-                                array.forEach(erroneousFields, function (erroneousField) {
-                                    if (query(".form-control", erroneousField).length !== 0 && query(".form-control", erroneousField)[0].placeholder) {
-                                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split(nls.user.requiredField)[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
-                                    } else {
-                                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split(nls.user.requiredField)[0] + "</a></li>";
-                                    }
-                                });
-                                errorMessage += "</ul></li>";
-                                //condition check to find whether the user has selected a point on map or not.
-                                if (!this.addressGeometry) {
-                                    errorMessage += "<li>" + string.substitute(nls.user.selectLocation, {
-                                        openLink: '<a href="#select_location">',
-                                        closeLink: '</a>'
-                                    }) + "</li>";
-                                }
-                                errorMessage += "</ol>";
-                                this._showErrorMessageDiv(errorMessage);
-                                btn.button('reset');
-                            } else {
-                                this._addFeatureToLayer();
+                            });
+                            errorMessage += "</ul></li>";
+                            //condition check to find whether the user has selected a point on map or not.
+                            if (!this.addressGeometry) {
+                                errorMessage += "<li>" + string.substitute(nls.user.selectLocation, {
+                                    openLink: '<a href="#select_location">',
+                                    closeLink: '</a>'
+                                }) + "</li>";
                             }
-                        }));
-                    }
-                }));
+                            errorMessage += "</ol>";
+                            this._showErrorMessageDiv(errorMessage);
+                            btn.button('reset');
+                        } else {
+                            this._addFeatureToLayer();
+                        }
+                    }));
+                }
             } else {
                 var error = new Error("Main:: Config is not defined");
                 this.reportError(error);

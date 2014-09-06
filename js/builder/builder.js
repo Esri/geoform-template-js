@@ -1,6 +1,5 @@
 /*global $ */
 define([
-   "dojo/ready",
    "dojo/_base/declare",
     "dojo/on",
     "dojo/dom",
@@ -28,7 +27,7 @@ define([
     "application/pushpins",
     "esri/layers/FeatureLayer",
     "dojo/domReady!"
-], function (ready, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer) {
+], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer) {
     return declare([], {
         nls: nls,
         currentState: "webmap",
@@ -118,12 +117,9 @@ define([
             this.buttonConflict = $.fn.button.noConflict();
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
-            // document ready
-            ready(lang.hitch(this, function () {
-                modalTemplate = string.substitute(modalTemplate, nls);
-                // place modal code
-                domConstruct.place(modalTemplate, document.body, 'last');
-            }));
+            modalTemplate = string.substitute(modalTemplate, nls);
+            // place modal code
+            domConstruct.place(modalTemplate, document.body, 'last');
             $('.prevtab').on('click', lang.hitch(this, function () {
                 $tabs.filter('.active').prev('li').find('a[data-toggle="tab"]').tab('show');
             }));
