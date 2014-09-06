@@ -1304,7 +1304,6 @@ define([
                     this._resizeInfoWin();
                     this._centerPopup();
                 }));
-                this._resizeMap();
                 // Lat/Lng coordinate events
                 on(dom.byId('lat_coord'), "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
@@ -1359,6 +1358,8 @@ define([
                 }));
                 // set location options
                 this._populateLocationsOptions();
+                // resize map
+                this._resizeMap();
             }), this.reportError);
         },
         // utm to lat lon
@@ -1465,6 +1466,7 @@ define([
                     // TODO: set geometry and symbol
                     this.addressGeometry = evt.graphic.geometry;
                     this._setSymbol(evt.graphic.geometry);
+                    this._resizeMap();
                 }
                 // reset button
                 $('#geolocate_button').button('reset');
