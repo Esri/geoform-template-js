@@ -1458,8 +1458,8 @@ define([
 
                     /* TODO: start remove block */
                     // remove this block once locate button projects to maps SR
-                    var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
-                    evt.graphic.setGeometry(pt);
+                    //var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
+                    //evt.graphic.setGeometry(pt);
                     /* end remove block */
 
                     // TODO: set geometry and symbol
