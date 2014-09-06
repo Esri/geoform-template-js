@@ -6,11 +6,13 @@ define([
     "dojo/_base/lang",
     "dojo/string",
     "esri/arcgis/utils",
+    "esri/config",
     "esri/lang",
     "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/on",
+    "dojo/Deferred",
     "dojo/query",
     "dojo/io-query",
     "offline/OfflineSupport",
@@ -22,6 +24,7 @@ define([
     "dojo/text!views/modal.html",
     "dojo/text!views/user.html",
     "dojo/i18n!application/nls/resources",
+    "esri/tasks/ProjectParameters",
     "esri/geometry/webMercatorUtils",
     "esri/geometry/Point",
     "esri/layers/GraphicsLayer",
@@ -44,10 +47,12 @@ define([
     lang,
     string,
     arcgisUtils,
+    esriConfig,
     esriLang,
     dom,
     domClass, domStyle,
     on,
+    Deferred,
     query,
     ioQuery,
     OfflineSupport,
@@ -58,7 +63,7 @@ define([
     Geocoder,
     modalTemplate,
     userTemplate,
-    nls, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, coordinator, locale) {
+    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, coordinator, locale) {
     return declare([], {
         nls: nls,
         config: {},
@@ -377,13 +382,15 @@ define([
         _calculateLatLong: function (evt) {
             // return string
             var str = '';
-            var sr = evt.mapPoint.spatialReference;
             // if spatial ref is web mercator
-            if(sr.isWebMercator()){
-                // convert to lat/lon
-                var ll = webMercatorUtils.xyToLngLat(evt.mapPoint.x, evt.mapPoint.y);
-                // create string
-                str = nls.user.latitude + ': ' + ll[1].toFixed(5) + ', ' + '&nbsp;' + nls.user.longitude + ': ' + ll[0].toFixed(5);
+            if (evt && evt.mapPoint) {
+                // get lat/lng
+                var lat = evt.mapPoint.getLatitude();
+                var lng = evt.mapPoint.getLongitude();
+                if (lat && lng) {
+                    // create string
+                    str = nls.user.latitude + ': ' + lat.toFixed(5) + ', ' + '&nbsp;' + nls.user.longitude + ': ' + lng.toFixed(5);
+                }
             }
             return str;
         },
@@ -1448,12 +1455,15 @@ define([
                 if (evt.error) {
                     alert(nls.user.locationNotFound);
                 } else {
-                    // convert to map
-                    // todo: assume mercator. may need to project?
+
+                    /* TODO: start remove block */
+                    // remove this block once locate button projects to maps SR
                     var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
                     evt.graphic.setGeometry(pt);
-                    // set geometry and symbol
-                    this.addressGeometry = pt;
+                    /* end remove block */
+
+                    // TODO: set geometry and symbol
+                    this.addressGeometry = evt.graphic.geometry;
                     this._setSymbol(evt.graphic.geometry);
                 }
                 // reset button
@@ -1702,21 +1712,66 @@ define([
                 }));
             }
         },
+        _projectPoint: function (geometry) {
+            // this function takes a lat/lon (4326) point and converts it to map's spatial reference.
+            var def = new Deferred();
+            // maps spatial ref
+            var sr = this.map.spatialReference;
+            // map and point are both lat/lon
+            if (sr.wkid === 4326) {
+                def.resolve(geometry);
+            }
+            // map is mercator
+            else if (sr.isWebMercator()) {
+                // convert lat lon to mercator. No network request.
+                var pt = webMercatorUtils.geographicToWebMercator(geometry);
+                def.resolve(pt);
+            }
+            // map is something else & has geometry service
+            else if (esriConfig.defaults.geometryService) {
+                // project params
+                var params = new ProjectParameters();
+                params.geometries = [geometry];
+                params.outSR = this.map.spatialReference;
+                // use geometry service to convert lat lon to map format (network request)
+                esriConfig.defaults.geometryService.project(params).then(function (projectedPoints) {
+                    if (projectedPoints && projectedPoints.length) {
+                        def.resolve(projectedPoints[0]);
+                    } else {
+                        def.reject(new Error("GeoForm::Point was not projected."));
+                    }
+                }, function (error) {
+                    def.reject(error);
+                });
+            }
+            // cant do anything, leave lat/lon
+            else {
+                def.resolve(geometry);
+            }
+            return def;
+        },
         // put x,y point on map in mercator
         _locatePointOnMap: function (x, y, type) {
             if (x >= -90 && x <= 90 && y >= -180 && y <= 180) {
                 var mapLocation = new Point(y, x);
-                // todo: we're assuming mercator. may need to project
-                var pt = webMercatorUtils.geographicToWebMercator(mapLocation);
-                this.addressGeometry = pt;
-                // set point symbol
-                this._setSymbol(this.addressGeometry);
-                // center map at point and resize
-                this.map.centerAt(this.addressGeometry).then(lang.hitch(this, function () {
-                    this._resizeMap();
+                // convert point
+                this._projectPoint(mapLocation).then(lang.hitch(this, function (pt) {
+                    console.log(pt);
+                    if (pt) {
+                        this.addressGeometry = pt;
+                        // set point symbol
+                        this._setSymbol(pt);
+                        // center map at point and resize
+                        this.map.centerAt(pt).then(lang.hitch(this, function () {
+                            this._resizeMap();
+                        }));
+                        var errorMessageNode = dom.byId('errorMessageDiv');
+                        domConstruct.empty(errorMessageNode);
+                    }
+                }), lang.hitch(this, function (error) {
+                    console.log(error);
+                    this._coordinatesError(type);
                 }));
-                var errorMessageNode = dom.byId('errorMessageDiv');
-                domConstruct.empty(errorMessageNode);
             } else {
                 // display coordinates error
                 this._coordinatesError(type);
