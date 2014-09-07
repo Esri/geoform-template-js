@@ -1459,14 +1459,6 @@ define([
                 if (evt.error) {
                     alert(nls.user.locationNotFound);
                 } else {
-
-                    /* TODO: start remove block */
-                    // remove this block once locate button projects to maps SR
-                    //var pt = webMercatorUtils.geographicToWebMercator(evt.graphic.geometry);
-                    //evt.graphic.setGeometry(pt);
-                    /* end remove block */
-
-                    // TODO: set geometry and symbol
                     this.addressGeometry = evt.graphic.geometry;
                     this._setSymbol(evt.graphic.geometry);
                     this._resizeMap();
