@@ -176,6 +176,32 @@ Use this template in an ArcGIS organization or portal application by changing th
 
     "sharinghost": "http://myorg.maps.arcgis.com",
 
+## Localizing the template
+
+If you'd like to use this template with a language that is not currently supported, please follow these instructions to translate the template for a new locale.
+
+A language is loaded depending on what the browser's locale is set to and if the language is defined in the template.
+
+1. Modify the [/js/nls/resources.js](js/nls/resources.js) file to add a new language.
+    * Open up the file and scroll to the bottom. You will see a list of supported langauges by thier id string. such as '"ar": 1'.
+    * To add a new language, create a new property with the language code. This tells the template that the new language is available to be used.
+        ex: "fr":1,
+2 Create the folder in [/js/nls/](js/nls/) for the language. Make sure this name matches the language code.
+    ex: /js/nls/fr/
+3 Copy the [/js/nls/resources.js](js/nls/resources.js) file into your new language folder
+    ex: /js/nls/fr/resources.js
+4 Remove all the strings with '"locale": 1' from the copied file.
+5 Modify the language file and translate the strings into the new language.
+    ex: /js/nls/fr/resources.js - modified with strings changed
+    
+If you'd like your language to always be loaded no matter which browser locale the user is running you can modify the dojoConfig to add the locale you wish to load. This is located in the [/index.html](index.html) file near the top.
+
+    var dojoConfig = {
+        locale: "fr"
+    };
+    
+See Dojo's [localization help](http://dojotoolkit.org/documentation/tutorials/1.10/i18n/) for more information.
+
 ## Resources
 
 * [ArcGIS for JavaScript API Resource Center](http://help.arcgis.com/en/webapi/javascript/arcgis/index.html)
