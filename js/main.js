@@ -1198,7 +1198,14 @@ define([
             var popup = new Popup(null, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
             var mapDiv = dom.byId('mapDiv');
-            mapDiv.innerHTML = '';
+            // fullscreen button HTML
+            var fsHTML = '';
+            fsHTML += '<div class="fullscreen-button" id="fullscreen_button">';
+            fsHTML += '<div class="btn btn-default">';
+            fsHTML += '<span id="fullscreen_icon" class="glyphicon glyphicon-fullscreen"></span>';
+            fsHTML += '</div>';
+            fsHTML += '</div>';
+            mapDiv.innerHTML = fsHTML;
             arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
                     infoWindow: popup
@@ -1352,6 +1359,13 @@ define([
                         this._convertUTM();
                     }
                 }));
+                // fullscreen
+                var fsButton = dom.byId('fullscreen_button');
+                if (fsButton) {
+                    on(dom.byId('fullscreen_button'), "click", lang.hitch(this, function () {
+                        this._toggleFullscreen();
+                    }));
+                }
                 // finished button
                 var submitButtonNode = dom.byId('submitButton');
                 if (submitButtonNode) {
@@ -1364,6 +1378,27 @@ define([
                 // resize map
                 this._resizeMap();
             }), this.reportError);
+        },
+        _toggleFullscreen: function (btn) {
+            // get all nodes
+            var mapNode = dom.byId('mapDiv');
+            var fsContainerNode = dom.byId('fullscreen_container');
+            var mapContainerNode = dom.byId('map_container');
+            var btnNode = dom.byId('fullscreen_icon');
+            // swap classes
+            domClass.toggle(document.body, 'fullscreen');
+            domClass.toggle(btnNode, 'glyphicon-remove glyphicon-fullscreen');
+            // if fullscreen
+            if (domClass.contains(document.body, 'fullscreen')) {
+                // move map node and clear hash
+                domConstruct.place(mapNode, fsContainerNode);
+                window.location.hash = "";
+            } else {
+                // move map node and set hash
+                domConstruct.place(mapNode, mapContainerNode);
+                window.location.hash = "#mapDiv";
+            }
+            this._resizeMap();
         },
         // utm to lat lon
         _convertUTM: function () {
