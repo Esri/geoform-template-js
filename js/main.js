@@ -1807,7 +1807,6 @@ define([
                 var mapLocation = new Point(y, x);
                 // convert point
                 this._projectPoint(mapLocation).then(lang.hitch(this, function (pt) {
-                    console.log(pt);
                     if (pt) {
                         this.addressGeometry = pt;
                         // set point symbol
