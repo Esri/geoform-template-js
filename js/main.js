@@ -927,7 +927,7 @@ define([
                 }
                 helpBlock = domConstruct.create("p", {
                     className: "help-block",
-                    innerHTML: lang.trim(helpHTML + rangeHelpText)
+                    innerHTML: lang.trim(helpHTML + " " + rangeHelpText)
                 }, formContent);
             }
         },
