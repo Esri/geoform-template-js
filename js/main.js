@@ -1367,6 +1367,13 @@ define([
                         this._toggleFullscreen();
                     }));
                 }
+                // fullscreen esc key
+                on(document.body, 'keyup', lang.hitch(this, function (evt) {
+                    var keyCode = evt.charCode || evt.keyCode;
+                    if (keyCode === 27) {
+                        this._toggleFullscreen(false);
+                    }
+                }));
                 // finished button
                 var submitButtonNode = dom.byId('submitButton');
                 if (submitButtonNode) {
@@ -1380,26 +1387,35 @@ define([
                 this._resizeMap();
             }), this.reportError);
         },
-        _toggleFullscreen: function (btn) {
+        _fullscreenState: function(){
             // get all nodes
             var mapNode = dom.byId('mapDiv');
             var fsContainerNode = dom.byId('fullscreen_container');
             var mapContainerNode = dom.byId('map_container');
             var btnNode = dom.byId('fullscreen_icon');
-            // swap classes
-            domClass.toggle(document.body, 'fullscreen');
-            domClass.toggle(btnNode, 'glyphicon-remove glyphicon-fullscreen');
             // if fullscreen
             if (domClass.contains(document.body, 'fullscreen')) {
+                // icon classes
+                domClass.add(btnNode, 'glyphicon-remove');
+                domClass.remove(btnNode, 'glyphicon-fullscreen');
                 // move map node and clear hash
                 domConstruct.place(mapNode, fsContainerNode);
                 window.location.hash = "";
             } else {
+                // icon classes
+                domClass.remove(btnNode, 'glyphicon-remove');
+                domClass.add(btnNode, 'glyphicon-fullscreen');
                 // move map node and set hash
                 domConstruct.place(mapNode, mapContainerNode);
                 window.location.hash = "#mapDiv";
             }
             this._resizeMap();
+        },
+        _toggleFullscreen: function (condition) {
+            // swap classes
+            domClass.toggle(document.body, 'fullscreen', condition);
+            // update state
+            this._fullscreenState();
         },
         // utm to lat lon
         _convertUTM: function () {

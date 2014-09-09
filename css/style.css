@@ -235,7 +235,7 @@ body.modal-open,
     position: absolute;
     top: 20px;
     right: 20px;
-    z-index: 99;
+    z-index: 31;
 }
 .fullscreen {
     width: 100%;
