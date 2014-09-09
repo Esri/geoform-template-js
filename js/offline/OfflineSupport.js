@@ -1,22 +1,21 @@
-/*global Offline */
+/*global Offline, O */
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "dojo/string",
     "dojo/on",
     "dojo/dom",
-    "offline/offlineFeaturesManager",
+    "esri/graphic",
     "dojo/i18n!application/nls/resources",
-    "offline/editsStore"
+    "offline/offline-edit-min"
 ], function (
     declare,
     lang,
     string,
     on,
     dom,
-    OfflineFeaturesManager,
-    i18n,
-    editsStore
+    Graphic,
+    i18n
 ) {
     return declare(null, {
         // create class
@@ -24,7 +23,7 @@ define([
             // save defaults
             this.defaults = options;
             // create offline manager
-            this.offlineFeaturesManager = new OfflineFeaturesManager();
+            this.offlineFeaturesManager = O.esri.Edit.OfflineFeaturesManager();
             // enable offline attachments
             this.offlineFeaturesManager.initAttachments();
             // once layer is loaded
@@ -67,9 +66,11 @@ define([
             var node = dom.byId('pending_edits');
             // clear html
             node.innerHTML = '';
+            // edit store
+            var es = new O.esri.Edit.EditStore(Graphic);
             // if we have edits
-            if(editsStore.hasPendingEdits()){
-                var edits = editsStore._retrieveEditsQueue();
+            if(es.hasPendingEdits()){
+                var edits = es.retrieveEditsQueue();
                 var total = edits.length;
                 if(total){
                     var html = '';
