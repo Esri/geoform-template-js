@@ -747,6 +747,8 @@ define([
                                 domClass.remove(query(evt.target).parents(".geoFormQuestionare")[0], "has-success");
                                 domClass.add(query(evt.target).parents(".geoFormQuestionare")[0], "has-error");
                             }
+                        }).on("dp.show", function (evt) {
+                            domClass.add(query(evt.target).parents(".geoFormQuestionare")[0], "has-success");
                         });
                         if (currentField.defaultValue) {
                             var m = new Date(currentField.defaultValue);
@@ -754,7 +756,6 @@ define([
                                 fullYear: true
                             });
                             $(inputContent).data("DateTimePicker").setDate(rangeDefaultDate);
-                            domClass.add(inputContent.parentNode, "has-success");
                         }
                         rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
                             minValue: locale.format(new Date(currentField.domain.minValue)),
@@ -1106,7 +1107,7 @@ define([
                 break;
             case "SmallInteger":
                 typeCastedInputValue = parseInt(inputValue);
-                if ((inputValue.match(decimal) && typeCastedInputValue > -32768 && typeCastedInputValue < 32767) && inputValue.length !== 0) {
+                if ((inputValue.match(decimal) && typeCastedInputValue >= -32768 && typeCastedInputValue <= 32767) && inputValue.length !== 0) {
                     this._validateUserInput(true, node, inputValue);
                 } else {
                     this._validateUserInput(false, node, inputValue, iskeyPress);
@@ -1114,7 +1115,7 @@ define([
                 break;
             case "Integer":
                 typeCastedInputValue = parseInt(inputValue);
-                if ((inputValue.match(decimal) && typeCastedInputValue > -2147483648 && typeCastedInputValue <= 2147483647) && inputValue.length !== 0) {
+                if ((inputValue.match(decimal) && typeCastedInputValue >= -2147483648 && typeCastedInputValue <= 2147483647) && inputValue.length !== 0) {
                     this._validateUserInput(true, node, inputValue, iskeyPress);
                 } else {
                     this._validateUserInput(false, node, inputValue, iskeyPress);
@@ -1126,7 +1127,7 @@ define([
                 //occurence of .
                 //atleast one occurence of digits between o-9 in the end
                 typeCastedInputValue = parseFloat(inputValue);
-                if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue > -3.4 * Math.pow(10, 38) && typeCastedInputValue < 1.2 * Math.pow(10, 38)) && inputValue.length !== 0) {
+                if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue >= -3.4 * Math.pow(10, 38) && typeCastedInputValue <= 1.2 * Math.pow(10, 38)) && inputValue.length !== 0) {
                     this._validateUserInput(true, node, inputValue, iskeyPress);
                 } else {
                     this._validateUserInput(false, node, inputValue, iskeyPress);
@@ -1134,7 +1135,7 @@ define([
                 break;
             case "Double":
                 typeCastedInputValue = parseFloat(inputValue);
-                if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue > -2.2 * Math.pow(10, 308) && typeCastedInputValue < 1.8 * Math.pow(10, 38)) && inputValue.length !== 0) {
+                if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue >= -2.2 * Math.pow(10, 308) && typeCastedInputValue <= 1.8 * Math.pow(10, 38)) && inputValue.length !== 0) {
                     this._validateUserInput(true, node, inputValue, iskeyPress);
                 } else {
                     this._validateUserInput(false, node, inputValue, iskeyPress);
