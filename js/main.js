@@ -1387,7 +1387,7 @@ define([
                 this._resizeMap();
             }), this.reportError);
         },
-        _fullscreenState: function(){
+        _fullscreenState: function () {
             // get all nodes
             var mapNode = dom.byId('mapDiv');
             var fsContainerNode = dom.byId('fullscreen_container');
@@ -1674,7 +1674,7 @@ define([
                     // Add attachment on success
                     if (addResults[0].success) {
                         if (userFormNode[userFormNode.length - 1].value !== "" && this._formLayer.hasAttachments) {
-                            this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () { }, function () {
+                            this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () {}, function () {
                                 console.log(nls.user.addAttachmentFailedMessage);
                             });
                         }
