@@ -1671,6 +1671,14 @@ define([
                 featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
                 //code for apply-edits
                 this._formLayer.applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
+                    // Add attachment on success
+                    if (addResults[0].success) {
+                        if (userFormNode[userFormNode.length - 1].value !== "" && this._formLayer.hasAttachments) {
+                            this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () { }, function () {
+                                console.log(nls.user.addAttachmentFailedMessage);
+                            });
+                        }
+                    }
                     // remove graphic
                     this._clearSubmissionGraphic();
                     // reset form
@@ -1688,12 +1696,6 @@ define([
                     }
                     // reset submit button
                     this._resetButton();
-                    // if attachment failed
-                    if (userFormNode[userFormNode.length - 1].value !== "" && this._formLayer.hasAttachments) {
-                        this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () {}, function () {
-                            console.log(nls.user.addAttachmentFailedMessage);
-                        });
-                    }
                     window.location.href = '#top';
                     // After moving geoform to top, map was not getting resized properly.
                     // And pushpin was not getting placed correctly.
