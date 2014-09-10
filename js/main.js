@@ -238,6 +238,7 @@ define([
                 var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
                     newParams = lang.clone(urlParams);
                 delete newParams.edit; //Remove edit parameter
+                delete newParams.folderid; //Remove folderid parameter
                 url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
             }
             node.src = url;
