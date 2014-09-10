@@ -1398,6 +1398,7 @@ define([
                 // icon classes
                 domClass.add(btnNode, 'glyphicon-remove');
                 domClass.remove(btnNode, 'glyphicon-fullscreen');
+                domClass.remove(this.map.root, 'panel');
                 // move map node and clear hash
                 domConstruct.place(mapNode, fsContainerNode);
                 window.location.hash = "";
@@ -1405,6 +1406,7 @@ define([
                 // icon classes
                 domClass.remove(btnNode, 'glyphicon-remove');
                 domClass.add(btnNode, 'glyphicon-fullscreen');
+                domClass.add(this.map.root, 'panel');
                 // move map node and set hash
                 domConstruct.place(mapNode, mapContainerNode);
                 window.location.hash = "#mapDiv";
