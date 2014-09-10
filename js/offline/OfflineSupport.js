@@ -7,7 +7,7 @@ define([
     "dojo/dom",
     "esri/graphic",
     "dojo/i18n!application/nls/resources",
-    "offline/offline-edit-min"
+    "application/localStorageHelper"
 ], function (
     declare,
     lang,
@@ -15,30 +15,39 @@ define([
     on,
     dom,
     Graphic,
-    i18n
+    i18n,
+    localStorageHelper
 ) {
     return declare(null, {
         // create class
         constructor: function (options) {
             // save defaults
             this.defaults = options;
-            // create offline manager
-            this.offlineFeaturesManager = O.esri.Edit.OfflineFeaturesManager();
-            // enable offline attachments
-            this.offlineFeaturesManager.initAttachments();
-            // once layer is loaded
-            if (this.defaults.layer.loaded) {
-                this.initEditor();
-            } else {
-                on.once(this.defaults.layer, 'load', lang.hitch(this, this.initEditor));
-            }
-            Offline.check();
-            Offline.on('up', lang.hitch(this, function () {
-                this.goOnline();
-            }));
-            Offline.on('down', lang.hitch(this, function () {
-                this.goOffline();
-            }));
+            // localstorage test
+            var localStorageSupport = new localStorageHelper();
+            // supports storage
+            if (localStorageSupport.supportsStorage()) {
+                // get offline library
+                require(["offline/offline-edit-min"], lang.hitch(this, function(){
+                    // create offline manager
+                    this.offlineFeaturesManager = O.esri.Edit.OfflineFeaturesManager();
+                    // enable offline attachments
+                    this.offlineFeaturesManager.initAttachments();
+                    // once layer is loaded
+                    if (this.defaults.layer.loaded) {
+                        this.initEditor();
+                    } else {
+                        on.once(this.defaults.layer, 'load', lang.hitch(this, this.initEditor));
+                    }
+                    Offline.check();
+                    Offline.on('up', lang.hitch(this, function () {
+                        this.goOnline();
+                    }));
+                    Offline.on('down', lang.hitch(this, function () {
+                        this.goOffline();
+                    }));
+                }));
+            }        
         },
 
         // update online status
