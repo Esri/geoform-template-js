@@ -14,7 +14,6 @@ define([
     "dojo/Deferred",
     "dojo/query",
     "dojo/io-query",
-    "offline/OfflineSupport",
     "dojo/_base/array",
     "dojo/dom-construct",
     "dojo/dom-attr",
@@ -53,7 +52,6 @@ define([
     Deferred,
     query,
     ioQuery,
-    OfflineSupport,
     array,
     domConstruct,
     domAttr,
@@ -1249,11 +1247,17 @@ define([
                 domClass.remove(document.body, "app-loading");
                 // editable layer
                 if (this._formLayer) {
-                    // support basic offline editing
-                    this._offlineSupport = new OfflineSupport({
-                        map: this.map,
-                        layer: this._formLayer
-                    });
+                    // if indexedDB is supported
+                    if(window.indexedDB){
+                        // get offline support
+                        require(["offline/OfflineSupport"], lang.hitch(this, function(OfflineSupport){
+                            // support basic offline editing
+                            this._offlineSupport = new OfflineSupport({
+                                map: this.map,
+                                layer: this._formLayer
+                            });
+                        }));   
+                    }
                 }
                 // drag point edit toolbar
                 this.editToolbar = new editToolbar(this.map);
