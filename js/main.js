@@ -1283,6 +1283,10 @@ define([
                         this._setSymbol(this.addressGeometry);
                     }
                 }));
+                // map loaded
+                on(this.map, 'load', lang.hitch(this, function () {
+                    this._resizeMap();
+                }));
                 // mouse move and click, show lat lon
                 on(this.map, 'mouse-move, click', lang.hitch(this, function (evt) {
                     // get coords string
@@ -2067,6 +2071,8 @@ define([
                     domClass.remove(panelBodyNode, 'panel-body');
                 }
             }
+            // resize map
+            this._resizeMap();
         },
         _addNotationIcon: function (formContent, imageIconClass) {
             var inputIconGroupContainer, inputIconGroupAddOn;
