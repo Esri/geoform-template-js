@@ -900,7 +900,8 @@ define([
                     this._validateField(evt, true);
                 }));
             }
-            if (!currentField.nullable) {
+            // if field is required and field exists
+            if (!currentField.nullable && inputContent) {
                 inputContent.setAttribute("aria-required", true);
                 inputContent.setAttribute("required", "");
             }
