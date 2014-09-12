@@ -277,9 +277,9 @@ define([
                 errorMessage += "<li>" + nls.user.formValidationMessageAlertText + "\n <ul>";
                 array.forEach(erroneousFields, function (erroneousField) {
                     if (query(".form-control", erroneousField).length !== 0 && query(".form-control", erroneousField)[0].placeholder) {
-                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split(nls.user.requiredField)[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
+                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split(nls.user.requiredField)[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
                     } else {
-                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].textContent.split(nls.user.requiredField)[0] + "</a></li>";
+                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split(nls.user.requiredField)[0] + "</a></li>";
                     }
                 });
                 errorMessage += "</ul></li>";
@@ -410,7 +410,7 @@ define([
             }
             // set description
             if (appConfigurations.Description) {
-                appDescNode.innerHTML = appConfigurations.Description;
+                $("#appDescription").html(appConfigurations.Description);
             } else {
                 domClass.add(appDescNode, "hide");
             }
@@ -454,8 +454,11 @@ define([
                 matchingField = false;
                 array.forEach(fields, lang.hitch(this, function (currentField) {
                     if (layerField.name == currentField.name && currentField.visible) {
-                        if (currentField.typeField) {
+                        if (layerField.name === this._formLayer.typeIdField) {
                             layerField.subTypes = this._formLayer.types;
+                            layerField.typeField = true;
+                        } else {
+                            layerField.typeField = false;
                         }
                         newAddedFields.push(lang.mixin(layerField, currentField));
                         matchingField = true;
@@ -465,6 +468,12 @@ define([
                 }));
                 if (!matchingField) {
                     if ((layerField.editable && !(layerField.type === "esriFieldTypeOID" || layerField.type === "esriFieldTypeGeometry" || layerField.type === "esriFieldTypeBlob" || layerField.type === "esriFieldTypeRaster" || layerField.type === "esriFieldTypeGUID" || layerField.type === "esriFieldTypeGlobalID" || layerField.type === "esriFieldTypeXML"))) {
+                        if (layerField.name === this._formLayer.typeIdField) {
+                            layerField.subTypes = this._formLayer.types;
+                            layerField.typeField = true;
+                        } else {
+                            layerField.typeField = false;
+                        }
                         layerField.isNewField = true;
                         newAddedFields.push(layerField);
                     }
@@ -1177,7 +1186,7 @@ define([
             // clear attachment
             var attachNode = dom.byId("geoFormAttachment");
             if (attachNode && attachNode.value) {
-                attachNode.value = "";
+                    $(attachNode).replaceWith($(attachNode).clone(true));
             }
         },
         // validate form input
@@ -1257,7 +1266,7 @@ define([
                                 map: this.map,
                                 layer: this._formLayer
                             });
-                        }));   
+                        }));
                     }
                 }
                 // drag point edit toolbar
