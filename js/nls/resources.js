@@ -65,7 +65,7 @@ define({
             shareUserTextMessage: "Tell others to contribute using the following options.",
             addAttachmentFailedMessage: "Unable to add attachment to layer",
             addFeatureFailedMessage: "Unable to add feature to layer",
-            noLayerConfiguredMessage: "In order to display the form and start collecting submissions, add an editable Feature Layer to the Webmap.",
+            noLayerConfiguredMessage: "An error occured loading or finding an editable feature layer. In order to display the form and start collecting submissions, add an editable Feature Layer to the Webmap.",
             placeholderLatitude: "Latitude (Y)",
             placeholderLongitude: "Longitude (X)",
             latitude: "Latitude",
