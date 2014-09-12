@@ -1185,7 +1185,7 @@ define([
             // clear attachment
             var attachNode = dom.byId("geoFormAttachment");
             if (attachNode && attachNode.value) {
-                    $(attachNode).replaceWith($(attachNode).clone(true));
+                $(attachNode).replaceWith($(attachNode).clone(true));
             }
         },
         // validate form input
@@ -1257,9 +1257,9 @@ define([
                 // editable layer
                 if (this._formLayer) {
                     // if indexedDB is supported
-                    if(window.indexedDB){
+                    if (window.indexedDB) {
                         // get offline support
-                        require(["offline/OfflineSupport"], lang.hitch(this, function(OfflineSupport){
+                        require(["offline/OfflineSupport"], lang.hitch(this, function (OfflineSupport) {
                             // support basic offline editing
                             this._offlineSupport = new OfflineSupport({
                                 map: this.map,

@@ -226,7 +226,7 @@ define([
             }));
             var appTitle = '';
             // if app has a title
-            if(this.currentConfig.details && this.currentConfig.details.Title){
+            if (this.currentConfig.details && this.currentConfig.details.Title) {
                 // add title
                 appTitle += this.currentConfig.details.Title + ' - ';
             }
@@ -757,7 +757,7 @@ define([
                 break;
             case "fields":
                 this.currentConfig.fields.length = 0;
-                    var fieldName, fieldLabel, fieldDescription, layerName, visible;
+                var fieldName, fieldLabel, fieldDescription, layerName, visible;
                 layerName = dom.byId("selectLayer").value;
                 array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow, currentFieldIndex) {
                     if (currentRow.getAttribute("rowIndex")) {
