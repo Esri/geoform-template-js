@@ -1430,6 +1430,12 @@ define([
                 window.location.hash = "#mapDiv";
             }
             this._resizeMap();
+            // if current selected location
+            if(this.addressGeometry){
+                setTimeout(lang.hitch(this, function(){
+                    this.map.centerAt(this.addressGeometry);
+                }), 500);   
+            }
         },
         _toggleFullscreen: function (condition) {
             // swap classes
