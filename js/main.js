@@ -503,6 +503,10 @@ define([
                         hasDefaultValue = null;
                     hasDomainValue = currentType.domains[currentField.name];
                     hasDefaultValue = currentType.templates[0].prototype.attributes[currentField.name];
+                    //if hasDefaultValue is 0 then we need to set isTypeDependent property to true
+                    if (hasDefaultValue === 0) {
+                        hasDefaultValue = true;
+                    }
                     if ((hasDomainValue && hasDomainValue.type !== "inherited") || (hasDefaultValue && !currentField.typeField)) {
                         currentField.isTypeDependent = true;
                     }
@@ -648,10 +652,6 @@ define([
                         }, formContent);
                         if (currentField.domain && !currentField.typeField) {
                             array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
-                                //Code to validate for applying has-success class
-                                if (index === 1) {
-                                    domAttr.set(radioContainer, "id", fieldname + "radioContainer");
-                                }
                                 radioContent = domConstruct.create("div", {
                                     className: "radio"
                                 }, radioContainer);
@@ -684,9 +684,6 @@ define([
                         } else {
                             array.forEach(currentField.subTypes, lang.hitch(this, function (currentOption) {
                                 //Code to validate for applying has-success class
-                                if (index === 1) {
-                                    domAttr.set(radioContainer, "id", fieldname + "radioContainer");
-                                }
                                 radioContent = domConstruct.create("div", {
                                     className: "radio"
                                 }, radioContainer);
