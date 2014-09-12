@@ -65,7 +65,7 @@ define({
             shareUserTextMessage: "Tell others to contribute using the following options.",
             addAttachmentFailedMessage: "Unable to add attachment to layer",
             addFeatureFailedMessage: "Unable to add feature to layer",
-            noLayerConfiguredMessage: "Whoops! Nothing to see here. In order to start collecting form submissions, configure this GeoForm and select an editable Feature Service layer to use.",
+            noLayerConfiguredMessage: "In order to display the form and start collecting submissions, add an editable Feature Layer to the Webmap.",
             placeholderLatitude: "Latitude (Y)",
             placeholderLongitude: "Longitude (X)",
             latitude: "Latitude",
