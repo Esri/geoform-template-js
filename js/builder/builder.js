@@ -757,7 +757,7 @@ define([
                 break;
             case "fields":
                 this.currentConfig.fields.length = 0;
-                var fieldName, fieldLabel, fieldDescription, layerName, visible, typeField;
+                    var fieldName, fieldLabel, fieldDescription, layerName, visible;
                 layerName = dom.byId("selectLayer").value;
                 array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow, currentFieldIndex) {
                     if (currentRow.getAttribute("rowIndex")) {
@@ -766,13 +766,11 @@ define([
                         fieldLabel = query(".fieldLabel", currentRow)[0].value;
                         fieldDescription = query(".fieldDescription", currentRow)[0].value;
                         visible = query(".fieldCheckbox", currentRow)[0].checked;
-                        typeField = query(".fieldCheckbox", currentRow)[0].checked && query(".fieldCheckbox", currentRow)[0].disabled;
                         this.currentConfig.fields.push({
                             name: fieldName,
                             alias: fieldLabel,
                             fieldDescription: fieldDescription,
-                            visible: visible,
-                            typeField: typeField
+                            visible: visible
                         });
                         if (query(".fieldPlaceholder", currentRow)[0] && query(".fieldPlaceholder", currentRow)[0].value) {
                             this.currentConfig.fields[currentFieldIndex - 1].tooltip = query(".fieldPlaceholder", currentRow)[0].value;
