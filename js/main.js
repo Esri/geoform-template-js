@@ -429,6 +429,8 @@ define([
                         href: currentTheme.url
                     });
                     domConstruct.place(themeNode, query("head")[0]);
+                    // add identifying theme class to the body
+                    domClass.add(document.body, "geoform-" + currentTheme.id);
                 }
             }));
         },
