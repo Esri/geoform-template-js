@@ -1292,10 +1292,6 @@ define([
                         this._setSymbol(this.addressGeometry);
                     }
                 }));
-                // map loaded
-                on(this.map, 'load', lang.hitch(this, function () {
-                    this._resizeMap();
-                }));
                 // mouse move and click, show lat lon
                 on(this.map, 'mouse-move, click', lang.hitch(this, function (evt) {
                     // get coords string
@@ -1327,11 +1323,22 @@ define([
                     this._centerPopup();
                 }));
                 // Lat/Lng coordinate events
-                on(dom.byId('lat_coord'), "keypress", lang.hitch(this, function (evt) {
+                var latNode = dom.byId('lat_coord');
+                var lngNode = dom.byId('lng_coord');
+                on(latNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
+                    this._checkLocation(evt);
                 }));
-                on(dom.byId('lng_coord'), "keypress", lang.hitch(this, function (evt) {
+                on(lngNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
+                    this._checkLocation(evt);
+                }));
+                // lat/lng changed
+                on(latNode, "change", lang.hitch(this, function (evt) {
+                    this._checkLocation(evt);
+                }));
+                on(lngNode, "change", lang.hitch(this, function (evt) {
+                    this._checkLocation(evt);
                 }));
                 on(dom.byId('cordsSubmit'), "click", lang.hitch(this, function (evt) {
                     this._evaluateCoordinates(evt);
@@ -1403,7 +1410,35 @@ define([
                 this._populateLocationsOptions();
                 // resize map
                 this._resizeMap();
+                // load map
+                if (this.map.loaded) {
+                    this._mapLoaded();
+                } else {
+                    // map loaded
+                    on(this.map, 'load', lang.hitch(this, function () {
+                        this._mapLoaded();
+                    }));
+                }
             }), this.reportError);
+        },
+        _mapLoaded: function () {
+            var latNode = dom.byId('lat_coord');
+            var lngNode = dom.byId('lng_coord');
+            // resize map after a half second
+            setTimeout(lang.hitch(this, function () {
+                // set lat/lng to center value of map
+                var center = this.map.extent.getCenter();
+                var lat = center.getLatitude();
+                var lng = center.getLongitude();
+                if (lat && lng) {
+                    latNode.value = lat.toFixed(5);
+                    lngNode.value = lng.toFixed(5);
+                }
+                // enable/disable button
+                this._checkLocation();
+                // make sure map is correct
+                this._resizeMap();
+            }), 500);
         },
         _fullscreenState: function () {
             // get all nodes
@@ -1431,10 +1466,10 @@ define([
             }
             this._resizeMap();
             // if current selected location
-            if(this.addressGeometry){
-                setTimeout(lang.hitch(this, function(){
+            if (this.addressGeometry) {
+                setTimeout(lang.hitch(this, function () {
                     this.map.centerAt(this.addressGeometry);
-                }), 500);   
+                }), 500);
             }
         },
         _toggleFullscreen: function (condition) {
@@ -1510,6 +1545,17 @@ define([
             }
             // place on map
             this._locatePointOnMap(latNode.value, lngNode.value, 'latlon');
+        },
+        _checkLocation: function () {
+            // make sure lat and lon are both filled out to show button
+            var lat = dom.byId('lat_coord').value;
+            var lng = dom.byId('lng_coord').value;
+            var coord = dom.byId('cordsSubmit');
+            if (lat && lng) {
+                domAttr.remove(coord, 'disabled');
+            } else {
+                domAttr.set(coord, 'disabled', 'disabled');
+            }
         },
         // find location for coordinates
         _findLocation: function (evt) {

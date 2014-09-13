@@ -65,14 +65,14 @@
                         <div id="coordinates" class="tab-pane">
                             <div class="form-group">
                                 <label for="lat_coord">${user.placeholderLatitude}</label>
-                                <input id="lat_coord" type="text" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" placeholder="34.05627" />
+                                <input id="lat_coord" type="text" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" />
                             </div>
                             <div class="form-group">
                                 <label for="lng_coord">${user.placeholderLongitude}</label>
-                                <input id="lng_coord" type="text" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" placeholder="-117.19569" />
+                                <input id="lng_coord" type="text" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" />
                             </div>
                             <div class="form-group">
-                                <button id="cordsSubmit" type="button" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> ${user.setLocation}</button>
+                                <button id="cordsSubmit" type="button" class="btn btn-default" disabled="disabled"><span class="glyphicon glyphicon-map-marker"></span> ${user.setLocation}</button>
                             </div>
                         </div>
                         <div id="usng" class="tab-pane">
