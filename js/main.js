@@ -1159,7 +1159,7 @@ define([
         },
         // create a map based on the input web map id
         _createWebMap: function (itemInfo) {
-            var popup = new Popup(null, domConstruct.create("div"));
+            var popup = new Popup({highlight: false}, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
             var mapDiv = dom.byId('mapDiv');
             // fullscreen button HTML
