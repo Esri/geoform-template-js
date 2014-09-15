@@ -1301,10 +1301,10 @@ define([
                     this._checkLatLng();
                 }));
                 // lat/lng changed
-                on(latNode, "change", lang.hitch(this, function (evt) {
+                on(latNode, "change", lang.hitch(this, function () {
                     this._checkLatLng();
                 }));
-                on(lngNode, "change", lang.hitch(this, function (evt) {
+                on(lngNode, "change", lang.hitch(this, function () {
                     this._checkLatLng();
                 }));
                 on(dom.byId('cordsSubmit'), "click", lang.hitch(this, function (evt) {
