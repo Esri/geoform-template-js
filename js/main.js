@@ -1282,18 +1282,18 @@ define([
                 var lngNode = dom.byId('lng_coord');
                 on(latNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
-                    this._checkLocation(evt);
+                    this._checkLatLng(evt);
                 }));
                 on(lngNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
-                    this._checkLocation(evt);
+                    this._checkLatLng(evt);
                 }));
                 // lat/lng changed
                 on(latNode, "change", lang.hitch(this, function (evt) {
-                    this._checkLocation(evt);
+                    this._checkLatLng(evt);
                 }));
                 on(lngNode, "change", lang.hitch(this, function (evt) {
-                    this._checkLocation(evt);
+                    this._checkLatLng(evt);
                 }));
                 on(dom.byId('cordsSubmit'), "click", lang.hitch(this, function (evt) {
                     this._evaluateCoordinates(evt);
@@ -1377,20 +1377,8 @@ define([
             }), this.reportError);
         },
         _mapLoaded: function () {
-            var latNode = dom.byId('lat_coord');
-            var lngNode = dom.byId('lng_coord');
             // resize map after a half second
             setTimeout(lang.hitch(this, function () {
-                // set lat/lng to center value of map
-                var center = this.map.extent.getCenter();
-                var lat = center.getLatitude();
-                var lng = center.getLongitude();
-                if (lat && lng) {
-                    latNode.value = lat.toFixed(5);
-                    lngNode.value = lng.toFixed(5);
-                }
-                // enable/disable button
-                this._checkLocation();
                 // make sure map is correct
                 this._resizeMap();
             }), 500);
@@ -1501,7 +1489,7 @@ define([
             // place on map
             this._locatePointOnMap(latNode.value, lngNode.value, 'latlon');
         },
-        _checkLocation: function () {
+        _checkLatLng: function () {
             // make sure lat and lon are both filled out to show button
             var lat = dom.byId('lat_coord').value;
             var lng = dom.byId('lng_coord').value;
