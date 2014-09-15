@@ -364,10 +364,20 @@ define([
                     graphic = new Graphic(point, pictureMarkerSymbol, {
                         text: nls.user.addressSearchText
                     }, it);
+                    // private geoform graphic identifier
+                    graphic._geoformGraphic = true;
                     // add to graphics layer
                     this._gl.add(graphic);
+                    // get current features
+                    var features = this.map.infoWindow.features || [];
+                    // remove existing geoform graphic(s)
+                    var filtered = array.filter(features, function (item) {
+                        return !item._geoformGraphic;
+                    });
+                    // add feature
+                    filtered.splice(0, 0, graphic);
                     // set popup features
-                    this.map.infoWindow.setFeatures([graphic]);
+                    this.map.infoWindow.setFeatures(filtered);
                     // show popup
                     this.map.infoWindow.show(graphic.geometry);
                     // edit movable
@@ -1245,11 +1255,9 @@ define([
                 }));
                 // map click
                 on(this.map, 'click', lang.hitch(this, function (evt) {
-                    if (!evt.graphic) {
-                        this._clearSubmissionGraphic();
-                        this.addressGeometry = evt.mapPoint;
-                        this._setSymbol(this.addressGeometry);
-                    }
+                    this._clearSubmissionGraphic();
+                    this.addressGeometry = evt.mapPoint;
+                    this._setSymbol(this.addressGeometry);
                 }));
                 // mouse move and click, show lat lon
                 on(this.map, 'mouse-move, click', lang.hitch(this, function (evt) {
@@ -1806,7 +1814,7 @@ define([
         _clearSubmissionGraphic: function () {
             this.addressGeometry = null;
             this._gl.clear();
-            if (this.map.infoWindow.isShowing) {
+            if (this.map.infoWindow && this.map.infoWindow.isShowing) {
                 this.map.infoWindow.hide();
             }
         },
