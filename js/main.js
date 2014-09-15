@@ -884,17 +884,16 @@ define([
             }
             var helpHTML;
             if (currentField.isNewField) {
-                array.forEach(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
-                    if (currentLayer.id == this.config.form_layer.id) {
-                        array.forEach(currentLayer.popupInfo.fieldInfos, function (currentFieldPopupInfo) {
-                            if (currentFieldPopupInfo.fieldName == currentField.name) {
-                                if (currentFieldPopupInfo.tooltip) {
-                                    helpHTML = currentFieldPopupInfo.tooltip;
-                                }
+                // make sure popup info and fields are defined
+                if (this._formLayer && this._formLayer.popupInfo && this._formLayer.popupInfo.fieldInfos) {
+                    array.forEach(this._formLayer.popupInfo.fieldInfos, function (currentFieldPopupInfo) {
+                        if (currentFieldPopupInfo.fieldName == currentField.name) {
+                            if (currentFieldPopupInfo.tooltip) {
+                                helpHTML = currentFieldPopupInfo.tooltip;
                             }
-                        });
-                    }
-                }));
+                        }
+                    });
+                }
             } else {
                 helpHTML = currentField.fieldDescription;
             }
