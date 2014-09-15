@@ -276,10 +276,12 @@ define([
                 errorMessage += "<ol>";
                 errorMessage += "<li>" + nls.user.formValidationMessageAlertText + "\n <ul>";
                 array.forEach(erroneousFields, function (erroneousField) {
-                    if (query(".form-control", erroneousField).length !== 0 && query(".form-control", erroneousField)[0].placeholder) {
-                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split(nls.user.requiredField)[0] + "</a>. " + query(".form-control", erroneousField)[0].placeholder + "</li>";
+                    var fq = query(".form-control", erroneousField);
+                    var html = erroneousField.childNodes[0].innerHTML;
+                    if (fq.length !== 0 && fq[0] && fq[0].placeholder) {
+                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + html + "</a>. " + fq[0].placeholder + "</li>";
                     } else {
-                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + erroneousField.childNodes[0].innerHTML.split(nls.user.requiredField)[0] + "</a></li>";
+                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + html + "</a></li>";
                     }
                 });
                 errorMessage += "</ul></li>";
@@ -1159,7 +1161,9 @@ define([
         },
         // create a map based on the input web map id
         _createWebMap: function (itemInfo) {
-            var popup = new Popup({highlight: false}, domConstruct.create("div"));
+            var popup = new Popup({
+                highlight: false
+            }, domConstruct.create("div"));
             domClass.add(popup.domNode, 'light');
             var mapDiv = dom.byId('mapDiv');
             // fullscreen button HTML
@@ -1282,18 +1286,18 @@ define([
                 var lngNode = dom.byId('lng_coord');
                 on(latNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
-                    this._checkLatLng(evt);
+                    this._checkLatLng();
                 }));
                 on(lngNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
-                    this._checkLatLng(evt);
+                    this._checkLatLng();
                 }));
                 // lat/lng changed
                 on(latNode, "change", lang.hitch(this, function (evt) {
-                    this._checkLatLng(evt);
+                    this._checkLatLng();
                 }));
                 on(lngNode, "change", lang.hitch(this, function (evt) {
-                    this._checkLatLng(evt);
+                    this._checkLatLng();
                 }));
                 on(dom.byId('cordsSubmit'), "click", lang.hitch(this, function (evt) {
                     this._evaluateCoordinates(evt);
@@ -1302,43 +1306,68 @@ define([
                 on(dom.byId('usng_submit'), "click", lang.hitch(this, function () {
                     this._convertUSNG();
                 }));
-                on(dom.byId('usng_coord'), "keypress", lang.hitch(this, function (evt) {
+                var usngInput = dom.byId('usng_coord');
+                on(usngInput, "change", lang.hitch(this, function () {
+                    this._checkUSNG();
+                }));
+                on(usngInput, "keypress", lang.hitch(this, function (evt) {
                     var keyCode = evt.charCode || evt.keyCode;
                     if (keyCode === 13) {
                         this._convertUSNG();
                     }
+                    this._checkUSNG();
                 }));
                 // MGRS
                 on(dom.byId('mgrs_submit'), "click", lang.hitch(this, function () {
                     this._convertMGRS();
                 }));
-                on(dom.byId('mgrs_coord'), "keypress", lang.hitch(this, function (evt) {
+                var mgrsInput = dom.byId('mgrs_coord');
+                on(mgrsInput, "change", lang.hitch(this, function () {
+                    this._checkMGRS();
+                }));
+                on(mgrsInput, "keypress", lang.hitch(this, function (evt) {
                     var keyCode = evt.charCode || evt.keyCode;
                     if (keyCode === 13) {
                         this._convertMGRS();
                     }
+                    this._checkMGRS();
                 }));
                 // UTM
+                var northNode = dom.byId('utm_northing');
+                var eastNode = dom.byId('utm_easting');
+                var zoneNode = dom.byId('utm_zone_number');
                 on(dom.byId('utm_submit'), "click", lang.hitch(this, function () {
                     this._convertUTM();
                 }));
-                on(dom.byId('utm_northing'), "keypress", lang.hitch(this, function (evt) {
+                on(northNode, "keypress", lang.hitch(this, function (evt) {
                     var keyCode = evt.charCode || evt.keyCode;
                     if (keyCode === 13) {
                         this._convertUTM();
                     }
+                    this._checkUTM();
                 }));
-                on(dom.byId('utm_easting'), "keypress", lang.hitch(this, function (evt) {
-                    var keyCode = evt.charCode || evt.keyCode;
-                    if (keyCode === 13) {
-                        this._convertUTM();
-                    }
+                on(northNode, "change", lang.hitch(this, function () {
+                    this._checkUTM();
                 }));
-                on(dom.byId('utm_zone_number'), "keypress", lang.hitch(this, function (evt) {
+                on(eastNode, "keypress", lang.hitch(this, function (evt) {
                     var keyCode = evt.charCode || evt.keyCode;
                     if (keyCode === 13) {
                         this._convertUTM();
                     }
+                    this._checkUTM();
+                }));
+                on(eastNode, "change", lang.hitch(this, function () {
+                    this._checkUTM();
+                }));
+                on(zoneNode, "keypress", lang.hitch(this, function (evt) {
+                    var keyCode = evt.charCode || evt.keyCode;
+                    if (keyCode === 13) {
+                        this._convertUTM();
+                    }
+                    this._checkUTM();
+                }));
+                on(zoneNode, "change", lang.hitch(this, function () {
+                    this._checkUTM();
                 }));
                 // fullscreen
                 var fsButton = dom.byId('fullscreen_button');
@@ -1498,6 +1527,38 @@ define([
                 domAttr.remove(coord, 'disabled');
             } else {
                 domAttr.set(coord, 'disabled', 'disabled');
+            }
+        },
+        _checkUTM: function () {
+            // make sure lat and lon are both filled out to show button
+            var e = dom.byId('utm_northing').value;
+            var n = dom.byId('utm_easting').value;
+            var z = dom.byId('utm_zone_number').value;
+            var s = dom.byId('utm_submit');
+            if (e && n && z) {
+                domAttr.remove(s, 'disabled');
+            } else {
+                domAttr.set(s, 'disabled', 'disabled');
+            }
+        },
+        _checkUSNG: function () {
+            // make value(s) are set
+            var inputVal = dom.byId('usng_coord').value;
+            var btn = dom.byId('usng_submit');
+            if (inputVal) {
+                domAttr.remove(btn, 'disabled');
+            } else {
+                domAttr.set(btn, 'disabled', 'disabled');
+            }
+        },
+        _checkMGRS: function () {
+            // make value(s) are set
+            var inputVal = dom.byId('mgrs_coord').value;
+            var btn = dom.byId('mgrs_submit');
+            if (inputVal) {
+                domAttr.remove(btn, 'disabled');
+            } else {
+                domAttr.set(btn, 'disabled', 'disabled');
             }
         },
         // find location for coordinates
