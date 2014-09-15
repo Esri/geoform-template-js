@@ -834,7 +834,7 @@ define([
                     break;
                 case "esriFieldTypeDate":
                     var inputDateGroupContainer = this._addNotationIcon(formContent, "glyphicon-calendar");
-                        this._createDateField(inputDateGroupContainer, false, fieldname);
+                    this._createDateField(inputDateGroupContainer, false, fieldname);
                     break;
                 }
                 //Add Placeholder if present
