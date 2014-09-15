@@ -2119,8 +2119,11 @@ define([
                 "data-input-type": "Date",
                 "id": fieldname
             }, parentNode);
-            on(dateInputField, "click", function () {
+            on(dateInputField, "focus", function () {
                 $(this.parentElement).data("DateTimePicker").show();
+            });
+            on(dateInputField, "blur", function () {
+                $(this.parentElement).data("DateTimePicker").hide();
             });
             $(parentNode).datetimepicker({
                 useSeconds: false,
