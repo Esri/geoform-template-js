@@ -1187,6 +1187,7 @@ define([
             mapDiv.innerHTML = fsHTML;
             arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
+                    editable: true,
                     infoWindow: popup
                     // Optionally define additional map config here for example you can
                     // turn the slider off, display info windows, disable wraparound 180, slider position and more.
