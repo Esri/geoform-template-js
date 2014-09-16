@@ -100,9 +100,10 @@ function (
             })));
         },
         _stripTags: function (str) {
-            return domConstruct.create("div", {
+            var text = domConstruct.create("div", {
                 innerHTML: str
             }).textContent;
+            return text || '';
         },
         _shareLink: function () {
             if (this.get("bitlyAPI") && this.get("bitlyLogin") && this.get("bitlyKey")) {
