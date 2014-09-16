@@ -2174,6 +2174,7 @@ define([
         },
 
         _createDateField: function (parentNode, isRangeField, fieldname, currentField) {
+            domClass.add(parentNode, "date");
             var dateInputField = domConstruct.create("input", {
                 type: "text",
                 value: "",
