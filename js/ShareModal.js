@@ -10,6 +10,7 @@ define([
     "dojo/io-query",
     "dojo/dom",
     "dojo/dom-class",
+    "dojo/dom-construct",
     "esri/request"
 ],
 function (
@@ -19,7 +20,7 @@ function (
     _WidgetBase, a11yclick,
     on,
     ioQuery,
-    dom, domClass,
+    dom, domClass, domConstruct,
     esriRequest
 ) {
     var Widget = declare([_WidgetBase], {
@@ -34,7 +35,7 @@ function (
             summary: '',
             hashtags: '',
             mailURL: 'mailto:%20?subject=${title}&body=${summary}%20${url}',
-            facebookURL: "https://www.facebook.com/sharer/sharer.php?s=100&p[url]=${url}&p[images][0]=${image}&p[title]=${title}&p[summary]=${summary}",
+            facebookURL: "https://www.facebook.com/sharer/sharer.php?u=${url}",
             twitterURL: "https://twitter.com/intent/tweet?url=${url}&text=${title}&hashtags=${hashtags}",
             googlePlusURL: "https://plus.google.com/share?url=${url}",
             bitlyAPI: location.protocol === "https:" ? "https://api-ssl.bitly.com/v3/shorten" : "http://api.bit.ly/v3/shorten",
@@ -98,6 +99,11 @@ function (
                 this._configureShareLink(this.get("mailURL"), true);
             })));
         },
+        _stripTags: function (str) {
+            return domConstruct.create("div", {
+                innerHTML: str
+            }).textContent;
+        },
         _shareLink: function () {
             if (this.get("bitlyAPI") && this.get("bitlyLogin") && this.get("bitlyKey")) {
                 //Handle getting url param in _updateUrl
@@ -139,13 +145,12 @@ function (
         },
         _configureShareLink: function (Link, isMail) {
             // replace strings
-            var formattedText = this.get("summary").replace(/<\/?[^>]+(>|$)/g, ""),
-                fullLink;
+            var fullLink;
             fullLink = string.substitute(Link, {
                 url: encodeURIComponent(this.get("bitlyUrl") ? this.get("bitlyUrl") : this.get("url")),
                 image: encodeURIComponent(this.get("image")),
                 title: encodeURIComponent(this.get("title")),
-                summary: encodeURIComponent(formattedText.replace(/[\&nbsp;]/g, "")),
+                summary: encodeURIComponent(this._stripTags(this.get("summary"))),
                 hashtags: encodeURIComponent(this.get("hashtags"))
             });
             // email link
