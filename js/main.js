@@ -738,7 +738,7 @@ define([
                     //if field type is date
                     if (currentField.type == "esriFieldTypeDate") {
                         var inputRangeDateGroupContainer = this._addNotationIcon(formContent, "glyphicon-calendar");
-                        this._createDateField(inputRangeDateGroupContainer, true, fieldname, currentField);
+                        inputContent = this._createDateField(inputRangeDateGroupContainer, true, fieldname, currentField);
                         if (currentField.defaultValue) {
                             var m = new Date(currentField.defaultValue);
                             var rangeDefaultDate = locale.format(m, {
@@ -848,7 +848,7 @@ define([
                     break;
                 case "esriFieldTypeDate":
                     var inputDateGroupContainer = this._addNotationIcon(formContent, "glyphicon-calendar");
-                    this._createDateField(inputDateGroupContainer, false, fieldname);
+                        inputContent = this._createDateField(inputDateGroupContainer, false, fieldname);
                     break;
                 }
                 //Add Placeholder if present
@@ -2223,6 +2223,7 @@ define([
                     fullYear: true
                 }));
             }
+            return dateInputField;
         }
     });
 });
