@@ -1234,6 +1234,7 @@ define([
                             // support basic offline editing
                             this._offlineSupport = new OfflineSupport({
                                 map: this.map,
+                                image: this.config.sharinghost + '/apps/GeoForm/images/online-check.png',
                                 layer: this._formLayer
                             });
                         }));

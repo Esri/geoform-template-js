@@ -22,6 +22,17 @@ define([
         constructor: function (options) {
             // save defaults
             this.defaults = options;
+            // configure offline library
+            Offline.options = {
+                checks: {
+                    image: {
+                        url: function () {
+                            return options.image + '?_=' + (Math.floor(Math.random() * 1000000000));
+                        }
+                    },
+                    active: 'image'
+                }
+            };
             // create offline manager
             this.offlineFeaturesManager = O.esri.Edit.OfflineFeaturesManager();
             // enable offline attachments
