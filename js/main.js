@@ -35,7 +35,7 @@ define([
     "esri/dijit/Popup",
     "application/themes",
     "application/pushpins",
-    "application/coordinator/coordinator",
+    "application/usng",
     "dojo/date/locale",
     "dojo/NodeList-traverse",
     "dojo/domReady!"
@@ -59,7 +59,7 @@ define([
     Geocoder,
     modalTemplate,
     userTemplate,
-    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, coordinator, locale) {
+    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, usng, locale) {
     return declare([], {
         nls: nls,
         config: {},
@@ -1470,45 +1470,42 @@ define([
             var northing = parseFloat(dom.byId('utm_northing').value);
             var easting = parseFloat(dom.byId('utm_easting').value);
             var zone = parseInt(dom.byId('utm_zone_number').value, 10);
-            var converted;
-            var fn = coordinator('utm', 'latlong');
+            var converted = {};
             try {
-                converted = fn(northing, easting, zone);
+                usng.UTMtoLL(northing, easting, zone, converted);
             } catch (e) {
                 this._coordinatesError('utm');
             }
             if (converted) {
-                this._locatePointOnMap(converted.latitude, converted.longitude, 'utm');
+                this._locatePointOnMap(converted.lat, converted.lon, 'utm');
             }
         },
         // usng to lat lon
         _convertUSNG: function () {
             this._clearSubmissionGraphic();
             var value = dom.byId('usng_coord').value;
-            var fn = coordinator('usng', 'latlong');
-            var converted;
+            var converted = [];
             try {
-                converted = fn(value);
+                usng.USNGtoLL(value, converted);
             } catch (e) {
                 this._coordinatesError('usng');
             }
-            if (converted) {
-                this._locatePointOnMap(converted.latitude, converted.longitude, 'usng');
+            if (converted.length === 2) {
+                this._locatePointOnMap(converted[0], converted[1], 'usng');
             }
         },
         // convert mgrs to lat lon
         _convertMGRS: function () {
             this._clearSubmissionGraphic();
             var value = dom.byId('mgrs_coord').value;
-            var fn = coordinator('mgrs', 'latlong');
-            var converted;
+            var converted = [];
             try {
-                converted = fn(value);
+                usng.USNGtoLL(value, converted);
             } catch (e) {
                 this._coordinatesError('mgrs');
             }
-            if (converted) {
-                this._locatePointOnMap(converted.latitude, converted.longitude, 'mgrs');
+            if (converted.length === 2) {
+                this._locatePointOnMap(converted[0], converted[1], 'mgrs');
             }
         },
         // make sure valid coordinates
