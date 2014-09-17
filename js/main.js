@@ -35,7 +35,7 @@ define([
     "esri/dijit/Popup",
     "application/themes",
     "application/pushpins",
-    "application/usng",
+    "vendor/usng",
     "dojo/date/locale",
     "dojo/NodeList-traverse",
     "dojo/domReady!"
@@ -1230,7 +1230,7 @@ define([
                     // if indexedDB is supported
                     if (window.indexedDB) {
                         // get offline support
-                        require(["offline/OfflineSupport"], lang.hitch(this, function (OfflineSupport) {
+                        require(["application/OfflineSupport"], lang.hitch(this, function (OfflineSupport) {
                             // support basic offline editing
                             this._offlineSupport = new OfflineSupport({
                                 map: this.map,

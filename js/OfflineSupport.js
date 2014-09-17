@@ -7,7 +7,7 @@ define([
     "dojo/dom",
     "esri/graphic",
     "dojo/i18n!application/nls/resources",
-    "offline/offline-edit-min"
+    "vendor/offline/offline-edit-min"
 ], function (
     declare,
     lang,
