@@ -2,110 +2,110 @@ define(
     [{
         "id": "bootstrap",
         "name": "Bootstrap (Default)",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap-theme.min.css",
+        "url": "js/vendor/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css",
         "thumbnail": "images/themes/default.png",
         "refUrl": "http://bootswatch.com/default/"
     }, {
         "id": "amelia",
         "name": "Amelia",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/amelia/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/amelia/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/amelia/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/amelia/thumbnail.png",
         "refUrl": "http://bootswatch.com/amelia/"
     }, {
         "id": "cerulean",
         "name": "Cerulean",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cerulean/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cerulean/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/cerulean/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/cerulean/thumbnail.png",
         "refUrl": "http://bootswatch.com/cerulean/"
     }, {
         "id": "cosmo",
         "name": "Cosmo",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cosmo/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cosmo/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/cosmo/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/cosmo/thumbnail.png",
         "refUrl": "http://bootswatch.com/cosmo/"
     }, {
         "id": "cyborg",
         "name": "Cyborg",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cyborg/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/cyborg/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/cyborg/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/cyborg/thumbnail.png",
         "refUrl": "http://bootswatch.com/cyborg/"
     }, {
         "id": "darkly",
         "name": "Darkly",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/darkly/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/darkly/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/darkly/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/darkly/thumbnail.png",
         "refUrl": "http://bootswatch.com/darkly/"
     }, {
         "id": "flatly",
         "name": "Flatly",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/flatly/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/flatly/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/flatly/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/flatly/thumbnail.png",
         "refUrl": "http://bootswatch.com/flatly/"
     }, {
         "id": "journal",
         "name": "Journal",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/journal/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/journal/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/journal/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/journal/thumbnail.png",
         "refUrl": "http://bootswatch.com/journal/"
     }, {
         "id": "lumen",
         "name": "Lumen",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/lumen/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/lumen/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/lumen/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/lumen/thumbnail.png",
         "refUrl": "http://bootswatch.com/lumen/"
     }, {
         "id": "paper",
         "name": "Paper",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/paper/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/paper/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/paper/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/paper/thumbnail.png",
         "refUrl": "http://bootswatch.com/paper/"
     }, {
         "id": "readable",
         "name": "Readable",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/readable/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/readable/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/readable/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/readable/thumbnail.png",
         "refUrl": "http://bootswatch.com/readable/"
     }, {
         "id": "sandstone",
         "name": "Sandstone",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/sandstone/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/sandstone/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/sandstone/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/sandstone/thumbnail.png",
         "refUrl": "http://bootswatch.com/sandstone/"
     }, {
         "id": "simplex",
         "name": "Simplex",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/simplex/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/simplex/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/simplex/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/simplex/thumbnail.png",
         "refUrl": "http://bootswatch.com/simplex/"
     }, {
         "id": "slate",
         "name": "Slate",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/slate/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/slate/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/slate/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/slate/thumbnail.png",
         "refUrl": "http://bootswatch.com/slate/"
     }, {
         "id": "spacelab",
         "name": "Spacelab",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/spacelab/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/spacelab/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/spacelab/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/spacelab/thumbnail.png",
         "refUrl": "http://bootswatch.com/spacelab/"
     }, {
         "id": "superhero",
         "name": "Superhero",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/superhero/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/superhero/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/superhero/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/superhero/thumbnail.png",
         "refUrl": "http://bootswatch.com/superhero/"
     }, {
         "id": "united",
         "name": "United",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/united/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/united/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/united/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/united/thumbnail.png",
         "refUrl": "http://bootswatch.com/united/"
     }, {
         "id": "yeti",
         "name": "Yeti",
-        "url": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/yeti/bootstrap.min.css",
-        "thumbnail": "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0+2/yeti/thumbnail.png",
+        "url": "js/vendor/bootswatch-3.2.0-4/yeti/bootstrap.min.css",
+        "thumbnail": "js/vendor/bootswatch-3.2.0-4/yeti/thumbnail.png",
         "refUrl": "http://bootswatch.com/yeti/"
     }]
 );

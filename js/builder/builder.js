@@ -52,7 +52,7 @@ define([
             this.onDemandResources = [
                 {
                     "type": "script",
-                    "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"
+                    "path": "js/vendor/jquery-ui/jquery-ui.min.js"
                 },
                 {
                     "type": "css",
@@ -64,11 +64,11 @@ define([
                 },
                 {
                     "type": "css",
-                    "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css"
+                    "path": "js/vendor/jquery-ui/jquery-ui.min.css"
                 },
                 {
                     "type": "script",
-                    "path": "//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"
+                    "path": "js/vendor/jquery.ui.touch-punch.min.js"
                 }
          ];
         },
