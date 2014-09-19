@@ -389,14 +389,14 @@ define([
             }
         },
         // create lat lon point
-        _calculateLatLong: function (evt) {
+        _calculateLatLong: function (pt) {
             // return string
             var str = '';
             // if spatial ref is web mercator
-            if (evt && evt.mapPoint) {
+            if (pt) {
                 // get lat/lng
-                var lat = evt.mapPoint.getLatitude();
-                var lng = evt.mapPoint.getLongitude();
+                var lat = pt.getLatitude();
+                var lng = pt.getLongitude();
                 if (lat && lng) {
                     // create string
                     str = nls.user.latitude + ': ' + lat.toFixed(5) + ', ' + '&nbsp;' + nls.user.longitude + ': ' + lng.toFixed(5);
@@ -1254,9 +1254,7 @@ define([
                 }));
                 // stop moving
                 on(this.editToolbar, "graphic-move-stop", lang.hitch(this, function (evt) {
-                    //add manual mapPoint property in evt so '_calculateLatLong' function will remain unchanged
-                    evt.mapPoint = evt.graphic.geometry;
-                    var locationCoords = this._calculateLatLong(evt);
+                    var locationCoords = this._calculateLatLong(evt.graphic.geometry);
                     domAttr.set(dom.byId("coordinatesValue"), "innerHTML", locationCoords);
                     this.addressGeometry = evt.graphic.geometry;
                 }));
@@ -1277,7 +1275,7 @@ define([
                 // mouse move and click, show lat lon
                 on(this.map, 'mouse-move, click', lang.hitch(this, function (evt) {
                     // get coords string
-                    var coords = this._calculateLatLong(evt);
+                    var coords = this._calculateLatLong(evt.mapPoint);
                     domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
                 }));
                 // Add desirable touch behaviors here
