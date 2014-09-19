@@ -52,7 +52,7 @@ define([
             this.onDemandResources = [
                 {
                     "type": "script",
-                    "path": "js/vendor/jquery-ui/jquery-ui.min.js"
+                    "path": "js/vendor/jquery-ui/jquery-ui-1.10.4.custom.min.js"
                 },
                 {
                     "type": "css",
@@ -64,7 +64,7 @@ define([
                 },
                 {
                     "type": "css",
-                    "path": "js/vendor/jquery-ui/jquery-ui.min.css"
+                    "path": "js/vendor/jquery-ui/jquery-ui-1.10.4.custom.css"
                 },
                 {
                     "type": "script",
