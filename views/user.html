@@ -65,11 +65,11 @@
                         <div id="coordinates" class="tab-pane">
                             <div class="form-group">
                                 <label for="lat_coord">${user.placeholderLatitude}</label>
-                                <input id="lat_coord" type="text" placeholder="34.05627" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" />
+                                <input id="lat_coord" type="text" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" />
                             </div>
                             <div class="form-group">
                                 <label for="lng_coord">${user.placeholderLongitude}</label>
-                                <input id="lng_coord" type="text" placeholder="-117.19569" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" />
+                                <input id="lng_coord" type="text" pattern="-?\d{1,3}\.\d+" class="form-control" type="text" />
                             </div>
                             <div class="form-group">
                                 <button id="cordsSubmit" type="button" class="btn btn-default" disabled="disabled"><span class="glyphicon glyphicon-map-marker"></span> ${user.setLocation}</button>
@@ -78,7 +78,7 @@
                         <div id="usng" class="tab-pane">
                             <div class="form-group">
                                 <label for="usng_coord">${user.usng}</label>
-                                <input id="usng_coord" type="text" class="form-control" type="text" placeholder="11S MT 81939 68413" />
+                                <input id="usng_coord" type="text" class="form-control" type="text" />
                             </div>
                             <div class="form-group">
                                 <button disabled="disabled" id="usng_submit" type="button" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> ${user.setLocation}</button>
@@ -87,7 +87,7 @@
                         <div id="mgrs" class="tab-pane">
                             <div class="form-group">
                                 <label for="mgrs_coord">${user.mgrs}</label>
-                                <input id="mgrs_coord" type="text" class="form-control" type="text" placeholder="11S MT 81939 68413" />
+                                <input id="mgrs_coord" type="text" class="form-control" type="text" />
                             </div>
                             <div class="form-group">
                                 <button disabled="disabled" id="mgrs_submit" type="button" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> ${user.setLocation}</button>
@@ -96,15 +96,15 @@
                         <div id="utm" class="tab-pane">
                             <div class="form-group">
                                 <label for="utm_northing">${user.utm_northing}</label>
-                                <input id="utm_northing" type="text" class="form-control" type="text" placeholder="3768413" />
+                                <input id="utm_northing" type="text" class="form-control" type="text" />
                             </div>
                             <div class="form-group">
                                 <label for="utm_easting">${user.utm_easting}</label>
-                                <input id="utm_easting" type="text" class="form-control" type="text" placeholder="481939" />
+                                <input id="utm_easting" type="text" class="form-control" type="text" />
                             </div>
                             <div class="form-group">
                                 <label for="utm_zone_number">${user.utm_zone_number}</label>
-                                <input id="utm_zone_number" type="text" class="form-control" type="text" placeholder="11" />
+                                <input id="utm_zone_number" type="text" class="form-control" type="text" />
                             </div>
                             <div class="form-group">
                                 <button disabled="disabled" id="utm_submit" type="button" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> ${user.setLocation}</button>

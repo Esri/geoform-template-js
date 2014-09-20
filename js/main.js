@@ -388,6 +388,42 @@ define([
                 }));
             }
         },
+        _setCoordInputs: function (pt) {
+            // get lat/lng
+            var lat = pt.getLatitude();
+            var lng = pt.getLongitude();
+            if (lat && lng) {
+                dom.byId('lat_coord').value = lat.toFixed(5);
+                dom.byId('lng_coord').value = lng.toFixed(5);
+                // try to convert LL to other coordinates
+                try {
+                    // set USNG
+                    var usngResult = usng.LLtoUSNG(lat, lng, 5);
+                    if (usngResult) {
+                        dom.byId('usng_coord').value = usngResult;
+                    }
+                    // set MGRS
+                    var mgrsResult = usng.LLtoMGRS(lat, lng, 5);
+                    if (mgrsResult) {
+                        dom.byId('mgrs_coord').value = mgrsResult;
+                    }
+                    // set UTM
+                    var utmResults = [];
+                    usng.LLtoUTM(lat, lng, utmResults);
+                    if (utmResults && utmResults.length === 3) {
+                        dom.byId('utm_easting').value = utmResults[0];
+                        dom.byId('utm_northing').value = utmResults[1];
+                        dom.byId('utm_zone_number').value = utmResults[2];
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            this._checkUTM();
+            this._checkMGRS();
+            this._checkLatLng();
+            this._checkUSNG();
+        },
         // create lat lon point
         _calculateLatLong: function (pt) {
             // return string
@@ -1257,6 +1293,7 @@ define([
                     var locationCoords = this._calculateLatLong(evt.graphic.geometry);
                     domAttr.set(dom.byId("coordinatesValue"), "innerHTML", locationCoords);
                     this.addressGeometry = evt.graphic.geometry;
+                    this._setCoordInputs(evt.graphic.geometry);
                 }));
                 // show info window on graphic click
                 on(this.editToolbar, "graphic-click", lang.hitch(this, function (evt) {
@@ -1273,7 +1310,14 @@ define([
                     this._setSymbol(this.addressGeometry);
                 }));
                 // mouse move and click, show lat lon
-                on(this.map, 'mouse-move, click', lang.hitch(this, function (evt) {
+                on(this.map, 'click', lang.hitch(this, function (evt) {
+                    // get coords string
+                    var coords = this._calculateLatLong(evt.mapPoint);
+                    domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
+                    this._setCoordInputs(evt.mapPoint);
+                }));
+                // mouse move and click, show lat lon
+                on(this.map, 'mouse-move', lang.hitch(this, function (evt) {
                     // get coords string
                     var coords = this._calculateLatLong(evt.mapPoint);
                     domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
@@ -1431,6 +1475,12 @@ define([
             setTimeout(lang.hitch(this, function () {
                 // make sure map is correct
                 this._resizeMap();
+                var mapCenter = this.map.extent.getCenter();
+                if (mapCenter) {
+                    this._setCoordInputs(mapCenter);
+                    var locationCoords = this._calculateLatLong(mapCenter);
+                    domAttr.set(dom.byId("coordinatesValue"), "innerHTML", locationCoords);
+                }
             }), 500);
         },
         _fullscreenState: function () {
