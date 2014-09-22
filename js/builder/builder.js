@@ -298,7 +298,7 @@ define([
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         domConstruct.empty(errorNode);
                         attribute = currentTab.getAttribute("tab");
-                        if (((attribute == "publish" || attribute == "preview") && (query(".fieldCheckbox:checked").length === 0)) || (attribute == "fields" && dom.byId("selectLayer").value === "Select Layer")) {
+                        if (((attribute == "publish" || attribute == "preview") && (query(".fieldCheckbox:checked").length === 0)) || (attribute == "fields" && dom.byId("selectLayer").value === nls.builder.selectLayerDefaultOptionText)) {
                             this._disableTab(currentTab);
                         } else {
                             this._enableTab(currentTab);
@@ -426,7 +426,9 @@ define([
             if (sortInstance) {
                 sortInstance.destroy();
             }
-            $(formFieldsNode).sortable();
+            $(document).ready(function () {
+                $('#geoFormFieldsTable').sortable();
+            });
             array.forEach(this.currentConfig.fields, lang.hitch(this, function (currentField) {
                 configuredFieldName.push(currentField.name);
                 configuredFields.push(currentField);
@@ -739,7 +741,7 @@ define([
         _clearLayerOptions: function () {
             var i;
             for (i = dom.byId("selectLayer").options.length - 1; i >= 0; i--) {
-                if (dom.byId("selectLayer").options[i].value != "Select Layer") {
+                if (dom.byId("selectLayer").options[i].value != nls.builder.selectLayerDefaultOptionText) {
                     dom.byId("selectLayer").remove(i);
                 }
             }
