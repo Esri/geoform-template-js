@@ -427,7 +427,10 @@ define([
                 sortInstance.destroy();
             }
             $(document).ready(function () {
-                $('#geoFormFieldsTable').sortable();
+                var tbody = $('#geoFormFieldsTable');
+                if (tbody) {
+                    tbody.sortable();
+                }
             });
             array.forEach(this.currentConfig.fields, lang.hitch(this, function (currentField) {
                 configuredFieldName.push(currentField.name);
