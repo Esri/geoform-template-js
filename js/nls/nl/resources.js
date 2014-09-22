@@ -65,7 +65,7 @@
             shareUserTextMessage: "Vertel anderen om bijdragen te leveren met behulp van de volgende opties.",
             addAttachmentFailedMessage: "Kan bijlage niet toevoegen aan laag",
             addFeatureFailedMessage: "Kan kenmerk niet toevoegen aan laag",
-            noLayerConfiguredMessage: "Oeps! Hier is niets te zien. Om formulierinzendingen te gaan verzamelen, configureert u dit geografisch formulier en selecteert u een bewerkbare featureservicelaag die u wilt gebruiken.",
+            noLayerConfiguredMessage: "Er is een fout opgetreden bij het laden van of zoeken naar een bewerkbare objectlaag. Als u het formulier wilt weergeven en de inzendingen wilt verzamelen, voegt u een objectlaag toe aan de webmap.",
             placeholderLatitude: "Breedte (Y)",
             placeholderLongitude: "Lengte (X)",
             latitude: "Breedtegraad",

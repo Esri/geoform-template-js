@@ -65,7 +65,7 @@
             shareUserTextMessage: "Chiedere ad altri utenti di contribuire utilizzando le seguenti opzioni.",
             addAttachmentFailedMessage: "Impossibile aggiungere l\'allegato al layer",
             addFeatureFailedMessage: "Impossibile aggiungere la feature al layer",
-            noLayerConfiguredMessage: "Nessun elemento da visualizzare. Per iniziare la raccolta degli invii dei moduli, configurare il GeoForm e selezionare un layer Servizio feature modificabile da utilizzare.",
+            noLayerConfiguredMessage: "Si è verificato un errore durante il caricamento o la ricerca di un feature layer modificabile. Per visualizzare il modulo e avviare la raccolta degli invii, aggiungere alla mappa Web un feature layer modificabile.",
             placeholderLatitude: "Latitudine (Y)",
             placeholderLongitude: "Longitudine (X)",
             latitude: "Latitudine",

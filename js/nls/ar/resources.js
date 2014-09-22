@@ -65,7 +65,7 @@
             shareUserTextMessage: "أخبر الأخرين بالمشاركة باستخدام الخيارات التالية.",
             addAttachmentFailedMessage: "تعذر إضافة مرفقات إلى الطبقة",
             addFeatureFailedMessage: "تعذر إضافة معلم إلى الطبقة",
-            noLayerConfiguredMessage: "عفوًا! لا يوجد شيء هنا، ولبدء تجميع عمليات إرسال النموذج، قم بتكوين GeoForm وحدد طبقة خدمة المعالم القابلة للتحرير لاستخدامها.",
+            noLayerConfiguredMessage: "حدث خطأ أثناء تحميل أو إيجاد طبقة المعالم التي يُمكن تحريرها. لعرض النموذج وبدء تجميع عمليات الإرسال وإضافة طبقة المعالم التي يُمكن تحريرها إلى خريطة الويب.",
             placeholderLatitude: "خط العرض (Y)",
             placeholderLongitude: "خط الطول (X)",
             latitude: "خط العرض",

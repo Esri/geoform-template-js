@@ -65,7 +65,7 @@
             shareUserTextMessage: "Pyydä muita käyttämään lisäyksiin seuraavia valintoja.",
             addAttachmentFailedMessage: "Ei voi lisätä liitettä karttatasoon",
             addFeatureFailedMessage: "Ei voi lisätä kohdetta karttatasoon",
-            noLayerConfiguredMessage: "Oho! Täällä ei ole mitään nähtävää. Jotta voit alkaa kerätä lomakkeen lähetyksiä, määritä tämä GeoForm ja valitse käytettäväksi muokattava kohdepalvelun karttataso.",
+            noLayerConfiguredMessage: "Muokattavan kohdekarttatason lataamisessa tai haussa tapahtui virhe. Jotta voit näyttää lomakkeen ja alkaa kerätä lähetyksiä, lisää muokattava kohdekarttataso Web-karttaan.",
             placeholderLatitude: "Leveysaste (Y)",
             placeholderLongitude: "Pituusaste (X)",
             latitude: "Leveysaste",

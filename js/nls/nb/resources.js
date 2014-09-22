@@ -65,7 +65,7 @@
             shareUserTextMessage: "Be andre om å bidra ved hjelp av følgende alternativer.",
             addAttachmentFailedMessage: "Kan ikke legge til vedlegg i laget",
             addFeatureFailedMessage: "Kan ikke legge til geoobjekt i laget",
-            noLayerConfiguredMessage: "Ops! Her er det ingenting å se. For å begynne å samle inn innsendte skjemaer, konfigurerer du dette GeoForm og velger et redigerbart geoobjektlag du vil bruke.",
+            noLayerConfiguredMessage: "Det oppsto en feil under lasting eller søk etter et redigerbart geoobjektslag. Du må legge til et redigerbart geoobjektslag i webkartet for å kunne vise skjemaet og samle inn innsendte skjemaer.",
             placeholderLatitude: "Breddegrad (Y)",
             placeholderLongitude: "Lengdegrad (X)",
             latitude: "Breddegrad",

@@ -65,7 +65,7 @@
             shareUserTextMessage: "次のオプションを使用して、他のユーザに提供を求めます。",
             addAttachmentFailedMessage: "添付ファイルをレイヤに追加できません",
             addFeatureFailedMessage: "フィーチャをレイヤに追加できません",
-            noLayerConfiguredMessage: "ここに何も表示されていません。フォームの送信内容の収集を開始するには、この GeoForm を構成して、使用する編集可能なフィーチャ サービスを選択します。",
+            noLayerConfiguredMessage: "編集可能なフィーチャ レイヤを読み込み中または検索中にエラーが発生しました。フォームを表示してコレクションの送信を開始するには、編集可能なフィーチャ レイヤを Web マップに追加します。",
             placeholderLatitude: "緯度 (Y)",
             placeholderLongitude: "経度 (X)",
             latitude: "緯度",

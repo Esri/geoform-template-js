@@ -65,7 +65,7 @@
             shareUserTextMessage: "Recomandaţi şi altor utilizatori să contribuie folosind următoarele opţiuni.",
             addAttachmentFailedMessage: "Nu se poate adăuga o ataşare la stratul tematic",
             addFeatureFailedMessage: "Nu se poate adăuga un obiect spaţial la stratul tematic",
-            noLayerConfiguredMessage: "Hopa! Aici nu există nimic. Pentru a începe să colectaţi date pentru formular, configuraţi acest serviciu GeoForm şi selectaţi un strat tematic de serviciu de obiecte spaţiale editabil, pe care să îl utilizaţi.",
+            noLayerConfiguredMessage: "A survenit o eroare la încărcarea sau găsirea unui strat tematic de obiecte spaţiale editabil. Pentru a afişa formularul şi începe colectarea elementelor trimise, adăugaţi un strat tematic de obiecte spaţiale editabile în harta web.",
             placeholderLatitude: "Latitudine (Y)",
             placeholderLongitude: "Longitudine (X)",
             latitude: "Latitudine",

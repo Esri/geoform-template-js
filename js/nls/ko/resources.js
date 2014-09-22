@@ -13,7 +13,7 @@
                 items: {
                     organizationLabel: "내 기관",
                     onlineLabel: "ArcGIS Online",
-                    contentLabel: "내 컨텐츠",
+                    contentLabel: "내 콘텐츠",
                     favoritesLabel: "내 즐겨찾기"
                 },
                 title: "웹 맵 선택",
@@ -26,7 +26,7 @@
                 items: {
                     organizationLabel: "내 기관",
                     onlineLabel: "ArcGIS Online",
-                    contentLabel: "내 컨텐츠",
+                    contentLabel: "내 콘텐츠",
                     favoritesLabel: "내 즐겨찾기"
                 },
                 title: "그룹 선택",
@@ -65,7 +65,7 @@
             shareUserTextMessage: "다음 옵션을 사용하여 기여하도록 다른 사용자에게 알리세요.",
             addAttachmentFailedMessage: "첨부 파일을 레이어에 추가할 수 없음",
             addFeatureFailedMessage: "피처를 레이어에 추가할 수 없음",
-            noLayerConfiguredMessage: "죄송합니다! 여기에 표시할 항목이 없습니다. 양식 제출 수집을 시작하려면 이 GeoForm을 구성하고 사용할 편집 가능 피처 서비스 레이어를 선택합니다.",
+            noLayerConfiguredMessage: "한_An error occured loading or finding an editable feature layer. In order to display the form and start collecting submissions, add an editable Feature Layer to the Webmap._빠",
             placeholderLatitude: "위도(Y)",
             placeholderLongitude: "경도(X)",
             latitude: "위도",

@@ -65,7 +65,7 @@
             shareUserTextMessage: "ã_Tell others to contribute using the following options._Ç",
             addAttachmentFailedMessage: "Impossível adicionar anexo à camada",
             addFeatureFailedMessage: "Impossível adicionar elemento à camada",
-            noLayerConfiguredMessage: "Ups! Não há nada para ver aqui. Para começar a recolher submissões de formulários, configure este GeoForm e selecione uma camada de Serviço de Elementos editável.",
+            noLayerConfiguredMessage: "ã_An error occured loading or finding an editable feature layer. In order to display the form and start collecting submissions, add an editable Feature Layer to the Webmap._Ç",
             placeholderLatitude: "Latitude (Y)",
             placeholderLongitude: "Longitude (X)",
             latitude: "Latitude",

@@ -65,7 +65,7 @@
             shareUserTextMessage: "ก้_Tell others to contribute using the following options._ษฺ",
             addAttachmentFailedMessage: "ไม่สามารถเพิ่มไฟล์แนบไปยังชั้นข้อมูลได้",
             addFeatureFailedMessage: "ไม่สามารถเพิ่มฟีเจอร์ไปยังชั้นข้อมูลได้",
-            noLayerConfiguredMessage: "ขออภัย! ไม่พบข้อมูลใดๆ ในกรณีที่ต้องการเก็บแบบฟอร์มการตอบรับ แก้ไข GeoForm และเลือกฟีเจอร์เซอร์วิสที่สามารถแก้ไขได้เพื่อนำไปใช้",
+            noLayerConfiguredMessage: "ก้_An error occured loading or finding an editable feature layer. In order to display the form and start collecting submissions, add an editable Feature Layer to the Webmap._ษฺ",
             placeholderLatitude: "ละติจูด (Y)",
             placeholderLongitude: "ลองจิจูด (X)",
             latitude: "ละติจูด",

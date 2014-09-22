@@ -65,7 +65,7 @@
             shareUserTextMessage: "Fordern Sie andere Benutzer auf, Inhalte mit den folgenden Optionen bereitzustellen.",
             addAttachmentFailedMessage: "Anlage kann dem Layer nicht hinzugefügt werden",
             addFeatureFailedMessage: "Feature kann dem Layer nicht hinzugefügt werden",
-            noLayerConfiguredMessage: "Hoppla! Hier wird nichts angezeigt. Um die Erfassung gesendeter Formulare zu starten, konfigurieren Sie diese GeoForm-Vorlage, und wählen Sie einen editierbaren Feature-Service-Layer aus.",
+            noLayerConfiguredMessage: "Beim Laden oder Suchen eines editierbaren Feature-Layers ist ein Fehler aufgetreten. Um das Formular anzuzeigen und mit der Erfassung von Übermittlungen zu beginnen, fügen Sie der Webkarte einen editierbaren Feature-Layer hinzu.",
             placeholderLatitude: "Breitengrad (Y)",
             placeholderLongitude: "Längengrad (X)",
             latitude: "Breitengrad",
@@ -92,7 +92,7 @@
             requiredField: "(erforderlich)",
             error: "Fehler",
             textRangeHintMessage: "${openStrong}Hinweis:${closeStrong} Minimalwert ${minValue} und Maximalwert ${maxValue}",
-            dateRangeHintMessage: "${openStrong}Hinweis:${closeStrong} Minimales Datum ${minValue} und Maximales Datum ${maxValue}"
+            dateRangeHintMessage: "${openStrong}Hinweis:${closeStrong} Mindestdatum ${minValue} und maximal auswählbares Datum ${maxValue}"
         },
         builder: {
             invalidUser: "Sie verfügen leider nicht über die Berechtigungen zum Anzeigen dieses Elements",

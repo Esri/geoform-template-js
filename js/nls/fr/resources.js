@@ -65,7 +65,7 @@
             shareUserTextMessage: "Demandez aux autres utilisateurs d\'apporter leur contribution en utilisant les options suivantes.",
             addAttachmentFailedMessage: "Impossible d\'ajouter une pièce jointe à la couche",
             addFeatureFailedMessage: "Impossible d\'ajouter une entité à la couche",
-            noLayerConfiguredMessage: "Aucun élément à visualiser. Afin de commencer à collecter les envois de formulaires, configurez ce formulaire géographique et sélectionnez une couche de service d\'entités modifiable à utiliser.",
+            noLayerConfiguredMessage: "Une erreur est survenue lors du chargement ou de la recherche d\'une couche d\'entités modifiable. Pour afficher le formulaire et commencer à collecter les envois, ajoutez une couche d\'entités modifiable à la carte Web.",
             placeholderLatitude: "Latitude (Y)",
             placeholderLongitude: "Longitude (X)",
             latitude: "Latitude",

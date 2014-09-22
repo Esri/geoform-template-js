@@ -65,7 +65,7 @@
             shareUserTextMessage: "Uppmana andra att bidra med följande alternativ.",
             addAttachmentFailedMessage: "Det gick inte att lägga till bilagan i lagret",
             addFeatureFailedMessage: "Det gick inte att lägga till geoobjektet i lagret",
-            noLayerConfiguredMessage: "Oj! Här finns inget att se. Om du vill börja samla in formulärbidrag konfigurerar du GeoForm och väljer ett redigerbart geoobjekttjänstlager att använda.",
+            noLayerConfiguredMessage: "Ett fel uppstod när ett redigerbart geoobjektlager skulle läsas in eller sökas. För att visa formuläret och börja samla in bidrag måste du lägga till ett redigerbart geoobjektlager i webbkartan.",
             placeholderLatitude: "Latitud (Y)",
             placeholderLongitude: "Longitud (X)",
             latitude: "Latitud",

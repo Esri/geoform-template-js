@@ -65,7 +65,7 @@
             shareUserTextMessage: "Bed andre om at bidrage vha. følgende indstillinger.",
             addAttachmentFailedMessage: "Kan ikke tilføje vedhæftning til laget",
             addFeatureFailedMessage: "Kan ikke føje objekt til laget",
-            noLayerConfiguredMessage: "Ups! Ikke noget at se her. For at starte indsamling af formularafsendelser skal du konfigurere denne GeoForm og vælge et redig\érbarr vektorlag.",
+            noLayerConfiguredMessage: "Der opstod en fejl under indlæsning eller søgning efter et redig\érbart objektlag. Føj et redig\érbart objektlag til webkortet for at få formularen vist og starte indsamlingen af afsendelserne.",
             placeholderLatitude: "Bredde (Y)",
             placeholderLongitude: "Længde (X)",
             latitude: "Breddegrad",
