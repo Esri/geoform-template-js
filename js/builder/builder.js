@@ -367,7 +367,7 @@ define([
         _populateLocations: function () {
             var currentInput, key, count = 0;
             for (key in this.currentConfig.locationSearchOptions) {
-                if(this.currentConfig.locationSearchOptions.hasOwnProperty(key)){
+                if (this.currentConfig.locationSearchOptions.hasOwnProperty(key)) {
                     currentInput = query("input", dom.byId('location_options'))[count];
                     if (currentInput) {
                         if (this.currentConfig.locationSearchOptions[key]) {
