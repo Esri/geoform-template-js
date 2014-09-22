@@ -367,15 +367,17 @@ define([
         _populateLocations: function () {
             var currentInput, key, count = 0;
             for (key in this.currentConfig.locationSearchOptions) {
-                currentInput = query("input", dom.byId('location_options'))[count];
-                if (currentInput) {
-                    if (this.currentConfig.locationSearchOptions[key]) {
-                        currentInput.checked = true;
+                if(this.currentConfig.locationSearchOptions.hasOwnProperty(key)){
+                    currentInput = query("input", dom.byId('location_options'))[count];
+                    if (currentInput) {
+                        if (this.currentConfig.locationSearchOptions[key]) {
+                            currentInput.checked = true;
+                        }
+                        domAttr.set(currentInput, "checkedField", key);
+                        on(currentInput, "change", lang.hitch(this, this._locationInputChange));
                     }
-                    domAttr.set(currentInput, "checkedField", key);
-                    on(currentInput, "change", lang.hitch(this, this._locationInputChange));
+                    count++;
                 }
-                count++;
             }
         },
 
