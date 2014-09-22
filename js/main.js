@@ -634,7 +634,7 @@ define([
                     "for": fieldname,
                     className: "control-label",
                     innerHTML: fieldLabelText,
-                    id: fieldname + "" + index
+                    id: fieldname + "_label_" + index
                 }, formContent);
             }
             if (requireField && labelContent) {
