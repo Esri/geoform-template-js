@@ -13,7 +13,7 @@ define({
         "Description": ""
     },
     "fields": [],
-    "theme": "bootstrap", // options: bootstrap, cerulian, cyborg, darkly, journal, readable
+    "theme": "bootstrap", // see values in themes.js
     "oauthappid": null,
     //Enter the url to the proxy if needed by the applcation. See the "Using the proxy page" help topic for details
     // //developers.arcgis.com/en/javascript/jshelp/ags_proxy.html
@@ -26,6 +26,20 @@ define({
     //Defaults to arcgis.com. Set this value to your portal or organization host name.
     "sharinghost": location.protocol + "//" + "www.arcgis.com",
     "units": null,
+    "useSmallHeader": false,
+    "enableSharing": true,
+    "defaultMapExtent": true,
+    "pushpinColor": "blue",
+    "attachmentLabel": "",
+    "attachmentHelpText": "",
+    "locationSearchOptions": {
+        "enableMyLocation": true,
+        "enableSearch": true,
+        "enableLatLng": true,
+        "enableUSNG": false,
+        "enableMGRS": false,
+        "enableUTM": false
+    },
     "helperServices": {
         "geometry": {
             "url": null

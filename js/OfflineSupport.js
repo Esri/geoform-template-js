@@ -1,19 +1,20 @@
-/*global Offline, $ */
+/*global Offline, O */
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
+    "dojo/string",
     "dojo/on",
-    "dojo/dom-construct",
-    "edit/offlineFeaturesManager",
-    "esri/dijit/editing/Editor",
-    "dojo/i18n!application/nls/resources"
+    "dojo/dom",
+    "esri/graphic",
+    "dojo/i18n!application/nls/resources",
+    "vendor/offline/offline-edit-min"
 ], function (
     declare,
     lang,
+    string,
     on,
-    domConstruct,
-    OfflineFeaturesManager,
-    Editor,
+    dom,
+    Graphic,
     i18n
 ) {
     return declare(null, {
@@ -22,7 +23,9 @@ define([
             // save defaults
             this.defaults = options;
             // create offline manager
-            this.offlineFeaturesManager = new OfflineFeaturesManager();
+            this.offlineFeaturesManager = O.esri.Edit.OfflineFeaturesManager();
+            // enable offline attachments
+            this.offlineFeaturesManager.initAttachments();
             // once layer is loaded
             if (this.defaults.layer.loaded) {
                 this.initEditor();
@@ -32,7 +35,6 @@ define([
             Offline.check();
             Offline.on('up', lang.hitch(this, function () {
                 this.goOnline();
-
             }));
             Offline.on('down', lang.hitch(this, function () {
                 this.goOffline();
@@ -41,34 +43,44 @@ define([
 
         // update online status
         updateConnectivityIndicator: function () {
-            var html;
+            var html = '';
             var status = this.offlineFeaturesManager.getOnlineStatus();
             switch (status) {
             case this.offlineFeaturesManager.OFFLINE:
-                html = '<span class="text-danger"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.offline + '</span>';
+                html = '<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.offline + '</div>';
                 break;
             case this.offlineFeaturesManager.RECONNECTING:
-                html = '<span class="text-warning"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.reconnecting + '</span>';
+                html = '<div class="alert alert-info"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + i18n.onlineStatus.reconnecting + '</div>';
+                break;
+            case this.offlineFeaturesManager.ONLINE:
+                html = '';
                 break;
             }
-            var submitButton = $('#submit_container');
-            if (submitButton) {
-                submitButton.popover('destroy');
-                if (html) {
-                    var options = {
-                        html: true,
-                        animation: true,
-                        trigger: 'manual',
-                        title: i18n.onlineStatus.title,
-                        content: html
-                    };
-                    submitButton.popover(options);
-                    submitButton.popover('show');
-                    if (status !== this.offlineFeaturesManager.OFFLINE) {
-                        setTimeout(function () {
-                            submitButton.popover('hide');
-                        }, 5000);
-                    }
+            var node = dom.byId('connection_status');
+            if (node) {
+                node.innerHTML = html;
+            }
+        },
+
+        updateStatus: function () {
+            var node = dom.byId('pending_edits');
+            // clear html
+            node.innerHTML = '';
+            // edit store
+            var es = new O.esri.Edit.EditStore(Graphic);
+            // if we have edits
+            if (es.hasPendingEdits()) {
+                var edits = es.retrieveEditsQueue();
+                var total = edits.length;
+                if (total) {
+                    var html = '';
+                    html += '<div class="alert alert-warning" role="alert">';
+                    html += '<span class="glyphicon glyphicon-signal"></span> ';
+                    html += string.substitute(i18n.onlineStatus.pending, {
+                        total: total
+                    });
+                    html += '</div>';
+                    node.innerHTML = html;
                 }
             }
         },
@@ -79,6 +91,7 @@ define([
             this.offlineFeaturesManager.goOnline(lang.hitch(this, function () {
                 this.updateConnectivityIndicator();
             }));
+            this.updateConnectivityIndicator();
         },
 
         // now offline
@@ -90,8 +103,19 @@ define([
 
         // setup editing
         initEditor: function () {
-            /* extend layer with offline detection functionality */
-            this.offlineFeaturesManager.extend(this.defaults.layer);
+
+            // status for pending edits
+            this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, lang.hitch(this, function () {
+                this.updateStatus();
+            }));
+            this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_SENT, lang.hitch(this, function () {
+                this.updateStatus();
+            }));
+            this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.ALL_EDITS_SENT, lang.hitch(this, function () {
+                this.updateStatus();
+            }));
+
+
             /* handle errors that happen while storing offline edits */
             this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, function (results) {
                 var errors = Array.prototype.concat(
@@ -110,24 +134,10 @@ define([
                     console.log(errors);
                 }
             });
-            // editor settings
-            var settings = {
-                map: this.defaults.map,
-                layerInfos: [{
-                    featureLayer: this.defaults.layer
-                }]
-            };
-            // create editor
-            var editor = new Editor({
-                settings: settings
-            }, domConstruct.create('div'));
-            // start editor
-            editor.startup();
-            // if online
-            if (Offline.state === 'up') {
-                // if we have pending edits from previous executions and we are online, then try to replay them
-                this.goOnline();
-            }
+
+            /* extend layer with offline detection functionality */
+            this.offlineFeaturesManager.extend(this.defaults.layer);
+
             // update indicator and check status
             this.updateConnectivityIndicator();
         }
