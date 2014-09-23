@@ -921,8 +921,8 @@ define([
             var helpHTML;
             if (currentField.isNewField) {
                 // make sure popup info and fields are defined
-                if (this._formLayer && this._formLayer.popupInfo && this._formLayer.popupInfo.fieldInfos) {
-                    array.forEach(this._formLayer.popupInfo.fieldInfos, function (currentFieldPopupInfo) {
+                if (this._formLayer && this._formLayer.infoTemplate && this._formLayer.infoTemplate.info && this._formLayer.infoTemplate.info.fieldInfos) {
+                    array.forEach(this._formLayer.infoTemplate.info.fieldInfos, function (currentFieldPopupInfo) {
                         if (currentFieldPopupInfo.fieldName == currentField.name) {
                             if (currentFieldPopupInfo.tooltip) {
                                 helpHTML = currentFieldPopupInfo.tooltip;
@@ -1822,11 +1822,15 @@ define([
                                 console.log(nls.user.addAttachmentFailedMessage);
                             });
                         }
+                        // remove graphic
+                        this._clearSubmissionGraphic();
+                        // reset form
+                        this._clearFormFields();
+                        // reset to default extent
+                        if (this.config.defaultMapExtent) {
+                            this.map.setExtent(this.defaultExtent);
+                        }
                     }
-                    // remove graphic
-                    this._clearSubmissionGraphic();
-                    // reset form
-                    this._clearFormFields();
                     domConstruct.destroy(query(".errorMessage")[0]);
                     // open error modal if unsuccessful
                     if (!addResults[0].success) {
@@ -1834,10 +1838,6 @@ define([
                         return;
                     }
                     this._openShareModal();
-                    // reset to default extent
-                    if (this.config.defaultMapExtent) {
-                        this.map.setExtent(this.defaultExtent);
-                    }
                     // reset submit button
                     this._resetButton();
                     window.location.href = '#top';
@@ -1845,8 +1845,6 @@ define([
                     // And pushpin was not getting placed correctly.
                     this._resizeMap();
                 }), lang.hitch(this, function () {
-                    // remove graphic
-                    this._clearSubmissionGraphic();
                     // no longer editable
                     this._formLayer.setEditable(false);
                     // remove error
@@ -2005,7 +2003,6 @@ define([
             }, errorMsgContainer);
             $("#myModal").modal('show');
             this._resetButton();
-            this._clearFormFields();
         },
         // share modal content
         _createShareDlgContent: function () {
