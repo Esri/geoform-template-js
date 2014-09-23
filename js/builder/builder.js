@@ -190,7 +190,7 @@ define([
             on(dom.byId("selectLayer"), "change", lang.hitch(this, function (evt) {
                 this.currentConfig.form_layer.id = evt.currentTarget.value;
                 this._populateFields(evt.currentTarget.value);
-                if (evt.currentTarget.value == "") {
+                if (evt.currentTarget.value === "") {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         if (domAttr.get(currentTab, "tab") == "fields" || domAttr.get(currentTab, "tab") == "preview" || domAttr.get(currentTab, "tab") == "publish" || domAttr.get(currentTab, "tab") == "options") {
                             this._disableTab(currentTab);
@@ -746,7 +746,7 @@ define([
         _clearLayerOptions: function () {
             var i;
             for (i = dom.byId("selectLayer").options.length - 1; i >= 0; i--) {
-                if (dom.byId("selectLayer").options[i].value != "") {
+                if (dom.byId("selectLayer").options[i].value !== "") {
                     dom.byId("selectLayer").remove(i);
                 }
             }
