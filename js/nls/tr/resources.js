@@ -65,7 +65,7 @@
             shareUserTextMessage: "Aşağıdaki seçenekleri kullanarak diğerlerine katkıda bulunmasını söyleyin.",
             addAttachmentFailedMessage: "Eklenti katmana eklenemiyor",
             addFeatureFailedMessage: "Özellik katmana eklenemiyor",
-            noLayerConfiguredMessage: "Düzenlenebilir bir özellik katmanı yüklenirken ya da bulunurken bir hata oluştu. Formu görüntülemek ve iletimleri toplama işlemini başlatmak amacıyla Web haritasına düzenlenebilir bir Özellik Katmanı ekleyin.",
+            noLayerConfiguredMessage: "Düzenlenebilir bir detay katmanı yüklenirken ya da bulunurken bir hata oluştu. Formu görüntülemek ve iletimleri toplama işlemini başlatmak amacıyla Web haritasına düzenlenebilir bir Detay Katmanı ekleyin.",
             placeholderLatitude: "Enlem (Y)",
             placeholderLongitude: "Boylam (X)",
             latitude: "Enlem",

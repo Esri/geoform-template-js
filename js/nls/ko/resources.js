@@ -65,7 +65,7 @@
             shareUserTextMessage: "다음 옵션을 사용하여 기여하도록 다른 사용자에게 알리세요.",
             addAttachmentFailedMessage: "첨부 파일을 레이어에 추가할 수 없음",
             addFeatureFailedMessage: "피처를 레이어에 추가할 수 없음",
-            noLayerConfiguredMessage: "한_An error occured loading or finding an editable feature layer. In order to display the form and start collecting submissions, add an editable Feature Layer to the Webmap._빠",
+            noLayerConfiguredMessage: "편집 가능한 피처 레이어를 로드하거나 찾는 동안 오류가 발생했습니다. 양식을 표시하거나 제출 수집을 시작하려면 편집 가능한 피처 레이어를 웹 맵에 추가합니다.",
             placeholderLatitude: "위도(Y)",
             placeholderLongitude: "경도(X)",
             latitude: "위도",

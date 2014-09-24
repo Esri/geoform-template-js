@@ -65,7 +65,7 @@
             shareUserTextMessage: "Peça aos outros para contribuir utilizando as seguintes opções.",
             addAttachmentFailedMessage: "Não foi possível adicionar anexo na camada",
             addFeatureFailedMessage: "Não foi possível adicionar feição no mapa",
-            noLayerConfiguredMessage: "ã_An error occured loading or finding an editable feature layer. In order to display the form and start collecting submissions, add an editable Feature Layer to the Webmap._Ç",
+            noLayerConfiguredMessage: "Ocorreu um erro ao carregar ou localizar uma camada de feição editável. Para exibir o formulário e começar a coletar as submissões, adicione uma Camada de Feição editável no Mapa da Web.",
             placeholderLatitude: "Latitude (Y)",
             placeholderLongitude: "Longitude (X)",
             latitude: "Latitude",
