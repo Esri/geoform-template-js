@@ -392,7 +392,8 @@ define([
             // get lat/lng
             var lat = pt.getLatitude();
             var lng = pt.getLongitude();
-            if (lat && lng) {
+            // if valid lat/lng
+            if (typeof lat !== "undefined" && typeof lng !== "undefined") {
                 dom.byId('lat_coord').value = lat.toFixed(5);
                 dom.byId('lng_coord').value = lng.toFixed(5);
                 // try to convert LL to other coordinates
