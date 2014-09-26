@@ -133,12 +133,11 @@ define([
             }));
 
             $('#saveButton').on('click', lang.hitch(this, function () {
-                this._updateItem();
+                this._updateItem(false);
             }));
 
-            $('#done').on('click', lang.hitch(this, function () {
-                var detailsPageURL = this.currentConfig.sharinghost + "/home/item.html?id=" + this.currentConfig.appid;
-                window.open(detailsPageURL);
+            $('#done').on('click', lang.hitch(this, function () { 
+                this._updateItem(true); 
             }));
 
             $('#jumbotronOption').on('click', lang.hitch(this, function () {
@@ -805,7 +804,7 @@ define([
         },
 
         //function to update the item on arcGis online
-        _updateItem: function () {
+        _updateItem: function (saveAndExit) {
             this.appSettings = {
                 "enableAttachments": this.currentConfig.enableAttachments,
                 "attachmentIsRequired": this.currentConfig.attachmentIsRequired,
@@ -848,6 +847,13 @@ define([
                     usePost: true
                 }).then(lang.hitch(this, function (result) {
                     if (result.success) {
+                        if (saveAndExit) {
+                            $("#myModal").modal('hide');
+                            var detailsPageURL = this.currentConfig.sharinghost + "/home/item.html?id=" + this.currentConfig.appid;
+                            window.location.assign(detailsPageURL);
+
+                           return true;
+                        }
                         if (this._ShareModal) {
                             this._ShareModal.destroy();
                         }
