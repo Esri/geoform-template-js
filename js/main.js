@@ -571,11 +571,23 @@ define([
                 this._createFormElements(currentField, index, null);
             }));
             // if form has attachments
-            if (this._formLayer.hasAttachments) {
+            if (this._formLayer.hasAttachments && this.config.enableAttachments) {
+                var requireField = null;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group"
                 }, userFormNode);
+                //code to make the attachment input mandatory
+                if (this.config.attachmentIsRequired) {
+                    domClass.add(formContent, "form-group mandatory geoFormQuestionare");
+                    requireField = domConstruct.create("small", {
+                        className: 'requireFieldStyle',
+                        innerHTML: nls.user.requiredField
+                    }, formContent);
+                } else {
+                    domClass.add(formContent, "form-group geoFormQuestionare");
+                }
+
                 // attachment label html
                 var labelHTML = "";
                 labelHTML += "<span class=\"glyphicon glyphicon-paperclip\"></span> ";
@@ -585,6 +597,9 @@ define([
                     innerHTML: labelHTML,
                     "for": "geoFormAttachment"
                 }, formContent);
+                if (requireField && labelContent) {
+                    domConstruct.place(requireField, labelContent, "last");
+                }
                 fileInput = domConstruct.create("input", {
                     "type": "file",
                     "id": "geoFormAttachment",
@@ -592,6 +607,10 @@ define([
                     //"capture": "camera",
                     "name": "attachment"
                 }, formContent);
+                if (this.config.attachmentIsRequired) {
+                    fileInput.setAttribute("aria-required", true);
+                    fileInput.setAttribute("required", "");
+                }
                 if (this.config.attachmentHelpText) {
                     helpBlock = domConstruct.create("p", {
                         className: "help-block",
@@ -1070,7 +1089,7 @@ define([
                     this._resetSubTypeFields(field);
                 }
                 this._createFormElements(field, index, referenceNode);
-                if (field.type == "esriFieldTypeDate" || field.displayType == "url" || field.displayType == "email") {
+                if (field.type == "esriFieldTypeDate" || field.displayType == "url" || field.displayType == "email" || (field.type == "esriFieldTypeSingle" || field.type == "esriFieldTypeDouble" || field.type == "esriFieldTypeSmallInteger" || field.type == "esriFieldTypeInteger") && (field.domain && field.domain.type === "range")) {
                     referenceNode = dom.byId(field.name).parentNode.parentNode;
                 } else {
                     referenceNode = dom.byId(field.name).parentNode;
@@ -2219,7 +2238,7 @@ define([
             return inputIconGroupContainer;
         },
         _resetSubTypeFields: function (currentInput) {
-            if (currentInput.type == "esriFieldTypeDate" || currentInput.displayType == "url" || currentInput.displayType == "email") {
+            if (currentInput.type == "esriFieldTypeDate" || currentInput.displayType == "url" || currentInput.displayType == "email" || (currentInput.type == "esriFieldTypeSmallFloat" || currentInput.type == "esriFieldTypeSmallInteger" || currentInput.type == "esriFieldTypeDouble" || currentInput.type == "esriFieldTypeInteger") && (currentInput.domain && currentInput.domain.type === "range")) {
                 domConstruct.destroy(dom.byId(currentInput.name).parentNode.parentNode);
             } else {
                 domConstruct.destroy(dom.byId(currentInput.name).parentNode);
