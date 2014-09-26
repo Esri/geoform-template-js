@@ -930,6 +930,13 @@ define([
                 if (currentField.type !== "esriFieldTypeDate") {
                     on(inputContent, "keyup", lang.hitch(this, function (evt) {
                         this._validateField(evt, true);
+                        if (currentField.displayType === "textarea") {
+                            var availableLength;
+                            availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
+                                value: (currentField.length - inputContent.value.length).toString()
+                            });
+                            helpBlock.innerHTML = lang.trim(helpHTML + " " + availableLength);
+                        }
                     }));
                 }
             }
@@ -953,14 +960,27 @@ define([
             } else {
                 helpHTML = currentField.fieldDescription;
             }
-            if (helpHTML || rangeHelpText) {
-                if (!rangeHelpText) {
-                    rangeHelpText = "";
+            if (helpHTML || currentField.displayType === "textarea") {
+                var availableLength = "";
+                if (currentField.displayType === "textarea") {
+                    availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
+                        value: currentField.length.toString()
+                    });
                 }
                 helpBlock = domConstruct.create("p", {
                     className: "help-block",
-                    innerHTML: lang.trim(helpHTML + " " + rangeHelpText)
+                    innerHTML: lang.trim(helpHTML + " " + availableLength)
                 }, formContent);
+            }
+            if (rangeHelpText) {
+                var options = {
+                    trigger: 'focus',
+                    placement: 'top',
+                    container: 'body',
+                    content: rangeHelpText,
+                    html: true
+                };
+                $('#' + fieldname).popover(options);
             }
         },
         // date range field

@@ -92,7 +92,8 @@ define({
             requiredField: "(required)",
             error: "Error",
             textRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum value ${minValue} and Maximum value ${maxValue}",
-            dateRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum Date ${minValue} and Maximum Date ${maxValue}"
+            dateRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum Date ${minValue} and Maximum Date ${maxValue}",
+            remainingCharactersHintMessage: "${value} characters remaining"
         },
         builder: {
             invalidUser: "Sorry, you dont have permission to view this item",
