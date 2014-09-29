@@ -71,6 +71,7 @@ define([
         localStorageSupport: null,
         defaultValueAttributes: null,
         sortedFields: [],
+        isHumanEntry: null,
         _createGeocoderOptions: function () {
             //Check for multiple geocoder support and setup options for geocoder widget.
             var hasEsri = false,
@@ -618,6 +619,7 @@ define([
                     }, formContent);
                 }
             }
+            this._verifyHumanEntry();
         },
         //function to create elements of form.
         _createFormElements: function (currentField, index, referenceNode) {
@@ -1856,7 +1858,7 @@ define([
                 //code for apply-edits
                 this._formLayer.applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
                     // Add attachment on success
-                    if (addResults[0].success) {
+                    if (addResults[0].success && this.isHumanEntry) {
                         if (userFormNode[userFormNode.length - 1].value !== "" && this._formLayer.hasAttachments) {
                             this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () {}, function () {
                                 console.log(nls.user.addAttachmentFailedMessage);
@@ -1873,10 +1875,12 @@ define([
                     }
                     domConstruct.destroy(query(".errorMessage")[0]);
                     // open error modal if unsuccessful
-                    if (!addResults[0].success) {
+                    if (!addResults[0].success || (!this.isHumanEntry && addResults[0].success)) {
                         this._openErrorModal();
+                        this._verifyHumanEntry();
                         return;
                     }
+                    this._verifyHumanEntry();
                     this._openShareModal();
                     // reset submit button
                     this._resetButton();
@@ -2317,6 +2321,12 @@ define([
                 }));
             }
             return dateInputField;
+        },
+        _verifyHumanEntry: function () {
+            this.isHumanEntry = false;
+            setTimeout(lang.hitch(this, function () {
+                this.isHumanEntry = true;
+            }), 2000);
         }
     });
 });
