@@ -136,8 +136,8 @@ define([
                 this._updateItem(false);
             }));
 
-            $('#done').on('click', lang.hitch(this, function () { 
-                this._updateItem(true); 
+            $('#done').on('click', lang.hitch(this, function () {
+                this._updateItem(true);
             }));
 
             $('#jumbotronOption').on('click', lang.hitch(this, function () {
@@ -985,7 +985,8 @@ define([
         },
 
         _createAttachmentInput: function (layerUrl) {
-            var fLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentDetails, attachmentLabel;
+            var fLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentDetails, attachmentLabel,
+            requiredAttachmentContainer, requiredAttachmentContent, requiredAttachmentLabel;
             domConstruct.empty(dom.byId('attachmentDetails'));
             fLayer = new FeatureLayer(layerUrl);
             on(fLayer, 'load', lang.hitch(this, function () {
