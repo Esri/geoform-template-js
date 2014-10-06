@@ -71,6 +71,7 @@ define([
         localStorageSupport: null,
         defaultValueAttributes: null,
         sortedFields: [],
+        isHumanEntry: null,
         _createGeocoderOptions: function () {
             //Check for multiple geocoder support and setup options for geocoder widget.
             var hasEsri = false,
@@ -571,11 +572,23 @@ define([
                 this._createFormElements(currentField, index, null);
             }));
             // if form has attachments
-            if (this._formLayer.hasAttachments) {
+            if (this._formLayer.hasAttachments && this.config.enableAttachments) {
+                var requireField = null;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group"
                 }, userFormNode);
+                //code to make the attachment input mandatory
+                if (this.config.attachmentIsRequired) {
+                    domClass.add(formContent, "form-group mandatory geoFormQuestionare");
+                    requireField = domConstruct.create("small", {
+                        className: 'requireFieldStyle',
+                        innerHTML: nls.user.requiredField
+                    }, formContent);
+                } else {
+                    domClass.add(formContent, "form-group geoFormQuestionare");
+                }
+
                 // attachment label html
                 var labelHTML = "";
                 labelHTML += "<span class=\"glyphicon glyphicon-paperclip\"></span> ";
@@ -585,6 +598,9 @@ define([
                     innerHTML: labelHTML,
                     "for": "geoFormAttachment"
                 }, formContent);
+                if (requireField && labelContent) {
+                    domConstruct.place(requireField, labelContent, "last");
+                }
                 fileInput = domConstruct.create("input", {
                     "type": "file",
                     "id": "geoFormAttachment",
@@ -592,6 +608,10 @@ define([
                     //"capture": "camera",
                     "name": "attachment"
                 }, formContent);
+                if (this.config.attachmentIsRequired) {
+                    fileInput.setAttribute("aria-required", true);
+                    fileInput.setAttribute("required", "");
+                }
                 if (this.config.attachmentHelpText) {
                     helpBlock = domConstruct.create("p", {
                         className: "help-block",
@@ -599,6 +619,7 @@ define([
                     }, formContent);
                 }
             }
+            this._verifyHumanEntry();
         },
         //function to create elements of form.
         _createFormElements: function (currentField, index, referenceNode) {
@@ -911,6 +932,13 @@ define([
                 if (currentField.type !== "esriFieldTypeDate") {
                     on(inputContent, "keyup", lang.hitch(this, function (evt) {
                         this._validateField(evt, true);
+                        if (currentField.displayType === "textarea") {
+                            var availableLength;
+                            availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
+                                value: (currentField.length - inputContent.value.length).toString()
+                            });
+                            helpBlock.innerHTML = lang.trim(helpHTML + " " + availableLength);
+                        }
                     }));
                 }
             }
@@ -934,14 +962,27 @@ define([
             } else {
                 helpHTML = currentField.fieldDescription;
             }
-            if (helpHTML || rangeHelpText) {
-                if (!rangeHelpText) {
-                    rangeHelpText = "";
+            if (helpHTML || currentField.displayType === "textarea") {
+                var availableLength = "";
+                if (currentField.displayType === "textarea") {
+                    availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
+                        value: currentField.length.toString()
+                    });
                 }
                 helpBlock = domConstruct.create("p", {
                     className: "help-block",
-                    innerHTML: lang.trim(helpHTML + " " + rangeHelpText)
+                    innerHTML: lang.trim(helpHTML + " " + availableLength)
                 }, formContent);
+            }
+            if (rangeHelpText) {
+                var options = {
+                    trigger: 'focus',
+                    placement: 'top',
+                    container: 'body',
+                    content: rangeHelpText,
+                    html: true
+                };
+                $('#' + fieldname).popover(options);
             }
         },
         // date range field
@@ -1070,7 +1111,7 @@ define([
                     this._resetSubTypeFields(field);
                 }
                 this._createFormElements(field, index, referenceNode);
-                if (field.type == "esriFieldTypeDate" || field.displayType == "url" || field.displayType == "email") {
+                if (field.type == "esriFieldTypeDate" || field.displayType == "url" || field.displayType == "email" || (field.type == "esriFieldTypeSingle" || field.type == "esriFieldTypeDouble" || field.type == "esriFieldTypeSmallInteger" || field.type == "esriFieldTypeInteger") && (field.domain && field.domain.type === "range")) {
                     referenceNode = dom.byId(field.name).parentNode.parentNode;
                 } else {
                     referenceNode = dom.byId(field.name).parentNode;
@@ -1817,7 +1858,7 @@ define([
                 //code for apply-edits
                 this._formLayer.applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
                     // Add attachment on success
-                    if (addResults[0].success) {
+                    if (addResults[0].success && this.isHumanEntry) {
                         if (userFormNode[userFormNode.length - 1].value !== "" && this._formLayer.hasAttachments) {
                             this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () {}, function () {
                                 console.log(nls.user.addAttachmentFailedMessage);
@@ -1834,10 +1875,12 @@ define([
                     }
                     domConstruct.destroy(query(".errorMessage")[0]);
                     // open error modal if unsuccessful
-                    if (!addResults[0].success) {
+                    if (!addResults[0].success || (!this.isHumanEntry && addResults[0].success)) {
                         this._openErrorModal();
+                        this._verifyHumanEntry();
                         return;
                     }
+                    this._verifyHumanEntry();
                     this._openShareModal();
                     // reset submit button
                     this._resetButton();
@@ -2219,7 +2262,7 @@ define([
             return inputIconGroupContainer;
         },
         _resetSubTypeFields: function (currentInput) {
-            if (currentInput.type == "esriFieldTypeDate" || currentInput.displayType == "url" || currentInput.displayType == "email") {
+            if (currentInput.type == "esriFieldTypeDate" || currentInput.displayType == "url" || currentInput.displayType == "email" || (currentInput.type == "esriFieldTypeSmallFloat" || currentInput.type == "esriFieldTypeSmallInteger" || currentInput.type == "esriFieldTypeDouble" || currentInput.type == "esriFieldTypeInteger") && (currentInput.domain && currentInput.domain.type === "range")) {
                 domConstruct.destroy(dom.byId(currentInput.name).parentNode.parentNode);
             } else {
                 domConstruct.destroy(dom.byId(currentInput.name).parentNode);
@@ -2278,6 +2321,12 @@ define([
                 }));
             }
             return dateInputField;
+        },
+        _verifyHumanEntry: function () {
+            this.isHumanEntry = false;
+            setTimeout(lang.hitch(this, function () {
+                this.isHumanEntry = true;
+            }), 2000);
         }
     });
 });
