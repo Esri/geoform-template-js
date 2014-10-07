@@ -413,8 +413,8 @@ define([
                     var utmResults = [];
                     usng.LLtoUTM(lat, lng, utmResults);
                     if (utmResults && utmResults.length === 3) {
-                        dom.byId('utm_easting').value = utmResults[0];
-                        dom.byId('utm_northing').value = utmResults[1];
+                        dom.byId('utm_easting').value = parseInt(utmResults[0]);
+                        dom.byId('utm_northing').value = parseInt(utmResults[1]);
                         dom.byId('utm_zone_number').value = utmResults[2];
                     }
                 } catch (e) {
@@ -934,10 +934,16 @@ define([
                         this._validateField(evt, true);
                         if (currentField.displayType === "textarea") {
                             var availableLength;
-                            availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
-                                value: (currentField.length - inputContent.value.length).toString()
-                            });
-                            helpBlock.innerHTML = lang.trim(helpHTML + " " + availableLength);
+                            if (inputContent.value.length > currentField.length) {
+                                //Work around to make textarea work in IE8
+                                //Truncate the text if necessary
+                                $(inputContent).val(inputContent.value.substr(0, currentField.length));
+                            } else {
+                                availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
+                                    value: (currentField.length - inputContent.value.length).toString()
+                                });
+                                helpBlock.innerHTML = lang.trim(helpHTML + " " + availableLength);
+                            }
                         }
                     }));
                 }
@@ -1391,6 +1397,9 @@ define([
                 // Lat/Lng coordinate events
                 var latNode = dom.byId('lat_coord');
                 var lngNode = dom.byId('lng_coord');
+                on(latNode, "keyup", lang.hitch(this, function (evt) {
+                    this._validateLocationInputs('lat');
+                }));
                 on(latNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
                     this._checkLatLng();
@@ -1398,6 +1407,9 @@ define([
                 on(lngNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
                     this._checkLatLng();
+                }));
+                on(lngNode, "keyup", lang.hitch(this, function (evt) {
+                    this._validateLocationInputs('lng');
                 }));
                 // lat/lng changed
                 on(latNode, "change", lang.hitch(this, function () {
@@ -1562,6 +1574,36 @@ define([
             domClass.toggle(document.body, 'fullscreen', condition);
             // update state
             this._fullscreenState();
+        },
+        _validateLocationInputs: function (mode) {
+            switch (mode) {
+                case 'lat':
+                    var lat = lang.trim(dom.byId('lat_coord').value);
+                    if (lat === '') {
+                        domClass.remove(dom.byId('lat_coord').parentNode, 'has-error');
+                        domClass.remove(dom.byId('lat_coord').parentNode, 'has-success');
+                        return;
+                    }
+                    if (lat >= -90 && lat <= 90) {
+                        domClass.replace(dom.byId('lat_coord').parentNode, 'has-success', 'has-error');
+                    } else {
+                        domClass.replace(dom.byId('lat_coord').parentNode, 'has-error', 'has-success');
+                    }
+                    break;
+                case 'lng':
+                    var lng = lang.trim(dom.byId('lng_coord').value);
+                    if (lng === '') {
+                        domClass.remove(dom.byId('lng_coord').parentNode, 'has-error');
+                        domClass.remove(dom.byId('lng_coord').parentNode, 'has-success');
+                        return;
+                    }
+                    if (lng >= -180 && lng <= 180) {
+                        domClass.replace(dom.byId('lng_coord').parentNode, 'has-success', 'has-error');
+                    } else {
+                        domClass.replace(dom.byId('lng_coord').parentNode, 'has-error', 'has-success');
+                    }
+                    break;
+            }
         },
         // utm to lat lon
         _convertUTM: function () {
