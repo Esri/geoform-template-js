@@ -1000,23 +1000,47 @@ define([
                 min: currentField.domain.minValue.toString(),
                 max: currentField.domain.maxValue.toString()
             }, formContent);
+            var setStep, setDefault = "", stepDivisibility = 'none', decimalPoints = 0;
             domAttr.set(inputContent, "data-input-type", currentField.type.replace("esriFieldType", ""));
             if (currentField.defaultValue) {
-                domAttr.set(inputContent, "value", currentField.defaultValue);
+                setDefault = currentField.defaultValue;
                 domClass.add(inputContent.parentNode, "has-success");
             }
-            on(inputContent, "keyup", lang.hitch(this, function (evt) {
-                if (Number(evt.currentTarget.value) >= Number(evt.currentTarget.min) && Number(evt.currentTarget.value) <= Number(evt.currentTarget.max)) {
-                    domClass.remove(evt.currentTarget.parentNode, "has-error");
-                    domClass.add(evt.currentTarget.parentNode, "has-success");
+            if (domAttr.get(inputContent, "data-input-type") === "Double" || domAttr.get(inputContent, "data-input-type") === "Single") {
+                decimalPoints = 2;
+                if (currentField.domain.minValue - Math.floor(currentField.domain.minValue) === 0.5) {
+                    setStep = 0.5;
                 } else {
-                    domClass.remove(evt.currentTarget.parentNode, "has-success");
-                    domClass.add(evt.currentTarget.parentNode, "has-error");
+                    setStep = 0.1;
                 }
-                if (evt.currentTarget.value === "") {
-                    domClass.remove(evt.currentTarget.parentNode, "has-error");
-                    domClass.remove(evt.currentTarget.parentNode, "has-success");
+            }
+            else {
+                setStep = 1;
+                stepDivisibility = 'round';
+            }
+            var inputcontentSpinner = $(inputContent).TouchSpin({
+                initval: setDefault,
+                min: currentField.domain.minValue.toString(),
+                max: currentField.domain.maxValue.toString(),
+                forcestepdivisibility: stepDivisibility,
+                step: setStep,
+                boostat: 5,
+                decimals: decimalPoints,
+                maxboostedstep: 10
+            });
+            //Event to address validations for manual entry in the touch-spinner input.
+            on(inputContent, "keyup", function () {
+                //inputcontentSpinner.trigger("touchspin.updatesettings", { step: setStep });
+                if (inputContent.value === "") {
+                    domClass.remove(inputContent.parentNode.parentNode, "has-success");
                 }
+                else {
+                    domClass.add(inputContent.parentNode.parentNode, "has-success");
+                }
+            });
+            on(inputcontentSpinner, "touchspin.on.startspin", lang.hitch(this, function (evt) {
+                inputcontentSpinner.trigger("touchspin.updatesettings", {});
+                domClass.add(evt.currentTarget.parentNode.parentNode, "has-success");
             }));
             if (!currentField.nullable) {
                 inputContent.setAttribute("aria-required", true);
