@@ -413,8 +413,8 @@ define([
                     var utmResults = [];
                     usng.LLtoUTM(lat, lng, utmResults);
                     if (utmResults && utmResults.length === 3) {
-                        dom.byId('utm_easting').value = utmResults[0];
-                        dom.byId('utm_northing').value = utmResults[1];
+                        dom.byId('utm_easting').value = parseInt(utmResults[0]);
+                        dom.byId('utm_northing').value = parseInt(utmResults[1]);
                         dom.byId('utm_zone_number').value = utmResults[2];
                     }
                 } catch (e) {
@@ -934,10 +934,16 @@ define([
                         this._validateField(evt, true);
                         if (currentField.displayType === "textarea") {
                             var availableLength;
-                            availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
-                                value: (currentField.length - inputContent.value.length).toString()
-                            });
-                            helpBlock.innerHTML = lang.trim(helpHTML + " " + availableLength);
+                            if (inputContent.value.length > currentField.length) {
+                                //Work around to make textarea work in IE8
+                                //Truncate the text if necessary
+                                $(inputContent).val(inputContent.value.substr(0, currentField.length));
+                            } else {
+                                availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
+                                    value: (currentField.length - inputContent.value.length).toString()
+                                });
+                                helpBlock.innerHTML = lang.trim(helpHTML + " " + availableLength);
+                            }
                         }
                     }));
                 }
@@ -994,23 +1000,47 @@ define([
                 min: currentField.domain.minValue.toString(),
                 max: currentField.domain.maxValue.toString()
             }, formContent);
+            var setStep, setDefault = "", stepDivisibility = 'none', decimalPoints = 0;
             domAttr.set(inputContent, "data-input-type", currentField.type.replace("esriFieldType", ""));
             if (currentField.defaultValue) {
-                domAttr.set(inputContent, "value", currentField.defaultValue);
+                setDefault = currentField.defaultValue;
                 domClass.add(inputContent.parentNode, "has-success");
             }
-            on(inputContent, "keyup", lang.hitch(this, function (evt) {
-                if (Number(evt.currentTarget.value) >= Number(evt.currentTarget.min) && Number(evt.currentTarget.value) <= Number(evt.currentTarget.max)) {
-                    domClass.remove(evt.currentTarget.parentNode, "has-error");
-                    domClass.add(evt.currentTarget.parentNode, "has-success");
+            if (domAttr.get(inputContent, "data-input-type") === "Double" || domAttr.get(inputContent, "data-input-type") === "Single") {
+                decimalPoints = 2;
+                if (currentField.domain.minValue - Math.floor(currentField.domain.minValue) === 0.5) {
+                    setStep = 0.5;
                 } else {
-                    domClass.remove(evt.currentTarget.parentNode, "has-success");
-                    domClass.add(evt.currentTarget.parentNode, "has-error");
+                    setStep = 0.1;
                 }
-                if (evt.currentTarget.value === "") {
-                    domClass.remove(evt.currentTarget.parentNode, "has-error");
-                    domClass.remove(evt.currentTarget.parentNode, "has-success");
+            }
+            else {
+                setStep = 1;
+                stepDivisibility = 'round';
+            }
+            var inputcontentSpinner = $(inputContent).TouchSpin({
+                initval: setDefault,
+                min: currentField.domain.minValue.toString(),
+                max: currentField.domain.maxValue.toString(),
+                forcestepdivisibility: stepDivisibility,
+                step: setStep,
+                boostat: 5,
+                decimals: decimalPoints,
+                maxboostedstep: 10
+            });
+            //Event to address validations for manual entry in the touch-spinner input.
+            on(inputContent, "keyup", function () {
+                //inputcontentSpinner.trigger("touchspin.updatesettings", { step: setStep });
+                if (inputContent.value === "") {
+                    domClass.remove(inputContent.parentNode.parentNode, "has-success");
                 }
+                else {
+                    domClass.add(inputContent.parentNode.parentNode, "has-success");
+                }
+            });
+            on(inputcontentSpinner, "touchspin.on.startspin", lang.hitch(this, function (evt) {
+                inputcontentSpinner.trigger("touchspin.updatesettings", {});
+                domClass.add(evt.currentTarget.parentNode.parentNode, "has-success");
             }));
             if (!currentField.nullable) {
                 inputContent.setAttribute("aria-required", true);
@@ -1391,6 +1421,9 @@ define([
                 // Lat/Lng coordinate events
                 var latNode = dom.byId('lat_coord');
                 var lngNode = dom.byId('lng_coord');
+                on(latNode, "keyup", lang.hitch(this, function (evt) {
+                    this._validateLocationInputs('lat');
+                }));
                 on(latNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
                     this._checkLatLng();
@@ -1398,6 +1431,9 @@ define([
                 on(lngNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
                     this._checkLatLng();
+                }));
+                on(lngNode, "keyup", lang.hitch(this, function (evt) {
+                    this._validateLocationInputs('lng');
                 }));
                 // lat/lng changed
                 on(latNode, "change", lang.hitch(this, function () {
@@ -1562,6 +1598,36 @@ define([
             domClass.toggle(document.body, 'fullscreen', condition);
             // update state
             this._fullscreenState();
+        },
+        _validateLocationInputs: function (mode) {
+            switch (mode) {
+                case 'lat':
+                    var lat = lang.trim(dom.byId('lat_coord').value);
+                    if (lat === '') {
+                        domClass.remove(dom.byId('lat_coord').parentNode, 'has-error');
+                        domClass.remove(dom.byId('lat_coord').parentNode, 'has-success');
+                        return;
+                    }
+                    if (lat >= -90 && lat <= 90) {
+                        domClass.replace(dom.byId('lat_coord').parentNode, 'has-success', 'has-error');
+                    } else {
+                        domClass.replace(dom.byId('lat_coord').parentNode, 'has-error', 'has-success');
+                    }
+                    break;
+                case 'lng':
+                    var lng = lang.trim(dom.byId('lng_coord').value);
+                    if (lng === '') {
+                        domClass.remove(dom.byId('lng_coord').parentNode, 'has-error');
+                        domClass.remove(dom.byId('lng_coord').parentNode, 'has-success');
+                        return;
+                    }
+                    if (lng >= -180 && lng <= 180) {
+                        domClass.replace(dom.byId('lng_coord').parentNode, 'has-success', 'has-error');
+                    } else {
+                        domClass.replace(dom.byId('lng_coord').parentNode, 'has-error', 'has-success');
+                    }
+                    break;
+            }
         },
         // utm to lat lon
         _convertUTM: function () {
