@@ -133,12 +133,11 @@ define([
             }));
 
             $('#saveButton').on('click', lang.hitch(this, function () {
-                this._updateItem();
+                this._updateItem(false);
             }));
 
-            $('#done').on('click', lang.hitch(this, function () {
-                var detailsPageURL = this.currentConfig.sharinghost + "/home/item.html?id=" + this.currentConfig.appid;
-                window.open(detailsPageURL);
+            $('#done').on('click', lang.hitch(this, function () { 
+                this._updateItem(true); 
             }));
 
             $('#jumbotronOption').on('click', lang.hitch(this, function () {
@@ -786,6 +785,12 @@ define([
                             this.currentConfig.fields[currentFieldIndex - 1].displayType = query(".displayType", currentRow)[0].value;
                         }
                     }
+                        if (dom.byId("enableAttachmentInfo")) {
+                            this.currentConfig.enableAttachments = dom.byId("enableAttachmentInfo").checked;
+                        }
+                        if (dom.byId("requiredAttachmentInfo")) {
+                            this.currentConfig.attachmentIsRequired = dom.byId("requiredAttachmentInfo").checked;
+                        }
                     if (dom.byId("attachmentDescription")) {
                         this.currentConfig.attachmentHelpText = dom.byId("attachmentDescription").value;
                     }
@@ -799,8 +804,10 @@ define([
         },
 
         //function to update the item on arcGis online
-        _updateItem: function () {
+        _updateItem: function (saveAndExit) {
             this.appSettings = {
+                "enableAttachments": this.currentConfig.enableAttachments,
+                "attachmentIsRequired": this.currentConfig.attachmentIsRequired,
                 "attachmentHelpText": this.currentConfig.attachmentHelpText,
                 "attachmentLabel": this.currentConfig.attachmentLabel,
                 "defaultMapExtent": this.currentConfig.defaultMapExtent,
@@ -840,6 +847,13 @@ define([
                     usePost: true
                 }).then(lang.hitch(this, function (result) {
                     if (result.success) {
+                        if (saveAndExit) {
+                            $("#myModal").modal('hide');
+                            var detailsPageURL = this.currentConfig.sharinghost + "/home/item.html?id=" + this.currentConfig.appid;
+                            window.location.assign(detailsPageURL);
+
+                           return true;
+                        }
                         if (this._ShareModal) {
                             this._ShareModal.destroy();
                         }
@@ -971,17 +985,72 @@ define([
         },
 
         _createAttachmentInput: function (layerUrl) {
-            var fLayer, attachmentDetails, attachmentLabel;
+            var fLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentDetails, attachmentLabel;
             domConstruct.empty(dom.byId('attachmentDetails'));
             fLayer = new FeatureLayer(layerUrl);
             on(fLayer, 'load', lang.hitch(this, function () {
                 if (fLayer.hasAttachments) {
+                    //code to enable/disable the attachment in the user form.
+                    enableAttachmentContainer = domConstruct.create("div", {
+                        "id": "enableAttachmentContainer",
+                        "class": "form-group"
+                    }, dom.byId('attachmentDetails'));
+                    enableAttachmentContent = domConstruct.create("div", {
+                        "id": "enableAttachmentContent",
+                        "class": "checkbox"
+                    }, enableAttachmentContainer);
+                    enableAttachmentLabel = domConstruct.create("label", {
+                        "for": "enableAttachmentInfo"
+                    }, enableAttachmentContent);
+                    domConstruct.create("input", {
+                        "type": "checkbox",
+                        "id": "enableAttachmentInfo"
+                    }, enableAttachmentLabel);
+                    if (this.currentConfig.enableAttachments) {
+                        domAttr.set(dom.byId("enableAttachmentInfo"), "checked", "checked");
+                    }
+                    enableAttachmentLabel.innerHTML += string.substitute(nls.builder.enableAttachmentLabelText, {
+                        openStrong: "<strong>",
+                        closeStrong: "</strong>"
+                    });
+                    domConstruct.create("span", {
+                        "class": "attachmentHint",
+                        "innerHTML": nls.builder.enableAttachmentLabelHint
+                    }, enableAttachmentContainer);
+                    //code to make the checkbox for making the attachment as a mandatory field.
+                    requiredAttachmentContainer = domConstruct.create("div", {
+                        "id": "requiredAttachmentContainer",
+                        "class": "form-group"
+                    }, dom.byId('attachmentDetails'));
+                    requiredAttachmentContent = domConstruct.create("div", {
+                        "id": "requiredAttachmentContent",
+                        "class": "checkbox"
+                    }, requiredAttachmentContainer);
+                    requiredAttachmentLabel = domConstruct.create("label", {
+                        "for": "requiredAttachmentInfo"
+                    }, requiredAttachmentContent);
+                    domConstruct.create("input", {
+                        "type": "checkbox",
+                        "id": "requiredAttachmentInfo"
+                    }, requiredAttachmentLabel);
+                    if (this.currentConfig.attachmentIsRequired) {
+                        domAttr.set(dom.byId("requiredAttachmentInfo"), "checked", "checked");
+                    }
+                    requiredAttachmentLabel.innerHTML += string.substitute(nls.builder.attachmentIsRequiredLabelText, {
+                        openStrong: "<strong>",
+                        closeStrong: "</strong>"
+                    });
+                    domConstruct.create("span", {
+                        "class": "attachmentHint",
+                        "innerHTML": nls.builder.attachmentIsRequiredLabelHint
+                    }, requiredAttachmentContainer);
+                    //code to make the attachment label
                     attachmentLabel = domConstruct.create("div", {
                         "id": "attachmentLabel",
                         "class": "form-group"
                     }, dom.byId('attachmentDetails'));
                     domConstruct.create("label", {
-                        "for": "attachmentLabel",
+                        "for": "attachmentLabelInfo",
                         "innerHTML": nls.builder.attachmentLabelText
                     }, attachmentLabel);
                     domConstruct.create("input", {
@@ -1012,6 +1081,18 @@ define([
                         "class": "attachmentHint",
                         "innerHTML": nls.builder.attachmentHint
                     }, attachmentDetails);
+                    on(dom.byId("enableAttachmentInfo"), "change", function (evt) {
+                        if (!evt.currentTarget.checked) {
+                            domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", true);
+                            domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", true);
+                            domAttr.set(dom.byId("attachmentDescription"), "disabled", true);
+                        }
+                        else {
+                            domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", false);
+                            domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", false);
+                            domAttr.set(dom.byId("attachmentDescription"), "disabled", false);
+                        }
+                    });
                 }
             }));
         }

@@ -92,7 +92,8 @@ define({
             requiredField: "(required)",
             error: "Error",
             textRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum value ${minValue} and Maximum value ${maxValue}",
-            dateRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum Date ${minValue} and Maximum Date ${maxValue}"
+            dateRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum Date ${minValue} and Maximum Date ${maxValue}",
+            remainingCharactersHintMessage: "${value} characters remaining"
         },
         builder: {
             invalidUser: "Sorry, you dont have permission to view this item",
@@ -153,8 +154,12 @@ define({
             publishTabText: "If you are finished customizing your GeoForm, save the application and begin sharing with your audience. You can always return to this builder and continue customizing it based on feedback.",
             smallHeader: "Use Small Header",
             pushpinText: "Push pin",
-            doneButtonText: "View Application Item",
+            doneButtonText: "Save and Exit",
             fieldTabPlaceHolderHeaderText: "Hint (optional)",
+            enableAttachmentLabelText: "${openStrong}Enable Attachments${closeStrong}",
+            enableAttachmentLabelHint: "You can enable/disable the attachments here",
+            attachmentIsRequiredLabelText: "${openStrong}Make Attachment As Required Field${closeStrong}",
+            attachmentIsRequiredLabelHint: "If necessary you can make attachments a mandatory field here",
             attachmentLabelText: "Attachment Label",
             attachmentLabelHint: "Tell users what type of file to attach.",
             attachmentDescription: "Attachment Description",
