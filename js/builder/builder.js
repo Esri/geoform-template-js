@@ -573,21 +573,19 @@ define([
                                 value: "checkbox"
                             }, typeSelect);
                         } else {
-                            if (currentField.type == "esriFieldTypeString") {
+                            if (currentField.type == "esriFieldTypeString" && currentField.length >= 20) {
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextOption,
                                     value: "text"
                                 }, typeSelect);
-                                if (currentField.length >= 30) {
-                                    domConstruct.create("option", {
-                                        innerHTML: nls.builder.selectMailOption,
-                                        value: "email"
-                                    }, typeSelect);
-                                    domConstruct.create("option", {
-                                        innerHTML: nls.builder.selectUrlOption,
-                                        value: "url"
-                                    }, typeSelect);
-                                }
+                                domConstruct.create("option", {
+                                    innerHTML: nls.builder.selectMailOption,
+                                    value: "email"
+                                }, typeSelect);
+                                domConstruct.create("option", {
+                                    innerHTML: nls.builder.selectUrlOption,
+                                    value: "url"
+                                }, typeSelect);
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextAreaOption,
                                     value: "textarea"
