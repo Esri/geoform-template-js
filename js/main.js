@@ -2218,7 +2218,31 @@ define([
             if (this._formLayer) {
                 // if fields not set or empty
                 if (!this.config.fields || (this.config.fields && this.config.fields.length === 0)) {
-                    this.config.fields = this._formLayer.fields;
+                    array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (operationalLayer, index) {
+                        //condition to catch the right layer from webmap
+                        if (operationalLayer.id === this._formLayer.id) {
+                            //This loop runs through all the fields configured in the popup
+                            array.forEach(this.config.itemInfo.itemData.operationalLayers[index].popupInfo.fieldInfos, lang.hitch(this, function (popupField) {
+                                //This loop will run through all the fields in the formLayer and will break when the field matches with currently selected field of pop
+                                array.some(this._formLayer.fields, lang.hitch(this, function (formLayerField) {
+                                    //condition to match the popup field with the formLayer field to mixin the properties of object.
+                                    if (formLayerField.name === popupField.fieldName) {
+                                        //condition to show a type field irrespective of it's configured edit property.
+                                        if (formLayerField.name === this._formLayer.typeIdField) {
+                                            popupField.isEditable = true;
+                                        }
+                                        formLayerField.alias = popupField.label;
+                                        formLayerField.editable = popupField.isEditable;
+                                        formLayerField.visible = popupField.isEditable;
+                                        formLayerField.tooltip = popupField.tooltip;
+                                        this.config.fields.push(formLayerField);
+                                        return true;
+                                    }
+                                }));
+                            }));
+                            return true;
+                        }
+                    }));
                 }
             }
         },
