@@ -136,8 +136,8 @@ define([
                 this._updateItem(false);
             }));
 
-            $('#done').on('click', lang.hitch(this, function () { 
-                this._updateItem(true); 
+            $('#done').on('click', lang.hitch(this, function () {
+                this._updateItem(true);
             }));
 
             $('#jumbotronOption').on('click', lang.hitch(this, function () {
@@ -573,21 +573,19 @@ define([
                                 value: "checkbox"
                             }, typeSelect);
                         } else {
-                            if (currentField.type == "esriFieldTypeString") {
+                            if (currentField.type == "esriFieldTypeString" && currentField.length >= 20) {
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextOption,
                                     value: "text"
                                 }, typeSelect);
-                                if (currentField.length >= 30) {
-                                    domConstruct.create("option", {
-                                        innerHTML: nls.builder.selectMailOption,
-                                        value: "email"
-                                    }, typeSelect);
-                                    domConstruct.create("option", {
-                                        innerHTML: nls.builder.selectUrlOption,
-                                        value: "url"
-                                    }, typeSelect);
-                                }
+                                domConstruct.create("option", {
+                                    innerHTML: nls.builder.selectMailOption,
+                                    value: "email"
+                                }, typeSelect);
+                                domConstruct.create("option", {
+                                    innerHTML: nls.builder.selectUrlOption,
+                                    value: "url"
+                                }, typeSelect);
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextAreaOption,
                                     value: "textarea"
@@ -985,7 +983,8 @@ define([
         },
 
         _createAttachmentInput: function (layerUrl) {
-            var fLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentDetails, attachmentLabel;
+            var fLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentDetails, attachmentLabel,
+            requiredAttachmentContainer, requiredAttachmentContent, requiredAttachmentLabel;
             domConstruct.empty(dom.byId('attachmentDetails'));
             fLayer = new FeatureLayer(layerUrl);
             on(fLayer, 'load', lang.hitch(this, function () {
