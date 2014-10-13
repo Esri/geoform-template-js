@@ -560,10 +560,10 @@ define([
                     }
                 } else {
                     if (!currentField.domain) {
-                        typeSelect = domConstruct.create("select", {
-                            "class": "form-control displayType"
-                        }, fieldType);
                         if (currentField.type == "esriFieldTypeSmallInteger" || currentField.type == "esriFieldTypeInteger" || currentField.type == "esriFieldTypeSingle" || currentField.type == "esriFieldTypeDouble") {
+                            typeSelect = domConstruct.create("select", {
+                                "class": "form-control displayType"
+                            }, fieldType);
                             domConstruct.create("option", {
                                 innerHTML: nls.builder.selectTextOption,
                                 value: "textbox"
@@ -574,6 +574,9 @@ define([
                             }, typeSelect);
                         } else {
                             if (currentField.type == "esriFieldTypeString" && currentField.length >= 20) {
+                                typeSelect = domConstruct.create("select", {
+                                    "class": "form-control displayType"
+                                }, fieldType);
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextOption,
                                     value: "text"
