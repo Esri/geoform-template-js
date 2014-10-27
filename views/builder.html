@@ -149,13 +149,15 @@
                         <table class="table table-bordered table-striped" id="tableDND">
                             <thead>
                                 <tr>
-                                    <th>&nbsp;</th>
+                                    <th>${builder.fieldTabOrderColumnText}</th>
                                     <th>
-                                        <input type="checkbox" id="selectAll" class="selectAllCheckbox" />
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b></label>
+                                        </div>
                                     </th>
                                     <th>${builder.fieldTabFieldHeaderText}</th>
                                     <th class="tableDimension">${builder.fieldTabLabelHeaderText}</th>
-                                    <th class="tableDimension">${builder.descriptionLabelText}</th>
+                                    <th class="tableDimension">${builder.fieldDescriptionLabelText}</th>
                                     <th class="tableDimension">${builder.fieldTabPlaceHolderHeaderText}</th>
                                     <th class="tableDimension2">${builder.fieldTabDisplayTypeHeaderText}</th>
                                 </tr>
