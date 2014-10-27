@@ -508,8 +508,7 @@ define([
         },
         //function to validate and create the form
         _createForm: function (fields) {
-            var formContent, labelContent, helpBlock, fileInput, matchingField, newAddedFields = [],
-                userFormNode;
+            var formContent, labelContent, fileInput, matchingField, newAddedFields = [], userFormNode;
             if (!this._formLayer) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
@@ -631,12 +630,6 @@ define([
                 if (this.config.attachmentIsRequired) {
                     fileInput.setAttribute("aria-required", true);
                     fileInput.setAttribute("required", "");
-                }
-                if (this.config.attachmentHelpText) {
-                    helpBlock = domConstruct.create("p", {
-                        className: "help-block",
-                        innerHTML: this.config.attachmentHelpText
-                    }, formContent);
                 }
             }
             this._verifyHumanEntry();
