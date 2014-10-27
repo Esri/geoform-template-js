@@ -129,6 +129,16 @@ define([
             }));
 
             $('.navigationTabs').on('click', lang.hitch(this, function (evt) {
+                if (domClass.contains(evt.currentTarget, "previewButton")) {
+                    query('.tab-links li').forEach(function (node) {
+                        domClass.remove(node, "active");
+                    });
+                    query('a[tab="preview"]').forEach(function (node) {
+                        if (node.parentNode.tagName === "LI") {
+                            domClass.add(node.parentNode, "active");
+                        }
+                    });
+                }
                 this._getPrevTabDetails(evt);
             }));
 
