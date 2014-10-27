@@ -150,8 +150,11 @@ define([
                 this._updateItem(true);
             }));
 
-            $('#jumbotronOption').on('click', lang.hitch(this, function () {
-                this.currentConfig.useSmallHeader = $('#jumbotronOption')[0].checked;
+            $('#jumbotronDisableOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.useSmallHeader = true;
+            }));
+            $('#jumbotronEnableOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.useSmallHeader = false;
             }));
             $('#shareOption').on('click', lang.hitch(this, function () {
                 this.currentConfig.enableSharing = $('#shareOption')[0].checked;
@@ -323,13 +326,42 @@ define([
             dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
             dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
             dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
-            $(document).ready(function () {
-                $('#detailDescriptionInput').summernote({
-                    height: 200,
-                    minHeight: null,
-                    maxHeight: null,
-                    focus: true
-                });
+            $(document).ready(lang.hitch(this, function () {
+                this._createSummerNote(false);
+            }));
+            on(dom.byId("advanceTools"), "click", lang.hitch(this, function (evt) {
+                if (evt.currentTarget.innerHTML === nls.builder.additionalSummerNoteTools) {
+                    domAttr.set(evt.currentTarget, "innerHTML", nls.builder.basicSummerNoteTools);
+                    this._createSummerNote(true);
+                } else {
+                    domAttr.set(evt.currentTarget, "innerHTML", nls.builder.additionalSummerNoteTools);
+                    this._createSummerNote(false);
+                }
+            }));
+        },
+
+        _createSummerNote: function (isAdvanceToolRequired) {
+            var tollbarOptions;
+            if (isAdvanceToolRequired) {
+                tollbarOptions = [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']]
+                    ];
+            }
+            else {
+                tollbarOptions = [['style', ['bold', 'italic', 'underline', 'clear']]];
+            }
+            $('#detailDescriptionInput').destroy();
+            $('#detailDescriptionInput').summernote({
+                height: 200,
+                minHeight: null,
+                maxHeight: null,
+                focus: true,
+                toolbar: tollbarOptions
             });
         },
 
@@ -391,7 +423,7 @@ define([
         },
 
         _populateJumbotronOption: function (jumbotronOption) {
-            $("#jumbotronOption")[0].checked = jumbotronOption;
+            $("#jumbotronDisableOption")[0].checked = jumbotronOption;
         },
         _populateShareOption: function (shareOption) {
             $("#shareOption")[0].checked = shareOption;
@@ -712,6 +744,11 @@ define([
                         this.currentConfig.itemInfo = itemInfo;
                         this._addOperationalLayers();
                         webmapButton.newButton('reset');
+                        dom.byId("webmapDetailText").innerHTML = string.substitute(nls.builder.webmapDetailsText, {
+                            webMapTitleLink: "<a target=\"_blank\" href=\"" + this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap + "\">",
+                            webMapTitle: this.currentConfig.itemInfo.item.title,
+                            closeLink: "</a>"
+                        });
                     }), function (error) {
                         console.log(error);
                     });
@@ -728,6 +765,11 @@ define([
                 domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png");
             }
             dom.byId("webmapLink").href = this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap;
+            dom.byId("webmapDetailText").innerHTML = string.substitute(nls.builder.webmapDetailsText, {
+                webMapTitleLink: "<a target=\"_blank\" href=\"" + this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap + "\">",
+                webMapTitle: this.currentConfig.itemInfo.item.title,
+                closeLink: "</a>"
+            });
         },
 
         //function to load the css/script dynamically

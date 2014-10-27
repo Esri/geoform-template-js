@@ -121,6 +121,7 @@ define({
             btnNextText: "Next",
             webmapTabTitleText: "Select a Webmap",
             viewWebmap: "View webmap",
+            webmapDetailsText: "The selected webmap is ${webMapTitleLink}${webMapTitle}${closeLink}. To select a different webmap please click on 'Choose Webmap' button",
             btnSelectWebmapText: "Choose Webmap",
             btnSelectWebmapTextLoading: "Loading&hellip;",
             layerTabTitleText: "Select Editable Layer",
@@ -157,7 +158,9 @@ define({
             fieldsTabText: "Here you can select which fields will be visible to your GeoForm audience, edit the Labels they will see, and add a short Description to help with data entry.",
             styleTabText: "Style your GeoForm using the themes below based on your preference.",
             publishTabText: "If you are finished customizing your GeoForm, save the application and begin sharing with your audience. You can always return to this builder and continue customizing it based on feedback.",
+            headerSizeLabel:"Header Size",
             smallHeader: "Use Small Header",
+            bigHeader: "Use Large Header",
             pushpinText: "Push pin",
             doneButtonText: "Save and Exit",
             fieldTabPlaceHolderHeaderText: "Hint (optional)",
@@ -169,7 +172,7 @@ define({
             attachmentLabelHint: "Tell users what type of file to attach.",
             attachmentDescription: "Attachment Description",
             attachmentHint: "If necessary, you can provide additional attachment instructions here.",
-            jumbotronDescription: "The Bootstrap Jumbotron makes it easy to define the purpose of your application. This can be disabled at any time.",
+            jumbotronDescription: "Use large or small heading for your form. A large header may help define the purpose of your application but it takes up more room on your screen",
             shareGeoformText: "Share Geoform",
             shareDescription: "The sharing panel makes it easy for your audience to share the GeoForm with other collaborators once they have made a submission - this can be disabled at any time.",
             defaultMapExtent: "Default Map Extent",
@@ -182,7 +185,10 @@ define({
             usng: "USNG Coordinates",
             mgrs: "MGRS Coordinates",
             utm: "UTM Coordinates",
-            selectLocationSDescription: "Allow users to select a location using these methods."
+            selectLocationSDescription: "Allow users to select a location using these methods.",
+            basicSummerNoteTools:"Basic Tools",
+            additionalSummerNoteTools:"Additional Tools",
+            dragTooltipText:"Drag the field where you want it to appear"
         }
     }),
     "ar": 1,

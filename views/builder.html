@@ -44,7 +44,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="hidden-xs col-sm-3">
+        <div class="hidden-xs col-sm-2">
             <ul class="tab-links nav nav-pills nav-stacked">
                 <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${builder.webmapText}</a>
                 </li>
@@ -64,14 +64,22 @@
                 </li>
             </ul>
         </div>
-        <div class="col-xs-12 col-sm-9">
+        <div class="col-xs-12 col-sm-10">
             <div class="tab-content">
                 <div id="webmap" class="tab-pane active">
                     <h2>${builder.webmapTabTitleText}</h2>
                     <div class="form-group">
-                        <a title="${builder.viewWebmap}" id="webmapLink" class="webmap-thumb" target="_blank">
-                            <img alt="${builder.viewWebmap}" class="img-responsive img-thumbnail" />
-                        </a>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <a title="${builder.viewWebmap}" id="webmapLink" class="webmap-thumb" target="_blank">
+                                    <img alt="${builder.viewWebmap}" class="img-responsive img-thumbnail" />
+                                </a>
+                            </div>
+                            <div class="col-lg-9">
+                                <h4 id="webmapDetailText">
+                                </h4>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <button type="button" id="selectWebmapBtn" class="btn btn-default" data-loading-text="${builder.btnSelectWebmapTextLoading}"><span class="glyphicon glyphicon-pencil"></span> ${builder.btnSelectWebmapText}</button>
@@ -99,6 +107,19 @@
                     <h2>${builder.detailsTabTitleText}</h2>
                     <p>${builder.detailsTabText}</p>
                     <div class="form-group">
+                        <label for="detailTitleInput">
+                            ${builder.headerSizeLabel}
+                        </label>
+                        <div class="radio">
+                            <label for="jumbotronDisableOption">
+                                <input id="jumbotronDisableOption" name="headerSize" type="radio" value="Use Small Header" />${builder.smallHeader}</label><br />
+                            <label for="jumbotronEnableOption">
+                                <input id="jumbotronEnableOption" name="headerSize" type="radio" value="Use Big Header" />${builder.bigHeader}</label>
+                        </div>
+                        <div class="help-block">
+                            ${builder.jumbotronDescription}</div>
+                    </div>
+                    <div class="form-group">
                         <label for="detailTitleInput">${builder.detailTitleLabelText}</label>
                         <input type="text" class="form-control" id="detailTitleInput" placeholder="${builder.formPlaceholderText}" />
                     </div>
@@ -111,6 +132,8 @@
                     </div>
                     <div class="form-group">
                         <label for="detailDescriptionInput">${builder.descriptionLabelText}</label>
+                        <button type="button" id="advanceTools" class="btn btn-default">
+                            ${builder.additionalSummerNoteTools}</button>
                         <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
                     </div>
                     <div class="form-group">
@@ -172,13 +195,6 @@
                 </div>
                 <div id="options" class="tab-pane">
                     <h2>${builder.optionsApplicationText}</h2>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label for="jumbotronOption">
-                                <input id="jumbotronOption" type="checkbox" value="Use Small Header" />${builder.smallHeader}</label>
-                        </div>
-                        <div class="help-block">${builder.jumbotronDescription}</div>
-                    </div>
                     <div class="form-group">
                         <div class="checkbox">
                             <label for="shareOption">
