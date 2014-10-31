@@ -129,20 +129,32 @@ define([
             }));
 
             $('.navigationTabs').on('click', lang.hitch(this, function (evt) {
+                if (domClass.contains(evt.currentTarget, "previewButton")) {
+                    query('.tab-links li').forEach(function (node) {
+                        domClass.remove(node, "active");
+                    });
+                    query('a[tab="preview"]').forEach(function (node) {
+                        if (node.parentNode.tagName === "LI") {
+                            domClass.add(node.parentNode, "active");
+                        }
+                    });
+                }
                 this._getPrevTabDetails(evt);
             }));
 
             $('#saveButton').on('click', lang.hitch(this, function () {
-                this._updateItem();
+                this._updateItem(false);
             }));
 
             $('#done').on('click', lang.hitch(this, function () {
-                var detailsPageURL = this.currentConfig.sharinghost + "/home/item.html?id=" + this.currentConfig.appid;
-                window.open(detailsPageURL);
+                this._updateItem(true);
             }));
 
-            $('#jumbotronOption').on('click', lang.hitch(this, function () {
-                this.currentConfig.useSmallHeader = $('#jumbotronOption')[0].checked;
+            $('#jumbotronDisableOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.useSmallHeader = true;
+            }));
+            $('#jumbotronEnableOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.useSmallHeader = false;
             }));
             $('#shareOption').on('click', lang.hitch(this, function () {
                 this.currentConfig.enableSharing = $('#shareOption')[0].checked;
@@ -235,7 +247,6 @@ define([
             // set title
             window.document.title = appTitle;
         },
-
         _setTabCaption: function () {
             //set sequence numbers to tabs
             array.forEach(query(".navbar-right")[0].children, lang.hitch(this, function (currentTab, index) {
@@ -314,13 +325,42 @@ define([
             dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
             dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
             dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
-            $(document).ready(function () {
-                $('#detailDescriptionInput').summernote({
-                    height: 200,
-                    minHeight: null,
-                    maxHeight: null,
-                    focus: true
-                });
+            $(document).ready(lang.hitch(this, function () {
+                this._createSummerNote(false);
+            }));
+            on(dom.byId("advanceTools"), "click", lang.hitch(this, function (evt) {
+                if (evt.currentTarget.innerHTML === nls.builder.additionalSummerNoteTools) {
+                    domAttr.set(evt.currentTarget, "innerHTML", nls.builder.basicSummerNoteTools);
+                    this._createSummerNote(true);
+                } else {
+                    domAttr.set(evt.currentTarget, "innerHTML", nls.builder.additionalSummerNoteTools);
+                    this._createSummerNote(false);
+                }
+            }));
+        },
+
+        _createSummerNote: function (isAdvanceToolRequired) {
+            var tollbarOptions;
+            if (isAdvanceToolRequired) {
+                tollbarOptions = [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']]
+                    ];
+            }
+            else {
+                tollbarOptions = [['style', ['bold', 'italic', 'underline', 'clear']]];
+            }
+            $('#detailDescriptionInput').destroy();
+            $('#detailDescriptionInput').summernote({
+                height: 200,
+                minHeight: null,
+                maxHeight: null,
+                focus: true,
+                toolbar: tollbarOptions
             });
         },
 
@@ -382,7 +422,7 @@ define([
         },
 
         _populateJumbotronOption: function (jumbotronOption) {
-            $("#jumbotronOption")[0].checked = jumbotronOption;
+            $("#jumbotronDisableOption")[0].checked = jumbotronOption;
         },
         _populateShareOption: function (shareOption) {
             $("#shareOption")[0].checked = shareOption;
@@ -488,8 +528,9 @@ define([
                 }, formFieldsNode);
                 domAttr.set(fieldRow, "visibleProp", currentField.visible);
                 fieldDNDIndicatorTD = domConstruct.create("td", {
-                    className: "drag-cursor"
+                    className: "drag-cursor drag-cursor-type"
                 }, fieldRow);
+                domAttr.set(fieldDNDIndicatorTD, "title", nls.builder.dragTooltipText);
                 fieldDNDIndicatorIcon = domConstruct.create("span", {
                     className: "ui-icon ui-icon-arrowthick-2-n-s"
                 }, fieldDNDIndicatorTD);
@@ -543,6 +584,11 @@ define([
                 }
                 fieldType = domConstruct.create("td", {}, fieldRow);
                 if (currentField.type === "esriFieldTypeDate") {
+                    domConstruct.create("input", {
+                        "class": "form-control",
+                        "value": nls.builder.selectDateOption,
+                        "disabled": "disabled"
+                    }, fieldType);
                     return;
                 }
                 if ((currentField.domain && currentField.domain.codedValues) || (currentField.name === this.fieldInfo[layerName].typeIdField)) {
@@ -559,12 +605,19 @@ define([
                             value: "radio"
                         }, typeSelect);
                     }
+                    else {
+                        domConstruct.create("input", {
+                            "class": "form-control",
+                            "value": nls.builder.selectMenuOption,
+                            "disabled": "disabled"
+                        }, fieldType);
+                    }
                 } else {
                     if (!currentField.domain) {
-                        typeSelect = domConstruct.create("select", {
-                            "class": "form-control displayType"
-                        }, fieldType);
                         if (currentField.type == "esriFieldTypeSmallInteger" || currentField.type == "esriFieldTypeInteger" || currentField.type == "esriFieldTypeSingle" || currentField.type == "esriFieldTypeDouble") {
+                            typeSelect = domConstruct.create("select", {
+                                "class": "form-control displayType"
+                            }, fieldType);
                             domConstruct.create("option", {
                                 innerHTML: nls.builder.selectTextOption,
                                 value: "textbox"
@@ -574,27 +627,43 @@ define([
                                 value: "checkbox"
                             }, typeSelect);
                         } else {
-                            if (currentField.type == "esriFieldTypeString") {
+                            if (currentField.type == "esriFieldTypeString" && currentField.length >= 20) {
+                                typeSelect = domConstruct.create("select", {
+                                    "class": "form-control displayType"
+                                }, fieldType);
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextOption,
                                     value: "text"
                                 }, typeSelect);
-                                if (currentField.length >= 30) {
-                                    domConstruct.create("option", {
-                                        innerHTML: nls.builder.selectMailOption,
-                                        value: "email"
-                                    }, typeSelect);
-                                    domConstruct.create("option", {
-                                        innerHTML: nls.builder.selectUrlOption,
-                                        value: "url"
-                                    }, typeSelect);
-                                }
+                                domConstruct.create("option", {
+                                    innerHTML: nls.builder.selectMailOption,
+                                    value: "email"
+                                }, typeSelect);
+                                domConstruct.create("option", {
+                                    innerHTML: nls.builder.selectUrlOption,
+                                    value: "url"
+                                }, typeSelect);
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextAreaOption,
                                     value: "textarea"
                                 }, typeSelect);
                             }
+                            else {
+                                domConstruct.create("input", {
+                                    "class": "form-control",
+                                    "value": nls.builder.selectTextOption,
+                                    "disabled": "disabled"
+                                }, fieldType);
+                            }
                         }
+                    }
+                    else {
+                        domConstruct.create("input", {
+                            "class": "form-control",
+                            "value": nls.builder.selectRangeOption,
+                            "disabled": "disabled"
+                        }, fieldType);
+
                     }
                 }
                 if (currentField.displayType) {
@@ -702,6 +771,11 @@ define([
                         this.currentConfig.itemInfo = itemInfo;
                         this._addOperationalLayers();
                         webmapButton.newButton('reset');
+                        dom.byId("webmapDetailText").innerHTML = string.substitute(nls.builder.webmapDetailsText, {
+                            webMapTitleLink: "<a target=\"_blank\" href=\"" + this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap + "\">",
+                            webMapTitle: this.currentConfig.itemInfo.item.title,
+                            closeLink: "</a>"
+                        });
                     }), function (error) {
                         console.log(error);
                     });
@@ -718,6 +792,11 @@ define([
                 domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png");
             }
             dom.byId("webmapLink").href = this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap;
+            dom.byId("webmapDetailText").innerHTML = string.substitute(nls.builder.webmapDetailsText, {
+                webMapTitleLink: "<a target=\"_blank\" href=\"" + this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap + "\">",
+                webMapTitle: this.currentConfig.itemInfo.item.title,
+                closeLink: "</a>"
+            });
         },
 
         //function to load the css/script dynamically
@@ -786,21 +865,26 @@ define([
                             this.currentConfig.fields[currentFieldIndex - 1].displayType = query(".displayType", currentRow)[0].value;
                         }
                     }
-                    if (dom.byId("attachmentDescription")) {
-                        this.currentConfig.attachmentHelpText = dom.byId("attachmentDescription").value;
-                    }
-                    if (dom.byId("attachmentLabelInfo")) {
-                        this.currentConfig.attachmentLabel = dom.byId("attachmentLabelInfo").value;
-                    }
-                }));
-                break;
-            default:
+                        if (dom.byId("enableAttachmentInfo")) {
+                            this.currentConfig.enableAttachments = dom.byId("enableAttachmentInfo").checked;
+                        }
+                        if (dom.byId("requiredAttachmentInfo")) {
+                            this.currentConfig.attachmentIsRequired = dom.byId("requiredAttachmentInfo").checked;
+                        }
+                        if (dom.byId("attachmentLabelInfo")) {
+                            this.currentConfig.attachmentLabel = dom.byId("attachmentLabelInfo").value;
+                        }
+                    }));
+                    break;
+                default:
             }
         },
 
         //function to update the item on arcGis online
-        _updateItem: function () {
+        _updateItem: function (saveAndExit) {
             this.appSettings = {
+                "enableAttachments": this.currentConfig.enableAttachments,
+                "attachmentIsRequired": this.currentConfig.attachmentIsRequired,
                 "attachmentHelpText": this.currentConfig.attachmentHelpText,
                 "attachmentLabel": this.currentConfig.attachmentLabel,
                 "defaultMapExtent": this.currentConfig.defaultMapExtent,
@@ -840,6 +924,12 @@ define([
                     usePost: true
                 }).then(lang.hitch(this, function (result) {
                     if (result.success) {
+                        if (saveAndExit) {
+                            $("#myModal").modal('hide');
+                            var detailsPageURL = this.currentConfig.sharinghost + "/home/item.html?id=" + this.currentConfig.appid;
+                            window.location.assign(detailsPageURL);
+                            return true;
+                        }
                         if (this._ShareModal) {
                             this._ShareModal.destroy();
                         }
@@ -971,17 +1061,73 @@ define([
         },
 
         _createAttachmentInput: function (layerUrl) {
-            var fLayer, attachmentDetails, attachmentLabel;
+            var fLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentLabel,
+            requiredAttachmentContainer, requiredAttachmentContent, requiredAttachmentLabel;
             domConstruct.empty(dom.byId('attachmentDetails'));
             fLayer = new FeatureLayer(layerUrl);
             on(fLayer, 'load', lang.hitch(this, function () {
                 if (fLayer.hasAttachments) {
+                    //code to enable/disable the attachment in the user form.
+                    enableAttachmentContainer = domConstruct.create("div", {
+                        "id": "enableAttachmentContainer",
+                        "class": "form-group"
+                    }, dom.byId('attachmentDetails'));
+                    enableAttachmentContent = domConstruct.create("div", {
+                        "id": "enableAttachmentContent",
+                        "class": "checkbox"
+                    }, enableAttachmentContainer);
+                    enableAttachmentLabel = domConstruct.create("label", {
+                        "for": "enableAttachmentInfo"
+                    }, enableAttachmentContent);
+                    domConstruct.create("input", {
+                        "type": "checkbox",
+                        "id": "enableAttachmentInfo"
+                    }, enableAttachmentLabel);
+                    if (this.currentConfig.enableAttachments) {
+                        domAttr.set(dom.byId("enableAttachmentInfo"), "checked", "checked");
+                    }
+                    enableAttachmentLabel.innerHTML += string.substitute(nls.builder.enableAttachmentLabelText, {
+                        openStrong: "<strong>",
+                        closeStrong: "</strong>"
+                    });
+                    domConstruct.create("span", {
+                        "class": "attachmentHint",
+                        "innerHTML": nls.builder.enableAttachmentLabelHint
+                    }, enableAttachmentContainer);
+                    //code to make the checkbox for making the attachment as a mandatory field.
+                    requiredAttachmentContainer = domConstruct.create("div", {
+                        "id": "requiredAttachmentContainer",
+                        "class": "form-group"
+                    }, dom.byId('attachmentDetails'));
+                    requiredAttachmentContent = domConstruct.create("div", {
+                        "id": "requiredAttachmentContent",
+                        "class": "checkbox"
+                    }, requiredAttachmentContainer);
+                    requiredAttachmentLabel = domConstruct.create("label", {
+                        "for": "requiredAttachmentInfo"
+                    }, requiredAttachmentContent);
+                    domConstruct.create("input", {
+                        "type": "checkbox",
+                        "id": "requiredAttachmentInfo"
+                    }, requiredAttachmentLabel);
+                    if (this.currentConfig.attachmentIsRequired) {
+                        domAttr.set(dom.byId("requiredAttachmentInfo"), "checked", "checked");
+                    }
+                    requiredAttachmentLabel.innerHTML += string.substitute(nls.builder.attachmentIsRequiredLabelText, {
+                        openStrong: "<strong>",
+                        closeStrong: "</strong>"
+                    });
+                    domConstruct.create("span", {
+                        "class": "attachmentHint",
+                        "innerHTML": nls.builder.attachmentIsRequiredLabelHint
+                    }, requiredAttachmentContainer);
+                    //code to make the attachment label
                     attachmentLabel = domConstruct.create("div", {
                         "id": "attachmentLabel",
                         "class": "form-group"
                     }, dom.byId('attachmentDetails'));
                     domConstruct.create("label", {
-                        "for": "attachmentLabel",
+                        "for": "attachmentLabelInfo",
                         "innerHTML": nls.builder.attachmentLabelText
                     }, attachmentLabel);
                     domConstruct.create("input", {
@@ -994,24 +1140,18 @@ define([
                         "class": "attachmentHint",
                         "innerHTML": nls.builder.attachmentLabelHint
                     }, attachmentLabel);
-                    attachmentDetails = domConstruct.create("div", {
-                        "id": "attachmentDetails",
-                        "class": "form-group"
-                    }, dom.byId('attachmentDetails'));
-                    domConstruct.create("label", {
-                        "for": "attachmentDescription",
-                        "innerHTML": nls.builder.attachmentDescription
-                    }, attachmentDetails);
-                    domConstruct.create("input", {
-                        "type": "text",
-                        "class": "form-control",
-                        "id": "attachmentDescription",
-                        "value": this.currentConfig.attachmentHelpText
-                    }, attachmentDetails);
-                    domConstruct.create("span", {
-                        "class": "attachmentHint",
-                        "innerHTML": nls.builder.attachmentHint
-                    }, attachmentDetails);
+                    on(dom.byId("enableAttachmentInfo"), "change", function (evt) {
+                        if (!evt.currentTarget.checked) {
+                            domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", true);
+                            domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", true);
+                            domAttr.set(dom.byId("attachmentDescription"), "disabled", true);
+                        }
+                        else {
+                            domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", false);
+                            domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", false);
+                            domAttr.set(dom.byId("attachmentDescription"), "disabled", false);
+                        }
+                    });
                 }
             }));
         }

@@ -71,6 +71,7 @@ define([
         localStorageSupport: null,
         defaultValueAttributes: null,
         sortedFields: [],
+        isHumanEntry: null,
         _createGeocoderOptions: function () {
             //Check for multiple geocoder support and setup options for geocoder widget.
             var hasEsri = false,
@@ -249,54 +250,74 @@ define([
         _submitForm: function () {
             var btn = $('#submitButton');
             btn.button('loading');
-            var erroneousFields = [],
-                errorMessage;
+            var erroneousFields = [];
             array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
                 //to check for errors in form before submitting.
                 //condition check to filter out radio fields
                 if ((query(".form-control", currentField)[0])) {
-                    //if condition to check for conditions where mandatory fields are kept empty or the entered values are erroneous.
-                    if ((query(".form-control", currentField)[0].value === "" && domClass.contains(currentField, "mandatory")) || domClass.contains(currentField, "has-error")) {
-                        //need to check if this condition can be removed
-                        //this._validateField(currentField, false);
+                    //if condition to check for conditions where the entered values are erroneous.
+                    if (domClass.contains(currentField, "has-error") && query("select", currentField).length === 0) {
                         erroneousFields.push(currentField);
+                    }
+                    //if condition to check for conditions where mandatory fields are kept empty.
+                    if ((query(".form-control", currentField)[0].value === "" && domClass.contains(currentField, "mandatory"))) {
+                        this._validateUserInput(nls.user.requiredFields, currentField, query(".form-control", currentField)[0].value, true);
+                        erroneousFields.push(currentField);
+                    }
+                    else {
+                        if (domClass.contains(currentField, "mandatory")) {
+                            this._validateUserInput(false, currentField, query(".form-control", currentField)[0].value, true);
+                        }
                     }
                 }
                 //handle errors in radio and checkbox fields here.
                 else {
                     if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length === 0) {
+                        this._validateUserInput(nls.user.requiredFields, currentField, query(".radioInput:checked", currentField), true);
                         erroneousFields.push(currentField);
+                    }
+                    else {
+                        if (domClass.contains(currentField, "mandatory")) {
+                            this._validateUserInput(false, currentField, query(".radioInput:checked", currentField), true);
+                        }
                     }
                 }
             }));
-            // if fields
+            //this statement will remove the error message div at first and then will be applied if a valid location is not selected
+            if (domClass.contains(dom.byId("select_location").nextSibling, "errorMessage")) {
+                domConstruct.destroy(dom.byId("select_location").nextSibling);
+            }
+
+            //conditional blocks to check and validate the form and show appropriate error messages.
+            var errorMessage;
             if (erroneousFields.length !== 0) {
-                errorMessage = "";
-                errorMessage += '<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</p>';
-                errorMessage += "<ol>";
-                errorMessage += "<li>" + nls.user.formValidationMessageAlertText + "\n <ul>";
-                array.forEach(erroneousFields, function (erroneousField) {
-                    var fq = query(".form-control", erroneousField);
-                    var html = erroneousField.childNodes[0].innerHTML;
-                    if (fq.length !== 0 && fq[0] && fq[0].placeholder) {
-                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + html + "</a>. " + fq[0].placeholder + "</li>";
-                    } else {
-                        errorMessage += "<li><a href='#" + erroneousField.childNodes[0].id + "'>" + html + "</a></li>";
-                    }
-                });
-                errorMessage += "</ul></li>";
-                //condition check to find whether the user has selected a point on map or not.
                 if (!this.addressGeometry) {
-                    errorMessage += "<li>" + string.substitute(nls.user.selectLocation, {
-                        openLink: '<a href="#select_location">',
-                        closeLink: '</a>'
-                    }) + "</li>";
+                    // reset submit button
+                    this._resetButton();
+                    // error message
+                    errorMessage = '';
+                    errorMessage += nls.user.selectLocation;
+                    this._showErrorMessageDiv(errorMessage, dom.byId("select_location"));
                 }
-                errorMessage += "</ol>";
-                this._showErrorMessageDiv(errorMessage);
+                $('html, body').animate({
+                    scrollTop: $("#" + erroneousFields[0].children[0].id).offset().top
+                }, 500);
                 btn.button('reset');
             } else {
-                this._addFeatureToLayer();
+                if (this.addressGeometry) {
+                    this._addFeatureToLayer();
+                }
+                else {
+                    // reset submit button
+                    this._resetButton();
+                    // error message
+                    errorMessage = '';
+                    errorMessage += nls.user.selectLocation;
+                    this._showErrorMessageDiv(errorMessage, dom.byId("select_location"));
+                    $('html, body').animate({
+                        scrollTop: $("#select_location").offset().top
+                    }, 500);
+                }
             }
         },
         reportError: function (error) {
@@ -412,8 +433,8 @@ define([
                     var utmResults = [];
                     usng.LLtoUTM(lat, lng, utmResults);
                     if (utmResults && utmResults.length === 3) {
-                        dom.byId('utm_easting').value = utmResults[0];
-                        dom.byId('utm_northing').value = utmResults[1];
+                        dom.byId('utm_easting').value = parseInt(utmResults[0]);
+                        dom.byId('utm_northing').value = parseInt(utmResults[1]);
                         dom.byId('utm_zone_number').value = utmResults[2];
                     }
                 } catch (e) {
@@ -487,8 +508,7 @@ define([
         },
         //function to validate and create the form
         _createForm: function (fields) {
-            var formContent, labelContent, helpBlock, fileInput, matchingField, newAddedFields = [],
-                userFormNode;
+            var formContent, labelContent, fileInput, matchingField, newAddedFields = [], userFormNode;
             if (!this._formLayer) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
@@ -571,11 +591,23 @@ define([
                 this._createFormElements(currentField, index, null);
             }));
             // if form has attachments
-            if (this._formLayer.hasAttachments) {
+            if (this._formLayer.hasAttachments && this.config.enableAttachments) {
+                var requireField = null;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group"
                 }, userFormNode);
+                //code to make the attachment input mandatory
+                if (this.config.attachmentIsRequired) {
+                    domClass.add(formContent, "form-group mandatory geoFormQuestionare");
+                    requireField = domConstruct.create("small", {
+                        className: 'requireFieldStyle',
+                        innerHTML: nls.user.requiredField
+                    }, formContent);
+                } else {
+                    domClass.add(formContent, "form-group geoFormQuestionare");
+                }
+
                 // attachment label html
                 var labelHTML = "";
                 labelHTML += "<span class=\"glyphicon glyphicon-paperclip\"></span> ";
@@ -585,6 +617,9 @@ define([
                     innerHTML: labelHTML,
                     "for": "geoFormAttachment"
                 }, formContent);
+                if (requireField && labelContent) {
+                    domConstruct.place(requireField, labelContent, "last");
+                }
                 fileInput = domConstruct.create("input", {
                     "type": "file",
                     "id": "geoFormAttachment",
@@ -592,13 +627,12 @@ define([
                     //"capture": "camera",
                     "name": "attachment"
                 }, formContent);
-                if (this.config.attachmentHelpText) {
-                    helpBlock = domConstruct.create("p", {
-                        className: "help-block",
-                        innerHTML: this.config.attachmentHelpText
-                    }, formContent);
+                if (this.config.attachmentIsRequired) {
+                    fileInput.setAttribute("aria-required", true);
+                    fileInput.setAttribute("required", "");
                 }
             }
+            this._verifyHumanEntry();
         },
         //function to create elements of form.
         _createFormElements: function (currentField, index, referenceNode) {
@@ -606,8 +640,8 @@ define([
                 checkboxContainer, checkboxContent, checkBoxCounter = 0,
                 helpBlock, rangeHelpText, inputGroupContainer;
             userFormNode = dom.byId('userForm');
-            //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
             formContent = domConstruct.create("div", {}, userFormNode);
+            //code block to fade in the sub-types dependent fields
             if (referenceNode) {
                 domConstruct.place(formContent, referenceNode, "after");
                 domClass.add(formContent, "fade");
@@ -693,6 +727,10 @@ define([
                             }
                             //To apply has-success class on selection of a valid option
                             if (evt.target.value !== "") {
+                                if (query(".errorMessage", evt.currentTarget.parentNode).length !== 0) {
+                                    domConstruct.destroy(query(".errorMessage", evt.currentTarget.parentNode)[0]);
+                                    domClass.remove($(evt.target.parentNode)[0], "has-error");
+                                }
                                 domClass.add($(evt.target.parentNode)[0], "has-success");
                             } else {
                                 domClass.remove($(evt.target.parentNode)[0], "has-success");
@@ -728,6 +766,10 @@ define([
                                 //code to assign has-success class on click of a radio button
                                 on(dom.byId(fieldname + currentOption.code), "click", function (evt) {
                                     if (evt.target.checked) {
+                                        if (query(".errorMessage", formContent).length !== 0) {
+                                            domConstruct.destroy(query(".errorMessage", formContent)[0]);
+                                            domClass.remove(formContent, "has-error");
+                                        }
                                         domClass.add(formContent, "has-success");
                                     } else {
                                         domClass.remove(formContent, "has-success");
@@ -763,6 +805,10 @@ define([
                                         this._validateTypeFields(evt.currentTarget, currentField);
                                     }
                                     if (evt.target.checked) {
+                                        if (query(".errorMessage", formContent).length !== 0) {
+                                            domClass.remove(formContent, "has-error");
+                                            domConstruct.destroy(query(".errorMessage", formContent)[0]);
+                                        }
                                         domClass.add(formContent, "has-success");
                                     } else {
                                         domClass.remove(formContent, "has-success");
@@ -911,6 +957,19 @@ define([
                 if (currentField.type !== "esriFieldTypeDate") {
                     on(inputContent, "keyup", lang.hitch(this, function (evt) {
                         this._validateField(evt, true);
+                        if (currentField.displayType === "textarea") {
+                            var availableLength;
+                            if (inputContent.value.length > currentField.length) {
+                                //Work around to make textarea work in IE8
+                                //Truncate the text if necessary
+                                $(inputContent).val(inputContent.value.substr(0, currentField.length));
+                            } else {
+                                availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
+                                    value: (currentField.length - inputContent.value.length).toString()
+                                });
+                                helpBlock.innerHTML = lang.trim(helpHTML + " " + availableLength);
+                            }
+                        }
                     }));
                 }
             }
@@ -934,14 +993,27 @@ define([
             } else {
                 helpHTML = currentField.fieldDescription;
             }
-            if (helpHTML || rangeHelpText) {
-                if (!rangeHelpText) {
-                    rangeHelpText = "";
+            if (helpHTML || currentField.displayType === "textarea") {
+                var availableLength = "";
+                if (currentField.displayType === "textarea") {
+                    availableLength = string.substitute(nls.user.remainingCharactersHintMessage, {
+                        value: currentField.length.toString()
+                    });
                 }
                 helpBlock = domConstruct.create("p", {
                     className: "help-block",
-                    innerHTML: lang.trim(helpHTML + " " + rangeHelpText)
+                    innerHTML: lang.trim(helpHTML + " " + availableLength)
                 }, formContent);
+            }
+            if (rangeHelpText) {
+                var options = {
+                    trigger: 'focus',
+                    placement: 'top',
+                    container: 'body',
+                    content: rangeHelpText,
+                    html: true
+                };
+                $('#' + fieldname).popover(options);
             }
         },
         // date range field
@@ -953,23 +1025,47 @@ define([
                 min: currentField.domain.minValue.toString(),
                 max: currentField.domain.maxValue.toString()
             }, formContent);
+            var setStep, setDefault = "", stepDivisibility = 'none', decimalPoints = 0;
             domAttr.set(inputContent, "data-input-type", currentField.type.replace("esriFieldType", ""));
             if (currentField.defaultValue) {
-                domAttr.set(inputContent, "value", currentField.defaultValue);
+                setDefault = currentField.defaultValue;
                 domClass.add(inputContent.parentNode, "has-success");
             }
-            on(inputContent, "keyup", lang.hitch(this, function (evt) {
-                if (Number(evt.currentTarget.value) >= Number(evt.currentTarget.min) && Number(evt.currentTarget.value) <= Number(evt.currentTarget.max)) {
-                    domClass.remove(evt.currentTarget.parentNode, "has-error");
-                    domClass.add(evt.currentTarget.parentNode, "has-success");
+            if (domAttr.get(inputContent, "data-input-type") === "Double" || domAttr.get(inputContent, "data-input-type") === "Single") {
+                decimalPoints = 2;
+                if (currentField.domain.minValue - Math.floor(currentField.domain.minValue) === 0.5) {
+                    setStep = 0.5;
                 } else {
-                    domClass.remove(evt.currentTarget.parentNode, "has-success");
-                    domClass.add(evt.currentTarget.parentNode, "has-error");
+                    setStep = 0.1;
                 }
-                if (evt.currentTarget.value === "") {
-                    domClass.remove(evt.currentTarget.parentNode, "has-error");
-                    domClass.remove(evt.currentTarget.parentNode, "has-success");
+            }
+            else {
+                setStep = 1;
+                stepDivisibility = 'round';
+            }
+            var inputcontentSpinner = $(inputContent).TouchSpin({
+                initval: setDefault,
+                min: currentField.domain.minValue.toString(),
+                max: currentField.domain.maxValue.toString(),
+                forcestepdivisibility: stepDivisibility,
+                step: setStep,
+                boostat: 5,
+                decimals: decimalPoints,
+                maxboostedstep: 10
+            });
+            //Event to address validations for manual entry in the touch-spinner input.
+            on(inputContent, "keyup", function () {
+                //inputcontentSpinner.trigger("touchspin.updatesettings", { step: setStep });
+                if (inputContent.value === "") {
+                    domClass.remove(inputContent.parentNode.parentNode, "has-success");
                 }
+                else {
+                    domClass.add(inputContent.parentNode.parentNode, "has-success");
+                }
+            });
+            on(inputcontentSpinner, "touchspin.on.startspin", lang.hitch(this, function (evt) {
+                inputcontentSpinner.trigger("touchspin.updatesettings", {});
+                domClass.add(evt.currentTarget.parentNode.parentNode, "has-success");
             }));
             if (!currentField.nullable) {
                 inputContent.setAttribute("aria-required", true);
@@ -1070,7 +1166,7 @@ define([
                     this._resetSubTypeFields(field);
                 }
                 this._createFormElements(field, index, referenceNode);
-                if (field.type == "esriFieldTypeDate" || field.displayType == "url" || field.displayType == "email") {
+                if (field.type == "esriFieldTypeDate" || field.displayType == "url" || field.displayType == "email" || (field.type == "esriFieldTypeSingle" || field.type == "esriFieldTypeDouble" || field.type == "esriFieldTypeSmallInteger" || field.type == "esriFieldTypeInteger") && (field.domain && field.domain.type === "range")) {
                     referenceNode = dom.byId(field.name).parentNode.parentNode;
                 } else {
                     referenceNode = dom.byId(field.name).parentNode;
@@ -1084,7 +1180,8 @@ define([
                 node, typeCastedInputValue, decimal = /^[-+]?[0-9]+$/,
                 float = /^[-+]?[0-9]+\.[0-9]+$/,
                 email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                url = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+                url = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/,
+                error;
             if (iskeyPress) {
                 inputValue = currentNode.currentTarget.value;
                 inputType = domAttr.get(currentNode.currentTarget, "data-input-type");
@@ -1111,49 +1208,69 @@ define([
                 node = query(".form-control", currentNode)[0].parentElement;
             }
             switch (inputType) {
-            case "String":
-                if (inputValue.length !== 0 && ((displayType === "email" && inputValue.match(email)) || (displayType === "url" && inputValue.match(url)) || displayType === null) || displayType === "text" || displayType === "textarea") {
-                    this._validateUserInput(true, node, inputValue, iskeyPress);
-                } else {
-                    this._validateUserInput(false, node, inputValue, iskeyPress);
-                }
-                break;
-            case "SmallInteger":
-                typeCastedInputValue = parseInt(inputValue);
-                if ((inputValue.match(decimal) && typeCastedInputValue >= -32768 && typeCastedInputValue <= 32767) && inputValue.length !== 0) {
-                    this._validateUserInput(true, node, inputValue);
-                } else {
-                    this._validateUserInput(false, node, inputValue, iskeyPress);
-                }
-                break;
-            case "Integer":
-                typeCastedInputValue = parseInt(inputValue);
-                if ((inputValue.match(decimal) && typeCastedInputValue >= -2147483648 && typeCastedInputValue <= 2147483647) && inputValue.length !== 0) {
-                    this._validateUserInput(true, node, inputValue, iskeyPress);
-                } else {
-                    this._validateUserInput(false, node, inputValue, iskeyPress);
-                }
-                break;
-            case "Single":
-                //zero of more occurence of (+-) at the start of expression
-                //atleast one occurence of digits between o-9
-                //occurence of .
-                //atleast one occurence of digits between o-9 in the end
-                typeCastedInputValue = parseFloat(inputValue);
-                if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue >= -3.4 * Math.pow(10, 38) && typeCastedInputValue <= 1.2 * Math.pow(10, 38)) && inputValue.length !== 0) {
-                    this._validateUserInput(true, node, inputValue, iskeyPress);
-                } else {
-                    this._validateUserInput(false, node, inputValue, iskeyPress);
-                }
-                break;
-            case "Double":
-                typeCastedInputValue = parseFloat(inputValue);
-                if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue >= -2.2 * Math.pow(10, 308) && typeCastedInputValue <= 1.8 * Math.pow(10, 38)) && inputValue.length !== 0) {
-                    this._validateUserInput(true, node, inputValue, iskeyPress);
-                } else {
-                    this._validateUserInput(false, node, inputValue, iskeyPress);
-                }
-                break;
+                case "String":
+                    if (inputValue.length !== 0 && ((displayType === "email" && inputValue.match(email)) || (displayType === "url" && inputValue.match(url)) || displayType === null) || displayType === "text" || displayType === "textarea") {
+                        this._validateUserInput(false, node, inputValue, iskeyPress);
+                    } else {
+                        error = string.substitute(nls.user.invalidString, {
+                            openStrong: "<strong>",
+                            closeStrong: "</strong>"
+                        });
+                        this._validateUserInput(error, node, inputValue, iskeyPress);
+                    }
+                    break;
+                case "SmallInteger":
+                    typeCastedInputValue = parseInt(inputValue);
+                    if ((inputValue.match(decimal) && typeCastedInputValue >= -32768 && typeCastedInputValue <= 32767) && inputValue.length !== 0) {
+                        this._validateUserInput(false, node, inputValue);
+                    } else {
+                        error = string.substitute(nls.user.invalidSmallNumber, {
+                            openStrong: "<strong>",
+                            closeStrong: "</strong>"
+                        });
+                        this._validateUserInput(error, node, inputValue, iskeyPress);
+                    }
+                    break;
+                case "Integer":
+                    typeCastedInputValue = parseInt(inputValue);
+                    if ((inputValue.match(decimal) && typeCastedInputValue >= -2147483648 && typeCastedInputValue <= 2147483647) && inputValue.length !== 0) {
+                        this._validateUserInput(false, node, inputValue, iskeyPress);
+                    } else {
+                        error = string.substitute(nls.user.invalidNumber, {
+                            openStrong: "<strong>",
+                            closeStrong: "</strong>"
+                        });
+                        this._validateUserInput(error, node, inputValue, iskeyPress);
+                    }
+                    break;
+                case "Single":
+                    //zero of more occurence of (+-) at the start of expression
+                    //atleast one occurence of digits between o-9
+                    //occurence of .
+                    //atleast one occurence of digits between o-9 in the end
+                    typeCastedInputValue = parseFloat(inputValue);
+                    if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue >= -3.4 * Math.pow(10, 38) && typeCastedInputValue <= 1.2 * Math.pow(10, 38)) && inputValue.length !== 0) {
+                        this._validateUserInput(false, node, inputValue, iskeyPress);
+                    } else {
+                        error = string.substitute(nls.user.invalidFloat, {
+                            openStrong: "<strong>",
+                            closeStrong: "</strong>"
+                        });
+                        this._validateUserInput(error, node, inputValue, iskeyPress);
+                    }
+                    break;
+                case "Double":
+                    typeCastedInputValue = parseFloat(inputValue);
+                    if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue >= -2.2 * Math.pow(10, 308) && typeCastedInputValue <= 1.8 * Math.pow(10, 38)) && inputValue.length !== 0) {
+                        this._validateUserInput(false, node, inputValue, iskeyPress);
+                    } else {
+                        error = string.substitute(nls.user.invalidDouble, {
+                            openStrong: "<strong>",
+                            closeStrong: "</strong>"
+                        });
+                        this._validateUserInput(error, node, inputValue, iskeyPress);
+                    }
+                    break;
             }
         },
         // reset form fields
@@ -1199,15 +1316,19 @@ define([
             }
         },
         // validate form input
-        _validateUserInput: function (isValidInput, node, inputValue, iskeyPress) {
-            if (isValidInput) {
-                domClass.remove(node, "has-error");
+        _validateUserInput: function (error, node, inputValue, iskeyPress) {
+            if (query(".errorMessage", node)[0]) {
+                domConstruct.destroy(query(".errorMessage", node)[0]);
+            }
+            if (!error || (inputValue.length === 0 && !domClass.contains(node, "mandatory"))) {
                 domClass.add(node, "has-success");
+                domClass.remove(node, "has-error");
             } else {
+                this._showErrorMessageDiv(error, node.children[0]);
                 domClass.add(node, "has-error");
                 domClass.remove(node, "has-success");
             }
-            if (iskeyPress && inputValue.length === 0) {
+            if (iskeyPress && inputValue.length === 0 && !domClass.contains(node, "mandatory")) {
                 domClass.remove(node, "has-error");
                 domClass.remove(node, "has-success");
             }
@@ -1350,6 +1471,9 @@ define([
                 // Lat/Lng coordinate events
                 var latNode = dom.byId('lat_coord');
                 var lngNode = dom.byId('lng_coord');
+                on(latNode, "keyup", lang.hitch(this, function (evt) {
+                    this._validateLocationInputs('lat');
+                }));
                 on(latNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
                     this._checkLatLng();
@@ -1357,6 +1481,9 @@ define([
                 on(lngNode, "keypress", lang.hitch(this, function (evt) {
                     this._findLocation(evt);
                     this._checkLatLng();
+                }));
+                on(lngNode, "keyup", lang.hitch(this, function (evt) {
+                    this._validateLocationInputs('lng');
                 }));
                 // lat/lng changed
                 on(latNode, "change", lang.hitch(this, function () {
@@ -1522,6 +1649,36 @@ define([
             // update state
             this._fullscreenState();
         },
+        _validateLocationInputs: function (mode) {
+            switch (mode) {
+                case 'lat':
+                    var lat = lang.trim(dom.byId('lat_coord').value);
+                    if (lat === '') {
+                        domClass.remove(dom.byId('lat_coord').parentNode, 'has-error');
+                        domClass.remove(dom.byId('lat_coord').parentNode, 'has-success');
+                        return;
+                    }
+                    if (lat >= -90 && lat <= 90) {
+                        domClass.replace(dom.byId('lat_coord').parentNode, 'has-success', 'has-error');
+                    } else {
+                        domClass.replace(dom.byId('lat_coord').parentNode, 'has-error', 'has-success');
+                    }
+                    break;
+                case 'lng':
+                    var lng = lang.trim(dom.byId('lng_coord').value);
+                    if (lng === '') {
+                        domClass.remove(dom.byId('lng_coord').parentNode, 'has-error');
+                        domClass.remove(dom.byId('lng_coord').parentNode, 'has-success');
+                        return;
+                    }
+                    if (lng >= -180 && lng <= 180) {
+                        domClass.replace(dom.byId('lng_coord').parentNode, 'has-success', 'has-error');
+                    } else {
+                        domClass.replace(dom.byId('lng_coord').parentNode, 'has-error', 'has-success');
+                    }
+                    break;
+            }
+        },
         // utm to lat lon
         _convertUTM: function () {
             this._clearSubmissionGraphic();
@@ -1572,16 +1729,10 @@ define([
             var lngNode = dom.byId('lng_coord');
             this._clearSubmissionGraphic();
             if (latNode.value === "") {
-                this._showErrorMessageDiv(string.substitute(nls.user.emptylatitudeAlertMessage, {
-                    openLink: '<a href="#lat_coord\">',
-                    closeLink: '</a>'
-                }));
+                this._showErrorMessageDiv(nls.user.emptylatitudeAlertMessage, dom.byId("select_location"));
                 return;
             } else if (lngNode.value === "") {
-                this._showErrorMessageDiv(string.substitute(nls.user.emptylongitudeAlertMessage, {
-                    openLink: '<a href="#lng_coord\">',
-                    closeLink: '</a>'
-                }));
+                this._showErrorMessageDiv(nls.user.emptylongitudeAlertMessage, dom.byId("select_location"));
                 return;
             }
             // place on map
@@ -1781,93 +1932,81 @@ define([
             //To populate data for apply edits
             var featureData = new Graphic();
             featureData.attributes = {};
-            if (this.addressGeometry) {
-                var key, value;
-                //condition to filter out radio inputs
-                array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
-                    if (currentField.value !== "") {
-                        key = domAttr.get(currentField, "id");
-                        if (domClass.contains(currentField, "hasDatetimepicker")) {
-                            var picker = $(currentField.parentNode).data('DateTimePicker');
-                            var d = picker.getDate();
-                            // need to get time of date in ms for service
-                            value = d.valueOf();
-                        } else {
-                            value = lang.trim(currentField.value);
-                        }
-                        featureData.attributes[key] = value;
+            var key, value;
+            //condition to filter out radio inputs
+            array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
+                if (currentField.value !== "") {
+                    key = domAttr.get(currentField, "id");
+                    if (domClass.contains(currentField, "hasDatetimepicker")) {
+                        var picker = $(currentField.parentNode).data('DateTimePicker');
+                        var d = picker.getDate();
+                        // need to get time of date in ms for service
+                        value = d.valueOf();
+                    } else {
+                        value = lang.trim(currentField.value);
                     }
-                });
-                // each radio button
-                array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
-                    if (query(".radioInput:checked", currentField).length !== 0) {
-                        key = query(".radioInput:checked", currentField)[0].name;
-                        value = lang.trim(query(".radioInput:checked", currentField)[0].value);
-                        featureData.attributes[key] = value;
-                    }
-                });
-                // each checkbox
-                array.forEach(query(".geoFormQuestionare .checkboxContainer"), function (currentField) {
-                    key = query(".checkboxInput", currentField)[0].id;
-                    value = query(".checkboxInput:checked", currentField).length;
                     featureData.attributes[key] = value;
-                });
-                featureData.geometry = {};
-                featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
-                //code for apply-edits
-                this._formLayer.applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
-                    // Add attachment on success
-                    if (addResults[0].success) {
-                        if (userFormNode[userFormNode.length - 1].value !== "" && this._formLayer.hasAttachments) {
-                            this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () {}, function () {
-                                console.log(nls.user.addAttachmentFailedMessage);
-                            });
-                        }
-                        // remove graphic
-                        this._clearSubmissionGraphic();
-                        // reset form
-                        this._clearFormFields();
-                        // reset to default extent
-                        if (this.config.defaultMapExtent) {
-                            this.map.setExtent(this.defaultExtent);
-                        }
+                }
+            });
+            // each radio button
+            array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
+                if (query(".radioInput:checked", currentField).length !== 0) {
+                    key = query(".radioInput:checked", currentField)[0].name;
+                    value = lang.trim(query(".radioInput:checked", currentField)[0].value);
+                    featureData.attributes[key] = value;
+                }
+            });
+            // each checkbox
+            array.forEach(query(".geoFormQuestionare .checkboxContainer"), function (currentField) {
+                key = query(".checkboxInput", currentField)[0].id;
+                value = query(".checkboxInput:checked", currentField).length;
+                featureData.attributes[key] = value;
+            });
+            featureData.geometry = {};
+            featureData.geometry = new Point(Number(this.addressGeometry.x), Number(this.addressGeometry.y), this.map.spatialReference);
+            //code for apply-edits
+            this._formLayer.applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
+                // Add attachment on success
+                if (addResults[0].success && this.isHumanEntry) {
+                    if (userFormNode[userFormNode.length - 1].value !== "" && this._formLayer.hasAttachments) {
+                        this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () { }, function () {
+                            console.log(nls.user.addAttachmentFailedMessage);
+                        });
                     }
-                    domConstruct.destroy(query(".errorMessage")[0]);
-                    // open error modal if unsuccessful
-                    if (!addResults[0].success) {
-                        this._openErrorModal();
-                        return;
+                    // remove graphic
+                    this._clearSubmissionGraphic();
+                    // reset form
+                    this._clearFormFields();
+                    // reset to default extent
+                    if (this.config.defaultMapExtent) {
+                        this.map.setExtent(this.defaultExtent);
                     }
-                    this._openShareModal();
-                    // reset submit button
-                    this._resetButton();
-                    window.location.href = '#top';
-                    // After moving geoform to top, map was not getting resized properly.
-                    // And pushpin was not getting placed correctly.
-                    this._resizeMap();
-                }), lang.hitch(this, function () {
-                    // no longer editable
-                    this._formLayer.setEditable(false);
-                    // remove error
-                    domConstruct.destroy(query(".errorMessage")[0]);
-                    // open error
+                }
+                domConstruct.destroy(query(".errorMessage")[0]);
+                // open error modal if unsuccessful
+                if (!addResults[0].success || (!this.isHumanEntry && addResults[0].success)) {
                     this._openErrorModal();
-                    // log for development
-                    console.log(nls.user.addFeatureFailedMessage);
-                }));
-            } else {
+                    this._verifyHumanEntry();
+                    return;
+                }
+                this._verifyHumanEntry();
+                this._openShareModal();
                 // reset submit button
                 this._resetButton();
-                // error message
-                var errorMessage = '';
-                errorMessage += '<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> ' + nls.user.requiredFields + '</p>';
-                errorMessage += '<p>' + string.substitute(nls.user.selectLocation, {
-                    openLink: '<a href="#select_location">',
-                    closeLink: '</a>'
-                }) + '</p>';
-                // display message
-                this._showErrorMessageDiv(errorMessage);
-            }
+                window.location.href = '#top';
+                // After moving geoform to top, map was not getting resized properly.
+                // And pushpin was not getting placed correctly.
+                this._resizeMap();
+            }), lang.hitch(this, function () {
+                // no longer editable
+                this._formLayer.setEditable(false);
+                // remove error
+                domConstruct.destroy(query(".errorMessage")[0]);
+                // open error
+                this._openErrorModal();
+                // log for development
+                console.log(nls.user.addFeatureFailedMessage);
+            }));
         },
         // remove point graphic
         _clearSubmissionGraphic: function () {
@@ -1880,30 +2019,17 @@ define([
         // display coordinates error
         _coordinatesError: function (type) {
             switch (type) {
-            case "utm":
-                this._showErrorMessageDiv(string.substitute(nls.user.invalidUTM, {
-                    openLink: '<a href="#utm_northing">',
-                    closeLink: '</a>'
-                }));
-                break;
-            case "usng":
-                this._showErrorMessageDiv(string.substitute(nls.user.invalidUSNG, {
-                    openLink: '<a href="#usng_coord">',
-                    closeLink: '</a>'
-                }));
-                break;
-            case "mgrs":
-                this._showErrorMessageDiv(string.substitute(nls.user.invalidMGRS, {
-                    openLink: '<a href="#mgrs_coord">',
-                    closeLink: '</a>'
-                }));
-                break;
-            default:
-                this._showErrorMessageDiv(string.substitute(nls.user.invalidLatLong, {
-                    latLink: '<a href="#lat_coord">',
-                    lngLink: '<a href="#lng_coord">',
-                    closeLink: '</a>'
-                }));
+                case "utm":
+                    this._showErrorMessageDiv(nls.user.invalidUTM, dom.byId("select_location"));
+                    break;
+                case "usng":
+                    this._showErrorMessageDiv(nls.user.invalidUSNG, dom.byId("select_location"));
+                    break;
+                case "mgrs":
+                    this._showErrorMessageDiv(nls.user.invalidMGRS, dom.byId("select_location"));
+                    break;
+                default:
+                    this._showErrorMessageDiv(nls.user.invalidLatLong, dom.byId("select_location"));
             }
         },
         _projectPoint: function (geometry) {
@@ -2065,20 +2191,19 @@ define([
             }, group);
         },
         // display error message
-        _showErrorMessageDiv: function (errorMessage) {
-            var errorMessageNode = dom.byId('errorMessageDiv');
+        _showErrorMessageDiv: function (errorMessage, errorMessageNode) {
             // clear node
-            domConstruct.empty(errorMessageNode);
-            // remove anchor
-            window.location.hash = "";
+            var errorNode;
+            if (domClass.contains(errorMessageNode.nextSibling, "errorMessage")) {
+                domConstruct.destroy(errorMessageNode.nextSibling);
+            }
             // create node
-            domConstruct.create("div", {
+            errorNode = domConstruct.create("div", {
                 className: "alert alert-danger errorMessage",
                 id: "errorMessage",
                 innerHTML: errorMessage
-            }, errorMessageNode);
-            // set anchor
-            window.location.hash = "#errorMessage";
+            }, null);
+            domConstruct.place(errorNode, errorMessageNode, "after");
             // resize map
             this._resizeMap();
         },
@@ -2109,7 +2234,31 @@ define([
             if (this._formLayer) {
                 // if fields not set or empty
                 if (!this.config.fields || (this.config.fields && this.config.fields.length === 0)) {
-                    this.config.fields = this._formLayer.fields;
+                    array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (operationalLayer, index) {
+                        //condition to catch the right layer from webmap
+                        if (operationalLayer.id === this._formLayer.id) {
+                            //This loop runs through all the fields configured in the popup
+                            array.forEach(this.config.itemInfo.itemData.operationalLayers[index].popupInfo.fieldInfos, lang.hitch(this, function (popupField) {
+                                //This loop will run through all the fields in the formLayer and will break when the field matches with currently selected field of pop
+                                array.some(this._formLayer.fields, lang.hitch(this, function (formLayerField) {
+                                    //condition to match the popup field with the formLayer field to mixin the properties of object.
+                                    if (formLayerField.name === popupField.fieldName) {
+                                        //condition to show a type field irrespective of it's configured edit property.
+                                        if (formLayerField.name === this._formLayer.typeIdField) {
+                                            popupField.isEditable = true;
+                                        }
+                                        formLayerField.alias = popupField.label;
+                                        formLayerField.editable = popupField.isEditable;
+                                        formLayerField.visible = popupField.isEditable;
+                                        formLayerField.tooltip = popupField.tooltip;
+                                        this.config.fields.push(formLayerField);
+                                        return true;
+                                    }
+                                }));
+                            }));
+                            return true;
+                        }
+                    }));
                 }
             }
         },
@@ -2219,7 +2368,7 @@ define([
             return inputIconGroupContainer;
         },
         _resetSubTypeFields: function (currentInput) {
-            if (currentInput.type == "esriFieldTypeDate" || currentInput.displayType == "url" || currentInput.displayType == "email") {
+            if (currentInput.type == "esriFieldTypeDate" || currentInput.displayType == "url" || currentInput.displayType == "email" || (currentInput.type == "esriFieldTypeSmallFloat" || currentInput.type == "esriFieldTypeSmallInteger" || currentInput.type == "esriFieldTypeDouble" || currentInput.type == "esriFieldTypeInteger") && (currentInput.domain && currentInput.domain.type === "range")) {
                 domConstruct.destroy(dom.byId(currentInput.name).parentNode.parentNode);
             } else {
                 domConstruct.destroy(dom.byId(currentInput.name).parentNode);
@@ -2278,6 +2427,12 @@ define([
                 }));
             }
             return dateInputField;
+        },
+        _verifyHumanEntry: function () {
+            this.isHumanEntry = false;
+            setTimeout(lang.hitch(this, function () {
+                this.isHumanEntry = true;
+            }), 2000);
         }
     });
 });
