@@ -129,6 +129,16 @@ define([
             }));
 
             $('.navigationTabs').on('click', lang.hitch(this, function (evt) {
+                if (domClass.contains(evt.currentTarget, "previewButton")) {
+                    query('.tab-links li').forEach(function (node) {
+                        domClass.remove(node, "active");
+                    });
+                    query('a[tab="preview"]').forEach(function (node) {
+                        if (node.parentNode.tagName === "LI") {
+                            domClass.add(node.parentNode, "active");
+                        }
+                    });
+                }
                 this._getPrevTabDetails(evt);
             }));
 
@@ -140,8 +150,11 @@ define([
                 this._updateItem(true);
             }));
 
-            $('#jumbotronOption').on('click', lang.hitch(this, function () {
-                this.currentConfig.useSmallHeader = $('#jumbotronOption')[0].checked;
+            $('#jumbotronDisableOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.useSmallHeader = true;
+            }));
+            $('#jumbotronEnableOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.useSmallHeader = false;
             }));
             $('#shareOption').on('click', lang.hitch(this, function () {
                 this.currentConfig.enableSharing = $('#shareOption')[0].checked;
@@ -234,7 +247,6 @@ define([
             // set title
             window.document.title = appTitle;
         },
-
         _setTabCaption: function () {
             //set sequence numbers to tabs
             array.forEach(query(".navbar-right")[0].children, lang.hitch(this, function (currentTab, index) {
@@ -313,13 +325,42 @@ define([
             dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
             dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
             dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
-            $(document).ready(function () {
-                $('#detailDescriptionInput').summernote({
-                    height: 200,
-                    minHeight: null,
-                    maxHeight: null,
-                    focus: true
-                });
+            $(document).ready(lang.hitch(this, function () {
+                this._createSummerNote(false);
+            }));
+            on(dom.byId("advanceTools"), "click", lang.hitch(this, function (evt) {
+                if (evt.currentTarget.innerHTML === nls.builder.additionalSummerNoteTools) {
+                    domAttr.set(evt.currentTarget, "innerHTML", nls.builder.basicSummerNoteTools);
+                    this._createSummerNote(true);
+                } else {
+                    domAttr.set(evt.currentTarget, "innerHTML", nls.builder.additionalSummerNoteTools);
+                    this._createSummerNote(false);
+                }
+            }));
+        },
+
+        _createSummerNote: function (isAdvanceToolRequired) {
+            var tollbarOptions;
+            if (isAdvanceToolRequired) {
+                tollbarOptions = [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']]
+                    ];
+            }
+            else {
+                tollbarOptions = [['style', ['bold', 'italic', 'underline', 'clear']]];
+            }
+            $('#detailDescriptionInput').destroy();
+            $('#detailDescriptionInput').summernote({
+                height: 200,
+                minHeight: null,
+                maxHeight: null,
+                focus: true,
+                toolbar: tollbarOptions
             });
         },
 
@@ -381,7 +422,7 @@ define([
         },
 
         _populateJumbotronOption: function (jumbotronOption) {
-            $("#jumbotronOption")[0].checked = jumbotronOption;
+            $("#jumbotronDisableOption")[0].checked = jumbotronOption;
         },
         _populateShareOption: function (shareOption) {
             $("#shareOption")[0].checked = shareOption;
@@ -487,8 +528,9 @@ define([
                 }, formFieldsNode);
                 domAttr.set(fieldRow, "visibleProp", currentField.visible);
                 fieldDNDIndicatorTD = domConstruct.create("td", {
-                    className: "drag-cursor"
+                    className: "drag-cursor drag-cursor-type"
                 }, fieldRow);
+                domAttr.set(fieldDNDIndicatorTD, "title", nls.builder.dragTooltipText);
                 fieldDNDIndicatorIcon = domConstruct.create("span", {
                     className: "ui-icon ui-icon-arrowthick-2-n-s"
                 }, fieldDNDIndicatorTD);
@@ -542,6 +584,11 @@ define([
                 }
                 fieldType = domConstruct.create("td", {}, fieldRow);
                 if (currentField.type === "esriFieldTypeDate") {
+                    domConstruct.create("input", {
+                        "class": "form-control",
+                        "value": nls.builder.selectDateOption,
+                        "disabled": "disabled"
+                    }, fieldType);
                     return;
                 }
                 if ((currentField.domain && currentField.domain.codedValues) || (currentField.name === this.fieldInfo[layerName].typeIdField)) {
@@ -558,12 +605,19 @@ define([
                             value: "radio"
                         }, typeSelect);
                     }
+                    else {
+                        domConstruct.create("input", {
+                            "class": "form-control",
+                            "value": nls.builder.selectMenuOption,
+                            "disabled": "disabled"
+                        }, fieldType);
+                    }
                 } else {
                     if (!currentField.domain) {
-                        typeSelect = domConstruct.create("select", {
-                            "class": "form-control displayType"
-                        }, fieldType);
                         if (currentField.type == "esriFieldTypeSmallInteger" || currentField.type == "esriFieldTypeInteger" || currentField.type == "esriFieldTypeSingle" || currentField.type == "esriFieldTypeDouble") {
+                            typeSelect = domConstruct.create("select", {
+                                "class": "form-control displayType"
+                            }, fieldType);
                             domConstruct.create("option", {
                                 innerHTML: nls.builder.selectTextOption,
                                 value: "textbox"
@@ -573,27 +627,43 @@ define([
                                 value: "checkbox"
                             }, typeSelect);
                         } else {
-                            if (currentField.type == "esriFieldTypeString") {
+                            if (currentField.type == "esriFieldTypeString" && currentField.length >= 20) {
+                                typeSelect = domConstruct.create("select", {
+                                    "class": "form-control displayType"
+                                }, fieldType);
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextOption,
                                     value: "text"
                                 }, typeSelect);
-                                if (currentField.length >= 30) {
-                                    domConstruct.create("option", {
-                                        innerHTML: nls.builder.selectMailOption,
-                                        value: "email"
-                                    }, typeSelect);
-                                    domConstruct.create("option", {
-                                        innerHTML: nls.builder.selectUrlOption,
-                                        value: "url"
-                                    }, typeSelect);
-                                }
+                                domConstruct.create("option", {
+                                    innerHTML: nls.builder.selectMailOption,
+                                    value: "email"
+                                }, typeSelect);
+                                domConstruct.create("option", {
+                                    innerHTML: nls.builder.selectUrlOption,
+                                    value: "url"
+                                }, typeSelect);
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextAreaOption,
                                     value: "textarea"
                                 }, typeSelect);
                             }
+                            else {
+                                domConstruct.create("input", {
+                                    "class": "form-control",
+                                    "value": nls.builder.selectTextOption,
+                                    "disabled": "disabled"
+                                }, fieldType);
+                            }
                         }
+                    }
+                    else {
+                        domConstruct.create("input", {
+                            "class": "form-control",
+                            "value": nls.builder.selectRangeOption,
+                            "disabled": "disabled"
+                        }, fieldType);
+
                     }
                 }
                 if (currentField.displayType) {
@@ -701,6 +771,11 @@ define([
                         this.currentConfig.itemInfo = itemInfo;
                         this._addOperationalLayers();
                         webmapButton.newButton('reset');
+                        dom.byId("webmapDetailText").innerHTML = string.substitute(nls.builder.webmapDetailsText, {
+                            webMapTitleLink: "<a target=\"_blank\" href=\"" + this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap + "\">",
+                            webMapTitle: this.currentConfig.itemInfo.item.title,
+                            closeLink: "</a>"
+                        });
                     }), function (error) {
                         console.log(error);
                     });
@@ -717,6 +792,11 @@ define([
                 domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png");
             }
             dom.byId("webmapLink").href = this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap;
+            dom.byId("webmapDetailText").innerHTML = string.substitute(nls.builder.webmapDetailsText, {
+                webMapTitleLink: "<a target=\"_blank\" href=\"" + this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap + "\">",
+                webMapTitle: this.currentConfig.itemInfo.item.title,
+                closeLink: "</a>"
+            });
         },
 
         //function to load the css/script dynamically
@@ -791,15 +871,12 @@ define([
                         if (dom.byId("requiredAttachmentInfo")) {
                             this.currentConfig.attachmentIsRequired = dom.byId("requiredAttachmentInfo").checked;
                         }
-                    if (dom.byId("attachmentDescription")) {
-                        this.currentConfig.attachmentHelpText = dom.byId("attachmentDescription").value;
-                    }
-                    if (dom.byId("attachmentLabelInfo")) {
-                        this.currentConfig.attachmentLabel = dom.byId("attachmentLabelInfo").value;
-                    }
-                }));
-                break;
-            default:
+                        if (dom.byId("attachmentLabelInfo")) {
+                            this.currentConfig.attachmentLabel = dom.byId("attachmentLabelInfo").value;
+                        }
+                    }));
+                    break;
+                default:
             }
         },
 
@@ -851,8 +928,7 @@ define([
                             $("#myModal").modal('hide');
                             var detailsPageURL = this.currentConfig.sharinghost + "/home/item.html?id=" + this.currentConfig.appid;
                             window.location.assign(detailsPageURL);
-
-                           return true;
+                            return true;
                         }
                         if (this._ShareModal) {
                             this._ShareModal.destroy();
@@ -985,7 +1061,7 @@ define([
         },
 
         _createAttachmentInput: function (layerUrl) {
-            var fLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentDetails, attachmentLabel,
+            var fLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentLabel,
             requiredAttachmentContainer, requiredAttachmentContent, requiredAttachmentLabel;
             domConstruct.empty(dom.byId('attachmentDetails'));
             fLayer = new FeatureLayer(layerUrl);
@@ -1064,24 +1140,6 @@ define([
                         "class": "attachmentHint",
                         "innerHTML": nls.builder.attachmentLabelHint
                     }, attachmentLabel);
-                    attachmentDetails = domConstruct.create("div", {
-                        "id": "attachmentDetails",
-                        "class": "form-group"
-                    }, dom.byId('attachmentDetails'));
-                    domConstruct.create("label", {
-                        "for": "attachmentDescription",
-                        "innerHTML": nls.builder.attachmentDescription
-                    }, attachmentDetails);
-                    domConstruct.create("input", {
-                        "type": "text",
-                        "class": "form-control",
-                        "id": "attachmentDescription",
-                        "value": this.currentConfig.attachmentHelpText
-                    }, attachmentDetails);
-                    domConstruct.create("span", {
-                        "class": "attachmentHint",
-                        "innerHTML": nls.builder.attachmentHint
-                    }, attachmentDetails);
                     on(dom.byId("enableAttachmentInfo"), "change", function (evt) {
                         if (!evt.currentTarget.checked) {
                             domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", true);
