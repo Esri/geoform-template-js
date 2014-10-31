@@ -31,7 +31,7 @@ define({
     "defaultMapExtent": true,
     "pushpinColor": "blue",
     "enableAttachments": true,
-    "attachmentIsRequired": true,
+    "attachmentIsRequired": false,
     "attachmentLabel": "",
     "attachmentHelpText": "",
     "locationSearchOptions": {
