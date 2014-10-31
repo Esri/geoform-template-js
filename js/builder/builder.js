@@ -528,7 +528,7 @@ define([
                 }, formFieldsNode);
                 domAttr.set(fieldRow, "visibleProp", currentField.visible);
                 fieldDNDIndicatorTD = domConstruct.create("td", {
-                    className: "drag-cursor drag-cursor-type"
+                    className: "drag-cursor"
                 }, fieldRow);
                 domAttr.set(fieldDNDIndicatorTD, "title", nls.builder.dragTooltipText);
                 fieldDNDIndicatorIcon = domConstruct.create("span", {
