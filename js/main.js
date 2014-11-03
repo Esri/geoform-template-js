@@ -1335,6 +1335,7 @@ define([
         },
         // create a map based on the input web map id
         _createWebMap: function (itemInfo) {
+            var mouseWheel;//To capture the mouse-wheel scroll event and then later deactivate it
             var popup = new Popup({
                 highlight: false
             }, domConstruct.create("div"));
@@ -1364,6 +1365,8 @@ define([
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
                 this.map = response.map;
+                // Disable scroll zoom handler
+                this.map.disableScrollWheelZoom();
                 this.defaultExtent = this.map.extent;
                 // webmap defaults
                 this._setWebmapDefaults();
@@ -1430,19 +1433,23 @@ define([
                     this._clearSubmissionGraphic();
                     this.addressGeometry = evt.mapPoint;
                     this._setSymbol(this.addressGeometry);
-                }));
-                // mouse move and click, show lat lon
-                on(this.map, 'click', lang.hitch(this, function (evt) {
                     // get coords string
                     var coords = this._calculateLatLong(evt.mapPoint);
                     domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
                     this._setCoordInputs(evt.mapPoint);
                 }));
-                // mouse move and click, show lat lon
+                //on mouse move show lat lon
                 on(this.map, 'mouse-move', lang.hitch(this, function (evt) {
                     // get coords string
                     var coords = this._calculateLatLong(evt.mapPoint);
                     domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
+                }));
+                mouseWheel = on(this.map, 'mouse-wheel', lang.hitch(this, function (evt) {
+                    //Enables scrollwheel zoom 3 seconds after a user hovers over the map
+                    setTimeout(lang.hitch(this, function () {
+                        this.map.enableScrollWheelZoom();
+                    }), 3000);
+                    mouseWheel.remove();
                 }));
                 // Add desirable touch behaviors here
                 if (this.map.hasOwnProperty("isScrollWheelZoom")) {

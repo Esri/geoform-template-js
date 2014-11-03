@@ -423,6 +423,7 @@ define([
 
         _populateJumbotronOption: function (jumbotronOption) {
             $("#jumbotronDisableOption")[0].checked = jumbotronOption;
+            $("#jumbotronEnableOption")[0].checked = !jumbotronOption;
         },
         _populateShareOption: function (shareOption) {
             $("#shareOption")[0].checked = shareOption;
