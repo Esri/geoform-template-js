@@ -136,7 +136,7 @@ define({
             fieldTabLabelHeaderText: "Label",
             fieldTabDisplayTypeHeaderText: "Display As",
             fieldTabOrderColumnText: "Order",
-            fieldTabVisibleColumnText: "Visible",
+            fieldTabVisibleColumnText: "Enabled",
             selectMenuOption: "Select Menu",
             selectRadioOption: "Radio Button",
             selectTextOption: "Text",
