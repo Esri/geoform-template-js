@@ -510,7 +510,7 @@ define([
         _createForm: function (fields) {
             var formContent, labelContent, fileInput, matchingField, newAddedFields = [], userFormNode;
             if (!this._formLayer) {
-                this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage);
+                this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage, dom.byId("errorMessageDiv"));
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
                     if (currentNode.children) {
                         if (domClass.contains(currentNode.children[0], "errorMessageDiv")) {
@@ -2193,8 +2193,11 @@ define([
         // display error message
         _showErrorMessageDiv: function (errorMessage, errorMessageNode) {
             // clear node
-            var errorNode;
-            if (domClass.contains(errorMessageNode.nextSibling, "errorMessage")) {
+            var errorNode, place = "after";
+            if (errorMessageNode.id==="errorMessageDiv") {
+                place = "only";
+            }
+            if (errorMessageNode && domClass.contains(errorMessageNode.nextSibling, "errorMessage")) {
                 domConstruct.destroy(errorMessageNode.nextSibling);
             }
             // create node
@@ -2203,7 +2206,7 @@ define([
                 id: "errorMessage",
                 innerHTML: errorMessage
             }, null);
-            domConstruct.place(errorNode, errorMessageNode, "after");
+            domConstruct.place(errorNode, errorMessageNode, place);
             // resize map
             this._resizeMap();
         },
