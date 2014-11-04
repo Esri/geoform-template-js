@@ -520,7 +520,6 @@ define([
                 if (sortedFields.indexOf(currentField) === -1) {
                     sortedFields.push(currentField);
                 }
-
             }));
             //newAddedFields & this.currentConfig.fields
             array.forEach(sortedFields, lang.hitch(this, function (currentField, currentIndex) {
@@ -707,9 +706,9 @@ define([
 
         //function to query layer in order to obtain all the information of layer
         _queryLayer: function (layerUrl, layerId) {
-            var capabilities = null;
-            var layer = new FeatureLayer(layerUrl);
-            var layerDeferred = new Deferred();
+            var capabilities = null, layer, layerDeferred;
+            layer = new FeatureLayer(layerUrl);
+            layerDeferred = new Deferred();
             on(layer, "load", lang.hitch(this, function () {
                 capabilities = layer.getEditCapabilities();
                 this._validateFeatureServer(layer, capabilities.canCreate, layerId);
@@ -802,9 +801,9 @@ define([
 
         //function to load the css/script dynamically
         _loadResources: function () {
-            var cssStyle, scriptFile;
-            var head = query('head')[0];
-            var geoForm = dom.byId("geoform");
+            var cssStyle, scriptFile, head, geoForm;
+            head = query('head')[0];
+            geoForm = dom.byId("geoform");
             array.forEach(this.onDemandResources, lang.hitch(this, function (currentResource) {
                 if (currentResource.type === "css") {
                     cssStyle = document.createElement('link');
@@ -954,17 +953,18 @@ define([
 
         //function to show a progress bar before the content of share dialog is loaded
         _addProgressBar: function () {
-            var progressIndicatorContainer, progressIndicator;
+            var progressIndicatorContainer;
             domConstruct.empty($("#myModal .modal-body")[0]);
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.builder.shareBuilderInProgressTitleMessage);
             progressIndicatorContainer = domConstruct.create("div", {
                 className: "progress progress-striped active progress-remove-margin"
             }, $("#myModal .modal-body")[0]);
-            progressIndicator = domConstruct.create("div", {
+            domConstruct.create("div", {
                 className: "progress-bar progress-percent",
                 innerHTML: nls.builder.shareBuilderProgressBarMessage
             }, progressIndicatorContainer);
         },
+        //function to create and show the contents of the share dialog
         _createShareDlgContent: function () {
             var iconContainer, group;
             domConstruct.empty($("#myModal .modal-body")[0]);
@@ -1062,12 +1062,12 @@ define([
         },
 
         _createAttachmentInput: function (layerUrl) {
-            var fLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentLabel,
+            var featureLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentLabel,
             requiredAttachmentContainer, requiredAttachmentContent, requiredAttachmentLabel;
             domConstruct.empty(dom.byId('attachmentDetails'));
-            fLayer = new FeatureLayer(layerUrl);
-            on(fLayer, 'load', lang.hitch(this, function () {
-                if (fLayer.hasAttachments) {
+            featureLayer = new FeatureLayer(layerUrl);
+            on(featureLayer, 'load', lang.hitch(this, function () {
+                if (featureLayer.hasAttachments) {
                     //code to enable/disable the attachment in the user form.
                     enableAttachmentContainer = domConstruct.create("div", {
                         "id": "enableAttachmentContainer",

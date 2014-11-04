@@ -464,10 +464,11 @@ define([
         },
         //function to set the logo-path, application title and details
         _setAppConfigurations: function (appConfigurations) {
+            var appLogoNode, appTitleNode, appDescNode;
             // get all nodes
-            var appLogoNode = dom.byId('appLogo');
-            var appTitleNode = dom.byId('appTitle');
-            var appDescNode = dom.byId('appDescription');
+            appLogoNode = dom.byId('appLogo');
+            appTitleNode = dom.byId('appTitle');
+            appDescNode = dom.byId('appDescription');
             // set logo
             if (appConfigurations.Logo) {
                 appLogoNode.src = appConfigurations.Logo;
@@ -1018,14 +1019,14 @@ define([
         },
         // date range field
         _setRangeForm: function (currentField, formContent, fieldname) {
-            var inputContent = domConstruct.create("input", {
+            var inputContent, setStep, setDefault = "", stepDivisibility = 'none', decimalPoints = 0, inputcontentSpinner, rangeHelpText;
+            inputContent = domConstruct.create("input", {
                 id: fieldname,
                 type: "text",
                 className: "form-control",
                 min: currentField.domain.minValue.toString(),
                 max: currentField.domain.maxValue.toString()
             }, formContent);
-            var setStep, setDefault = "", stepDivisibility = 'none', decimalPoints = 0;
             domAttr.set(inputContent, "data-input-type", currentField.type.replace("esriFieldType", ""));
             if (currentField.defaultValue) {
                 setDefault = currentField.defaultValue;
@@ -1055,7 +1056,6 @@ define([
             });
             //Event to address validations for manual entry in the touch-spinner input.
             on(inputContent, "keyup", function () {
-                //inputcontentSpinner.trigger("touchspin.updatesettings", { step: setStep });
                 if (inputContent.value === "") {
                     domClass.remove(inputContent.parentNode.parentNode, "has-success");
                 }
@@ -1071,7 +1071,7 @@ define([
                 inputContent.setAttribute("aria-required", true);
                 inputContent.setAttribute("required", "");
             }
-            var rangeHelpText = string.substitute(nls.user.textRangeHintMessage, {
+            rangeHelpText = string.substitute(nls.user.textRangeHintMessage, {
                 minValue: currentField.domain.minValue.toString(),
                 maxValue: currentField.domain.maxValue.toString(),
                 openStrong: "<strong>",
@@ -1244,10 +1244,10 @@ define([
                     }
                     break;
                 case "Single":
-                    //zero of more occurence of (+-) at the start of expression
-                    //atleast one occurence of digits between o-9
-                    //occurence of .
-                    //atleast one occurence of digits between o-9 in the end
+                    //zero or more occurrence of (+-) at the start of expression
+                    //at least one occurrence of digits between o-9
+                    //occurrence of .
+                    //at least one occurrence of digits between o-9 in the end
                     typeCastedInputValue = parseFloat(inputValue);
                     if (((inputValue.match(decimal) || inputValue.match(float)) && typeCastedInputValue >= -3.4 * Math.pow(10, 38) && typeCastedInputValue <= 1.2 * Math.pow(10, 38)) && inputValue.length !== 0) {
                         this._validateUserInput(false, node, inputValue, iskeyPress);
@@ -1935,11 +1935,11 @@ define([
         },
         // submit form with applyedits
         _addFeatureToLayer: function () {
-            var userFormNode = dom.byId('userForm');
+            var userFormNode, featureData, key, value;
+            userFormNode = dom.byId('userForm');
             //To populate data for apply edits
-            var featureData = new Graphic();
+            featureData = new Graphic();
             featureData.attributes = {};
-            var key, value;
             //condition to filter out radio inputs
             array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
                 if (currentField.value !== "") {
@@ -2312,10 +2312,9 @@ define([
         },
         // set visible location options
         _populateLocationsOptions: function () {
-            var count = 0;
-            var total = 0;
-            var locationTabs = query("#location_pills li");
-            var tabContents = query("#location_tabs .tab-pane");
+            var count = 0, total = 0, locationTabs, tabContents;
+            locationTabs = query("#location_pills li");
+            tabContents = query("#location_tabs .tab-pane");
             if (!this.config.locationSearchOptions) {
                 this.config.locationSearchOptions = {
                     "enableMyLocation": true,
@@ -2346,8 +2345,11 @@ define([
                     return true;
                 }
             }));
-            // hide tab nav if zero or one tabs
-            if (total < 2) {
+            if (total > 1) {
+                dom.byId("locationOptionDescriptor").innerHTML = nls.user.locationDescriptionForMoreThanOneOption;
+            }
+            else {
+                // hide tab nav if zero or one tabs
                 var node = dom.byId('location_nav');
                 if (node) {
                     domStyle.set(node, 'display', 'none');
@@ -2359,6 +2361,12 @@ define([
                 var panelBodyNode = dom.byId('location_panel_body');
                 if (panelBodyNode) {
                     domClass.remove(panelBodyNode, 'panel-body');
+                }
+                if (total === 1) {
+                    dom.byId("locationOptionDescriptor").innerHTML = nls.user.locationDescriptionForOneOption;
+                }
+                else {
+                    dom.byId("locationOptionDescriptor").innerHTML = nls.user.locationDescriptionForNoOption;
                 }
             }
             // resize map
