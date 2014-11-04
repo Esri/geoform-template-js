@@ -147,7 +147,7 @@ define({
             selectCheckboxOption: "Checkbox",
             selectMailOption: "Email",
             selectUrlOption: "URL",
-            selectTextAreaOption: "Textarea",
+            selectTextAreaOption: "Text Area",
             previewApplicationText: "Preview Application",
             saveApplicationText: "Save Application",
             saveText: "Save",
