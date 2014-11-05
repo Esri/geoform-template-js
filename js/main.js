@@ -593,7 +593,7 @@ define([
             }));
             // if form has attachments
             if (this._formLayer.hasAttachments && this.config.enableAttachments) {
-                var requireField = null;
+                var requireField = null, helpBlock;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group"
@@ -1050,7 +1050,7 @@ define([
                 setStep = 1;
                 stepDivisibility = 'round';
             }
-            var inputcontentSpinner = $(inputContent).TouchSpin({
+            inputcontentSpinner = $(inputContent).TouchSpin({
                 initval: setDefault,
                 min: currentField.domain.minValue.toString(),
                 max: currentField.domain.maxValue.toString(),
