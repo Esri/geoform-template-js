@@ -2,7 +2,7 @@ define(
     [{
         "id": "bootstrap",
         "name": "Bootstrap (Default)",
-        "url": "js/vendor/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css",
+        "url": "js/vendor/bootstrap-3.3.0-dist/css/bootstrap-theme.min.css",
         "thumbnail": "images/themes/default.png",
         "refUrl": "http://bootswatch.com/default/"
     }, {
