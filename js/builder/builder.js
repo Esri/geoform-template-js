@@ -1037,7 +1037,7 @@ define([
 
         _createAttachmentInput: function (layerUrl) {
             var featureLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentLabel,
-            requiredAttachmentContainer, requiredAttachmentContent, requiredAttachmentLabel;
+            requiredAttachmentContainer, requiredAttachmentContent, requiredAttachmentLabel, attachmentDetails;
             domConstruct.empty(dom.byId('attachmentDetails'));
             featureLayer = new FeatureLayer(layerUrl);
             on(featureLayer, 'load', lang.hitch(this, function () {
