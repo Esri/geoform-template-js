@@ -177,6 +177,8 @@ define({
             attachmentIsRequiredLabelHint: "If necessary, users can be required to enter an attachment.",
             attachmentLabelText: "Attachment Button Label",
             attachmentLabelHint: "This is the text that will appear next to the Attachment Button. You can use this space to describe what you would like your audience to attach (photo, video, document, etc.), the file format you are asking for (.jpeg, .png, .docx, .pdf, etc.), and any additional instructions",
+            attachmentDescription: "Attachment Description",
+            attachmentHint: "If necessary, you can provide additional attachment instructions here.",
             jumbotronDescription: "Use large or small heading for your form. A large header may help define the purpose of your application but it takes up more room on your screen",
             shareGeoformText: "Share Geoform",
             shareDescription: "The sharing panel makes it easy for your audience to share the GeoForm with other collaborators once they have made a submission - this can be disabled at any time.",
@@ -191,8 +193,6 @@ define({
             mgrs: "MGRS Coordinates",
             utm: "UTM Coordinates",
             selectLocationSDescription: "Allow users to select a location using these methods.",
-            basicSummerNoteTools:"Basic Tools",
-            additionalSummerNoteTools:"Additional Tools",
             dragTooltipText:"Drag the field where you want it to appear"
         }
     }),
