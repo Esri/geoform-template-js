@@ -632,6 +632,12 @@ define([
                     fileInput.setAttribute("aria-required", true);
                     fileInput.setAttribute("required", "");
                 }
+                if (this.config.attachmentHelpText) {
+                    helpBlock = domConstruct.create("p", {
+                        className: "help-block",
+                        innerHTML: this.config.attachmentHelpText
+                    }, formContent);
+                }
             }
             this._verifyHumanEntry();
         },
