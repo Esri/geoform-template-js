@@ -284,10 +284,7 @@ define([
                 }
             }));
             //this statement will remove the error message div at first and then will be applied if a valid location is not selected
-            if (domClass.contains(dom.byId("select_location").nextSibling, "errorMessage")) {
-                domConstruct.destroy(dom.byId("select_location").nextSibling);
-            }
-
+            this._removeErrorNode(dom.byId("select_location").nextSibling);
             //conditional blocks to check and validate the form and show appropriate error messages.
             var errorMessage;
             if (erroneousFields.length !== 0) {
@@ -691,7 +688,7 @@ define([
             }
             //code to make select boxes in case of a coded value
             if (currentField.domain || currentField.typeField) {
-                if ((currentField.domain && currentField.domain.type === 'codedValue') || currentField.typeField) {
+                if ((currentField.domain && (typeof currentField.domain.type==='undefined'|| currentField.domain.type === 'codedValue')) || currentField.typeField) {
                     radioInput = false;
                     if (currentField.displayType && currentField.displayType === "radio") {
                         radioInput = true;
@@ -962,7 +959,7 @@ define([
                     domAttr.set(inputContent, "data-display-type", currentField.displayType);
                 }
                 if (currentField.type !== "esriFieldTypeDate") {
-                    on(inputContent, "keyup", lang.hitch(this, function (evt) {
+                    on(inputContent, "focusout", lang.hitch(this, function (evt) {
                         this._validateField(evt, true);
                         if (currentField.displayType === "textarea") {
                             var availableLength;
@@ -1136,7 +1133,7 @@ define([
                 for (var i in selectedType.domains) {
                     //condition to find the domain properties for current field
                     if (i === field.name) {
-                        switchDomainType = selectedType.domains[i].type;
+                        switchDomainType = selectedType.domains[i].type || "codedValue";
                         switch (switchDomainType) {
                         case "inherited":
                             //for inherited domains we need to populate the domains from the layer.
@@ -1172,7 +1169,7 @@ define([
                     this._resetSubTypeFields(field);
                 }
                 this._createFormElements(field, index, referenceNode);
-                if (field.type == "esriFieldTypeDate" || field.displayType == "url" || field.displayType == "email" || (field.type == "esriFieldTypeSingle" || field.type == "esriFieldTypeDouble" || field.type == "esriFieldTypeSmallInteger" || field.type == "esriFieldTypeInteger") && (field.domain && field.domain.type === "range")) {
+                if (field.type == "esriFieldTypeDate" || field.displayType == "url" || field.displayType == "email" || (field.type == "esriFieldTypeSingle" || field.type == "esriFieldTypeDouble" || field.type == "esriFieldTypeSmallInteger" || field.type == "esriFieldTypeInteger") && (field.domain && field.domain.type && field.domain.type === "range")) {
                     referenceNode = dom.byId(field.name).parentNode.parentNode;
                 } else {
                     referenceNode = dom.byId(field.name).parentNode;
@@ -1436,6 +1433,7 @@ define([
                 }));
                 // map click
                 on(this.map, 'click', lang.hitch(this, function (evt) {
+                    this._removeErrorNode(dom.byId("select_location").nextSibling);
                     this._clearSubmissionGraphic();
                     this.addressGeometry = evt.mapPoint;
                     this._setSymbol(this.addressGeometry);
@@ -1753,6 +1751,7 @@ define([
             }
             // place on map
             this._locatePointOnMap(latNode.value, lngNode.value, 'latlon');
+            this._removeErrorNode(dom.byId("select_location").nextSibling);
         },
         _checkLatLng: function () {
             // make sure lat and lon are both filled out to show button
@@ -1826,6 +1825,7 @@ define([
                     this.addressGeometry = evt.graphic.geometry;
                     this._setSymbol(evt.graphic.geometry);
                     this._resizeMap();
+                    this._removeErrorNode(dom.byId("select_location").nextSibling);
                 }
                 // reset button
                 $('#geolocate_button').button('reset');
@@ -1863,6 +1863,7 @@ define([
                     // if results, select
                     if (evt.results && evt.results.length) {
                         this.geocodeAddress.select(evt.results[0]);
+                        this._removeErrorNode(dom.byId("select_location").nextSibling);
                     } else {
                         alert(nls.user.locationNotFound);
                     }
@@ -2210,11 +2211,11 @@ define([
         _showErrorMessageDiv: function (errorMessage, errorMessageNode) {
             // clear node
             var errorNode, place = "after";
-            if (errorMessageNode.id==="errorMessageDiv") {
+            if (errorMessageNode.id === "errorMessageDiv") {
                 place = "only";
             }
-            if (errorMessageNode && domClass.contains(errorMessageNode.nextSibling, "errorMessage")) {
-                domConstruct.destroy(errorMessageNode.nextSibling);
+            if (errorMessageNode) {
+                this._removeErrorNode(errorMessageNode.nextSibling);
             }
             // create node
             errorNode = domConstruct.create("div", {
@@ -2395,7 +2396,7 @@ define([
             return inputIconGroupContainer;
         },
         _resetSubTypeFields: function (currentInput) {
-            if (currentInput.type == "esriFieldTypeDate" || currentInput.displayType == "url" || currentInput.displayType == "email" || (currentInput.type == "esriFieldTypeSmallFloat" || currentInput.type == "esriFieldTypeSmallInteger" || currentInput.type == "esriFieldTypeDouble" || currentInput.type == "esriFieldTypeInteger") && (currentInput.domain && currentInput.domain.type === "range")) {
+            if (currentInput.type == "esriFieldTypeDate" || currentInput.displayType == "url" || currentInput.displayType == "email" || (currentInput.type == "esriFieldTypeSmallFloat" || currentInput.type == "esriFieldTypeSmallInteger" || currentInput.type == "esriFieldTypeDouble" || currentInput.type == "esriFieldTypeInteger") && (currentInput.domain && currentInput.domain.type && currentInput.domain.type === "range")) {
                 domConstruct.destroy(dom.byId(currentInput.name).parentNode.parentNode);
             } else {
                 domConstruct.destroy(dom.byId(currentInput.name).parentNode);
@@ -2460,6 +2461,12 @@ define([
             setTimeout(lang.hitch(this, function () {
                 this.isHumanEntry = true;
             }), 2000);
+        },
+        //This function will remove the error message div.
+        _removeErrorNode: function (node) {
+            if (domClass.contains(node, "errorMessage")) {
+                domConstruct.destroy(node);
+            }
         }
     });
 });
