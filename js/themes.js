@@ -6,12 +6,6 @@ define(
         "thumbnail": "images/themes/default.png",
         "refUrl": "http://bootswatch.com/default/"
     }, {
-        "id": "amelia",
-        "name": "Amelia",
-        "url": "js/vendor/bootswatch-3.3.0/amelia/bootstrap.min.css",
-        "thumbnail": "js/vendor/bootswatch-3.3.0/amelia/thumbnail.png",
-        "refUrl": "http://bootswatch.com/amelia/"
-    }, {
         "id": "cerulean",
         "name": "Cerulean",
         "url": "js/vendor/bootswatch-3.3.0/cerulean/bootstrap.min.css",
