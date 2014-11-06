@@ -678,17 +678,19 @@ define([
         //function to query layer in order to obtain all the information of layer
         _queryLayer: function (layerUrl, layerId) {
             var capabilities = null, layer, layerDeferred;
-            layer = new FeatureLayer(layerUrl);
-            layerDeferred = new Deferred();
-            on(layer, "load", lang.hitch(this, function () {
-                capabilities = layer.getEditCapabilities();
-                this._validateFeatureServer(layer, capabilities.canCreate, layerId);
-                layerDeferred.resolve(true);
-            }));
-            on(layer, "error", function () {
-                layerDeferred.resolve(true);
-            });
-            return layerDeferred.promise;
+            if (layerUrl) {
+                layer = new FeatureLayer(layerUrl);
+                layerDeferred = new Deferred();
+                on(layer, "load", lang.hitch(this, function () {
+                    capabilities = layer.getEditCapabilities();
+                    this._validateFeatureServer(layer, capabilities.canCreate, layerId);
+                    layerDeferred.resolve(true);
+                }));
+                on(layer, "error", function () {
+                    layerDeferred.resolve(true);
+                });
+                return layerDeferred.promise;
+            }
         },
 
         //function to filter editable layers from all the layers in webmap

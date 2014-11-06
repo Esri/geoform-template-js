@@ -34,6 +34,11 @@ define({
                 ok: "Ok",
                 cancel: "Cancel",
                 placeholder: "Enter search term"
+            },
+            sharedlg: {
+                items: {
+                },
+                mailtoLinkDescription: "Here is a link to a GeoForm"
             }
         },
         user: {

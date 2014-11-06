@@ -11,7 +11,8 @@ define([
     "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-construct",
-    "esri/request"
+    "esri/request",
+    "dojo/i18n!application/nls/resources",
 ],
 function (
     declare,
@@ -21,10 +22,11 @@ function (
     on,
     ioQuery,
     dom, domClass, domConstruct,
-    esriRequest
+    esriRequest, nls
 ) {
     var Widget = declare([_WidgetBase], {
         declaredClass: "esri.dijit.ShareModal",
+        nls: nls,
         options: {
             theme: "ShareModal",
             visible: true,
@@ -34,7 +36,7 @@ function (
             title: window.document.title,
             summary: '',
             hashtags: '',
-            mailURL: 'mailto:%20?subject=${title}&body=${summary}%20${url}',
+            mailURL: 'mailto:%20?subject=${title}&body=%20${info}%20${url}%20${summary}',
             facebookURL: "https://www.facebook.com/sharer/sharer.php?u=${url}",
             twitterURL: "https://twitter.com/intent/tweet?url=${url}&text=${title}&hashtags=${hashtags}",
             googlePlusURL: "https://plus.google.com/share?url=${url}",
@@ -152,7 +154,8 @@ function (
                 image: encodeURIComponent(this.get("image")),
                 title: encodeURIComponent(this.get("title")),
                 summary: encodeURIComponent(this._stripTags(this.get("summary"))),
-                hashtags: encodeURIComponent(this.get("hashtags"))
+                hashtags: encodeURIComponent(this.get("hashtags")),
+                info: nls.configure.sharedlg.mailtoLinkDescription
             });
             // email link
             if (isMail) {
