@@ -1612,17 +1612,20 @@ define([
             }), this.reportError);
         },
         _mapLoaded: function () {
-            // resize map after a half second
+            // center coords
             setTimeout(lang.hitch(this, function () {
-                // make sure map is correct
-                this._resizeMap();
                 var mapCenter = this.map.extent.getCenter();
                 if (mapCenter) {
                     this._setCoordInputs(mapCenter);
                     var locationCoords = this._calculateLatLong(mapCenter);
                     domAttr.set(dom.byId("coordinatesValue"), "innerHTML", locationCoords);
                 }
+                this._resizeMap();
             }), 500);
+            // resize map
+            setTimeout(lang.hitch(this, function () {
+                this._resizeMap();
+            }), 1000);
         },
         _fullscreenState: function () {
             // get all nodes
