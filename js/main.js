@@ -2292,7 +2292,7 @@ define([
                     }));
                 }
             }
-            if (this.config.showLayer == true) {
+            if (this.config.showLayer) {
                 this._formLayer.setVisibility(true);
             } else {
                 this._formLayer.setVisibility(false);
