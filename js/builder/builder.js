@@ -162,6 +162,9 @@ define([
             $('#defaultExtent').on('click', lang.hitch(this, function () {
                 this.currentConfig.defaultMapExtent = $('#defaultExtent')[0].checked;
             }));
+            $('#ShowHideLayerOption').on('click', lang.hitch(this, function () {
+                this.currentConfig.showLayer = $('#ShowHideLayerOption')[0].checked;
+            }));
             this._loadResources();
             this.currentConfig = config;
             this.userInfo = userInfo;
@@ -171,6 +174,7 @@ define([
             this._populateDetails();
             this._populateJumbotronOption(this.currentConfig.useSmallHeader);
             this._populateShareOption(this.currentConfig.enableSharing);
+            this._populateShowLayerOption(this.currentConfig.showLayer);
             this._populateDefaultExtentOption(this.currentConfig.defaultMapExtent);
             this._populateThemes();
             this._populatePushpins();
@@ -391,7 +395,9 @@ define([
                 }
             }
         },
-
+        _populateShowLayerOption: function (showlayeropt) {
+            $("#ShowHideLayerOption")[0].checked = showlayeropt;
+        },
         _populateJumbotronOption: function (jumbotronOption) {
             $("#jumbotronDisableOption")[0].checked = jumbotronOption;
             $("#jumbotronEnableOption")[0].checked = !jumbotronOption;
@@ -865,6 +871,7 @@ define([
                 "attachmentLabel": this.currentConfig.attachmentLabel,
                 "defaultMapExtent": this.currentConfig.defaultMapExtent,
                 "details": this.currentConfig.details,
+                "showLayer": this.currentConfig.showLayer,
                 "enableSharing": this.currentConfig.enableSharing,
                 "fields": this.currentConfig.fields,
                 "form_layer": this.currentConfig.form_layer,

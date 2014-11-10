@@ -252,6 +252,16 @@ define([
             btn.button('loading');
             var erroneousFields = [];
             array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
+                if (domClass.contains(currentField, "hasAttachment")) {
+                    if (domClass.contains(currentField, "mandatory") && dom.byId("geoFormAttachment").value === "") {
+                        this._validateUserInput(nls.user.requiredFields, currentField, dom.byId("geoFormAttachment").value, true);
+                        erroneousFields.push(currentField);
+                    }
+                    else {
+                        this._removeErrorNode(query("#errorMessage", currentField));
+                    }
+                    return true;
+                }
                 //to check for errors in form before submitting.
                 //condition check to filter out radio fields
                 if ((query(".form-control", currentField)[0])) {
@@ -593,19 +603,16 @@ define([
                 var requireField = null, helpBlock;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
-                    className: "form-group"
+                    className: "form-group hasAttachment geoFormQuestionare"
                 }, userFormNode);
                 //code to make the attachment input mandatory
                 if (this.config.attachmentIsRequired) {
-                    domClass.add(formContent, "form-group mandatory geoFormQuestionare");
+                    domClass.add(formContent, "mandatory");
                     requireField = domConstruct.create("small", {
                         className: 'requireFieldStyle',
                         innerHTML: nls.user.requiredField
                     }, formContent);
-                } else {
-                    domClass.add(formContent, "form-group geoFormQuestionare");
                 }
-
                 // attachment label html
                 var labelHTML = "";
                 labelHTML += "<span class=\"glyphicon glyphicon-paperclip\"></span> ";
@@ -613,6 +620,7 @@ define([
                 // attachment label
                 labelContent = domConstruct.create("label", {
                     innerHTML: labelHTML,
+                    id: "geoFormAttachmentLabel",
                     "for": "geoFormAttachment"
                 }, formContent);
                 if (requireField && labelContent) {
@@ -1433,6 +1441,7 @@ define([
                 }));
                 // map click
                 on(this.map, 'click', lang.hitch(this, function (evt) {
+                    //remove the location-error message as soon as the point on the map is selected.
                     this._removeErrorNode(dom.byId("select_location").nextSibling);
                     this._clearSubmissionGraphic();
                     this.addressGeometry = evt.mapPoint;
@@ -1751,7 +1760,6 @@ define([
             }
             // place on map
             this._locatePointOnMap(latNode.value, lngNode.value, 'latlon');
-            this._removeErrorNode(dom.byId("select_location").nextSibling);
         },
         _checkLatLng: function () {
             // make sure lat and lon are both filled out to show button
@@ -1825,6 +1833,7 @@ define([
                     this.addressGeometry = evt.graphic.geometry;
                     this._setSymbol(evt.graphic.geometry);
                     this._resizeMap();
+                    //If the location is found we will remove the location-error message if it exists
                     this._removeErrorNode(dom.byId("select_location").nextSibling);
                 }
                 // reset button
@@ -1863,6 +1872,7 @@ define([
                     // if results, select
                     if (evt.results && evt.results.length) {
                         this.geocodeAddress.select(evt.results[0]);
+                        //this will remove the error message if it exists
                         this._removeErrorNode(dom.byId("select_location").nextSibling);
                     } else {
                         alert(nls.user.locationNotFound);
@@ -2094,6 +2104,7 @@ define([
                 // convert point
                 this._projectPoint(mapLocation).then(lang.hitch(this, function (pt) {
                     if (pt) {
+                        this._removeErrorNode(dom.byId("select_location").nextSibling);
                         this.addressGeometry = pt;
                         // set point symbol
                         this._setSymbol(pt);
@@ -2280,6 +2291,11 @@ define([
                         }
                     }));
                 }
+            }
+            if (this.config.showLayer) {
+                this._formLayer.setVisibility(true);
+            } else {
+                this._formLayer.setVisibility(false);
             }
         },
         // set defaults for app settings
