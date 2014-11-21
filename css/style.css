@@ -261,4 +261,5 @@ body.modal-open,
 
 #appLogo {
     width: auto \9;
+    margin: 0 auto;
 }
