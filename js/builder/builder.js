@@ -45,7 +45,6 @@ define([
         buttonConflict: null,
         appSettings: null,
         locationSearchOption: null,
-
         constructor: function (config, response) {
             this.config = config;
             this.response = response;
@@ -141,15 +140,15 @@ define([
                 }
                 this._getPrevTabDetails(evt);
             }));
-
             $('#saveButton').on('click', lang.hitch(this, function () {
                 this._updateItem(false);
             }));
-
             $('#done').on('click', lang.hitch(this, function () {
                 this._updateItem(true);
             }));
-
+            $('#disableLogo').on('click', lang.hitch(this, function () {
+                this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
+            }));
             $('#jumbotronDisableOption').on('click', lang.hitch(this, function () {
                 this.currentConfig.useSmallHeader = true;
             }));
@@ -178,6 +177,7 @@ define([
             this._populateDefaultExtentOption(this.currentConfig.defaultMapExtent);
             this._populateThemes();
             this._populatePushpins();
+            this._enableDisableLogo();
             //Check if the object is messed up with other type.if yes replace it with default object
             if (!this.currentConfig.locationSearchOptions.length) {
                 for (var searchOption in this.locationSearchOption) {
@@ -208,19 +208,18 @@ define([
                 this._populateFields(evt.currentTarget.value);
                 if (evt.currentTarget.value === "") {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
-                        if (domAttr.get(currentTab, "tab") == "fields" || domAttr.get(currentTab, "tab") == "preview" || domAttr.get(currentTab, "tab") == "publish" || domAttr.get(currentTab, "tab") == "options") {
+                        if (domAttr.get(currentTab, "tab") == "fields" || domAttr.get(currentTab, "tab") == "preview" || domAttr.get(currentTab, "tab") == "publish") {
                             this._disableTab(currentTab);
                         }
                     }));
                 } else {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
-                        if (domAttr.get(currentTab, "tab") == "fields" || ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish" || domAttr.get(currentTab, "tab") == "options") && query(".fieldCheckbox:checked").length !== 0)) {
+                        if (domAttr.get(currentTab, "tab") == "fields" || ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish") && query(".fieldCheckbox:checked").length !== 0)) {
                             this._enableTab(currentTab);
                         }
                     }));
                 }
             }));
-
             on(dom.byId('selectAll'), "change", lang.hitch(this, function (evt) {
                 array.forEach(query(".fieldCheckbox"), lang.hitch(this, function (currentCheckBox) {
                     if (!currentCheckBox.disabled) {
@@ -250,6 +249,9 @@ define([
             appTitle += nls.user.geoformTitleText + ' ' + nls.builder.titleText;
             // set title
             window.document.title = appTitle;
+        },
+        _enableDisableLogo: function () {
+            dom.byId("disableLogo").checked=this.currentConfig.disableLogo
         },
         _setTabCaption: function () {
             //set sequence numbers to tabs
@@ -374,17 +376,27 @@ define([
                 }
             }));
         },
-
         _locationInputChange: function (evt) {
             this.currentConfig.locationSearchOptions[domAttr.get(evt.currentTarget, "checkedField")] = evt.currentTarget.checked;
+            if (evt.currentTarget.id === "search" && !evt.currentTarget.checked) {
+                domAttr.set(dom.byId("myLocation"), "checked", false);
+                this.currentConfig.locationSearchOptions[domAttr.get(dom.byId("myLocation"), "checkedField")] = evt.currentTarget.checked;
+            }
+            if (evt.currentTarget.id === "myLocation" && evt.currentTarget.checked) {
+                domAttr.set(dom.byId("search"), "checked", true);
+                this.currentConfig.locationSearchOptions[domAttr.get(dom.byId("search"), "checkedField")] = evt.currentTarget.checked;
+            }
         },
-
         _populateLocations: function () {
             var currentInput, key, count = 0;
             for (key in this.currentConfig.locationSearchOptions) {
                 if (this.currentConfig.locationSearchOptions.hasOwnProperty(key)) {
                     currentInput = query("input", dom.byId('location_options'))[count];
                     if (currentInput) {
+                        if (currentInput.id === "search" && !currentInput.checked) {
+                            domAttr.set(dom.byId("myLocation"), "checked", false);
+                            this.currentConfig.locationSearchOptions[domAttr.get(dom.byId("myLocation"), "checkedField")] = false;
+                        }
                         if (this.currentConfig.locationSearchOptions[key]) {
                             currentInput.checked = true;
                         }
@@ -879,7 +891,8 @@ define([
                 "pushpinColor": this.currentConfig.pushpinColor,
                 "theme": this.currentConfig.theme,
                 "useSmallHeader": this.currentConfig.useSmallHeader,
-                "webmap": this.currentConfig.webmap
+                "webmap": this.currentConfig.webmap,
+                "disableLogo": this.currentConfig.disableLogo
             };
             this.response.itemData.values = this.appSettings;
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;
