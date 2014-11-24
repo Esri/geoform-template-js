@@ -477,7 +477,7 @@ define([
             appTitleNode = dom.byId('appTitle');
             appDescNode = dom.byId('appDescription');
             // set logo
-            if (appConfigurations.Logo) {
+            if (appConfigurations.Logo && !this.config.disableLogo) {
                 appLogoNode.src = appConfigurations.Logo;
             } else {
                 domClass.add(appLogoNode, "hide");
@@ -928,8 +928,7 @@ define([
                         type: "text",
                         className: "form-control",
                         "data-input-type": "Single",
-                        "id": fieldname,
-                        "pattern": "[0-9]*"
+                        "id": fieldname
                     }, formContent);
                     break;
                 case "esriFieldTypeDouble":
@@ -2231,7 +2230,7 @@ define([
             // create node
             errorNode = domConstruct.create("div", {
                 className: "alert alert-danger errorMessage",
-                id: "errorMessage",
+                id: "errorMessage" + errorMessageNode.id,
                 innerHTML: errorMessage
             }, null);
             domConstruct.place(errorNode, errorMessageNode, place);
