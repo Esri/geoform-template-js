@@ -2351,7 +2351,10 @@ define([
                 };
             }
             for (var key in this.config.locationSearchOptions) {
-                if (this.config.locationSearchOptions.hasOwnProperty(key)) {
+                if (key === "enableMyLocation" && !this.config.locationSearchOptions[key]) {
+                    domStyle.set(dom.byId("geolocate_button"), 'display', 'none');
+                }
+                if (this.config.locationSearchOptions.hasOwnProperty(key) && key !== "enableMyLocation") {
                     if (!this.config.locationSearchOptions[key]) {
                         domStyle.set(locationTabs[count], 'display', 'none');
                     } else {
