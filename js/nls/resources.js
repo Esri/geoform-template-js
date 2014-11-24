@@ -199,8 +199,10 @@ define({
             utm: "UTM Coordinates",
             selectLocationSDescription: "Allow users to select a location using these methods.",
             dragTooltipText:"Drag the field where you want it to appear",
-	    showHideLayerText:"Show/Hide Layer",
-	    showHideLayerHelpText:"You can configure the GeoForm to Show/Hide Layer"
+	    showHideLayerText:"Show Layer",
+            showHideLayerHelpText: "You can configure the GeoForm to Show/Hide Layer",
+            disableLogo: "Disable Logo",
+            disableLogoDescription: "You can configure the GeoForm to Show/Hide Logo in the form header"
         }
     }),
     "ar": 1, 
