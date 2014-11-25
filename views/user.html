@@ -1,7 +1,7 @@
 <div id="jumbotronNode" class="jumbotron">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-md-12 col-lg-10 col-lg-offset-1">
                 <img alt="" id="appLogo" class="img-responsive" />
                 <div class="clearfix"></div>
                 <h1 id="appTitle"></h1>
@@ -16,15 +16,19 @@
 <div class="clearfix"></div>
 <div class="container">
     <div class="row">
-        <div class="col-xs-12 errorMessageDiv">
+        <div class="col-md-12 col-lg-10 col-lg-offset-1 errorMessageDiv">
             <div id="errorMessageDiv"></div>
         </div>
         <div class="clearfix"></div>
     </div>
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-8">
+        <div class="col-md-12 col-lg-10 col-lg-offset-1">
             <h2>${user.geoFormGeneralTabText}</h2>
-            <form role="form" id="userForm"></form>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <form role="form" id="userForm"></form>
+              </div>
+            </div>
             <h2 id="select_location">${user.locationInformationText}</h2>
             <p id="locationOptionDescriptor"></p>
             <div id="location_panel" class="panel panel-default">
