@@ -477,7 +477,7 @@ define([
             appTitleNode = dom.byId('appTitle');
             appDescNode = dom.byId('appDescription');
             // set logo
-            if (appConfigurations.Logo && !this.config.disableLogo) {
+            if (appConfigurations.Logo) {
                 appLogoNode.src = appConfigurations.Logo;
             } else {
                 domClass.add(appLogoNode, "hide");
@@ -2230,7 +2230,7 @@ define([
             // create node
             errorNode = domConstruct.create("div", {
                 className: "alert alert-danger errorMessage",
-                id: "errorMessage" + errorMessageNode.id,
+                id: "errorMessage",
                 innerHTML: errorMessage
             }, null);
             domConstruct.place(errorNode, errorMessageNode, place);

@@ -34,8 +34,7 @@ define({
     "attachmentIsRequired": false,
     "attachmentLabel": "",
     "attachmentHelpText": "",
-    "showLayer": true,
-    "disableLogo":false,
+    "showLayer":true,
     "locationSearchOptions": {
         "enableMyLocation": true,
         "enableSearch": true,
