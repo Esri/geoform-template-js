@@ -928,8 +928,7 @@ define([
                         type: "text",
                         className: "form-control",
                         "data-input-type": "Single",
-                        "id": fieldname,
-                        "pattern": "[0-9]*"
+                        "id": fieldname
                     }, formContent);
                     break;
                 case "esriFieldTypeDouble":
@@ -2352,7 +2351,10 @@ define([
                 };
             }
             for (var key in this.config.locationSearchOptions) {
-                if (this.config.locationSearchOptions.hasOwnProperty(key)) {
+                if (key === "enableMyLocation" && !this.config.locationSearchOptions[key]) {
+                    domStyle.set(dom.byId("geolocate_button"), 'display', 'none');
+                }
+                if (this.config.locationSearchOptions.hasOwnProperty(key) && key !== "enableMyLocation") {
                     if (!this.config.locationSearchOptions[key]) {
                         domStyle.set(locationTabs[count], 'display', 'none');
                     } else {

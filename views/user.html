@@ -34,8 +34,6 @@
             <div id="location_panel" class="panel panel-default">
                 <div class="panel-heading" id="location_nav">
                     <ul class="nav nav-pills" id="location_pills">
-                        <li><a href="#myLocation" data-toggle="tab">${user.myLocationText}</a>
-                        </li>
                         <li><a href="#address" data-toggle="tab">${user.addressText}</a>
                         </li>
                         <li><a href="#coordinates" data-toggle="tab">${user.geographic}</a>
@@ -50,11 +48,6 @@
                 </div>
                 <div id="location_panel_body" class="panel-body">
                     <div id="location_tabs" class="tab-content">
-                        <div id="myLocation" class="tab-pane">
-                            <div class="form-group">
-                                <div id="geolocate_button" class="btn btn-default" data-loading-text="${user.finding}"><span class="fa fa-location-arrow"></span> ${user.findMyLocation}</div>
-                            </div>
-                        </div>
                         <div id="address" class="tab-pane">
                             <div class="form-group">
                                 <div class="input-group">
@@ -62,6 +55,7 @@
                                     <div class="input-group-btn" id="geocoder_buttons">
                                         <button id="searchSubmit" class="btn btn-default" type="button"><span id="geocoder_spinner" class="glyphicon glyphicon-search"></span>
                                         </button>
+                                        <button id="geolocate_button" class="btn btn-default" data-loading-text="${user.finding}"><span class="fa fa-location-arrow"></span> ${user.findMyLocation}</button>
                                     </div>
                                 </div>
                             </div>

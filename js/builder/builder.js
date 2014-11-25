@@ -377,6 +377,14 @@ define([
 
         _locationInputChange: function (evt) {
             this.currentConfig.locationSearchOptions[domAttr.get(evt.currentTarget, "checkedField")] = evt.currentTarget.checked;
+            if (evt.currentTarget.id === "search" && !evt.currentTarget.checked) {
+                domAttr.set(dom.byId("myLocation"), "checked", false);
+                this.currentConfig.locationSearchOptions[domAttr.get(dom.byId("myLocation"), "checkedField")] = evt.currentTarget.checked;
+            }
+            if (evt.currentTarget.id === "myLocation" && evt.currentTarget.checked) {
+                domAttr.set(dom.byId("search"), "checked", true);
+                this.currentConfig.locationSearchOptions[domAttr.get(dom.byId("search"), "checkedField")] = evt.currentTarget.checked;
+            }
         },
 
         _populateLocations: function () {
@@ -385,6 +393,10 @@ define([
                 if (this.currentConfig.locationSearchOptions.hasOwnProperty(key)) {
                     currentInput = query("input", dom.byId('location_options'))[count];
                     if (currentInput) {
+                        if (key === "enableSearch" && !this.currentConfig.locationSearchOptions[key]) {
+                            domAttr.set(dom.byId("myLocation"), "checked", false);
+                            this.currentConfig.locationSearchOptions[domAttr.get(dom.byId("myLocation"), "checkedField")] = false;
+                        }
                         if (this.currentConfig.locationSearchOptions[key]) {
                             currentInput.checked = true;
                         }
