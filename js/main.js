@@ -1871,6 +1871,8 @@ define([
                     // if results, select
                     if (evt.results && evt.results.length) {
                         this.geocodeAddress.select(evt.results[0]);
+                        var coords = this._calculateLatLong(evt.results[0].feature.geometry);
+                        domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
                         //this will remove the error message if it exists
                         this._removeErrorNode(dom.byId("select_location").nextSibling);
                     } else {
