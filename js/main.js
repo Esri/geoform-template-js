@@ -2230,7 +2230,7 @@ define([
             // create node
             errorNode = domConstruct.create("div", {
                 className: "alert alert-danger errorMessage",
-                id: "errorMessage",
+                id: "errorMessage" + errorMessageNode.id,
                 innerHTML: errorMessage
             }, null);
             domConstruct.place(errorNode, errorMessageNode, place);
