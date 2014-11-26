@@ -208,13 +208,13 @@ define([
                 this._populateFields(evt.currentTarget.value);
                 if (evt.currentTarget.value === "") {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
-                        if (domAttr.get(currentTab, "tab") == "fields" || domAttr.get(currentTab, "tab") == "preview" || domAttr.get(currentTab, "tab") == "publish" || domAttr.get(currentTab, "tab") == "options") {
+                        if (domAttr.get(currentTab, "tab") == "fields" || domAttr.get(currentTab, "tab") == "preview" || domAttr.get(currentTab, "tab") == "publish") {
                             this._disableTab(currentTab);
                         }
                     }));
                 } else {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
-                        if (domAttr.get(currentTab, "tab") == "fields" || ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish" || domAttr.get(currentTab, "tab") == "options") && query(".fieldCheckbox:checked").length !== 0)) {
+                        if (domAttr.get(currentTab, "tab") == "fields" || ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish") && query(".fieldCheckbox:checked").length !== 0)) {
                             this._enableTab(currentTab);
                         }
                     }));
