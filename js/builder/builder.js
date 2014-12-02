@@ -57,6 +57,10 @@ define([
                 },
                 {
                     "type": "css",
+                    "path": "js/vendor/summernote/summernote.css"
+                },
+                {
+                    "type": "css",
                     "path": this.themes[0].url
                 },
                 {
