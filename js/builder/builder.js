@@ -26,6 +26,7 @@ define([
     "application/themes",
     "application/pushpins",
     "esri/layers/FeatureLayer",
+    "application/wrapper/builder-jquery-deps",
     "dojo/domReady!"
 ], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer) {
     return declare([], {
@@ -51,10 +52,6 @@ define([
             this.response = response;
             this.onDemandResources = [
                 {
-                    "type": "script",
-                    "path": "js/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.min.js"
-                },
-                {
                     "type": "css",
                     "path": "css/browseDialog.css"
                 },
@@ -65,10 +62,6 @@ define([
                 {
                     "type": "css",
                     "path": "js/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css"
-                },
-                {
-                    "type": "script",
-                    "path": "js/vendor/jquery.ui.touch-punch.min.js"
                 }
          ];
         },
@@ -802,11 +795,6 @@ define([
                     cssStyle.type = 'text/css';
                     cssStyle.href = currentResource.path;
                     domConstruct.place(cssStyle, head);
-                } else {
-                    scriptFile = document.createElement('script');
-                    scriptFile.type = "text/javascript";
-                    scriptFile.src = currentResource.path;
-                    domConstruct.place(scriptFile, geoForm);
                 }
             }));
 
