@@ -38,6 +38,7 @@ define([
     "vendor/usng",
     "dojo/date/locale",
     "dojo/NodeList-traverse",
+    "application/wrapper/main-jquery-deps",
     "dojo/domReady!"
 ], function (
     declare,
