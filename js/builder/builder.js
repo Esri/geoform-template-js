@@ -460,8 +460,26 @@ define([
                 fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [],
                 sortedFields = [],
-                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect;
+                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect, labelPopupContent, helpTextPopupContent, placeholderPopupContent;
             var formFieldsNode = dom.byId('geoFormFieldsTable');
+            labelPopupContent = '<div class="form-group"><label class="text-danger">'+nls.builder.labelHelpMessage +'</label><input type="text" class="form-control" data-input-type="String" placeholder="' +nls.builder.placeHolderHintMessage +'" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
+            helpTextPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="text-danger">' + nls.builder.placeHolderHelpMessage + '</p></div>';
+            placeholderPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control hintBackgroundColor" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
+            $('#LabelInfo').popover({ placement: 'bottom', content: labelPopupContent, html: true, trigger: 'click' });
+            $('#helpTextInfo').popover({ placement: 'bottom', content: helpTextPopupContent, html: true, trigger: 'click' });
+            $('#hintTextInfo').popover({ placement: 'bottom', content: placeholderPopupContent, html: true, trigger: 'click' });
+            on($('#LabelInfo'), 'click', lang.hitch(this, function () {
+                $("#helpTextInfo").popover('hide');
+                $("#hintTextInfo").popover('hide');
+            }));
+            on($('#helpTextInfo'), 'click', lang.hitch(this, function () {
+                $("#LabelInfo").popover('hide');
+                $("#hintTextInfo").popover('hide');
+            }));
+            on($('#hintTextInfo'), 'click', lang.hitch(this, function () {
+                $("#LabelInfo").popover('hide');
+                $("#helpTextInfo").popover('hide');
+            }));
             if (formFieldsNode) {
                 domConstruct.empty(formFieldsNode);
             }

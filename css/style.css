@@ -262,3 +262,7 @@ body.modal-open,
     width: auto \9;
     margin: 0 auto;
 }
+
+.hintBackgroundColor {
+    background-color:#f2dede;
+}
