@@ -102,6 +102,16 @@ define([
             return def.promise;
         },
 
+        _swapContents:function(){
+            array.forEach(query(".invertedArrows"), lang.hitch(this, function (currentNode) {
+                if (domClass.contains(currentNode, "glyphicon-arrow-left")) {
+                    domClass.replace(currentNode, "glyphicon-arrow-right", "glyphicon-arrow-left");
+                } else {
+                    domClass.replace(currentNode, "glyphicon-arrow-left", "glyphicon-arrow-right");
+                }
+            }));
+        },
+
         _initializeBuilder: function (config, userInfo, response) {
             // set builder html
             var builderHTML = string.substitute(builderTemplate, nls);
@@ -247,6 +257,10 @@ define([
             appTitle += nls.user.geoformTitleText + ' ' + nls.builder.titleText;
             // set title
             window.document.title = appTitle;
+            //Change the arrow directions for next and previous buttons if application runs in RTL mode
+            if (dom.byId("geoform").dir == "rtl") {
+                this._swapContents();
+            }
         },
         _setTabCaption: function () {
             //set sequence numbers to tabs

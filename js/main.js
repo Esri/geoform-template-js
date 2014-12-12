@@ -73,6 +73,12 @@ define([
         defaultValueAttributes: null,
         sortedFields: [],
         isHumanEntry: null,
+        constructor: function () {
+            if (dom.byId("geoform").dir == "rtl") {
+                this._loadCSS();
+            }
+        },
+
         _createGeocoderOptions: function () {
             //Check for multiple geocoder support and setup options for geocoder widget.
             var hasEsri = false,
@@ -195,6 +201,13 @@ define([
                 this.reportError(error);
             }
         },
+
+        _loadCSS: function () {
+            var cssStyle;
+            cssStyle = dom.byId("rtlCSS");
+            cssStyle.href = "css/bootstrap.rtl.css";
+        },
+
         _init: function () {
             // no theme set
             if (!this.config.theme) {

@@ -182,7 +182,6 @@ input::-ms-clear {
     height: 100%;
     min-height: 100px;
     max-height: 100%;
-    text-align: left;
     overflow: hidden;
     -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
