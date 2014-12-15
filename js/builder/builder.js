@@ -102,6 +102,16 @@ define([
             return def.promise;
         },
 
+        _swapContents:function(){
+            array.forEach(query(".invertedArrows"), lang.hitch(this, function (currentNode) {
+                if (domClass.contains(currentNode, "glyphicon-arrow-left")) {
+                    domClass.replace(currentNode, "glyphicon-arrow-right", "glyphicon-arrow-left");
+                } else {
+                    domClass.replace(currentNode, "glyphicon-arrow-left", "glyphicon-arrow-right");
+                }
+            }));
+        },
+
         _initializeBuilder: function (config, userInfo, response) {
             // set builder html
             var builderHTML = string.substitute(builderTemplate, nls);
@@ -247,6 +257,10 @@ define([
             appTitle += nls.user.geoformTitleText + ' ' + nls.builder.titleText;
             // set title
             window.document.title = appTitle;
+            //Change the arrow directions for next and previous buttons if application runs in RTL mode
+            if (dom.byId("geoform").dir == "rtl") {
+                this._swapContents();
+            }
         },
         _setTabCaption: function () {
             //set sequence numbers to tabs
@@ -446,8 +460,26 @@ define([
                 fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [],
                 sortedFields = [],
-                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect;
+                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect, labelPopupContent, helpTextPopupContent, placeholderPopupContent;
             var formFieldsNode = dom.byId('geoFormFieldsTable');
+            labelPopupContent = '<div class="form-group"><label class="text-danger">'+nls.builder.labelHelpMessage +'</label><input type="text" class="form-control" data-input-type="String" placeholder="' +nls.builder.placeHolderHintMessage +'" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
+            helpTextPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="text-danger">' + nls.builder.placeHolderHelpMessage + '</p></div>';
+            placeholderPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control hintBackgroundColor" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
+            $('#LabelInfo').popover({ placement: 'bottom', content: labelPopupContent, html: true, trigger: 'click' });
+            $('#helpTextInfo').popover({ placement: 'bottom', content: helpTextPopupContent, html: true, trigger: 'click' });
+            $('#hintTextInfo').popover({ placement: 'bottom', content: placeholderPopupContent, html: true, trigger: 'click' });
+            on($('#LabelInfo'), 'click', lang.hitch(this, function () {
+                $("#helpTextInfo").popover('hide');
+                $("#hintTextInfo").popover('hide');
+            }));
+            on($('#helpTextInfo'), 'click', lang.hitch(this, function () {
+                $("#LabelInfo").popover('hide');
+                $("#hintTextInfo").popover('hide');
+            }));
+            on($('#hintTextInfo'), 'click', lang.hitch(this, function () {
+                $("#LabelInfo").popover('hide');
+                $("#helpTextInfo").popover('hide');
+            }));
             if (formFieldsNode) {
                 domConstruct.empty(formFieldsNode);
             }

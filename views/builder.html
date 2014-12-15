@@ -84,7 +84,7 @@
                     <div class="form-group">
                         <button type="button" id="selectWebmapBtn" class="btn btn-default" data-loading-text="${builder.btnSelectWebmapTextLoading}"><span class="glyphicon glyphicon-pencil"></span> ${builder.btnSelectWebmapText}</button>
                     </div>
-                    <div class="form-group"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right"></span></a>
+                    <div class="form-group"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
                 <div id="layer" class="tab-pane">
@@ -98,9 +98,9 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="webmap"><span class="glyphicon glyphicon-arrow-left"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="webmap"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="details">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right"></span></a>
+                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="details">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
                 <div id="details" class="tab-pane">
@@ -135,9 +135,9 @@
                         <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="layer"><span class="glyphicon glyphicon-arrow-left"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="layer"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="fields">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right"></span></a>
+                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="fields">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
                 <div id="fields" class="tab-pane">
@@ -154,9 +154,9 @@
                                         </div>
                                     </th>
                                     <th>${builder.fieldTabFieldHeaderText}</th>
-                                    <th class="tableDimension">${builder.fieldTabLabelHeaderText}</th>
-                                    <th class="tableDimension">${builder.fieldDescriptionLabelText}</th>
-                                    <th class="tableDimension">${builder.fieldTabPlaceHolderHeaderText}</th>
+                                    <th class="tableDimension">${builder.fieldTabLabelHeaderText}<a id="LabelInfo" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right pointer"></a></th>
+                                    <th class="tableDimension">${builder.fieldDescriptionLabelText}<a id="helpTextInfo" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right"></a></th>
+                                    <th class="tableDimension">${builder.fieldTabPlaceHolderHeaderText}<a id="hintTextInfo" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right"></a></th>
                                     <th class="tableDimension2">${builder.fieldTabDisplayTypeHeaderText}</th>
                                 </tr>
                             </thead>
@@ -165,9 +165,9 @@
                     </div>
                     <div id="attachmentDetails"></div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right"></span></a>
+                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
                 <div id="style" class="tab-pane">
@@ -188,9 +188,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields"><span class="glyphicon glyphicon-arrow-left"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="options">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right"></span></a>
+                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="options">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
                 <div id="options" class="tab-pane">
@@ -268,9 +268,9 @@
                         <div class="help-block">${builder.selectLocationSDescription}</div>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="style"><span class="glyphicon glyphicon-arrow-left"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="style"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right"></span></a>
+                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
                 <div id="preview" class="tab-pane">
@@ -279,15 +279,15 @@
                         <iframe frameborder="0" scrolling="yes" class="preview-frame" id="iframeContainer"></iframe>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="options"><span class="glyphicon glyphicon-arrow-left"></span> ${builder.btnPreviousText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right"></span></a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="options"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
                 <div id="save" class="tab-pane">
                     <h2>${builder.saveApplicationText}</h2>
                     <p>${builder.publishTabText}</p>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview"><span class="glyphicon glyphicon-arrow-left"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
                         <button id="done" type="button" class="btn btn-default"><span class="glyphicon glyphicon-new-window"></span> ${builder.doneButtonText}</button>
                         <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton"><span class="glyphicon glyphicon-floppy-disk"></span> ${builder.saveText}</button>
                     </div>
