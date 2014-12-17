@@ -105,7 +105,9 @@ define({
             error: "Error",
             textRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum value ${minValue} and Maximum value ${maxValue}",
             dateRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum Date ${minValue} and Maximum Date ${maxValue}",
-            remainingCharactersHintMessage: "${value} characters remaining"
+            remainingCharactersHintMessage: "${value} characters remaining",
+            mapFullScreen: "Full Screen",
+            mapRestore:"Restore"
         },
         builder: {
             invalidUser: "Sorry, you dont have permission to view this item",
