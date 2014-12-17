@@ -4,6 +4,7 @@ define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "dojo/string",
+    "esri/dijit/BasemapToggle",
     "esri/arcgis/utils",
     "esri/config",
     "esri/lang",
@@ -44,6 +45,7 @@ define([
     declare,
     lang,
     string,
+    basemapToggle,
     arcgisUtils,
     esriConfig,
     esriLang,
@@ -1367,10 +1369,7 @@ define([
             var mapDiv = dom.byId('mapDiv');
             // fullscreen button HTML
             var fsHTML = '';
-            fsHTML += '<div class="fullscreen-button" id="fullscreen_button">';
-            fsHTML += '<div class="btn btn-default">';
-            fsHTML += '<span id="fullscreen_icon" class="glyphicon glyphicon-fullscreen"></span>';
-            fsHTML += '</div>';
+            fsHTML = '<div class="basemapToggle-button"><div class="basemapToggle-button" id="BasemapToggle"></div></div>';
             fsHTML += '</div>';
             mapDiv.innerHTML = fsHTML;
             arcgisUtils.createMap(itemInfo, mapDiv, {
@@ -1390,6 +1389,22 @@ define([
                 // console.log(this.config);
                 this.map = response.map;
                 // Disable scroll zoom handler
+		var toggle = new basemapToggle({
+                    map: this.map,
+                    basemap: "topo",
+                    defaultBasemap: "satellite"
+                }, "BasemapToggle");
+                toggle.startup();
+
+                var layers = this.map.getLayersVisibleAtScale(this.map.getScale());
+                on.once(this.map, 'basemap-change', lang.hitch(this, function () {
+                    for (var i = 0; i < layers.length; i++) {
+                        if (layers[i]._basemapGalleryLayerType) {
+                            var layer = this.map.getLayer(layers[i].id);
+                            this.map.removeLayer(layer);
+                        }
+                    }
+                }));
                 this.map.disableScrollWheelZoom();
                 this.defaultExtent = this.map.extent;
                 // webmap defaults
@@ -1596,9 +1611,10 @@ define([
                     this._checkUTM();
                 }));
                 // fullscreen
-                var fsButton = dom.byId('fullscreen_button');
+                var fsButton = domConstruct.create("div", { class: "fullScreenButtonContainer" }, mapDiv);
+                var fullscreenButton = domConstruct.create("span", { id: "fullscreen_icon", title:"Full Screen", class: "glyphicon glyphicon-fullscreen fullScreenImage" }, fsButton);
                 if (fsButton) {
-                    on(dom.byId('fullscreen_button'), "click", lang.hitch(this, function () {
+                    on(fsButton, "click", lang.hitch(this, function () {
                         this._toggleFullscreen();
                     }));
                 }
@@ -1649,27 +1665,24 @@ define([
         },
         _fullscreenState: function () {
             // get all nodes
-            var mapNode = dom.byId('mapDiv');
-            var fsContainerNode = dom.byId('fullscreen_container');
-            var mapContainerNode = dom.byId('map_container');
-            var btnNode = dom.byId('fullscreen_icon');
-            // if fullscreen
+            var mapNode, fsContainerNode, fsContainerNode, mapContainerNode;
+            mapNode = dom.byId('mapDiv');
+            fsContainerNode = dom.byId('fullscreen_container');
+            mapContainerNode = dom.byId('map_container');
+            btnNode = dom.byId('fullscreen_icon');
             if (domClass.contains(document.body, 'fullscreen')) {
-                // icon classes
-                domClass.add(btnNode, 'glyphicon-remove');
-                domClass.remove(btnNode, 'glyphicon-fullscreen');
                 domClass.remove(this.map.root, 'panel');
-                // move map node and clear hash
                 domConstruct.place(mapNode, fsContainerNode);
+                domClass.replace(btnNode, "glyphicon glyphicon-remove", "glyphicon glyphicon-fullscreen");
+				// move map node and clear hash
                 window.location.hash = "";
+                btnNode.title = nls.user.mapRestore;
             } else {
-                // icon classes
-                domClass.remove(btnNode, 'glyphicon-remove');
-                domClass.add(btnNode, 'glyphicon-fullscreen');
                 domClass.add(this.map.root, 'panel');
-                // move map node and set hash
                 domConstruct.place(mapNode, mapContainerNode);
-                window.location.hash = "#mapDiv";
+                domClass.replace(btnNode, "glyphicon glyphicon-fullscreen", "glyphicon glyphicon-remove");
+                window.location.hash = "#mapDiv";   
+                btnNode.title = nls.user.mapFullScreen;
             }
             this._resizeMap();
             // if current selected location
