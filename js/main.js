@@ -34,6 +34,7 @@ define([
     "esri/toolbars/edit",
     "esri/InfoTemplate",
     "esri/dijit/Popup",
+    "esri/urlUtils",
     "application/themes",
     "application/pushpins",
     "vendor/usng",
@@ -62,7 +63,7 @@ define([
     Geocoder,
     modalTemplate,
     userTemplate,
-    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, usng, locale) {
+    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup,urlUtils, theme, pushpins, usng, locale) {
     return declare([], {
         nls: nls,
         config: {},
@@ -75,6 +76,8 @@ define([
         defaultValueAttributes: null,
         sortedFields: [],
         isHumanEntry: null,
+        currentLocation:null,
+        locationParameters: ["mylocation", "search"],
         constructor: function () {
             if (dom.byId("geoform").dir == "rtl") {
                 this._loadCSS();
@@ -1645,6 +1648,8 @@ define([
                         this._mapLoaded();
                     }));
                 }
+                //Check location parameters in url
+                this._fetchUrlParameters();
             }), this.reportError);
         },
         _mapLoaded: function () {
@@ -1662,6 +1667,36 @@ define([
             setTimeout(lang.hitch(this, function () {
                 this._resizeMap();
             }), 1000);
+        },
+
+        _fetchUrlParameters: function () {
+            var url, urlObject;
+            url = document.location.href;
+            urlObject = urlUtils.urlToObject(url);
+            urlObject.query = urlObject.query || {};
+            if (urlObject.query && this.locationParameters && this.locationParameters.length) {
+                for (var i = 0; i < this.locationParameters.length; i++) {
+                    if (urlObject.query[this.locationParameters[i]]) {
+                        this._setLocation(urlObject.query[this.locationParameters[i]], this.locationParameters[i]);
+                        break;
+                    }
+                }
+            }
+        },
+
+        _setLocation:function(locationString,parameter) {
+            switch (parameter) {
+                case "mylocation":
+                    this.currentLocation.locate();
+                    break;
+                case "search":
+                    dom.byId('searchInput').value = locationString;
+                    this._searchGeocoder();
+                    break;
+                default:
+                    //Code for default value
+                    break;
+            }
         },
         _fullscreenState: function () {
             // get all nodes
@@ -1841,14 +1876,14 @@ define([
         // my location button
         _createLocateButton: function () {
             // create widget
-            var currentLocation = new LocateButton({
+          this.currentLocation = new LocateButton({
                 map: this.map,
                 highlightLocation: false,
                 theme: "btn btn-default"
             }, domConstruct.create('div'));
-            currentLocation.startup();
+          this.currentLocation.startup();
             // on current location submit
-            on(currentLocation, "locate", lang.hitch(this, function (evt) {
+          on(this.currentLocation, "locate", lang.hitch(this, function (evt) {
                 // remove error
                 var errorMessageNode = dom.byId('errorMessageDiv');
                 domConstruct.empty(errorMessageNode);
@@ -1872,7 +1907,7 @@ define([
                 // set loading button
                 $('#geolocate_button').button('loading');
                 // widget locate
-                currentLocation.locate();
+                this.currentLocation.locate();
             }));
         },
         // geocoder search submitted
