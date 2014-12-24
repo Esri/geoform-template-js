@@ -34,7 +34,6 @@ define([
     "esri/toolbars/edit",
     "esri/InfoTemplate",
     "esri/dijit/Popup",
-    "esri/urlUtils",
     "application/themes",
     "application/pushpins",
     "vendor/usng",
@@ -63,7 +62,7 @@ define([
     Geocoder,
     modalTemplate,
     userTemplate,
-    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup,urlUtils, theme, pushpins, usng, locale) {
+    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, usng, locale) {
     return declare([], {
         nls: nls,
         config: {},
@@ -77,7 +76,6 @@ define([
         sortedFields: [],
         isHumanEntry: null,
         currentLocation:null,
-        locationParameters: ["mylocation", "search"],
         constructor: function () {
             if (dom.byId("geoform").dir == "rtl") {
                 this._loadCSS();
@@ -1649,7 +1647,13 @@ define([
                     }));
                 }
                 //Check location parameters in url
-                this._fetchUrlParameters();
+                if (this.config.mylocation) {
+                    this._setLocation("mylocation", this.config.mylocation);
+                } else if (this.config.search) {
+                    this._setLocation("search", this.config.search);
+                } else if (this.config.latlon) {
+                    this._setLocation("latlon", this.config.latlon);
+                }
             }), this.reportError);
         },
         _mapLoaded: function () {
@@ -1669,29 +1673,20 @@ define([
             }), 1000);
         },
 
-        _fetchUrlParameters: function () {
-            var url, urlObject;
-            url = document.location.href;
-            urlObject = urlUtils.urlToObject(url);
-            urlObject.query = urlObject.query || {};
-            if (urlObject.query && this.locationParameters && this.locationParameters.length) {
-                for (var i = 0; i < this.locationParameters.length; i++) {
-                    if (urlObject.query[this.locationParameters[i]]) {
-                        this._setLocation(urlObject.query[this.locationParameters[i]], this.locationParameters[i]);
-                        break;
-                    }
-                }
-            }
-        },
-
-        _setLocation:function(locationString,parameter) {
-            switch (parameter) {
+        _setLocation: function (urlParameter, value) {
+            switch (urlParameter) {
                 case "mylocation":
                     this.currentLocation.locate();
                     break;
                 case "search":
-                    dom.byId('searchInput').value = locationString;
+                    dom.byId('searchInput').value = value;
                     this._searchGeocoder();
+                    break;
+                case "latlon":
+                    var latlonValue = value.split(",");
+                    this._locatePointOnMap(latlonValue[0], latlonValue[1], 'latlon');
+                    domAttr.set(dom.byId('lat_coord'), "value", latlonValue[0]);
+                    domAttr.set(dom.byId('lng_coord'), "value", latlonValue[1]);
                     break;
                 default:
                     //Code for default value
