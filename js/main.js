@@ -974,8 +974,10 @@ define([
                         });
                         $(inputDateGroupContainer).data("DateTimePicker").setDate(defaultDate);
                     } else {
-                        domAttr.set(inputContent, "value", currentField.defaultValue);
-                        domClass.add(formContent, "has-success");
+                        if (lang.trim(currentField.defaultValue) !== "") {
+                            domAttr.set(inputContent, "value", currentField.defaultValue);
+                            domClass.add(formContent, "has-success");
+                        }
                     }
                 }
                 //Add specific display type if present
@@ -985,6 +987,8 @@ define([
                 if (currentField.type !== "esriFieldTypeDate") {
                     on(inputContent, "focusout", lang.hitch(this, function (evt) {
                         this._validateField(evt, true);
+                    }));
+                    on(inputContent, "keyup", lang.hitch(this, function (evt) {
                         if (currentField.displayType === "textarea") {
                             var availableLength;
                             if (inputContent.value.length > currentField.length) {
@@ -1209,6 +1213,8 @@ define([
                 email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
                 url = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/,
                 error;
+            //To remove extra spaces
+            currentNode.currentTarget.value = lang.trim(currentNode.currentTarget.value);
             if (iskeyPress) {
                 inputValue = currentNode.currentTarget.value;
                 inputType = domAttr.get(currentNode.currentTarget, "data-input-type");
