@@ -1701,7 +1701,7 @@ define([
         },
         _fullscreenState: function () {
             // get all nodes
-            var mapNode, fsContainerNode, fsContainerNode, mapContainerNode;
+            var mapNode, fsContainerNode, btnNode, mapContainerNode;
             mapNode = dom.byId('mapDiv');
             fsContainerNode = dom.byId('fullscreen_container');
             mapContainerNode = dom.byId('map_container');
