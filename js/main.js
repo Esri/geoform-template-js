@@ -75,6 +75,7 @@ define([
         defaultValueAttributes: null,
         sortedFields: [],
         isHumanEntry: null,
+        currentLocation:null,
         constructor: function () {
             if (dom.byId("geoform").dir == "rtl") {
                 this._loadCSS();
@@ -973,8 +974,10 @@ define([
                         });
                         $(inputDateGroupContainer).data("DateTimePicker").setDate(defaultDate);
                     } else {
-                        domAttr.set(inputContent, "value", currentField.defaultValue);
-                        domClass.add(formContent, "has-success");
+                        if (lang.trim(currentField.defaultValue) !== "") {
+                            domAttr.set(inputContent, "value", currentField.defaultValue);
+                            domClass.add(formContent, "has-success");
+                        }
                     }
                 }
                 //Add specific display type if present
@@ -984,6 +987,8 @@ define([
                 if (currentField.type !== "esriFieldTypeDate") {
                     on(inputContent, "focusout", lang.hitch(this, function (evt) {
                         this._validateField(evt, true);
+                    }));
+                    on(inputContent, "keyup", lang.hitch(this, function (evt) {
                         if (currentField.displayType === "textarea") {
                             var availableLength;
                             if (inputContent.value.length > currentField.length) {
@@ -1208,6 +1213,8 @@ define([
                 email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
                 url = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/,
                 error;
+            //To remove extra spaces
+            currentNode.currentTarget.value = lang.trim(currentNode.currentTarget.value);
             if (iskeyPress) {
                 inputValue = currentNode.currentTarget.value;
                 inputType = domAttr.get(currentNode.currentTarget, "data-input-type");
@@ -1645,6 +1652,14 @@ define([
                         this._mapLoaded();
                     }));
                 }
+                //Check location parameters in url
+                if (this.config.mylocation) {
+                    this._setLocation("mylocation", this.config.mylocation);
+                } else if (this.config.search) {
+                    this._setLocation("search", this.config.search);
+                } else if (this.config.latlon) {
+                    this._setLocation("latlon", this.config.latlon);
+                }
             }), this.reportError);
         },
         _mapLoaded: function () {
@@ -1662,6 +1677,27 @@ define([
             setTimeout(lang.hitch(this, function () {
                 this._resizeMap();
             }), 1000);
+        },
+
+        _setLocation: function (urlParameter, value) {
+            switch (urlParameter) {
+                case "mylocation":
+                    this.currentLocation.locate();
+                    break;
+                case "search":
+                    dom.byId('searchInput').value = value;
+                    this._searchGeocoder();
+                    break;
+                case "latlon":
+                    var latlonValue = value.split(",");
+                    this._locatePointOnMap(latlonValue[0], latlonValue[1], 'latlon');
+                    domAttr.set(dom.byId('lat_coord'), "value", latlonValue[0]);
+                    domAttr.set(dom.byId('lng_coord'), "value", latlonValue[1]);
+                    break;
+                default:
+                    //Code for default value
+                    break;
+            }
         },
         _fullscreenState: function () {
             // get all nodes
@@ -1841,14 +1877,14 @@ define([
         // my location button
         _createLocateButton: function () {
             // create widget
-            var currentLocation = new LocateButton({
+          this.currentLocation = new LocateButton({
                 map: this.map,
                 highlightLocation: false,
                 theme: "btn btn-default"
             }, domConstruct.create('div'));
-            currentLocation.startup();
+          this.currentLocation.startup();
             // on current location submit
-            on(currentLocation, "locate", lang.hitch(this, function (evt) {
+          on(this.currentLocation, "locate", lang.hitch(this, function (evt) {
                 // remove error
                 var errorMessageNode = dom.byId('errorMessageDiv');
                 domConstruct.empty(errorMessageNode);
@@ -1872,7 +1908,7 @@ define([
                 // set loading button
                 $('#geolocate_button').button('loading');
                 // widget locate
-                currentLocation.locate();
+                this.currentLocation.locate();
             }));
         },
         // geocoder search submitted

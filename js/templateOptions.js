@@ -44,6 +44,9 @@ define({
     //if you want users to be able to specify lat/lon coordinates that define the map's center or
     //specify an alternate basemap via a url parameter.
     "urlItems": [
-        "edit"
+        "edit",
+        "mylocation",
+        "search",
+        "latlon"
     ]
 });
