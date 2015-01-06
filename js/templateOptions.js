@@ -45,7 +45,7 @@ define({
     //specify an alternate basemap via a url parameter.
     "urlItems": [
         "edit",
-        "mylocation",
+        "locate",
         "search",
         "latlon"
     ]
