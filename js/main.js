@@ -1713,8 +1713,8 @@ define([
                     }));
                 }
                 //Check location parameters in url
-                if (this.config.mylocation) {
-                    this._setLocation("mylocation", this.config.mylocation);
+                if (this.config.locate) {
+                    this._setLocation("locate", this.config.locate);
                 } else if (this.config.search) {
                     this._setLocation("search", this.config.search);
                 } else if (this.config.latlon) {
@@ -1741,7 +1741,7 @@ define([
 
         _setLocation: function (urlParameter, value) {
             switch (urlParameter) {
-                case "mylocation":
+                case "locate":
                     this.currentLocation.locate();
                     break;
                 case "search":
