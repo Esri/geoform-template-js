@@ -107,7 +107,8 @@ define({
             dateRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum Date ${minValue} and Maximum Date ${maxValue}",
             remainingCharactersHintMessage: "${value} characters remaining",
             mapFullScreen: "Full Screen",
-            mapRestore:"Restore"
+            mapRestore: "Restore",
+            filterSelectEmptyText: "Select"
         },
         builder: {
             invalidUser: "Sorry, you dont have permission to view this item",
@@ -205,7 +206,8 @@ define({
             showHideLayerHelpText: "You can configure the GeoForm to Show/Hide Layer",
             labelHelpMessage: "Label",
             placeHolderHintMessage: "Hint Text",
-            placeHolderHelpMessage:"Help Text"
+            placeHolderHelpMessage: "Help Text",
+            selectTextOptionValue: "Filter Select"
         }
     }),
     "ar": 1, 

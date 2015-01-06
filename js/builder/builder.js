@@ -624,11 +624,17 @@ define([
                         }, typeSelect);
                     }
                     else {
-                        domConstruct.create("input", {
-                            "class": "form-control",
-                            "value": nls.builder.selectMenuOption,
-                            "disabled": "disabled"
+                        typeSelect = domConstruct.create("select", {
+                            "class": "form-control displayType"
                         }, fieldType);
+                        domConstruct.create("option", {
+                            innerHTML: nls.builder.selectMenuOption,
+                            value: "dropdown"
+                        }, typeSelect);
+                        domConstruct.create("option", {
+                            innerHTML: nls.builder.selectTextOptionValue,
+                            value: nls.builder.selectTextOptionValue
+                        }, typeSelect);
                     }
                 } else {
                     if (!currentField.domain) {
@@ -821,7 +827,7 @@ define([
 
         //function to load the css/script dynamically
         _loadResources: function () {
-            var cssStyle, scriptFile, head, geoForm;
+            var cssStyle, head, geoForm;
             head = query('head')[0];
             geoForm = dom.byId("geoform");
             array.forEach(this.onDemandResources, lang.hitch(this, function (currentResource) {
