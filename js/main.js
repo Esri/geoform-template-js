@@ -281,33 +281,43 @@ define([
                 }
                 //to check for errors in form before submitting.
                 //condition check to filter out radio fields
-                if ((query(".form-control", currentField)[0])) {
+                if (query(".form-control", currentField)[0]) {
                     //if condition to check for conditions where the entered values are erroneous.
                     if (domClass.contains(currentField, "has-error") && query("select", currentField).length === 0) {
                         erroneousFields.push(currentField);
                     }
                     //if condition to check for conditions where mandatory fields are kept empty.
-                    if ((query(".form-control", currentField)[0].value === "" && domClass.contains(currentField, "mandatory"))) {
-                        this._validateUserInput(nls.user.requiredFields, currentField, query(".form-control", currentField)[0].value, true);
+                    if ((query(".form-control", currentField)[0] && (query(".form-control", currentField)[0].value === "") && domClass.contains(currentField, "mandatory")) || (query(".filterSelect", currentField)[0] && (query(".filterSelect", currentField)[0].value === "") && domClass.contains(currentField, "mandatory"))) {
+                        var selectValue = query(".form-control", currentField)[0] ? query(".form-control", currentField)[0].value : query(".filterSelect", currentField)[1].value;
+                        this._validateUserInput(nls.user.requiredFields, currentField, query(".form-control", selectValue, true));
                         erroneousFields.push(currentField);
                     }
                     else {
                         if (domClass.contains(currentField, "mandatory")) {
-                            this._validateUserInput(false, currentField, query(".form-control", currentField)[0].value, true);
+                            var mandatoryValue = query(".form-control", currentField)[0] ? query(".form-control", currentField)[0].value : query(".filterSelect", currentField)[1].value;
+                            this._validateUserInput(false, currentField, mandatoryValue, true);
                         }
                     }
                 }
                 //handle errors in radio and checkbox fields here.
                 else {
-                    if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length === 0) {
-                        this._validateUserInput(nls.user.requiredFields, currentField, query(".radioInput:checked", currentField), true);
-                        erroneousFields.push(currentField);
-                    }
-                    else {
-                        if (domClass.contains(currentField, "mandatory")) {
-                            this._validateUserInput(false, currentField, query(".radioInput:checked", currentField), true);
+                    if (!query(".filterSelect", currentField)[0]) {
+                        if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length === 0) {
+                            this._validateUserInput(nls.user.requiredFields, currentField, query(".radioInput:checked", currentField), true);
+                            erroneousFields.push(currentField);
+                        }
+                        else {
+                            if (domClass.contains(currentField, "mandatory")) {
+                                this._validateUserInput(false, currentField, query(".radioInput:checked", currentField), true);
+                            }
                         }
                     }
+                }
+            }));
+            array.forEach(query(".filterSelect"), lang.hitch(this, function (currentField) {
+                if (currentField.value === "" && domClass.contains(currentField.parentElement, "mandatory")) {
+                    this._validateUserInput(nls.user.requiredFields,currentField, currentField.value, true);
+                    erroneousFields.push(currentField);
                 }
             }));
             //this statement will remove the error message div at first and then will be applied if a valid location is not selected
@@ -323,8 +333,14 @@ define([
                     errorMessage += nls.user.selectLocation;
                     this._showErrorMessageDiv(errorMessage, dom.byId("select_location"));
                 }
+                if (!erroneousFields[0].children[0].id) {
+                    var elementId = erroneousFields[0].parentElement.children[0].id;
+                    domClass.remove(elementId, "has-success");  
+                } else {
+                    elementId = erroneousFields[0].children[0].id;
+                }
                 $('html, body').animate({
-                    scrollTop: $("#" + erroneousFields[0].children[0].id).offset().top
+                    scrollTop: $("#" + elementId).offset().top
                 }, 500);
                 btn.button('reset');
             } else {
@@ -722,34 +738,52 @@ define([
                     //If present check for fieldType value and accordingly populate the control
                     if (!radioInput) {
                         inputContent = domConstruct.create("select", {
-                            className: "form-control selectDomain",
-                            "id": fieldname
+                            className: "selectDomain",
+                            "id": fieldname,
                         }, formContent);
-                        selectOptions = domConstruct.create("option", {
-                            innerHTML: nls.user.domainDefaultText,
-                            value: ""
-                        }, inputContent);
                         if (currentField.domain && !currentField.typeField) {
-                            array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
+                            if (currentField.displayType == "Filter Select") {
+                                this._createFilterSelectInput(inputContent, fieldname);
+                            } else {
                                 selectOptions = domConstruct.create("option", {
-                                    innerHTML: currentOption.name,
-                                    value: currentOption.code
+                                    innerHTML: nls.user.domainDefaultText,
+                                    value: ""
                                 }, inputContent);
-                                //if field contain default value, make that option selected
-                                if (currentField.defaultValue === currentOption.code) {
-                                    domAttr.set(selectOptions, "selected", true);
-                                    domClass.add(inputContent.parentNode, "has-success");
-                                }
-                            }));
+                                domClass.add(inputContent, "form-control");
+                            }
+                                array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
+                                    selectOptions = domConstruct.create("option", {
+                                        innerHTML: currentOption.name,
+                                        value: currentOption.code
+                                    }, inputContent);
+                                    //if field contain default value, make that option selected
+                                    if (currentField.defaultValue === currentOption.code) {
+                                        domAttr.set(selectOptions, "selected", true);
+                                        domClass.add(inputContent.parentNode, "has-success");
+                                        if(domClass.contains(inputContent,"filterSelect")){
+                                            $(inputContent).select2("val", currentOption.code);
+                                        }
+                                    }
+                                }));
                         } else {
+                            if (currentField.displayType == "Filter Select") {
+                                this._createFilterSelectInput(inputContent, fieldname);
+                            } else {
+                                selectOptions = domConstruct.create("option", {
+                                    innerHTML: nls.user.domainDefaultText,
+                                    value: ""
+                                }, inputContent);
+                                domClass.add(inputContent, "form-control");
+                            }
                             array.forEach(currentField.subTypes, lang.hitch(this, function (currentOption) {
                                 selectOptions = domConstruct.create("option", {}, inputContent);
                                 selectOptions.text = currentOption.name;
                                 selectOptions.value = currentOption.id;
                                 //default values for subtypes(if any) has to be handled here
                             }));
+                          
                         }
-                        on(inputContent, "change", lang.hitch(this, function (evt) {
+                        on($("#" + fieldname), "change", lang.hitch(this, function (evt) {
                             //function call to take appropriate actions on selection of a subtypes
                             if (currentField.typeField) {
                                 this._validateTypeFields(evt.currentTarget, currentField);
@@ -1110,6 +1144,19 @@ define([
             });
             return rangeHelpText;
         },
+        _createFilterSelectInput: function (inputContent, fieldname)
+        {
+            domClass.add(inputContent, "filterSelect");
+            domStyle.set(inputContent, "width", "100%");
+            var options = domConstruct.create("option", {}, inputContent);
+            options.text = "";
+            options.value = "";
+            $("#" + fieldname).select2({
+                placeholder: nls.user.filterSelectEmptyText,
+                allowClear: true
+            });
+        },
+
         //function to validate the fields defined within subtypes
         _validateTypeFields: function (currentTarget, currentField) {
             var selectedType, defaultValue, switchDomainType, referenceNode;
@@ -1308,6 +1355,13 @@ define([
         },
         // reset form fields
         _clearFormFields: function () {
+            //For Filter Select
+            array.forEach(query(".filterSelect"), lang.hitch(this, function (currentInput) {
+                if (currentInput.value) {
+                    $("#" + currentInput.id).select2("val", "");
+                    domClass.remove(currentInput.parentElement, "has-success");
+                }
+            }));
             // each form field
             array.forEach(query(".form-control"), function (currentInput) {
                 var node = currentInput.parentElement;
@@ -1350,6 +1404,12 @@ define([
         },
         // validate form input
         _validateUserInput: function (error, node, inputValue, iskeyPress) {
+            if (domClass.contains(node, "filterSelect") && inputValue == "" && domClass.contains(node.parentElement, "mandatory")) {
+                this._showErrorMessageDiv(error, node.parentElement.children[0]);
+                domClass.add(node.parentElement, "has-error");
+                domClass.remove(node, "has-success");
+                return;
+            }
             if (query(".errorMessage", node)[0]) {
                 domConstruct.destroy(query(".errorMessage", node)[0]);
             }
@@ -2036,6 +2096,13 @@ define([
                     } else {
                         value = lang.trim(currentField.value);
                     }
+                    featureData.attributes[key] = value;
+                }
+            });
+            array.forEach(query(".filterSelect"), function (currentField) {
+                if (currentField.value) {
+                    key = domAttr.get(currentField, "id");
+                    value = lang.trim(currentField.value);
                     featureData.attributes[key] = value;
                 }
             });
