@@ -172,6 +172,9 @@ define([
             $('#ShowHideLayerOption').on('click', lang.hitch(this, function () {
                 this.currentConfig.showLayer = $('#ShowHideLayerOption')[0].checked;
             }));
+            $('#disableLogo').on('click', lang.hitch(this, function () {
+                this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
+            }));
             this._loadResources();
             this.currentConfig = config;
             this.userInfo = userInfo;
@@ -185,6 +188,7 @@ define([
             this._populateDefaultExtentOption(this.currentConfig.defaultMapExtent);
             this._populateThemes();
             this._populatePushpins();
+            this._enableDisableLogo();
             //Check if the object is messed up with other type.if yes replace it with default object
             if (!this.currentConfig.locationSearchOptions.length) {
                 for (var searchOption in this.locationSearchOption) {
@@ -262,6 +266,11 @@ define([
                 this._swapContents();
             }
         },
+
+        _enableDisableLogo: function () {
+            dom.byId("disableLogo").checked = this.currentConfig.disableLogo;
+        },
+
         _setTabCaption: function () {
             //set sequence numbers to tabs
             array.forEach(query(".navbar-right")[0].children, lang.hitch(this, function (currentTab, index) {
@@ -921,7 +930,8 @@ define([
                 "pushpinColor": this.currentConfig.pushpinColor,
                 "theme": this.currentConfig.theme,
                 "useSmallHeader": this.currentConfig.useSmallHeader,
-                "webmap": this.currentConfig.webmap
+                "webmap": this.currentConfig.webmap,
+                "disableLogo": this.currentConfig.disableLogo
             };
             this.response.itemData.values = this.appSettings;
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;

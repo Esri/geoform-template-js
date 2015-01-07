@@ -207,7 +207,9 @@ define({
             labelHelpMessage: "Label",
             placeHolderHintMessage: "Hint Text",
             placeHolderHelpMessage: "Help Text",
-            selectTextOptionValue: "Filter Select"
+            selectTextOptionValue: "Filter Select",
+            disableLogo: "Disable Logo",
+            disableLogoDescription: "You can configure the GeoForm to Show/Hide Logo in the form header"
         }
     }),
     "ar": 1, 
