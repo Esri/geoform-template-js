@@ -510,7 +510,7 @@ define([
             appTitleNode = dom.byId('appTitle');
             appDescNode = dom.byId('appDescription');
             // set logo
-            if (appConfigurations.Logo) {
+            if (appConfigurations.Logo && !this.config.disableLogo) {
                 appLogoNode.src = appConfigurations.Logo;
             } else {
                 domClass.add(appLogoNode, "hide");
