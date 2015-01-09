@@ -275,6 +275,38 @@
                         <div class="help-block">${builder.selectLocationSDescription}</div>
                     </div>
                     <div class="form-group">
+                        <label for="defaultBasemap">
+                            ${builder.defaultBasemap}</label>
+                        <div class="form-inline">
+                             <div class="form-group">
+                                <select id="defaultBasemap" class="form-control">
+                                </select>
+                            </div>
+                            <div class="form-group thumbnailContainer">
+                                <div class="form-group" id="defaultBasemapThumbnail">
+                                </div>
+                                <div id="defaultBasemapLabel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="secondaryBasemap">
+                            ${builder.secondaryBasemap}</label>
+                        <div class="form-inline">
+                             <div class="form-group">
+                                <select id="secondaryBasemap" class="form-control">
+                                </select>
+                            </div>
+                            <div class="form-group thumbnailContainer">
+                                <div id="secondaryBasemapThumbnail">
+                                </div>
+                                <div id="secondaryBasemapLabel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="style"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>

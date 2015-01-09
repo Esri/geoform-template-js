@@ -30,6 +30,8 @@ define({
     "enableSharing": true,
     "defaultMapExtent": true,
     "pushpinColor": "blue",
+    "nextBasemap": "hybrid",
+    "defaultBasemap": "topo",
     "enableAttachments": true,
     "attachmentIsRequired": false,
     "attachmentLabel": "",

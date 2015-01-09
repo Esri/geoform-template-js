@@ -1458,8 +1458,8 @@ define([
                 // Disable scroll zoom handler
 		var toggle = new basemapToggle({
                     map: this.map,
-                    basemap: "topo",
-                    defaultBasemap: "satellite"
+                    basemap: this.config.defaultBasemap,
+                    defaultBasemap: this.config.nextBasemap
                 }, "BasemapToggle");
                 toggle.startup();
 

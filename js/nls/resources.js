@@ -137,6 +137,8 @@ define({
             layerTabTitleText: "Select Editable Layer",
             selectLayerLabelText: "Layer",
             selectLayerDefaultOptionText: "Select Layer",
+            defaultBasemap: "Default Basemap",
+            secondaryBasemap: "Secondary Basemap",
             detailsTabTitleText: "Form Details",
             detailTitleLabelText: "Title",
             detailLogoLabelText: "Logo Image",
