@@ -176,6 +176,9 @@ define([
             $('#disableLogo').on('click', lang.hitch(this, function () {
                 this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
             }));
+            $('#locateOnLoad').on('click', lang.hitch(this, function () {
+                this.currentConfig.locateOnLoad = !this.currentConfig.locateOnLoad;
+            }));
             this._loadResources();
             this.currentConfig = config;
             this.userInfo = userInfo;
@@ -190,6 +193,7 @@ define([
             this._populateThemes();
             this._populatePushpins();
             this._enableDisableLogo();
+            this._locateCurrentLocation();
             //Check if the object is messed up with other type.if yes replace it with default object
             if (!this.currentConfig.locationSearchOptions.length) {
                 for (var searchOption in this.locationSearchOption) {
@@ -290,6 +294,10 @@ define([
 
         _enableDisableLogo: function () {
             dom.byId("disableLogo").checked = this.currentConfig.disableLogo;
+        },
+
+        _locateCurrentLocation: function () {
+            dom.byId("locateOnLoad").checked = this.currentConfig.locateOnLoad;
         },
 
         _setTabCaption: function () {
@@ -973,7 +981,8 @@ define([
                 "webmap": this.currentConfig.webmap,
                 "disableLogo": this.currentConfig.disableLogo,
                 "defaultBasemap": this.currentConfig.defaultBasemap,
-                "nextBasemap": this.currentConfig.nextBasemap
+                "nextBasemap": this.currentConfig.nextBasemap,
+                "locateOnLoad": this.currentConfig.locateOnLoad
             };
             this.response.itemData.values = this.appSettings;
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;

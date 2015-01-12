@@ -211,7 +211,9 @@ define({
             placeHolderHelpMessage: "Help Text",
             selectTextOptionValue: "Filter Select",
             disableLogo: "Disable Logo",
-            disableLogoDescription: "You can configure the GeoForm to Show/Hide Logo in the form header"
+            disableLogoDescription: "You can configure the GeoForm to Show/Hide Logo in the form header",
+            locateOnLoadText: "Locate On Load",
+            locateOnLoadDescription: "You can configure the GeoForm to locate the current location on form load"
         }
     }),
     "ar": 1, 
