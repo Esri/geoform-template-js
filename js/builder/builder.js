@@ -177,7 +177,7 @@ define([
                 this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
             }));
             $('#locateOnLoad').on('click', lang.hitch(this, function () {
-                this.currentConfig.locateOnLoad = !this.currentConfig.locateOnLoad;
+                this.currentConfig.locate = !this.currentConfig.locate;
             }));
             this._loadResources();
             this.currentConfig = config;
@@ -297,7 +297,7 @@ define([
         },
 
         _locateCurrentLocation: function () {
-            dom.byId("locateOnLoad").checked = this.currentConfig.locateOnLoad;
+            dom.byId("locateOnLoad").checked = this.currentConfig.locate;
         },
 
         _setTabCaption: function () {
@@ -982,7 +982,7 @@ define([
                 "disableLogo": this.currentConfig.disableLogo,
                 "defaultBasemap": this.currentConfig.defaultBasemap,
                 "nextBasemap": this.currentConfig.nextBasemap,
-                "locateOnLoad": this.currentConfig.locateOnLoad
+                "locate":this.currentConfig.locate
             };
             this.response.itemData.values = this.appSettings;
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;

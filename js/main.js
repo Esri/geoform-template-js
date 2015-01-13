@@ -1713,7 +1713,7 @@ define([
                     }));
                 }
                 //Check location parameters in url
-                if (this.config.locate || this.config.locateOnLoad) {
+                if (this.config.locate) {
                     this._setLocation("locate", this.config.locate);
                 } else if (this.config.search) {
                     this._setLocation("search", this.config.search);
