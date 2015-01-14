@@ -108,7 +108,8 @@ define({
             remainingCharactersHintMessage: "${value} characters remaining",
             mapFullScreen: "Full Screen",
             mapRestore: "Restore",
-            filterSelectEmptyText: "Select"
+            filterSelectEmptyText: "Select",
+            btnLinkViewerMode: "Go to Viewer Mode"
         },
         builder: {
             invalidUser: "Sorry, you dont have permission to view this item",
@@ -137,8 +138,6 @@ define({
             layerTabTitleText: "Select Editable Layer",
             selectLayerLabelText: "Layer",
             selectLayerDefaultOptionText: "Select Layer",
-            defaultBasemap: "Default Basemap",
-            secondaryBasemap: "Secondary Basemap",
             detailsTabTitleText: "Form Details",
             detailTitleLabelText: "Title",
             detailLogoLabelText: "Logo Image",
@@ -149,6 +148,7 @@ define({
             fieldTabDisplayTypeHeaderText: "Display As",
             fieldTabOrderColumnText: "Order",
             fieldTabVisibleColumnText: "Enabled",
+            displayFieldText: "Display Field",
             selectMenuOption: "Select Menu",
             selectRadioOption: "Radio Button",
             selectTextOption: "Text",
@@ -212,8 +212,33 @@ define({
             selectTextOptionValue: "Filter Select",
             disableLogo: "Disable Logo",
             disableLogoDescription: "You can configure the GeoForm to Show/Hide Logo in the form header",
-            locateOnLoadText: "Locate On Load",
-            locateOnLoadDescription: "You can configure the GeoForm to locate the current location on form load"
+            browseModeSettingsText: "Browse Mode",
+            browseModeSettingsTabTitleText: "Configuration Settings for Browse Mode",
+            titleFieldLabelText: "Select Title",
+            selectTitleOptionsDescription: "Select Title field for viewing the forms in Browse Mode"
+        },
+        viewer: {
+            titleText: "Geoform - Viewer Mode",
+            geocoderCancelText: "Cancel",
+            viewReportsTabText: "Reports",
+            viewLegendTabText: "Legend",
+            viewAboutusTabText: "About",
+            viewMapTabText: "Map",
+            sortHeaderText: "Sort By:",
+            btnSortText: "Sort",
+            aboutusPanelBodyText: "Viewer mode is to search all the forms submitted.You can view the map in the right.Also an editing feature is provided to edit and update the form.",
+            btnEditText: "Edit",
+            btnSubmitReportText: "Submit a Report",
+            btnsortByText: "Sort by",
+            legendTabTitleText: "View Layers",
+            aboutusTitleText: "Know More",
+            aboutusDescriptionText: "Viewer mode is to search all the forms submitted.You can view the map in the right.Also an editing feature is provided to edit and update the form.",
+            geocoderPlaceholderText: "Zip Code, city, etc.",
+            noSearchResult: "No result found",
+            recordsTabTooltip: "View Submissions",
+            legendTabTooltip: "Legend",
+            aboutUsTabTooltip: "AboutUs",
+            MapTabTooltip: "Map"
         }
     }),
     "ar": 1, 

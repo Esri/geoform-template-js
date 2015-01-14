@@ -1,0 +1,134 @@
+﻿<div>
+    <div data-dojo-type="dijit/layout/BorderContainer" id="mainContainer"
+        class="mainContainer" data-dojo-props="design:'headline', gutters:false">
+        <div class="headerWrapper">
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" class="headerPanel ">
+                <div class="appTitle">
+                    ${viewer.titleText}
+                </div>
+                <div id="shareDialog" class="shareBtnContainer">
+                    <div class="fa fa-share-alt shareIconClass text-muted">
+                    </div>
+                </div>
+                <div class="locateBox">
+                    <div id="geocoderSearch">
+                    </div>
+                </div>
+                <div id="mobileGeocoderIcon" class="text-muted mobileGeocoderIcon icon-right">
+                    <div id="mobileGeocoderIconContainer" class="button-container toggle-grey glyphicon glyphicon-search">
+                    </div>
+                </div>
+                <div id="mobileSearch" class="mobile-locate-box-hidden">
+                    <div class="mobile-search-container">
+                        <div id="geocoderMobile">
+                        </div>
+                        <div id="btnCloseGeocoder" class="close-geocoder-button text-muted">
+                            ${viewer.geocoderCancelText}
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'" class="leftPanelContainer">
+            <div id="panelContainer" class="panelContainer">
+                <div class="navtabs" id="panelHeader" style=" font-size:18px;">
+                    <ul class="nav nav-tabs nav-justified nav nav-pills" id="viewer_pills" role="tablist">
+                          <li title="${viewer.MapTabTooltip}" id="Map" class="map-link">
+                            <a href="#" data-toggle="tab" class="listFontSize">
+                                <span class="glyphicon glyphicon-road"></span>
+                                <span class="tab-text">${viewer.viewMapTabText}</span>
+                            </a>
+                        </li>
+                        <li class="active" id="search" title="${viewer.recordsTabTooltip}">
+                            <a href="#" data-toggle="tab" class="listFontSize">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                                <span class="tab-text">${viewer.viewReportsTabText}</span>
+                            </a>
+                        </li>
+                        <li title="${viewer.legendTabTooltip}" id="legend">
+                            <a href="#" data-toggle="tab" class="listFontSize">
+                                <span class="glyphicon glyphicon-list"></span>
+                                <span class="tab-text">${viewer.viewLegendTabText}</span>
+                            </a>
+                        </li>
+                        <li title="${viewer.aboutUsTabTooltip}" id="aboutUs">
+                            <a href="#" data-toggle="tab" class="listFontSize">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                                <span class="tab-text">${viewer.viewAboutusTabText}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                 <div class="panelBody">
+                    <div id="mapPanelBody" class="">
+                    </div>
+                </div>
+                <div id="searchPanelBody" class="panelBody">
+                    <div id="sortOptionDiv" class="sortOptionDiv clearfix">
+                        <div class="left_text">
+                            <h5>${viewer.sortHeaderText}
+                            </h5>
+                        </div>
+                        <div class="right_box">
+                            <select id="sortbyInput" class="form-control sortSelect">
+                            </select>
+                            <div class="btnSortByOrder">
+                                <button id="btnSortByOrder" type="button" class="btn btn-primary form-control fa fa-sort">
+                                    ${viewer.btnSortText}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="formlist" class="formlist"></div>
+                    <div class="submitFormNode">
+                        <button id="submitForm" type="button" class="btn btn-success">
+                            ${viewer.btnSubmitReportText}
+                        </button>
+                    </div>
+                </div>
+                <div class="panelBody">
+                    <div id="legendPanelBody" class="legendPanelBody"></div>
+                </div>
+                <div class="panelBody">
+                    <div id="aboutusPanelBody" class="aboutusPanelBody">
+                        ${viewer.aboutusPanelBodyText}
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'" id="mapLayoutContainer">
+            <div id="mapDiv" data-dojo-props="region:'center'" class="mapDiv">
+            </div>
+            <div class="BasemapToggle" id="toggleContainer">
+            </div>
+            <div class="panel panel-default featureDetailsContainer" id="featureDetailsContainer">
+                <div class="panel-heading">
+                    <div class="panel-title" id="panelTitle"></div>
+                    <div class="panel-middle">
+                        <ul class="pager" id="featurePagination">
+                            <li id="prevFeature"><a href="#" class="fa fa-chevron-circle-left"></a></li>
+                            <li id="paginationMessage"></li>
+                            <li id="nextFeature"><a href="#" class="fa fa-chevron-circle-right"></a></li>
+                        </ul>
+                    </div>
+                    <div class="panel-button">
+                        <button type="button" value="Edit" class="btn btn-primary editButton">Edit</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="panel-body featureDetailsBody">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <tbody id="featureDetailsBody" class="featureDetailsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
