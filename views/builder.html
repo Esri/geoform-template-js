@@ -82,9 +82,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="button" id="selectWebmapBtn" class="btn btn-default" data-loading-text="${builder.btnSelectWebmapTextLoading}"><span class="glyphicon glyphicon-pencil"></span> ${builder.btnSelectWebmapText}</button>
+                        <button type="button" id="selectWebmapBtn" class="btn btn-default" data-loading-text="${builder.btnSelectWebmapTextLoading}"><span class="glyphicon glyphicon-pencil"></span>${builder.btnSelectWebmapText}</button>
                     </div>
-                    <div class="form-group"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+                    <div class="form-group">
+                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
                 <div id="layer" class="tab-pane">
@@ -98,7 +99,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="webmap"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="webmap"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span>${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="details">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
@@ -109,6 +110,7 @@
                     <div class="form-group">
                         <label for="detailTitleInput">
                             ${builder.headerSizeLabel}
+                       
                         </label>
                         <div class="radio">
                             <label for="jumbotronDisableOption">
@@ -117,7 +119,8 @@
                                 <input id="jumbotronEnableOption" name="headerSize" type="radio" value="Use Big Header" />${builder.bigHeader}</label>
                         </div>
                         <div class="help-block">
-                            ${builder.jumbotronDescription}</div>
+                            ${builder.jumbotronDescription}
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="detailTitleInput">${builder.detailTitleLabelText}</label>
@@ -135,7 +138,7 @@
                         <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="layer"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="layer"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span>${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="fields">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
@@ -150,7 +153,14 @@
                                     <th>${builder.fieldTabOrderColumnText}</th>
                                     <th>
                                         <div class="checkbox">
-                                            <label><input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b></label>
+                                            <label>
+                                                <input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b></label>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="class="radio"">
+                                            <label>
+                                                <b>${builder.displayFieldText}</b></label>
                                         </div>
                                     </th>
                                     <th>${builder.fieldTabFieldHeaderText}</th>
@@ -165,7 +175,7 @@
                     </div>
                     <div id="attachmentDetails"></div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span>${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
@@ -188,7 +198,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span>${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="options">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
@@ -217,13 +227,13 @@
                         </div>
                         <div class="help-block">${builder.defaultMapExtentDescription}</div>
                     </div>
-                     <div class="form-group">
-                       <div class="checkbox">
-                          <label for="disableLogo">
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label for="disableLogo">
                                 <input id="disableLogo" type="checkbox" value="disableLogo" />${builder.disableLogo}</label>
                         </div>
-                       <div class="help-block">${builder.disableLogoDescription}</div>
-                   </div>
+                        <div class="help-block">${builder.disableLogoDescription}</div>
+                    </div>
                     <div class="form-group">
                         <label for="pushpinInput">${builder.pushpinText}</label>
                         <div class="form-inline">
@@ -244,38 +254,44 @@
                             <div class="checkbox">
                                 <label for="myLocation">
                                     <input id="myLocation" type="checkbox" value="myLocation" />${builder.myLocationText}
+                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="search">
                                     <input id="search" type="checkbox" value="searchLocation" />${builder.searchText}
+                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="coordinates">
                                     <input id="coordinates" type="checkbox" value="coordinates" />${builder.coordinatesText}
+                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="USNG">
                                     <input id="USNG" type="checkbox" value="USNG" />${builder.usng}
+                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="MGRS">
                                     <input id="MGRS" type="checkbox" value="MGRS" />${builder.mgrs}
+                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="UTM">
                                     <input id="UTM" type="checkbox" value="UTM" />${builder.utm}
+                               
                                 </label>
                             </div>
                         </div>
                         <div class="help-block">${builder.selectLocationSDescription}</div>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="style"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="style"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span>${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
@@ -286,7 +302,7 @@
                         <iframe frameborder="0" scrolling="yes" class="preview-frame" id="iframeContainer"></iframe>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="options"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="options"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span>${builder.btnPreviousText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
@@ -294,9 +310,9 @@
                     <h2>${builder.saveApplicationText}</h2>
                     <p>${builder.publishTabText}</p>
                     <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
-                        <button id="done" type="button" class="btn btn-default"><span class="glyphicon glyphicon-new-window"></span> ${builder.doneButtonText}</button>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton"><span class="glyphicon glyphicon-floppy-disk"></span> ${builder.saveText}</button>
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span>${builder.btnPreviousText}</a>
+                        <button id="done" type="button" class="btn btn-default"><span class="glyphicon glyphicon-new-window"></span>${builder.doneButtonText}</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton"><span class="glyphicon glyphicon-floppy-disk"></span>${builder.saveText}</button>
                     </div>
                 </div>
             </div>
@@ -305,7 +321,8 @@
     <!-- col for tabs -->
     <hr />
     <footer>
-        <div class="panel-body text-center"><a href="#top">${user.backToTop}</a>
+        <div class="panel-body text-center">
+            <a href="#top">${user.backToTop}</a>
         </div>
     </footer>
 </div>

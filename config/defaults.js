@@ -30,6 +30,7 @@ define({
     "enableSharing": true,
     "defaultMapExtent": true,
     "pushpinColor": "blue",
+    "selectedTitleField": "",
     "enableAttachments": true,
     "attachmentIsRequired": false,
     "attachmentLabel": "",

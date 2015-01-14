@@ -67,7 +67,7 @@ define([
                     "type": "css",
                     "path": "js/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css"
                 }
-         ];
+            ];
         },
 
         startup: function () {
@@ -102,7 +102,7 @@ define([
             return def.promise;
         },
 
-        _swapContents:function(){
+        _swapContents: function () {
             array.forEach(query(".invertedArrows"), lang.hitch(this, function (currentNode) {
                 if (domClass.contains(currentNode, "glyphicon-arrow-left")) {
                     domClass.replace(currentNode, "glyphicon-arrow-right", "glyphicon-arrow-left");
@@ -290,7 +290,7 @@ define([
                 if (this.currentState == "preview") {
                     require([
                        "application/main"
-                      ], lang.hitch(this, function (userMode) {
+                    ], lang.hitch(this, function (userMode) {
                         var index = new userMode();
                         index.startup(this.currentConfig, this.response, true, dom.byId('iframeContainer'));
                     }));
@@ -333,7 +333,7 @@ define([
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         domConstruct.empty(errorNode);
                         attribute = currentTab.getAttribute("tab");
-                        if (((attribute == "publish" || attribute == "preview") && (query(".fieldCheckbox:checked").length === 0)) || (attribute == "fields" && dom.byId("selectLayer").value === "")) {
+                        if (((attribute == "publish" || attribute == "preview") && (query(".fieldCheckbox:checked").length === 0)) || ((attribute == "fields") && dom.byId("selectLayer").value === "")) {
                             this._disableTab(currentTab);
                         } else {
                             this._enableTab(currentTab);
@@ -471,7 +471,7 @@ define([
                 sortedFields = [],
                 fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect, labelPopupContent, helpTextPopupContent, placeholderPopupContent;
             var formFieldsNode = dom.byId('geoFormFieldsTable');
-            labelPopupContent = '<div class="form-group"><label class="text-danger">'+nls.builder.labelHelpMessage +'</label><input type="text" class="form-control" data-input-type="String" placeholder="' +nls.builder.placeHolderHintMessage +'" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
+            labelPopupContent = '<div class="form-group"><label class="text-danger">' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             helpTextPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="text-danger">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             placeholderPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control hintBackgroundColor" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             $('#LabelInfo').popover({ placement: 'bottom', content: labelPopupContent, html: true, trigger: 'click' });
@@ -548,7 +548,7 @@ define([
                     sortedFields.push(currentField);
                 }
             }));
-            //newAddedFields & this.currentConfig.fields
+
             array.forEach(sortedFields, lang.hitch(this, function (currentField, currentIndex) {
                 fieldRow = domConstruct.create("tr", {
                     rowIndex: currentIndex
@@ -581,6 +581,22 @@ define([
                     }
                     this._getFieldCheckboxState();
                 }));
+                fieldRadioButton = domConstruct.create("td", {}, fieldRow);
+                if (currentField.type === "esriFieldTypeString") {
+                    fieldRadioButtonInput = domConstruct.create("input", {
+                        className: "fieldRadiobutton",
+                        type: "radio",
+                        name: 'optionsRadios',
+                        index: currentIndex
+                    }, fieldRadioButton);
+                    if (currentField.name === this.currentConfig.selectedTitleField) {
+                        fieldRadioButtonInput.checked = true;
+                    }
+                    domAttr.set(fieldRadioButtonInput, "value", currentField.name);
+                    on(fieldRadioButtonInput, "change", lang.hitch(this, function (evt) {
+                        this.currentConfig.selectedTitleField = evt.currentTarget.value;
+                    }));
+                }
 
                 fieldName = domConstruct.create("td", {
                     className: "fieldName layerFieldsName",
@@ -780,9 +796,9 @@ define([
         //function to allow user to udate/select webmap from the list
         _initWebmapSelection: function () {
             var browseParams = {
-                    portal: this.userInfo.portal,
-                    galleryType: "webmap" //valid values are webmap or group
-                },
+                portal: this.userInfo.portal,
+                galleryType: "webmap" //valid values are webmap or group
+            },
                 webmapButton, bootstrapButton;
             this.browseDlg = new BrowseIdDlg(browseParams, this.userInfo);
             on(this.browseDlg, "close", lang.hitch(this, function () {
@@ -864,37 +880,37 @@ define([
         //function takes the previous tab's details as input parameter and saves the setting to config
         _updateAppConfiguration: function (prevNavigationTab) {
             switch (prevNavigationTab) {
-            case "webmap":
-                break;
-            case "details":
-                this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
-                this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
-                this.currentConfig.details.Description = $('#detailDescriptionInput').code();
-                break;
-            case "fields":
-                this.currentConfig.fields.length = 0;
-                var fieldName, fieldLabel, fieldDescription, layerName, visible;
-                layerName = dom.byId("selectLayer").value;
-                array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow, currentFieldIndex) {
-                    if (currentRow.getAttribute("rowIndex")) {
-                        fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
+                case "webmap":
+                    break;
+                case "details":
+                    this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
+                    this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
+                    this.currentConfig.details.Description = $('#detailDescriptionInput').code();
+                    break;
+                case "fields":
+                    this.currentConfig.fields.length = 0;
+                    var fieldName, fieldLabel, fieldDescription, layerName, visible;
+                    layerName = dom.byId("selectLayer").value;
+                    array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow, currentFieldIndex) {
+                        if (currentRow.getAttribute("rowIndex")) {
+                            fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
 
-                        fieldLabel = query(".fieldLabel", currentRow)[0].value;
-                        fieldDescription = query(".fieldDescription", currentRow)[0].value;
-                        visible = query(".fieldCheckbox", currentRow)[0].checked;
-                        this.currentConfig.fields.push({
-                            name: fieldName,
-                            alias: fieldLabel,
-                            fieldDescription: fieldDescription,
-                            visible: visible
-                        });
-                        if (query(".fieldPlaceholder", currentRow)[0] && query(".fieldPlaceholder", currentRow)[0].value) {
-                            this.currentConfig.fields[currentFieldIndex - 1].tooltip = query(".fieldPlaceholder", currentRow)[0].value;
+                            fieldLabel = query(".fieldLabel", currentRow)[0].value;
+                            fieldDescription = query(".fieldDescription", currentRow)[0].value;
+                            visible = query(".fieldCheckbox", currentRow)[0].checked;
+                            this.currentConfig.fields.push({
+                                name: fieldName,
+                                alias: fieldLabel,
+                                fieldDescription: fieldDescription,
+                                visible: visible
+                            });
+                            if (query(".fieldPlaceholder", currentRow)[0] && query(".fieldPlaceholder", currentRow)[0].value) {
+                                this.currentConfig.fields[currentFieldIndex - 1].tooltip = query(".fieldPlaceholder", currentRow)[0].value;
+                            }
+                            if (query(".displayType", currentRow)[0]) {
+                                this.currentConfig.fields[currentFieldIndex - 1].displayType = query(".displayType", currentRow)[0].value;
+                            }
                         }
-                        if (query(".displayType", currentRow)[0]) {
-                            this.currentConfig.fields[currentFieldIndex - 1].displayType = query(".displayType", currentRow)[0].value;
-                        }
-                    }
                         if (dom.byId("enableAttachmentInfo")) {
                             this.currentConfig.enableAttachments = dom.byId("enableAttachmentInfo").checked;
                         }
@@ -931,7 +947,8 @@ define([
                 "theme": this.currentConfig.theme,
                 "useSmallHeader": this.currentConfig.useSmallHeader,
                 "webmap": this.currentConfig.webmap,
-                "disableLogo": this.currentConfig.disableLogo
+                "disableLogo": this.currentConfig.disableLogo,
+                "selectedTitleField": this.currentConfig.selectedTitleField
             };
             this.response.itemData.values = this.appSettings;
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;
