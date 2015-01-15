@@ -220,7 +220,7 @@ define({
         viewer: {
             titleText: "Geoform - Viewer Mode",
             geocoderCancelText: "Cancel",
-            viewReportsTabText: "Reports",
+            viewReportsTabText: "Submissions",
             viewLegendTabText: "Legend",
             viewAboutusTabText: "About",
             viewMapTabText: "Map",
@@ -228,16 +228,14 @@ define({
             btnSortText: "Sort",
             aboutusPanelBodyText: "Viewer mode is to search all the forms submitted.You can view the map in the right.Also an editing feature is provided to edit and update the form.",
             btnEditText: "Edit",
-            btnSubmitReportText: "Submit report",
+            btnSubmitReportText: "Submit a report",
             btnsortByText: "Sort by",
-            legendTabTitleText: "View Layers",
-            aboutusTitleText: "Know More",
             aboutusDescriptionText: "Viewer mode is to search all the forms submitted.You can view the map in the right.Also an editing feature is provided to edit and update the form.",
             geocoderPlaceholderText: "Zip Code, city, etc.",
             noSearchResult: "No result found",
             recordsTabTooltip: "View Submissions",
             legendTabTooltip: "Legend",
-            aboutUsTabTooltip: "AboutUs",
+            aboutUsTabTooltip: "About",
             MapTabTooltip: "Map"
         }
     }),
