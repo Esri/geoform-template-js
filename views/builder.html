@@ -141,10 +141,17 @@
                     </div>
                 </div>
                 <div id="fields" class="tab-pane">
-                    <h2>${builder.selectFieldsText}</h2>
-                    <p>${builder.fieldsTabText}</p>
+                    <div id="layerSelectPane">
+                        <h2>
+                            Select Layer</h2>
+                            <select id="layerSelect" class="form-control">
+                                    </select></div>
+                    <h2>
+                        ${builder.selectFieldsText}</h2>
+                    <p>
+                        ${builder.fieldsTabText}</p>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped" id="tableDND">
+                        <table class="table table-bordered table-striped tableDND">
                             <thead>
                                 <tr>
                                     <th>${builder.fieldTabOrderColumnText}</th>

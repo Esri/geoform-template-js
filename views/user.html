@@ -22,15 +22,30 @@
         <div class="clearfix"></div>
     </div>
     <div class="row">
+       
+        <div class="col-md-12 col-lg-10 col-lg-offset-1" id="selectLayer">
+             <h2 class="geoformSection">
+                ${user.selectLayerTabText}</h2> 
+               <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="multipleLayers">
+                    </div>
+                </div></div>
+           
+        </div>
+                   
         <div class="col-md-12 col-lg-10 col-lg-offset-1">
-            <h2>${user.geoFormGeneralTabText}</h2>
+            <h2 class="geoformSection">
+                ${user.geoFormGeneralTabText}</h2>
             <div class="panel panel-default">
               <div class="panel-body">
                 <form role="form" id="userForm"></form>
               </div>
             </div>
-            <h2 id="select_location">${user.locationInformationText}</h2>
-            <p id="locationOptionDescriptor"></p>
+            <h2 id="select_location" class="geoformSection">
+                ${user.locationInformationText}</h2>
+            <p id="locationOptionDescriptor">
+            </p>
             <div id="location_panel" class="panel panel-default">
                 <div class="panel-heading" id="location_nav">
                     <ul class="nav nav-pills" id="location_pills">
@@ -118,7 +133,7 @@
             <div class="gf-map panel panel-default" id="map_container">
                 <div id="mapDiv" class="map-div"></div>
             </div>
-            <h2>${user.submitInformationText}</h2>
+            <h2 class="geoformSection">${user.submitInformationText}</h2>
             <p>${user.submitInstructions}</p>
             <div id="connection_status"></div>
             <div id="pending_edits"></div>

@@ -48,9 +48,10 @@ define({
             utm_northing: "Northing",
             utm_easting: "Easting",
             utm_zone_number: "Zone Number",
-            geoFormGeneralTabText: "1. Enter Information",
-            locationInformationText: "2. Select Location",
-            submitInformationText: "3. Complete Form",
+            selectLayerTabText: "${formSection} Choose Form",
+            geoFormGeneralTabText: "${formSection} Enter Information",
+            locationInformationText: "${formSection} Select Location",
+            submitInformationText: "${formSection} Complete Form",
             submitInstructions: "Add this information to the map.",
             myLocationText: "Current Location",
             locationDescriptionForMoreThanOneOption: "Specify the location for this entry by clicking/tapping the map or by using one of the following options.",
@@ -108,7 +109,8 @@ define({
             remainingCharactersHintMessage: "${value} characters remaining",
             mapFullScreen: "Full Screen",
             mapRestore: "Restore",
-            filterSelectEmptyText: "Select"
+            filterSelectEmptyText: "Select",
+            invalidLayerMessage: "Form layer does not exist. Please configure the application and set the layer."
         },
         builder: {
             invalidUser: "Sorry, you dont have permission to view this item",

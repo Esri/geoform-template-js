@@ -549,6 +549,8 @@ define([
         },
         //function to validate and create the form
         _createForm: function (fields) {
+            domConstruct.empty(dom.byId('userForm'));
+            this.sortedFields = [];
             var formContent, labelContent, fileInput, matchingField, newAddedFields = [], userFormNode;
             if (!this._formLayer) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage, dom.byId("errorMessageDiv"));
@@ -632,14 +634,14 @@ define([
                 this._createFormElements(currentField, index, null);
             }));
             // if form has attachments
-            if (this._formLayer.hasAttachments && this.config.enableAttachments) {
+            if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id]) {
                 var requireField = null, helpBlock;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group hasAttachment geoFormQuestionare"
                 }, userFormNode);
                 //code to make the attachment input mandatory
-                if (this.config.attachmentIsRequired) {
+                if (this.config.attachmentInfo[this._formLayer.id].attachmentIsRequired) {
                     domClass.add(formContent, "mandatory");
                     requireField = domConstruct.create("small", {
                         className: 'requireFieldStyle',
@@ -649,7 +651,7 @@ define([
                 // attachment label html
                 var labelHTML = "";
                 labelHTML += "<span class=\"glyphicon glyphicon-paperclip\"></span> ";
-                labelHTML += (this.config.attachmentLabel || nls.user.attachment);
+                labelHTML += (this.config.attachmentInfo[this._formLayer.id].attachmentLabel || nls.user.attachment);
                 // attachment label
                 labelContent = domConstruct.create("label", {
                     innerHTML: labelHTML,
@@ -666,14 +668,14 @@ define([
                     //"capture": "camera",
                     "name": "attachment"
                 }, formContent);
-                if (this.config.attachmentIsRequired) {
+                if (this.config.attachmentInfo[this._formLayer.id].attachmentIsRequired) {
                     fileInput.setAttribute("aria-required", true);
                     fileInput.setAttribute("required", "");
                 }
-                if (this.config.attachmentHelpText) {
+                if (this.config.attachmentInfo[this._formLayer.id].attachmentHelpText) {
                     helpBlock = domConstruct.create("p", {
                         className: "help-block",
-                        innerHTML: this.config.attachmentHelpText
+                        innerHTML: this.config.attachmentInfo[this._formLayer.id].attachmentHelpText
                     }, formContent);
                 }
             }
@@ -1454,6 +1456,7 @@ define([
                 // any custom options you defined for the template. In this example that is the 'theme' property.
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
+                this._createGeoformSections();
                 this.map = response.map;
                 // Disable scroll zoom handler
 		var toggle = new basemapToggle({
@@ -1484,8 +1487,30 @@ define([
                 if (this.config.details && this.config.details.Title) {
                     window.document.title = this.config.details.Title;
                 }
-                // create form fields
-                this._createForm(this.config.fields);
+                if (this.config.form_layer.id == "All Layer") {
+                    var webmapLayers;
+                    this.layerCollection = {};
+                    webmapLayers = domConstruct.create("select", { class: "form-control" }, dom.byId("multipleLayers"));
+                    for (var key in this.config.fields) {
+                        //Fetch all the layers at once
+                        this.layerCollection[key] = this.map.getLayer(key);
+                        var option = domConstruct.create("option", {}, null);
+                        option.text = this.layerCollection[key].name;
+                        option.value = key;
+                        webmapLayers.appendChild(option);
+                    };
+                    webmapLayers.options[0].selected = true;
+                    this._formLayer = this.layerCollection[webmapLayers.options[0].value];
+                    this._createForm(this.config.fields[webmapLayers.options[0].value]);
+                    on(webmapLayers, "change", lang.hitch(this, function (evt) {
+                        var fields = this.config.fields[evt.currentTarget.value];
+                        this._formLayer = this.layerCollection[evt.currentTarget.value];
+                        this._createForm(fields);
+                    }));
+                } else {
+                    // create form fields
+                    this._createForm(this.config.fields[this._formLayer.id]);
+                }
                 // create locate button
                 this._createLocateButton();
                 // create geocoder button
@@ -1722,6 +1747,21 @@ define([
                 }
             }), this.reportError);
         },
+	
+	_createGeoformSections: function () {
+            array.forEach(query(".geoformSection"), lang.hitch(this, function (currentSection, index) {
+                if (this.config.form_layer.id === "All Layer") {
+                    currentSection.innerHTML = string.substitute(currentSection.innerHTML, { formSection: ++index + "." });
+                } else {
+                    if (index !== 0) {
+                        currentSection.innerHTML = string.substitute(currentSection.innerHTML, { formSection: index + "." });
+                    } else {
+                        domStyle.set(dom.byId("selectLayer"), "display", "none");
+                    }
+                }
+            }));
+        },
+	
         _mapLoaded: function () {
             // center coords
             setTimeout(lang.hitch(this, function () {
@@ -2422,11 +2462,16 @@ define([
                         }
                     }));
                 }
-            }
-            if (this.config.showLayer) {
-                this._formLayer.setVisibility(true);
+                if (this.config.showLayer) {
+                    this._formLayer.setVisibility(true);
+                } else {
+                    this._formLayer.setVisibility(false);
+                }
             } else {
-                this._formLayer.setVisibility(false);
+                if (this.config.form_layer.id !== "All Layer") {
+                    var error = new Error(nls.user.invalidLayerMessage);
+                    this.reportError(error);
+                }
             }
         },
         // set defaults for app settings

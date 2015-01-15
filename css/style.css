@@ -81,8 +81,8 @@
 .app-error .loading-error {
     display: block;
 }
-#tableDND th,
-#tableDND td {
+.tableDND th,
+.tableDND td {
     vertical-align: middle;
 }
 #geoform .progress-remove-margin {
