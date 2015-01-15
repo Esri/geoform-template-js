@@ -26,9 +26,10 @@ define([
     "application/themes",
     "application/pushpins",
     "esri/layers/FeatureLayer",
+    "esri/basemaps",
     "application/wrapper/builder-jquery-deps",
     "dojo/domReady!"
-], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer) {
+], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer, esriBasemaps) {
     return declare([], {
         nls: nls,
         currentState: "webmap",
@@ -175,6 +176,9 @@ define([
             $('#disableLogo').on('click', lang.hitch(this, function () {
                 this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
             }));
+            $('#locateOnLoad').on('click', lang.hitch(this, function () {
+                this.currentConfig.locate = !this.currentConfig.locate;
+            }));
             this._loadResources();
             this.currentConfig = config;
             this.userInfo = userInfo;
@@ -189,6 +193,7 @@ define([
             this._populateThemes();
             this._populatePushpins();
             this._enableDisableLogo();
+            this._locateCurrentLocation();
             //Check if the object is messed up with other type.if yes replace it with default object
             if (!this.currentConfig.locationSearchOptions.length) {
                 for (var searchOption in this.locationSearchOption) {
@@ -207,6 +212,26 @@ define([
             }
             this._populateLocations();
             this._initWebmapSelection();
+            this._populateBasemapOptions(dom.byId('defaultBasemap'), this.currentConfig.defaultBasemap, dom.byId('defaultBasemapThumbnail'), dom.byId('defaultBasemapLabel'));
+            this._populateBasemapOptions(dom.byId('secondaryBasemap'), this.currentConfig.nextBasemap, dom.byId('secondaryBasemapThumbnail'), dom.byId('secondaryBasemapLabel'));
+            on(dom.byId("defaultBasemap"), "change", lang.hitch(this, function (evt) {
+                if (dom.byId('secondaryBasemap').value != evt.currentTarget.value) {
+                    this._setBasemap(dom.byId('defaultBasemapThumbnail'), evt.currentTarget.value, dom.byId('defaultBasemapLabel'));
+                    this.currentConfig.defaultBasemap = evt.currentTarget.value;
+                }
+                else {
+                    dom.byId("defaultBasemap").value = this.currentConfig.defaultBasemap;
+                }
+            }));
+            on(dom.byId("secondaryBasemap"), "change", lang.hitch(this, function (evt) {
+                if (dom.byId('defaultBasemap').value != evt.currentTarget.value) {
+                    this._setBasemap(dom.byId('secondaryBasemapThumbnail'), evt.currentTarget.value, dom.byId('secondaryBasemapLabel'));
+                    this.currentConfig.nextBasemap = evt.currentTarget.value;
+                }
+                else {
+                    dom.byId("secondaryBasemap").value = this.currentConfig.nextBasemap;
+                }
+            }));
             if (!this.localStorageSupport.supportsStorage()) {
                 array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                     if (domAttr.get(currentTab, "tab") == "preview") {
@@ -269,6 +294,10 @@ define([
 
         _enableDisableLogo: function () {
             dom.byId("disableLogo").checked = this.currentConfig.disableLogo;
+        },
+
+        _locateCurrentLocation: function () {
+            dom.byId("locateOnLoad").checked = this.currentConfig.locate;
         },
 
         _setTabCaption: function () {
@@ -427,6 +456,25 @@ define([
                 }
             }
         },
+
+        _populateBasemapOptions: function (basemapSelect, configuredBasemap, thumbnailContainer, basemapLabel) {
+            for (var basemapKey in esriBasemaps) {
+                var basemapOption = domConstruct.create("option");
+                basemapOption.text = esriBasemaps[basemapKey].title;
+                basemapOption.value = basemapKey;
+                if (basemapOption.value == configuredBasemap) {
+                    this._setBasemap(thumbnailContainer, basemapOption.value, basemapLabel);
+                    basemapOption.selected = "selected";
+                }
+                basemapSelect.appendChild(basemapOption);
+            }
+        },
+
+        _setBasemap: function (domNode, currentValue, basemapLabel) {
+            domStyle.set(domNode, "background", 'url(' + esriBasemaps[currentValue].thumbnailUrl + ') no-repeat center center');
+            domAttr.set(basemapLabel, "innerHTML", esriBasemaps[currentValue].title);
+        },
+
         _populateShowLayerOption: function (showlayeropt) {
             $("#ShowHideLayerOption")[0].checked = showlayeropt;
         },
@@ -931,7 +979,10 @@ define([
                 "theme": this.currentConfig.theme,
                 "useSmallHeader": this.currentConfig.useSmallHeader,
                 "webmap": this.currentConfig.webmap,
-                "disableLogo": this.currentConfig.disableLogo
+                "disableLogo": this.currentConfig.disableLogo,
+                "defaultBasemap": this.currentConfig.defaultBasemap,
+                "nextBasemap": this.currentConfig.nextBasemap,
+                "locate":this.currentConfig.locate
             };
             this.response.itemData.values = this.appSettings;
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;
