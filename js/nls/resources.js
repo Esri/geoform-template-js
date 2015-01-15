@@ -228,7 +228,7 @@ define({
             btnSortText: "Sort",
             aboutusPanelBodyText: "Viewer mode is to search all the forms submitted.You can view the map in the right.Also an editing feature is provided to edit and update the form.",
             btnEditText: "Edit",
-            btnSubmitReportText: "Submit a Report",
+            btnSubmitReportText: "Submit report",
             btnsortByText: "Sort by",
             legendTabTitleText: "View Layers",
             aboutusTitleText: "Know More",

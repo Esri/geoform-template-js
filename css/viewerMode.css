@@ -1,4 +1,4 @@
-﻿/* General */
+/* General */
 
 html, body
 {
@@ -63,10 +63,6 @@ html, body
     height: 44px;
     border-bottom: 1px solid #ddd;
     border-left: 1px solid #ddd;
-}
-.esriSimpleSlider
-{
-    top: 40px !important;
 }
 .appTitle
 {
