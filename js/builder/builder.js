@@ -928,6 +928,7 @@ define([
                     arcgisUtils.getItem(this.currentConfig.webmap).then(lang.hitch(this, function (itemInfo) {
                         this.currentConfig.fields = {};
                         this.currentConfig.form_layer.id = "";
+                        this.currentConfig.attachmentInfo = {};
                         domConstruct.empty(dom.byId('geoFormFieldsTable'));
                         this.currentConfig.itemInfo = itemInfo;
                         this._addOperationalLayers(true);
@@ -1007,11 +1008,11 @@ define([
                     var fieldName, fieldLabel, fieldDescription, visible;
                     this.currentSelectedLayer[layerObj] = dom.byId('geoFormFieldsTable');
                     array.forEach(this.currentSelectedLayer[layerObj].children, lang.hitch(this, function (currentRow, currentFieldIndex) {
-                        if (currentRow.getAttribute("rowIndex")) {
-                            fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
-                            fieldLabel = query(".fieldLabel", currentRow)[0].value;
-                            fieldDescription = query(".fieldDescription", currentRow)[0].value;
-                            visible = query(".fieldCheckbox", currentRow)[0].checked;
+                    if (currentRow.getAttribute("rowIndex")) {
+                        fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
+                        fieldLabel = query(".fieldLabel", currentRow)[0].value;
+                        fieldDescription = query(".fieldDescription", currentRow)[0].value;
+                        visible = query(".fieldCheckbox", currentRow)[0].checked;
                             var layerFields = {};
                             layerFields.name = fieldName;
                             layerFields.alias = fieldLabel;
@@ -1323,7 +1324,7 @@ define([
                     "type": "text",
                     "class": "form-control",
                     "id": "attachmentLabelInfo",
-                    "value": attachmentInfo.attachmentLabel
+                    "value": attachmentInfo.attachmentLabel ?attachmentInfo.attachmentLabel : ""
                 }, attachmentLabel);
                 domConstruct.create("span", {
                     "class": "attachmentHint",
@@ -1341,7 +1342,7 @@ define([
                     "type": "text",
                     "class": "form-control",
                     "id": "attachmentDescription",
-                    "value": attachmentInfo.attachmentHelpText
+                    "value": attachmentInfo.attachmentHelpText ?attachmentInfo.attachmentHelpText :""
                 }, attachmentDetails);
                 domConstruct.create("span", {
                     "class": "attachmentHint",

@@ -2426,6 +2426,9 @@ define([
                         }
                         // set id
                         this.config.form_layer.id = currentLayer.id;
+                        //Add the default fields in the fields object
+                        //This case will work when application is running without app id
+                        this.config.fields[this.config.form_layer.id] = this.map.getLayer(this.config.form_layer.id).fields;
                         return true;
                     }
                 }));

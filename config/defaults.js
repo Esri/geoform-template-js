@@ -13,7 +13,6 @@ define({
         "Description": ""
     },
     "fields": {
-
     },
     "theme": "bootstrap", // see values in themes.js
     "oauthappid": null,
