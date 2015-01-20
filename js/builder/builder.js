@@ -26,10 +26,11 @@ define([
     "application/themes",
     "application/pushpins",
     "esri/layers/FeatureLayer",
+    "dojo/Deferred",
     "esri/basemaps",
     "application/wrapper/builder-jquery-deps",
     "dojo/domReady!"
-], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer, esriBasemaps) {
+], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer, Deferred, esriBasemaps) {
     return declare([], {
         nls: nls,
         currentState: "webmap",
@@ -240,8 +241,23 @@ define([
                 }));
             }
             on(dom.byId("selectLayer"), "change", lang.hitch(this, function (evt) {
-                this.currentConfig.form_layer.id = evt.currentTarget.value;
-                this._populateFields(evt.currentTarget.value);
+                //support for all layers in webmap
+                if (evt.currentTarget.value === "All Layer") {
+                    domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
+                    array.forEach(dom.byId("layerSelect").options, lang.hitch(this, function (opt) {
+                        this._populateFields(opt.value);
+                        this._updateAppConfiguration("fields", opt.value);
+                        this.previousValue = opt.value;
+                    }));
+                    dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
+                    this.currentConfig.form_layer.id = "All Layer";
+                } else if (evt.currentTarget.value !== "") {
+                    domStyle.set(dom.byId("layerSelectPane"), 'display', 'none');
+                    this._populateFields(evt.currentTarget.value);
+                    this._updateAppConfiguration("fields", evt.currentTarget.value);
+                    this.previousValue = evt.currentTarget.value;
+                    this.currentConfig.form_layer.id = evt.currentTarget.value;
+                }
                 if (evt.currentTarget.value === "") {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         if (domAttr.get(currentTab, "tab") == "fields" || domAttr.get(currentTab, "tab") == "preview" || domAttr.get(currentTab, "tab") == "publish") {
@@ -253,10 +269,20 @@ define([
                         if (domAttr.get(currentTab, "tab") == "fields" || ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish") && query(".fieldCheckbox:checked").length !== 0)) {
                             this._enableTab(currentTab);
                         }
+                        else {
+                            if (domAttr.get(currentTab, "tab") == "fields" || ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish") && query(".fieldCheckbox:checked").length === 0)) {
+                                this._disableTab(currentTab);
+                            }
+                        }
                     }));
                 }
             }));
 
+            on(dom.byId("layerSelect"), "change", lang.hitch(this, function (evt) {
+                this._updateAppConfiguration("fields", this.previousValue);
+                this._populateFields(evt.currentTarget.value);
+                this.previousValue = evt.currentTarget.value;
+            }));
             on(dom.byId('selectAll'), "change", lang.hitch(this, function (evt) {
                 array.forEach(query(".fieldCheckbox"), lang.hitch(this, function (currentCheckBox) {
                     if (!currentCheckBox.disabled) {
@@ -315,7 +341,7 @@ define([
             if (evt) {
                 this.previousState = this.currentState;
                 this.currentState = evt.currentTarget.getAttribute("tab");
-                this._updateAppConfiguration(this.previousState);
+                this._updateAppConfiguration(this.previousState, this.previousValue);
                 if (this.currentState == "preview") {
                     require([
                        "application/main"
@@ -330,7 +356,7 @@ define([
         },
 
         //function will validate and add operational layers in dropdown
-        _addOperationalLayers: function () {
+        _addOperationalLayers: function (isLoadRequired) {
             var layerListArray = [],
                 attribute;
             this._clearLayerOptions();
@@ -340,6 +366,7 @@ define([
                 }
             }));
             all(layerListArray).then(lang.hitch(this, function () {
+                this._checkForLayers();
                 if (dom.byId("selectLayer").options.length <= 1) {
                     domAttr.set(dom.byId("selectLayer"), "disabled", true);
                     var html = '';
@@ -358,6 +385,16 @@ define([
                         }
                     }));
                 } else {
+                    if (isLoadRequired) {
+                        if (dom.byId("selectLayer").options.length > 2) {
+                            array.forEach(dom.byId("layerSelect").options, lang.hitch(this, function (opt) {
+                                this._populateFields(opt.value);
+                                this._updateAppConfiguration("fields", opt.value);
+                                this.previousValue = opt.value;
+                            }));
+                            dom.byId("selectLayer").options[dom.byId("selectLayer").length - 1].selected = true;
+                        }
+                    }
                     var errorNode = dom.byId('builderMessageDiv');
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                         domConstruct.empty(errorNode);
@@ -369,6 +406,9 @@ define([
                         }
                     }));
                     domAttr.set(dom.byId("selectLayer"), "disabled", false);
+                    domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
+                    dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
+                    this.currentConfig.form_layer.id = "All Layer";
                 }
             }));
         },
@@ -511,9 +551,7 @@ define([
 
         //function will populate all editable fields with validations
         _populateFields: function (layerName) {
-            var configuredFields = [],
-                configuredFieldName = [],
-                fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
+            var fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
                 fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [],
                 sortedFields = [],
@@ -550,10 +588,6 @@ define([
                     tbody.sortable();
                 }
             });
-            array.forEach(this.currentConfig.fields, lang.hitch(this, function (currentField) {
-                configuredFieldName.push(currentField.name);
-                configuredFields.push(currentField);
-            }));
 
             array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer, index) {
                 if (this.fieldInfo[layerName]) {
@@ -561,11 +595,14 @@ define([
                         layerIndex = index;
                     }
                 }
+                if (!this.config.fields.hasOwnProperty(layerName)) {
+                    this.config.fields[layerName] = this.fieldInfo[layerName].Fields;
+                }
             }));
             if (this.fieldInfo[layerName]) {
                 array.forEach(this.fieldInfo[layerName].Fields, lang.hitch(this, function (currentField) {
                     matchingField = false;
-                    array.forEach(this.currentConfig.fields, lang.hitch(this, function (configLayerField) {
+                    array.forEach(this.config.fields[layerName], lang.hitch(this, function (configLayerField) {
                         if ((currentField.editable && configLayerField.name == currentField.name)) {
                             matchingField = true;
                             if (!(currentField.type === "esriFieldTypeOID" || currentField.type === "esriFieldTypeGeometry" || currentField.type === "esriFieldTypeBlob" || currentField.type === "esriFieldTypeRaster" || currentField.type === "esriFieldTypeGUID" || currentField.type === "esriFieldTypeGlobalID" || currentField.type === "esriFieldTypeXML")) {
@@ -583,7 +620,7 @@ define([
                 }));
             }
 
-            array.forEach(this.currentConfig.fields, lang.hitch(this, function (configField) {
+            array.forEach(this.config.fields[layerName], lang.hitch(this, function (configField) {
                 array.some(newAddedFields, lang.hitch(this, function (currentField) {
                     if (currentField.name === configField.name) {
                         sortedFields.push(currentField);
@@ -769,10 +806,19 @@ define([
             } else {
                 dom.byId('selectAll').checked = false;
             }
-            this._updateAppConfiguration("fields");
             if (this.fieldInfo[layerName]) {
-                this._createAttachmentInput(this.fieldInfo[layerName].layerUrl);
+                if (!this.currentConfig["attachmentInfo"][layerName]) {
+                    this.currentConfig["attachmentInfo"][layerName] = {};
+                }
+                this.currentConfig["attachmentInfo"][layerName].enableAttachments ? this.currentConfig["attachmentInfo"][layerName].enableAttachments : true;
+                this.currentConfig["attachmentInfo"][layerName].attachmentIsRequired ? this.currentConfig["attachmentInfo"][layerName].attachmentIsRequired : false;
+                this.currentConfig["attachmentInfo"][layerName].attachmentLabel ? this.currentConfig["attachmentInfo"][layerName].attachmentLabel : "";
+                this.currentConfig["attachmentInfo"][layerName].attachmentHelpText ? this.currentConfig["attachmentInfo"][layerName].attachmentHelpText : "";
+                this._createAttachmentInput(this.fieldInfo[layerName].layerUrl, this.currentConfig["attachmentInfo"][layerName], this.fieldInfo[layerName].hasAttachments);
             }
+            var currentLayer = [];
+            currentLayer[layerName] = lang.clone(formFieldsNode);
+            this.currentSelectedLayer = currentLayer[layerName];
         },
 
         //To make the configured type as selected
@@ -803,24 +849,56 @@ define([
             }
         },
 
+        _checkForLayers: function () {
+            var filteredLayer = document.createElement("option");
+            if (dom.byId("selectLayer").options.length > 2) {
+                var fLayer = document.createElement("option");
+                filteredLayer.text = fLayer.text = "All Layer";
+                filteredLayer.value = fLayer.value = "All Layer";
+                dom.byId("selectLayer").appendChild(filteredLayer);
+            }
+            if (this.currentConfig.form_layer.id == "All Layer") {
+                domStyle.set(dom.byId("layerSelectPane"), "display", "none");
+                filteredLayer.selected = true;
+                for (var key in this.fieldInfo) {
+                    this._populateFields(key);
+                }
+            } else {
+                if (this.currentConfig.form_layer.id !== "") {
+                    array.some(dom.byId("selectLayer").options, lang.hitch(this, function (currentOption) {
+                        if(currentOption.value==this.currentConfig.form_layer.id)
+                        {
+                            currentOption.selected = true;
+                            return true;
+                        }
+
+
+                    }));
+                    this._populateFields(this.currentConfig.form_layer.id);
+                    domStyle.set(dom.byId("layerSelectPane"), "display", "none");
+                }
+            }
+        },
+
         //function to filter editable layers from all the layers in webmap
         _validateFeatureServer: function (layer, canCreate, layerId) {
             if (canCreate) {
-                var filteredLayer;
+                var filteredLayer, fLayer;
                 filteredLayer = document.createElement("option");
-                filteredLayer.text = layer.name;
-                filteredLayer.value = layerId;
+                fLayer = document.createElement("option");
+                filteredLayer.text = fLayer.text = layer.name;
+                filteredLayer.value = fLayer.value = layerId;
                 dom.byId("selectLayer").appendChild(filteredLayer);
+                dom.byId("layerSelect").appendChild(fLayer);
+                fLayer.selected = true;
+                this.previousValue = layerId;
                 this.fieldInfo[layerId] = {};
                 this.fieldInfo[layerId].Fields = layer.fields;
                 this.fieldInfo[layerId].layerUrl = layer.url;
+                this.fieldInfo[layerId].hasAttachments = layer.hasAttachments;
                 if (layer.typeIdField !== "") {
                     this.fieldInfo[layerId].types = layer.types;
                     this.fieldInfo[layerId].typeIdField = layer.typeIdField;
-                }
-                if (layerId == this.currentConfig.form_layer.id) {
-                    this._populateFields(layerId);
-                    filteredLayer.selected = "selected";
                 }
             }
         },
@@ -848,11 +926,12 @@ define([
                     $.fn.newButton = bootstrapButton;
                     webmapButton.newButton('loading');
                     arcgisUtils.getItem(this.currentConfig.webmap).then(lang.hitch(this, function (itemInfo) {
-                        this.currentConfig.fields.length = 0;
+                        this.currentConfig.fields = {};
                         this.currentConfig.form_layer.id = "";
+                        this.currentConfig.attachmentInfo = {};
                         domConstruct.empty(dom.byId('geoFormFieldsTable'));
                         this.currentConfig.itemInfo = itemInfo;
-                        this._addOperationalLayers();
+                        this._addOperationalLayers(true);
                         webmapButton.newButton('reset');
                         dom.byId("webmapDetailText").innerHTML = string.substitute(nls.builder.webmapDetailsText, {
                             webMapTitleLink: "<a target=\"_blank\" href=\"" + this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap + "\">",
@@ -907,10 +986,15 @@ define([
                     dom.byId("selectLayer").remove(i);
                 }
             }
+            for (i = dom.byId("layerSelect").options.length - 1; i >= 0; i--) {
+                if (dom.byId("layerSelect").options[i].value !== "") {
+                    dom.byId("layerSelect").remove(i);
+                }
+            }
         },
 
         //function takes the previous tab's details as input parameter and saves the setting to config
-        _updateAppConfiguration: function (prevNavigationTab) {
+        _updateAppConfiguration: function (prevNavigationTab, layerObj) {
             switch (prevNavigationTab) {
             case "webmap":
                 break;
@@ -920,40 +1004,40 @@ define([
                 this.currentConfig.details.Description = $('#detailDescriptionInput').code();
                 break;
             case "fields":
-                this.currentConfig.fields.length = 0;
-                var fieldName, fieldLabel, fieldDescription, layerName, visible;
-                layerName = dom.byId("selectLayer").value;
-                array.forEach($("#tableDND")[0].rows, lang.hitch(this, function (currentRow, currentFieldIndex) {
+                    var innerObj = [];
+                    var fieldName, fieldLabel, fieldDescription, visible;
+                    this.currentSelectedLayer[layerObj] = dom.byId('geoFormFieldsTable');
+                    array.forEach(this.currentSelectedLayer[layerObj].children, lang.hitch(this, function (currentRow, currentFieldIndex) {
                     if (currentRow.getAttribute("rowIndex")) {
                         fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
-
                         fieldLabel = query(".fieldLabel", currentRow)[0].value;
                         fieldDescription = query(".fieldDescription", currentRow)[0].value;
                         visible = query(".fieldCheckbox", currentRow)[0].checked;
-                        this.currentConfig.fields.push({
-                            name: fieldName,
-                            alias: fieldLabel,
-                            fieldDescription: fieldDescription,
-                            visible: visible
-                        });
-                        if (query(".fieldPlaceholder", currentRow)[0] && query(".fieldPlaceholder", currentRow)[0].value) {
-                            this.currentConfig.fields[currentFieldIndex - 1].tooltip = query(".fieldPlaceholder", currentRow)[0].value;
+                            var layerFields = {};
+                            layerFields.name = fieldName;
+                            layerFields.alias = fieldLabel;
+                            layerFields.fieldDescription = fieldDescription;
+                            layerFields.visible = visible;
+                            innerObj.push(layerFields);
+                            this.currentConfig.fields[layerObj] = innerObj;
+                            if (query(".fieldPlaceholder", currentRow)[0] && query(".fieldPlaceholder", currentRow)[0].value) {
+                                this.currentConfig.fields[layerObj][currentFieldIndex].tooltip = query(".fieldPlaceholder", currentRow)[0].value;
+                            }
+                            if (query(".displayType", currentRow)[0]) {
+                                this.currentConfig.fields[layerObj][currentFieldIndex].displayType = query(".displayType", currentRow)[0].value;
+                            }
                         }
-                        if (query(".displayType", currentRow)[0]) {
-                            this.currentConfig.fields[currentFieldIndex - 1].displayType = query(".displayType", currentRow)[0].value;
-                        }
-                    }
                         if (dom.byId("enableAttachmentInfo")) {
-                            this.currentConfig.enableAttachments = dom.byId("enableAttachmentInfo").checked;
+                            this.currentConfig.attachmentInfo[layerObj].enableAttachments = dom.byId("enableAttachmentInfo").checked;
                         }
                         if (dom.byId("requiredAttachmentInfo")) {
-                            this.currentConfig.attachmentIsRequired = dom.byId("requiredAttachmentInfo").checked;
+                            this.currentConfig.attachmentInfo[layerObj].attachmentIsRequired = dom.byId("requiredAttachmentInfo").checked;
                         }
                         if (dom.byId("attachmentDescription")) {
-                            this.currentConfig.attachmentHelpText = dom.byId("attachmentDescription").value;
+                            this.currentConfig.attachmentInfo[layerObj].attachmentHelpText = dom.byId("attachmentDescription").value;
                         }
                         if (dom.byId("attachmentLabelInfo")) {
-                            this.currentConfig.attachmentLabel = dom.byId("attachmentLabelInfo").value;
+                            this.currentConfig.attachmentInfo[layerObj].attachmentLabel = dom.byId("attachmentLabelInfo").value;
                         }
                     }));
                     break;
@@ -964,6 +1048,7 @@ define([
         //function to update the item on arcGis online
         _updateItem: function (saveAndExit) {
             this.appSettings = {
+                "attachmentInfo":this.currentConfig.attachmentInfo,
                 "enableAttachments": this.currentConfig.enableAttachments,
                 "attachmentIsRequired": this.currentConfig.attachmentIsRequired,
                 "attachmentHelpText": this.currentConfig.attachmentHelpText,
@@ -1131,7 +1216,25 @@ define([
         _getFieldCheckboxState: function () {
             array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                 if ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish") && (query(".fieldCheckbox:checked").length === 0)) {
-                    this._disableTab(currentTab);
+                    if (this.config.form_layer.id == "All Layer") {
+                        for (var layerId in this.config.fields) {
+                            array.some(this.config.fields[layerId], lang.hitch(this, function (currentField) {
+                                var isFieldEmpty = false;
+                                if (!currentField.visible) {
+                                    isFieldEmpty = true;
+                                    return true;
+                                }
+                            }));
+                        }
+                        if (isFieldEmpty) {
+                            this._disableTab(currentTab);
+                        } else {
+                            this._enableTab(currentTab);
+                        }
+                    }
+                    else {
+                        this._disableTab(currentTab);
+                    }
                 } else {
                     this._enableTab(currentTab);
                 }
@@ -1147,118 +1250,122 @@ define([
             }, errorNode);
         },
 
-        _createAttachmentInput: function (layerUrl) {
+        _createAttachmentInput: function (layerUrl, attachmentInfo, isAttachmentRequired) {
             var featureLayer, enableAttachmentContainer, enableAttachmentContent, enableAttachmentLabel, attachmentLabel,
             requiredAttachmentContainer, requiredAttachmentContent, requiredAttachmentLabel, attachmentDetails;
-            domConstruct.empty(dom.byId('attachmentDetails'));
+            this._layerLoaded = false;
             featureLayer = new FeatureLayer(layerUrl);
-            on(featureLayer, 'load', lang.hitch(this, function () {
-                if (featureLayer.hasAttachments) {
-                    //code to enable/disable the attachment in the user form.
-                    enableAttachmentContainer = domConstruct.create("div", {
-                        "id": "enableAttachmentContainer",
-                        "class": "form-group"
-                    }, dom.byId('attachmentDetails'));
-                    enableAttachmentContent = domConstruct.create("div", {
-                        "id": "enableAttachmentContent",
-                        "class": "checkbox"
-                    }, enableAttachmentContainer);
-                    enableAttachmentLabel = domConstruct.create("label", {
-                        "for": "enableAttachmentInfo"
-                    }, enableAttachmentContent);
-                    domConstruct.create("input", {
-                        "type": "checkbox",
-                        "id": "enableAttachmentInfo"
-                    }, enableAttachmentLabel);
-                    if (this.currentConfig.enableAttachments) {
-                        domAttr.set(dom.byId("enableAttachmentInfo"), "checked", "checked");
-                    }
-                    enableAttachmentLabel.innerHTML += string.substitute(nls.builder.enableAttachmentLabelText, {
-                        openStrong: "<strong>",
-                        closeStrong: "</strong>"
-                    });
-                    domConstruct.create("span", {
-                        "class": "attachmentHint",
-                        "innerHTML": nls.builder.enableAttachmentLabelHint
-                    }, enableAttachmentContainer);
-                    //code to make the checkbox for making the attachment as a mandatory field.
-                    requiredAttachmentContainer = domConstruct.create("div", {
-                        "id": "requiredAttachmentContainer",
-                        "class": "form-group"
-                    }, dom.byId('attachmentDetails'));
-                    requiredAttachmentContent = domConstruct.create("div", {
-                        "id": "requiredAttachmentContent",
-                        "class": "checkbox"
-                    }, requiredAttachmentContainer);
-                    requiredAttachmentLabel = domConstruct.create("label", {
-                        "for": "requiredAttachmentInfo"
-                    }, requiredAttachmentContent);
-                    domConstruct.create("input", {
-                        "type": "checkbox",
-                        "id": "requiredAttachmentInfo"
-                    }, requiredAttachmentLabel);
-                    if (this.currentConfig.attachmentIsRequired) {
-                        domAttr.set(dom.byId("requiredAttachmentInfo"), "checked", "checked");
-                    }
-                    requiredAttachmentLabel.innerHTML += string.substitute(nls.builder.attachmentIsRequiredLabelText, {
-                        openStrong: "<strong>",
-                        closeStrong: "</strong>"
-                    });
-                    domConstruct.create("span", {
-                        "class": "attachmentHint",
-                        "innerHTML": nls.builder.attachmentIsRequiredLabelHint
-                    }, requiredAttachmentContainer);
-                    //code to make the attachment label
-                    attachmentLabel = domConstruct.create("div", {
-                        "id": "attachmentLabel",
-                        "class": "form-group"
-                    }, dom.byId('attachmentDetails'));
-                    domConstruct.create("label", {
-                        "for": "attachmentLabelInfo",
-                        "innerHTML": nls.builder.attachmentLabelText
-                    }, attachmentLabel);
-                    domConstruct.create("input", {
-                        "type": "text",
-                        "class": "form-control",
-                        "id": "attachmentLabelInfo",
-                        "value": this.currentConfig.attachmentLabel
-                    }, attachmentLabel);
-                    domConstruct.create("span", {
-                        "class": "attachmentHint",
-                        "innerHTML": nls.builder.attachmentLabelHint
-                    }, attachmentLabel);
-                    attachmentDetails = domConstruct.create("div", {
-                        "id": "attachmentDetails",
-                        "class": "form-group"
-                    }, dom.byId('attachmentDetails'));
-                    domConstruct.create("label", {
-                        "for": "attachmentDescription",
-                        "innerHTML": nls.builder.attachmentDescription
-                    }, attachmentDetails);
-                    domConstruct.create("input", {
-                        "type": "text",
-                        "class": "form-control",
-                        "id": "attachmentDescription",
-                        "value": this.currentConfig.attachmentHelpText
-                    }, attachmentDetails);
-                    domConstruct.create("span", {
-                        "class": "attachmentHint",
-                        "innerHTML": nls.builder.attachmentHint
-                    }, attachmentDetails);
-                    on(dom.byId("enableAttachmentInfo"), "change", function (evt) {
-                        if (!evt.currentTarget.checked) {
-                            domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", true);
-                            domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", true);
-                            domAttr.set(dom.byId("attachmentDescription"), "disabled", true);
-                        }
-                        else {
-                            domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", false);
-                            domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", false);
-                            domAttr.set(dom.byId("attachmentDescription"), "disabled", false);
-                        }
-                    });
+            domConstruct.empty(dom.byId('attachmentDetails'));
+            if (isAttachmentRequired) {
+                //code to enable/disable the attachment in the user form.
+                enableAttachmentContainer = domConstruct.create("div", {
+                    "id": "enableAttachmentContainer",
+                    "class": "form-group"
+                }, dom.byId('attachmentDetails'));
+                enableAttachmentContent = domConstruct.create("div", {
+                    "id": "enableAttachmentContent",
+                    "class": "checkbox"
+                }, enableAttachmentContainer);
+                enableAttachmentLabel = domConstruct.create("label", {
+                    "for": "enableAttachmentInfo"
+                }, enableAttachmentContent);
+                domConstruct.create("input", {
+                    "type": "checkbox",
+                    "id": "enableAttachmentInfo"
+                }, enableAttachmentLabel);
+                if (attachmentInfo.enableAttachments) {
+                    domAttr.set(dom.byId("enableAttachmentInfo"), "checked", "checked");
                 }
-            }));
+                enableAttachmentLabel.innerHTML += string.substitute(nls.builder.enableAttachmentLabelText, {
+                    openStrong: "<strong>",
+                    closeStrong: "</strong>"
+                });
+                domConstruct.create("span", {
+                    "class": "attachmentHint",
+                    "innerHTML": nls.builder.enableAttachmentLabelHint
+                }, enableAttachmentContainer);
+                //code to make the checkbox for making the attachment as a mandatory field.
+                requiredAttachmentContainer = domConstruct.create("div", {
+                    "id": "requiredAttachmentContainer",
+                    "class": "form-group"
+                }, dom.byId('attachmentDetails'));
+                requiredAttachmentContent = domConstruct.create("div", {
+                    "id": "requiredAttachmentContent",
+                    "class": "checkbox"
+                }, requiredAttachmentContainer);
+                requiredAttachmentLabel = domConstruct.create("label", {
+                    "for": "requiredAttachmentInfo"
+                }, requiredAttachmentContent);
+                domConstruct.create("input", {
+                    "type": "checkbox",
+                    "id": "requiredAttachmentInfo"
+                }, requiredAttachmentLabel);
+                if (attachmentInfo.attachmentIsRequired) {
+                    domAttr.set(dom.byId("requiredAttachmentInfo"), "checked", "checked");
+                }
+                requiredAttachmentLabel.innerHTML += string.substitute(nls.builder.attachmentIsRequiredLabelText, {
+                    openStrong: "<strong>",
+                    closeStrong: "</strong>"
+                });
+                domConstruct.create("span", {
+                    "class": "attachmentHint",
+                    "innerHTML": nls.builder.attachmentIsRequiredLabelHint
+                }, requiredAttachmentContainer);
+                //code to make the attachment label
+                attachmentLabel = domConstruct.create("div", {
+                    "id": "attachmentLabel",
+                    "class": "form-group"
+                }, dom.byId('attachmentDetails'));
+                domConstruct.create("label", {
+                    "for": "attachmentLabelInfo",
+                    "innerHTML": nls.builder.attachmentLabelText
+                }, attachmentLabel);
+                domConstruct.create("input", {
+                    "type": "text",
+                    "class": "form-control",
+                    "id": "attachmentLabelInfo",
+                    "value": attachmentInfo.attachmentLabel ?attachmentInfo.attachmentLabel : ""
+                }, attachmentLabel);
+                domConstruct.create("span", {
+                    "class": "attachmentHint",
+                    "innerHTML": nls.builder.attachmentLabelHint
+                }, attachmentLabel);
+                attachmentDetails = domConstruct.create("div", {
+                    "id": "attachmentDetails",
+                    "class": "form-group"
+                }, dom.byId('attachmentDetails'));
+                domConstruct.create("label", {
+                    "for": "attachmentDescription",
+                    "innerHTML": nls.builder.attachmentDescription
+                }, attachmentDetails);
+                domConstruct.create("input", {
+                    "type": "text",
+                    "class": "form-control",
+                    "id": "attachmentDescription",
+                    "value": attachmentInfo.attachmentHelpText ?attachmentInfo.attachmentHelpText :""
+                }, attachmentDetails);
+                domConstruct.create("span", {
+                    "class": "attachmentHint",
+                    "innerHTML": nls.builder.attachmentHint
+                }, attachmentDetails);
+                this._setAttachmentInputState();
+                on(dom.byId("enableAttachmentInfo"), "change", lang.hitch(this, function (evt) {
+                    this._setAttachmentInputState();
+                }));
+            }
+        },
+
+        _setAttachmentInputState: function (evt) {
+            if (!dom.byId("enableAttachmentInfo").checked) {
+                domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", true);
+                domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", true);
+                domAttr.set(dom.byId("attachmentDescription"), "disabled", true);
+            }
+            else {
+                domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", false);
+                domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", false);
+                domAttr.set(dom.byId("attachmentDescription"), "disabled", false);
+            }
         }
     });
 });

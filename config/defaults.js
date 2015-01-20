@@ -12,7 +12,8 @@ define({
         "Logo": "",
         "Description": ""
     },
-    "fields": [],
+    "fields": {
+    },
     "theme": "bootstrap", // see values in themes.js
     "oauthappid": null,
     //Enter the url to the proxy if needed by the applcation. See the "Using the proxy page" help topic for details
@@ -46,6 +47,8 @@ define({
         "enableUSNG": false,
         "enableMGRS": false,
         "enableUTM": false
+    },
+    "attachmentInfo":{
     },
     "helperServices": {
         "geometry": {
