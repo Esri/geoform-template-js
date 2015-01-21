@@ -72,7 +72,7 @@
     <script type="text/javascript" src="js/offlineOptions.js"></script>
     <script type="text/javascript" src="js/vendor/IndexedDBShim.min.js"></script>
     <script type="text/javascript">
-        require(["application/templateOptions", "application/template", "application/main"], function (templateOptions, Template, Main) {
+        require(["config/templateConfig", "application/template", "application/main"], function (templateOptions, Template, Main) {
             // start template
             var myTemplate = new Template(templateOptions);
             // create my main application. Start placing your logic in the main.js file.
