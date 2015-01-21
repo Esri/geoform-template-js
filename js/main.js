@@ -1010,7 +1010,7 @@ define([
                         });
                         $(inputDateGroupContainer).data("DateTimePicker").setDate(defaultDate);
                     } else {
-                        if (lang.trim(currentField.defaultValue) !== "") {
+                        if (currentField.type == "esriFieldTypeString" && lang.trim(currentField.defaultValue) !== "") {
                             domAttr.set(inputContent, "value", currentField.defaultValue);
                             domClass.add(formContent, "has-success");
                         }
@@ -1498,7 +1498,7 @@ define([
                         option.text = this.layerCollection[key].name;
                         option.value = key;
                         webmapLayers.appendChild(option);
-                    };
+                    }
                     webmapLayers.options[0].selected = true;
                     this._formLayer = this.layerCollection[webmapLayers.options[0].value];
                     this._createForm(this.config.fields[webmapLayers.options[0].value]);
@@ -2469,11 +2469,18 @@ define([
                     this._formLayer.setVisibility(true);
                 } else {
                     this._formLayer.setVisibility(false);
+                } 
+                //This logic will convert the old array structure to equivalent object
+                if (this.config.fields.length) {
+                    var fieldsArray = lang.clone(this.config.fields);
+                    this.config.fields = {};
+                    this.config.fields[this._formLayer.id] = fieldsArray;
                 }
             } else {
                 if (this.config.form_layer.id !== "All Layer") {
                     var error = new Error(nls.user.invalidLayerMessage);
                     this.reportError(error);
+                    return;
                 }
             }
         },

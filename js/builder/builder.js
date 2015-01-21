@@ -182,6 +182,12 @@ define([
             }));
             this._loadResources();
             this.currentConfig = config;
+	    //This logic will convert the old array structure to equivalent object
+            if (this.config.fields.length) {
+                var fieldsArray = lang.clone(this.config.fields);
+                this.currentConfig.fields = {};
+                this.currentConfig.fields[this.currentConfig.form_layer.id] = fieldsArray;
+            }
             this.userInfo = userInfo;
             this.response = response;
             this.localStorageSupport = new localStorageHelper();
@@ -394,6 +400,13 @@ define([
                             }));
                             dom.byId("selectLayer").options[dom.byId("selectLayer").length - 1].selected = true;
                         }
+                        domAttr.set(dom.byId("selectLayer"), "disabled", false);
+                        domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
+                        dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
+                        this.currentConfig.form_layer.id = "All Layer";
+                    } else {
+                        this.previousValue = this.currentConfig.form_layer.id;
+
                     }
                     var errorNode = dom.byId('builderMessageDiv');
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
@@ -405,10 +418,6 @@ define([
                             this._enableTab(currentTab);
                         }
                     }));
-                    domAttr.set(dom.byId("selectLayer"), "disabled", false);
-                    domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
-                    dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
-                    this.currentConfig.form_layer.id = "All Layer";
                 }
             }));
         },
@@ -807,14 +816,19 @@ define([
                 dom.byId('selectAll').checked = false;
             }
             if (this.fieldInfo[layerName]) {
-                if (!this.currentConfig["attachmentInfo"][layerName]) {
-                    this.currentConfig["attachmentInfo"][layerName] = {};
+                if (!this.currentConfig.attachmentInfo[layerName]) {
+                    //If not present create attachment object
+                    this.currentConfig.attachmentInfo[layerName] = {};
+                    this.currentConfig.attachmentInfo[layerName].enableAttachments = "";
+                    this.currentConfig.attachmentInfo[layerName].attachmentIsRequired = "";
+                    this.currentConfig.attachmentInfo[layerName].attachmentLabel = "";
+                    this.currentConfig.attachmentInfo[layerName].attachmentHelpText = "";
                 }
-                this.currentConfig["attachmentInfo"][layerName].enableAttachments ? this.currentConfig["attachmentInfo"][layerName].enableAttachments : true;
-                this.currentConfig["attachmentInfo"][layerName].attachmentIsRequired ? this.currentConfig["attachmentInfo"][layerName].attachmentIsRequired : false;
-                this.currentConfig["attachmentInfo"][layerName].attachmentLabel ? this.currentConfig["attachmentInfo"][layerName].attachmentLabel : "";
-                this.currentConfig["attachmentInfo"][layerName].attachmentHelpText ? this.currentConfig["attachmentInfo"][layerName].attachmentHelpText : "";
-                this._createAttachmentInput(this.fieldInfo[layerName].layerUrl, this.currentConfig["attachmentInfo"][layerName], this.fieldInfo[layerName].hasAttachments);
+                this.currentConfig.attachmentInfo[layerName].enableAttachments ? this.currentConfig.attachmentInfo[layerName].enableAttachments : true;
+                this.currentConfig.attachmentInfo[layerName].attachmentIsRequired ? this.currentConfig.attachmentInfo[layerName].attachmentIsRequired : false;
+                this.currentConfig.attachmentInfo[layerName].attachmentLabel ? this.currentConfig.attachmentInfo[layerName].attachmentLabel : "";
+                this.currentConfig.attachmentInfo[layerName].attachmentHelpText ? this.currentConfig.attachmentInfo[layerName].attachmentHelpText : "";
+                this._createAttachmentInput(this.fieldInfo[layerName].layerUrl, this.currentConfig.attachmentInfo[layerName], this.fieldInfo[layerName].hasAttachments);
             }
             var currentLayer = [];
             currentLayer[layerName] = lang.clone(formFieldsNode);
