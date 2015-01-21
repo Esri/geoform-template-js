@@ -1231,9 +1231,9 @@ define([
             array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                 if ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish") && (query(".fieldCheckbox:checked").length === 0)) {
                     if (this.config.form_layer.id == "All Layer") {
+                      var isFieldEmpty = false;
                         for (var layerId in this.config.fields) {
                             array.some(this.config.fields[layerId], lang.hitch(this, function (currentField) {
-                                var isFieldEmpty = false;
                                 if (!currentField.visible) {
                                     isFieldEmpty = true;
                                     return true;

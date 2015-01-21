@@ -333,8 +333,9 @@ define([
                     errorMessage += nls.user.selectLocation;
                     this._showErrorMessageDiv(errorMessage, dom.byId("select_location"));
                 }
+              var elementId;
                 if (!erroneousFields[0].children[0].id) {
-                    var elementId = erroneousFields[0].parentElement.children[0].id;
+                    elementId = erroneousFields[0].parentElement.children[0].id;
                     domClass.remove(elementId, "has-success");  
                 } else {
                     elementId = erroneousFields[0].children[0].id;
@@ -1406,7 +1407,7 @@ define([
         },
         // validate form input
         _validateUserInput: function (error, node, inputValue, iskeyPress) {
-            if (domClass.contains(node, "filterSelect") && inputValue == "" && domClass.contains(node.parentElement, "mandatory")) {
+            if (domClass.contains(node, "filterSelect") && inputValue === "" && domClass.contains(node.parentElement, "mandatory")) {
                 this._showErrorMessageDiv(error, node.parentElement.children[0]);
                 domClass.add(node.parentElement, "has-error");
                 domClass.remove(node, "has-success");
