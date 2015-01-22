@@ -214,7 +214,8 @@ define({
       disableLogo: "Disable Logo",
       disableLogoDescription: "You can configure the GeoForm to Show/Hide the Logo in the form header",
       locateOnLoadText: "Locate On Load",
-      locateOnLoadDescription: "You can configure the GeoForm to use the current location on page load"
+      locateOnLoadDescription: "You can configure the GeoForm to use the current location on page load",
+      selectLayerFieldTabText:"Select Layer"
     }
   }),
   "ar": 1,
