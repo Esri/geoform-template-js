@@ -872,7 +872,7 @@ define([
                 dom.byId("selectLayer").appendChild(filteredLayer);
             }
             if (this.currentConfig.form_layer.id == "All Layer") {
-                domStyle.set(dom.byId("layerSelectPane"), "display", "none");
+                domStyle.set(dom.byId("layerSelectPane"), "display", "block");
                 filteredLayer.selected = true;
                 for (var key in this.fieldInfo) {
                     this._populateFields(key);
@@ -1018,6 +1018,7 @@ define([
                 this.currentConfig.details.Description = $('#detailDescriptionInput').code();
                 break;
             case "fields":
+                    if (layerObj !== "All Layer") {
                     var innerObj = [];
                     var fieldName, fieldLabel, fieldDescription, visible;
                     this.currentSelectedLayer[layerObj] = dom.byId('geoFormFieldsTable');
@@ -1054,6 +1055,7 @@ define([
                             this.currentConfig.attachmentInfo[layerObj].attachmentLabel = dom.byId("attachmentLabelInfo").value;
                         }
                     }));
+                    }
                     break;
                 default:
             }
