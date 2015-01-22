@@ -47,7 +47,7 @@ define({
       utm_northing: "Northing",
       utm_easting: "Easting",
       utm_zone_number: "Zone Number",
-      selectLayerTabText: "${formSection} Choose Form",
+      selectLayerTabText: "${formSection} Select Form",
       geoFormGeneralTabText: "${formSection} Enter Information",
       locationInformationText: "${formSection} Select Location",
       submitInformationText: "${formSection} Complete Form",
