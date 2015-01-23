@@ -37,6 +37,7 @@ define({
     "attachmentHelpText": "",
     "showLayer": true,
     "disableLogo": false,
+    "disableViewerModeLink": false,
     "locationSearchOptions": {
         "enableMyLocation": true,
         "enableSearch": true,

@@ -110,7 +110,6 @@
                     <div class="form-group">
                         <label for="detailTitleInput">
                             ${builder.headerSizeLabel}
-                       
                         </label>
                         <div class="radio">
                             <label for="jumbotronDisableOption">
@@ -157,10 +156,11 @@
                                                 <input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b></label>
                                         </div>
                                     </th>
-                                    <th>
-                                        <div class="class="radio"">
+                                    <th class="tableDimension">
+                                        <div class="radio">
                                             <label>
                                                 <b>${builder.displayFieldText}</b></label>
+                                            <a id="displayFieldInfo" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right"></a>
                                         </div>
                                     </th>
                                     <th>${builder.fieldTabFieldHeaderText}</th>
@@ -235,6 +235,13 @@
                         <div class="help-block">${builder.disableLogoDescription}</div>
                     </div>
                     <div class="form-group">
+                        <div class="checkbox">
+                            <label for="disableViewerModeLink">
+                                <input id="disableViewerModeLink" type="checkbox" value="disableViewerModeLink" />${builder.disableViewerModeLink}</label>
+                        </div>
+                        <div class="help-block">${builder.disableViewerModeLinkDescription}</div>
+                    </div>
+                    <div class="form-group">
                         <label for="pushpinInput">${builder.pushpinText}</label>
                         <div class="form-inline">
                             <div class="form-group">
@@ -254,37 +261,31 @@
                             <div class="checkbox">
                                 <label for="myLocation">
                                     <input id="myLocation" type="checkbox" value="myLocation" />${builder.myLocationText}
-                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="search">
                                     <input id="search" type="checkbox" value="searchLocation" />${builder.searchText}
-                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="coordinates">
                                     <input id="coordinates" type="checkbox" value="coordinates" />${builder.coordinatesText}
-                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="USNG">
                                     <input id="USNG" type="checkbox" value="USNG" />${builder.usng}
-                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="MGRS">
                                     <input id="MGRS" type="checkbox" value="MGRS" />${builder.mgrs}
-                               
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label for="UTM">
                                     <input id="UTM" type="checkbox" value="UTM" />${builder.utm}
-                               
                                 </label>
                             </div>
                         </div>

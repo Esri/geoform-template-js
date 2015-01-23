@@ -9,22 +9,29 @@ html, body
 }
 .mainContainer
 {
-    height: 100%; 
+    height: 100%;
     width: 100%;
 }
+
 .headerWrapper .dijitContentPane
 {
-    overflow: initial !important;
+    /*Geocode Results are invisible if this style property is not marked important*/
+    overflow: visible !important;
 }
+
+.mainContainer .dijitContentPane, .leftPanelContainer
+{
+    overflow: hidden;
+}
+
 .headerPanel
 {
-    background-color: #F8F8F8;
     height: 46px;
     z-index:999999;
     width: 100%;
 }
 
-.BasemapToggle 
+.BasemapToggle
 {
     position: absolute;
     top: 12px;
@@ -39,7 +46,7 @@ html, body
 }
 .leftPanelContainer
 {
-    width: 250px;
+    width: 270px;
     border-right: 1px solid #ddd;
 }
 .mapDiv
@@ -51,22 +58,12 @@ html, body
     position: relative;
 }
 
-.topBar
+.esriSimpleSlider
 {
-    position: absolute;
-    z-index: 36;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: #fff;
-    background: rgba(255, 255, 255, 0.9);
-    height: 44px;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
+    top: 12px;
 }
 .appTitle
 {
-    color: #007ac2;
     line-height: 44px;
     font-size: 18px;
     font-weight: 700;
@@ -78,14 +75,6 @@ html, body
     margin-left: 15px;
 }
 
-.panelHeader
-{
-    font-size: 25px;
-    width: 100%;
-    height: 50px;
-    border-bottom: 1px solid #ccc;
-    background-color: #fff;
-}
 .panelBody
 {
     height: 100%;
@@ -93,16 +82,22 @@ html, body
 }
 .legendPanelBody
 {
-    padding: 10px;
+    padding: 5px;
     display: none;
     overflow: auto;
 }
 .aboutusPanelBody
 {
-     padding: 10px;
-     display: none;
-     overflow: auto;
+    padding: 5px;
+    display: none;
+    overflow: auto;
 }
+
+.searchPanelBody
+{
+    overflow-y: auto;
+}
+
 .sortOptionDiv
 {
     width: 100%;
@@ -116,28 +111,20 @@ html, body
 .btnSortByOrder
 {
     margin-left: 10px;
-    width: 60px;
     float: left;
     margin-bottom: 5px;
 }
-.formlist
+
+.formList
 {
     width: 100%;
     margin-bottom: 10px;
-    overflow-y: auto;
-    overflow-x:hidden;
 }
 .formListContent
 {
     cursor: pointer;
 }
-.editButton
-{
-    position: absolute;
-    right: 18px;
-    top: 4px;
-    padding: 5px 15px !important;
-}
+
 .listGroupItem
 {
     width: 100%;
@@ -145,13 +132,11 @@ html, body
     border-bottom: 1px solid #ccc;
     cursor: pointer;
 }
-li.list-group-item:hover
-{
-    background-color: #eee;
-}
+
 .submitFormNode
 {
     text-align: center;
+    margin-bottom: 5px;
 }
 #geoform .shareIconClass
 {
@@ -160,10 +145,6 @@ li.list-group-item:hover
     text-decoration: none;
     cursor: pointer;
 }
-#geoform .shareIconClass:hover
-{
-    color: #333;
-}
 
 .featureDetailsContainer
 {
@@ -171,7 +152,6 @@ li.list-group-item:hover
     bottom: 10px;
     left: 20%;
     width: 60%;
-    /*min-width: 300px;*/
     right: auto;
     display: none;
 }
@@ -180,6 +160,12 @@ li.list-group-item:hover
 {
     max-height: 130px;
     overflow-y: auto;
+}
+
+.errorMessageBox
+{
+    width: 50%;
+    text-align: center;
 }
 
 .featureDetailsContainer .panel-heading
@@ -197,9 +183,12 @@ li.list-group-item:hover
     float:left;
 }
 
-.panel-button
+.closeButton
 {
-    float:right;
+    position: absolute;
+    right: 0px;
+    top: 4px;
+    padding: 5px 10px !important;
 }
 
 .panel-middle .pager
@@ -220,23 +209,12 @@ li.list-group-item:hover
     float: right;
     cursor: pointer;
 }
-.icon-share
-{
-    color: #999;
-}
-.icon-share:hover
-{
-    color: #333;
-}
+
 .mobileGeocoderIcon
 {
     display: none;
-    /*color: #999;*/
 }
-.mobileGeocoderIcon:hover
-{
-    color: #333;
-}
+
 .geocoder-mobile
 {
     float: left;
@@ -323,8 +301,9 @@ li.list-group-item:hover
     margin: 12px 5px;
 }
 
-#panelHeader{
-    font-size:16px;
+#panelHeader
+{
+    font-size: 16px;
 }
 
 @media screen and (max-width: 680px)
@@ -363,28 +342,27 @@ li.list-group-item:hover
     }
 
 }
-/*copied from style.css*/
+
 .map-link
 {
     display:none !important;
 }
 
-@media screen and (min-width: 767px)
+.tab-text
 {
-    .tab-text
-    {
-        display:none;
-    }
+    display: block;
+    font-size: 11px;
+    margin-top: 6px;
 }
 
 @media screen and (max-width: 767px)
 {
-        .mapDiv .esriSimpleSlider 
+        .mapDiv .esriSimpleSlider
     {
         display: none;
     }
 
-    .clearfix:after 
+    .clearfix:after
     {
         visibility: hidden;
         display: block;
@@ -393,39 +371,30 @@ li.list-group-item:hover
         clear: both;
         height: 0;
 	}
-	
-	.sortOptionDiv 
+
+	.sortOptionDiv
 	{
         width: 100%;
         padding: 10px;
     }
-	
+
     #mapLayoutContainer
     {
         display:none;
     }
-    
+
     .leftPanelContainer
     {
         width:100%;
         position:relative;
     }
-    
-    .navtabs
-    {
-        width:100%;
-        position:absolute;
-        bottom:0px; 
-        z-index:999999;
-        border-top: 1px solid #ddd; 
-    }
-    
-    .nav-tabs  li
+
+    .nav-tabs li
     {
         float:left !important;
     }
-    
-    .nav-tabs li  a 
+
+    .nav-tabs li  a
     {
         position: relative;
         display: block;
@@ -433,41 +402,36 @@ li.list-group-item:hover
         margin-bottom:0px !important;
         font-size: 22px;
     }
-    
+
     .left_text
     {
         float:left;
         margin-right:5px;
     }
-    
+
     .right_box
     {
          display:block;
     }
-    
-    .mainContainer .dijitContentPane, .leftPanelContainer 
+
+    .mainContainer .dijitContentPane, .leftPanelContainer
     {
         overflow:hidden;
     }
-    
-    .formListContent
-    {
-        height:150px;
-    }
-    
+
     .map-link
     {
         display:block !important;
     }
-    
+
     .tab-text
     {
         display: block;
         font-size: 11px;
         margin-top: 6px;
-    
+
     }
-    
+
     .nav-tabs.nav-justified > li > a > span.glyphicon
     {
         display:block;
@@ -481,6 +445,6 @@ li.list-group-item:hover
         position: fixed;
         bottom:75px;
         margin-left:-45%;
-    } 
-    
+    }
+
 }
