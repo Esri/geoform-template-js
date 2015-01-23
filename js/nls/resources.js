@@ -109,7 +109,8 @@ define({
       mapFullScreen: "Full Screen",
       mapRestore: "Restore",
       filterSelectEmptyText: "Select",
-      invalidLayerMessage: "Form layer does not exist. Please configure the application and set the layer."
+      invalidLayerMessage: "Form layer does not exist. Please configure the application and set the layer.",
+      selectedLayerText: "All"
     },
     builder: {
       invalidUser: "Sorry, you dont have permission to view this item",
@@ -206,7 +207,7 @@ define({
       selectLocationSDescription: "Allow users to select a location using these methods.",
       dragTooltipText: "Drag the field where you want it to appear",
       showHideLayerText: "Show Layer",
-      showHideLayerHelpText: "You can configure the GeoForm to Show/Hide Layer",
+      showHideLayerHelpText: "You can configure the GeoForm to Show/Hide Layer.This option only applies to a single layer setup.",
       labelHelpMessage: "Label",
       placeHolderHintMessage: "Hint Text",
       placeHolderHelpMessage: "Help Text",
@@ -215,7 +216,8 @@ define({
       disableLogoDescription: "You can configure the GeoForm to Show/Hide the Logo in the form header",
       locateOnLoadText: "Locate On Load",
       locateOnLoadDescription: "You can configure the GeoForm to use the current location on page load",
-      selectLayerFieldTabText:"Select Layer"
+      selectLayerFieldTabText: "Select Layer",
+      allLayerSelectOptionText:"All"
     }
   }),
   "ar": 1,
