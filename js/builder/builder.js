@@ -248,7 +248,7 @@ define([
             }
             on(dom.byId("selectLayer"), "change", lang.hitch(this, function (evt) {
                 //support for all layers in webmap
-                if (evt.currentTarget.value === "All Layer") {
+                if (evt.currentTarget.value === nls.builder.allLayerSelectOptionText) {
                     domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
                     array.forEach(dom.byId("layerSelect").options, lang.hitch(this, function (opt) {
                         this._populateFields(opt.value);
@@ -256,13 +256,16 @@ define([
                         this.previousValue = opt.value;
                     }));
                     dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
-                    this.currentConfig.form_layer.id = "All Layer";
+                    this.currentConfig.form_layer.id = nls.builder.allLayerSelectOptionText;
+                    $("#ShowHideLayerOption")[0].checked = false;
+                    $("#ShowHideLayerOption")[0].disabled = true;
                 } else if (evt.currentTarget.value !== "") {
                     domStyle.set(dom.byId("layerSelectPane"), 'display', 'none');
                     this._populateFields(evt.currentTarget.value);
                     this._updateAppConfiguration("fields", evt.currentTarget.value);
                     this.previousValue = evt.currentTarget.value;
                     this.currentConfig.form_layer.id = evt.currentTarget.value;
+                    $("#ShowHideLayerOption")[0].disabled = false;
                 }
                 if (evt.currentTarget.value === "") {
                     array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
@@ -403,7 +406,7 @@ define([
                         domAttr.set(dom.byId("selectLayer"), "disabled", false);
                         domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
                         dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
-                        this.currentConfig.form_layer.id = "All Layer";
+                        this.currentConfig.form_layer.id = nls.builder.allLayerSelectOptionText;
                     } else {
                         this.previousValue = this.currentConfig.form_layer.id;
 
@@ -525,7 +528,11 @@ define([
         },
 
         _populateShowLayerOption: function (showlayeropt) {
-            $("#ShowHideLayerOption")[0].checked = showlayeropt;
+            if (this.config.form_layer.id !== nls.builder.allLayerSelectOptionText) {
+                $("#ShowHideLayerOption")[0].checked = showlayeropt;
+            } else {
+                $("#ShowHideLayerOption")[0].disabled = true;
+            }
         },
         _populateJumbotronOption: function (jumbotronOption) {
             $("#jumbotronDisableOption")[0].checked = jumbotronOption;
@@ -661,11 +668,11 @@ define([
                     type: "checkbox",
                     index: currentIndex
                 }, fieldCheckBox);
-                if (currentField.name !== this.fieldInfo[layerName].typeIdField) {
-                    domAttr.set(fieldCheckBoxInput, "checked", currentField.visible);
-                } else {
+                if (currentField.name == this.fieldInfo[layerName].typeIdField || !currentField.nullable) {
                     domAttr.set(fieldCheckBoxInput, "checked", true);
                     domAttr.set(fieldCheckBoxInput, "disabled", true);
+                } else {
+                    domAttr.set(fieldCheckBoxInput, "checked", currentField.visible);
                 }
                 on(fieldCheckBoxInput, "change", lang.hitch(this, function () {
                     if (query(".fieldCheckbox:checked").length == query(".fieldCheckbox").length) {
@@ -867,11 +874,11 @@ define([
             var filteredLayer = document.createElement("option");
             if (dom.byId("selectLayer").options.length > 2) {
                 var fLayer = document.createElement("option");
-                filteredLayer.text = fLayer.text = "All Layer";
-                filteredLayer.value = fLayer.value = "All Layer";
+                filteredLayer.text = fLayer.text = nls.builder.allLayerSelectOptionText;
+                filteredLayer.value = fLayer.value = nls.builder.allLayerSelectOptionText;
                 dom.byId("selectLayer").appendChild(filteredLayer);
             }
-            if (this.currentConfig.form_layer.id == "All Layer") {
+            if (this.currentConfig.form_layer.id == nls.builder.allLayerSelectOptionText) {
                 domStyle.set(dom.byId("layerSelectPane"), "display", "block");
                 filteredLayer.selected = true;
                 for (var key in this.fieldInfo) {
@@ -1018,7 +1025,7 @@ define([
                 this.currentConfig.details.Description = $('#detailDescriptionInput').code();
                 break;
             case "fields":
-                    if (layerObj !== "All Layer") {
+                    if (layerObj !== nls.builder.allLayerSelectOptionText) {
                     var innerObj = [];
                     var fieldName, fieldLabel, fieldDescription, visible;
                     this.currentSelectedLayer[layerObj] = dom.byId('geoFormFieldsTable');
@@ -1232,7 +1239,7 @@ define([
         _getFieldCheckboxState: function () {
             array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                 if ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish") && (query(".fieldCheckbox:checked").length === 0)) {
-                    if (this.config.form_layer.id == "All Layer") {
+                    if (this.config.form_layer.id == nls.builder.allLayerSelectOptionText) {
                       var isFieldEmpty = false;
                         for (var layerId in this.config.fields) {
                             array.some(this.config.fields[layerId], lang.hitch(this, function (currentField) {
