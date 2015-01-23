@@ -175,6 +175,9 @@ define([
             $('#disableLogo').on('click', lang.hitch(this, function () {
                 this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
             }));
+            $('#disableViewerModeLink').on('click', lang.hitch(this, function () {
+                this.currentConfig.disableViewerModeLink = !this.currentConfig.disableViewerModeLink;
+            }));
             this._loadResources();
             this.currentConfig = config;
             this.userInfo = userInfo;
@@ -189,6 +192,7 @@ define([
             this._populateThemes();
             this._populatePushpins();
             this._enableDisableLogo();
+            this._enableDisableViewerModeLink();
             //Check if the object is messed up with other type.if yes replace it with default object
             if (!this.currentConfig.locationSearchOptions.length) {
                 for (var searchOption in this.locationSearchOption) {
@@ -215,6 +219,7 @@ define([
                 }));
             }
             on(dom.byId("selectLayer"), "change", lang.hitch(this, function (evt) {
+                this.currentConfig.selectedTitleField = "";
                 this.currentConfig.form_layer.id = evt.currentTarget.value;
                 this._populateFields(evt.currentTarget.value);
                 if (evt.currentTarget.value === "") {
@@ -269,6 +274,10 @@ define([
 
         _enableDisableLogo: function () {
             dom.byId("disableLogo").checked = this.currentConfig.disableLogo;
+        },
+
+        _enableDisableViewerModeLink: function () {
+            dom.byId("disableViewerModeLink").checked = this.currentConfig.disableViewerModeLink;
         },
 
         _setTabCaption: function () {
@@ -466,28 +475,38 @@ define([
             var configuredFields = [],
                 configuredFieldName = [],
                 fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
-                fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
+                fieldCheckBoxInput, tdFieldRadioButton, fieldRadioButtonInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [],
                 sortedFields = [],
-                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect, labelPopupContent, helpTextPopupContent, placeholderPopupContent;
+                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect, labelPopupContent, helpTextPopupContent, placeholderPopupContent, displayFieldInfoContent;
             var formFieldsNode = dom.byId('geoFormFieldsTable');
             labelPopupContent = '<div class="form-group"><label class="text-danger">' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             helpTextPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="text-danger">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             placeholderPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control hintBackgroundColor" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
+            displayFieldInfoContent = nls.builder.displayFieldHintText;
             $('#LabelInfo').popover({ placement: 'bottom', content: labelPopupContent, html: true, trigger: 'click' });
             $('#helpTextInfo').popover({ placement: 'bottom', content: helpTextPopupContent, html: true, trigger: 'click' });
             $('#hintTextInfo').popover({ placement: 'bottom', content: placeholderPopupContent, html: true, trigger: 'click' });
+            $('#displayFieldInfo').popover({ placement: 'bottom', content: displayFieldInfoContent, html: true, trigger: 'click' });
             on($('#LabelInfo'), 'click', lang.hitch(this, function () {
                 $("#helpTextInfo").popover('hide');
                 $("#hintTextInfo").popover('hide');
+                $("#displayFieldInfo").popover('hide');
             }));
             on($('#helpTextInfo'), 'click', lang.hitch(this, function () {
                 $("#LabelInfo").popover('hide');
                 $("#hintTextInfo").popover('hide');
+                $("#displayFieldInfo").popover('hide');
             }));
             on($('#hintTextInfo'), 'click', lang.hitch(this, function () {
                 $("#LabelInfo").popover('hide');
                 $("#helpTextInfo").popover('hide');
+                $("#displayFieldInfo").popover('hide');
+            }));
+            on($("#displayFieldInfo"), 'click', lang.hitch(this, function () {
+                $("#LabelInfo").popover('hide');
+                $("#helpTextInfo").popover('hide');
+                $("#hintTextInfo").popover('hide');
             }));
             if (formFieldsNode) {
                 domConstruct.empty(formFieldsNode);
@@ -581,16 +600,24 @@ define([
                     }
                     this._getFieldCheckboxState();
                 }));
-                fieldRadioButton = domConstruct.create("td", {}, fieldRow);
+                tdFieldRadioButton = domConstruct.create("td", {}, fieldRow);
                 if (currentField.type === "esriFieldTypeString") {
                     fieldRadioButtonInput = domConstruct.create("input", {
                         className: "fieldRadiobutton",
                         type: "radio",
                         name: 'optionsRadios',
                         index: currentIndex
-                    }, fieldRadioButton);
-                    if (currentField.name === this.currentConfig.selectedTitleField) {
-                        fieldRadioButtonInput.checked = true;
+                    }, tdFieldRadioButton);
+                    if (this.currentConfig.selectedTitleField) {
+                        if (currentField.name === this.currentConfig.selectedTitleField) {
+                            fieldRadioButtonInput.checked = true;
+                        }
+                    }
+                    else {
+                        if (this.fieldInfo[layerName].displayField && currentField.name === this.fieldInfo[layerName].displayField) {
+                            fieldRadioButtonInput.checked = true;
+                            this.currentConfig.selectedTitleField = this.fieldInfo[layerName].displayField;
+                        }
                     }
                     domAttr.set(fieldRadioButtonInput, "value", currentField.name);
                     on(fieldRadioButtonInput, "change", lang.hitch(this, function (evt) {
@@ -782,6 +809,7 @@ define([
                 this.fieldInfo[layerId] = {};
                 this.fieldInfo[layerId].Fields = layer.fields;
                 this.fieldInfo[layerId].layerUrl = layer.url;
+                this.fieldInfo[layerId].displayField = layer.displayField;
                 if (layer.typeIdField !== "") {
                     this.fieldInfo[layerId].types = layer.types;
                     this.fieldInfo[layerId].typeIdField = layer.typeIdField;
@@ -818,6 +846,7 @@ define([
                     arcgisUtils.getItem(this.currentConfig.webmap).then(lang.hitch(this, function (itemInfo) {
                         this.currentConfig.fields.length = 0;
                         this.currentConfig.form_layer.id = "";
+                        this.currentConfig.selectedTitleField = "";
                         domConstruct.empty(dom.byId('geoFormFieldsTable'));
                         this.currentConfig.itemInfo = itemInfo;
                         this._addOperationalLayers();
@@ -948,6 +977,7 @@ define([
                 "useSmallHeader": this.currentConfig.useSmallHeader,
                 "webmap": this.currentConfig.webmap,
                 "disableLogo": this.currentConfig.disableLogo,
+                "disableViewerModeLink": this.currentConfig.disableViewerModeLink,
                 "selectedTitleField": this.currentConfig.selectedTitleField
             };
             this.response.itemData.values = this.appSettings;

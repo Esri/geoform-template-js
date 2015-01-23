@@ -300,7 +300,7 @@ define([
                         }
                     }
                 }
-                //handle errors in radio and checkbox fields here.
+                    //handle errors in radio and checkbox fields here.
                 else {
                     if (!query(".filterSelect", currentField)[0]) {
                         if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length === 0) {
@@ -740,7 +740,7 @@ define([
                     if (!radioInput) {
                         inputContent = domConstruct.create("select", {
                             className: "selectDomain",
-                            "id": fieldname,
+                            "id": fieldname
                         }, formContent);
                         if (currentField.domain && !currentField.typeField) {
                             if (currentField.displayType == "Filter Select") {
@@ -1699,13 +1699,15 @@ define([
                         this._submitForm();
                     }));
                 }
+                //disable viewerModeButton
+                if (this.config.disableViewerModeLink) {
+                    domAttr.set(dom.byId("viewerModeLinkButton"), 'disabled', 'disabled');
+                }
                 //Open Viewer Mode
                 on(dom.byId("viewerModeLinkButton"), "click", lang.hitch(this, function () {
-                    var urlString;
+                    var urlString = "viewerMode.html";
                     if (this.config.appid) {
-                        urlString = "viewerMode.html" + "?appid=" + this.config.appid;
-                    } else {
-                        urlString = "viewerMode.html";
+                        urlString += "?appid=" + this.config.appid;
                     }
                     window.location.assign(urlString);
                 }));
@@ -2209,13 +2211,13 @@ define([
             if (sr.wkid === 4326) {
                 def.resolve(geometry);
             }
-            //map is mercator
+                //map is mercator
             else if (sr.isWebMercator()) {
                 // convert lat lon to mercator. No network request.
                 var pt = webMercatorUtils.geographicToWebMercator(geometry);
                 def.resolve(pt);
             }
-            //map is something else & has geometry service
+                //map is something else & has geometry service
             else if (esriConfig.defaults.geometryService) {
                 // project params
                 var params = new ProjectParameters();
@@ -2232,7 +2234,7 @@ define([
                     def.reject(error);
                 });
             }
-            // cant do anything, leave lat/lon
+                // cant do anything, leave lat/lon
             else {
                 def.resolve(geometry);
             }
