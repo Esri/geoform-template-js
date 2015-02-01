@@ -110,10 +110,17 @@ define({
       mapRestore: "Restore",
       filterSelectEmptyText: "Select",
       invalidLayerMessage: "Form layer does not exist. Please configure the application and set the layer.",
-      selectedLayerText: "All"
+      selectedLayerText: "All",
+      fileUploadStatus: "File Upload Status",
+      uploadingBadge: "Uploading&hellip;",
+      successBadge: "Uploaded",
+      retryBadge: "Retry",
+      errorBadge: "Error uploading&nbsp;",
+      fileTooLargeError: "File too large to attach",
+      exceededFileCountError: "Exceeded maximum no. of attachments allowed"
     },
     builder: {
-      invalidUser: "Sorry, you dont have permission to view this item",
+      invalidUser: "Sorry, you don't have permission to view this item",
       invalidWebmapSelectionAlert: "The selected webmap does not contain a valid layer to use. Please add an editable FeatureLayer into your webmap to continue.",
       invalidWebmapSelectionAlert2: "For More Information please refer to ${openLink}What is Feature Service?${closeLink}",
       selectFieldsText: "Select Form Fields",
