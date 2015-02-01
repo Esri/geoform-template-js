@@ -81,8 +81,8 @@
 .app-error .loading-error {
     display: block;
 }
-#tableDND th,
-#tableDND td {
+.tableDND th,
+.tableDND td {
     vertical-align: middle;
 }
 #geoform .progress-remove-margin {
@@ -303,4 +303,29 @@ body.modal-open,
 
 .tableDimension a {
     text-decoration:none;
+}
+
+.thumbnailContainer
+{
+    position: relative;
+    left: 10px;
+    border: 1px solid #cdcdcd;
+    width: 77px;
+    height: 77px;
+}
+
+#defaultBasemapThumbnail, #secondaryBasemapThumbnail {
+    width: 75px;
+    height: 75px;
+}
+
+#defaultBasemapLabel, #secondaryBasemapLabel {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    background-color: #fff;
+    font-size: 10px;
+    opacity: 0.8;
+    text-align: center;
+    color: #000;
 }

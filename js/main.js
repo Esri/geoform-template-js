@@ -77,7 +77,6 @@ define([
         isHumanEntry: null,
         currentLocation: null,
         constructor: function () {
-
             if (dom.byId("geoform").dir == "rtl") {
                 this._loadCSS();
             }
@@ -300,7 +299,7 @@ define([
                         }
                     }
                 }
-                    //handle errors in radio and checkbox fields here.
+                //handle errors in radio and checkbox fields here.
                 else {
                     if (!query(".filterSelect", currentField)[0]) {
                         if (domClass.contains(currentField, "mandatory") && query(".radioInput:checked", currentField).length === 0 && query(".checkboxContainer", currentField).length === 0) {
@@ -334,8 +333,9 @@ define([
                     errorMessage += nls.user.selectLocation;
                     this._showErrorMessageDiv(errorMessage, dom.byId("select_location"));
                 }
+              var elementId;
                 if (!erroneousFields[0].children[0].id) {
-                    var elementId = erroneousFields[0].parentElement.children[0].id;
+                    elementId = erroneousFields[0].parentElement.children[0].id;
                     domClass.remove(elementId, "has-success");
                 } else {
                     elementId = erroneousFields[0].children[0].id;
@@ -550,6 +550,8 @@ define([
         },
         //function to validate and create the form
         _createForm: function (fields) {
+            domConstruct.empty(dom.byId('userForm'));
+            this.sortedFields = [];
             var formContent, labelContent, fileInput, matchingField, newAddedFields = [], userFormNode;
             if (!this._formLayer) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage, dom.byId("errorMessageDiv"));
@@ -633,14 +635,14 @@ define([
                 this._createFormElements(currentField, index, null);
             }));
             // if form has attachments
-            if (this._formLayer.hasAttachments && this.config.enableAttachments) {
+            if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id]) {
                 var requireField = null, helpBlock;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group hasAttachment geoFormQuestionare"
                 }, userFormNode);
                 //code to make the attachment input mandatory
-                if (this.config.attachmentIsRequired) {
+                if (this.config.attachmentInfo[this._formLayer.id].attachmentIsRequired) {
                     domClass.add(formContent, "mandatory");
                     requireField = domConstruct.create("small", {
                         className: 'requireFieldStyle',
@@ -650,7 +652,7 @@ define([
                 // attachment label html
                 var labelHTML = "";
                 labelHTML += "<span class=\"glyphicon glyphicon-paperclip\"></span> ";
-                labelHTML += (this.config.attachmentLabel || nls.user.attachment);
+                labelHTML += (this.config.attachmentInfo[this._formLayer.id].attachmentLabel || nls.user.attachment);
                 // attachment label
                 labelContent = domConstruct.create("label", {
                     innerHTML: labelHTML,
@@ -667,14 +669,14 @@ define([
                     //"capture": "camera",
                     "name": "attachment"
                 }, formContent);
-                if (this.config.attachmentIsRequired) {
+                if (this.config.attachmentInfo[this._formLayer.id].attachmentIsRequired) {
                     fileInput.setAttribute("aria-required", true);
                     fileInput.setAttribute("required", "");
                 }
-                if (this.config.attachmentHelpText) {
+                if (this.config.attachmentInfo[this._formLayer.id].attachmentHelpText) {
                     helpBlock = domConstruct.create("p", {
                         className: "help-block",
-                        innerHTML: this.config.attachmentHelpText
+                        innerHTML: this.config.attachmentInfo[this._formLayer.id].attachmentHelpText
                     }, formContent);
                 }
             }
@@ -1009,7 +1011,7 @@ define([
                         });
                         $(inputDateGroupContainer).data("DateTimePicker").setDate(defaultDate);
                     } else {
-                        if (lang.trim(currentField.defaultValue) !== "") {
+                        if (currentField.type == "esriFieldTypeString" && lang.trim(currentField.defaultValue) !== "") {
                             domAttr.set(inputContent, "value", currentField.defaultValue);
                             domClass.add(formContent, "has-success");
                         }
@@ -1145,7 +1147,8 @@ define([
             });
             return rangeHelpText;
         },
-        _createFilterSelectInput: function (inputContent, fieldname) {
+        _createFilterSelectInput: function (inputContent, fieldname)
+        {
             domClass.add(inputContent, "filterSelect");
             domStyle.set(inputContent, "width", "100%");
             var options = domConstruct.create("option", {}, inputContent);
@@ -1404,7 +1407,7 @@ define([
         },
         // validate form input
         _validateUserInput: function (error, node, inputValue, iskeyPress) {
-            if (domClass.contains(node, "filterSelect") && inputValue == "" && domClass.contains(node.parentElement, "mandatory")) {
+            if (domClass.contains(node, "filterSelect") && inputValue === "" && domClass.contains(node.parentElement, "mandatory")) {
                 this._showErrorMessageDiv(error, node.parentElement.children[0]);
                 domClass.add(node.parentElement, "has-error");
                 domClass.remove(node, "has-success");
@@ -1454,12 +1457,13 @@ define([
                 // any custom options you defined for the template. In this example that is the 'theme' property.
                 // Here' we'll use it to update the application to match the specified color theme.
                 // console.log(this.config);
+                this._createGeoformSections();
                 this.map = response.map;
                 // Disable scroll zoom handler
-                var toggle = new basemapToggle({
+		var toggle = new basemapToggle({
                     map: this.map,
-                    basemap: "topo",
-                    defaultBasemap: "satellite"
+                    basemap: this.config.defaultBasemap,
+                    defaultBasemap: this.config.nextBasemap
                 }, "BasemapToggle");
                 toggle.startup();
 
@@ -1484,8 +1488,30 @@ define([
                 if (this.config.details && this.config.details.Title) {
                     window.document.title = this.config.details.Title;
                 }
-                // create form fields
-                this._createForm(this.config.fields);
+                if (this.config.form_layer.id == nls.user.selectedLayerText) {
+                    var webmapLayers;
+                    this.layerCollection = {};
+                    webmapLayers = domConstruct.create("select", { class: "form-control" }, dom.byId("multipleLayers"));
+                    for (var key in this.config.fields) {
+                        //Fetch all the layers at once
+                        this.layerCollection[key] = this.map.getLayer(key);
+                        var option = domConstruct.create("option", {}, null);
+                        option.text = this.layerCollection[key].name;
+                        option.value = key;
+                        webmapLayers.appendChild(option);
+                    }
+                    webmapLayers.options[0].selected = true;
+                    this._formLayer = this.layerCollection[webmapLayers.options[0].value];
+                    this._createForm(this.config.fields[webmapLayers.options[0].value]);
+                    on(webmapLayers, "change", lang.hitch(this, function (evt) {
+                        var fields = this.config.fields[evt.currentTarget.value];
+                        this._formLayer = this.layerCollection[evt.currentTarget.value];
+                        this._createForm(fields);
+                    }));
+                } else {
+                    // create form fields
+                    this._createForm(this.config.fields[this._formLayer.id]);
+                }
                 // create locate button
                 this._createLocateButton();
                 // create geocoder button
@@ -1679,7 +1705,7 @@ define([
                 }));
                 // fullscreen
                 var fsButton = domConstruct.create("div", { class: "fullScreenButtonContainer" }, mapDiv);
-                var fullscreenButton = domConstruct.create("span", { id: "fullscreen_icon", title: "Full Screen", class: "glyphicon glyphicon-fullscreen fullScreenImage" }, fsButton);
+                var fullscreenButton = domConstruct.create("span", { id: "fullscreen_icon", title:"Full Screen", class: "glyphicon glyphicon-fullscreen fullScreenImage" }, fsButton);
                 if (fsButton) {
                     on(fsButton, "click", lang.hitch(this, function () {
                         this._toggleFullscreen();
@@ -1699,13 +1725,13 @@ define([
                         this._submitForm();
                     }));
                 }
-                //disable viewerModeButton
-                if (this.config.disableViewerModeLink) {
-                    domAttr.set(dom.byId("viewerModeLinkButton"), 'disabled', 'disabled');
+                //disable viewSubmissionsButton
+                if (this.config.disableViewer) {
+                    domAttr.set(dom.byId("viewSubmissionsButton"), 'disabled', 'disabled');
                 }
                 //Open Viewer Mode
-                on(dom.byId("viewerModeLinkButton"), "click", lang.hitch(this, function () {
-                    var urlString = "viewerMode.html";
+                on(dom.byId("viewSubmissionsButton"), "click", lang.hitch(this, function () {
+                    var urlString = "viewer.html";
                     if (this.config.appid) {
                         urlString += "?appid=" + this.config.appid;
                     }
@@ -1734,6 +1760,21 @@ define([
                 }
             }), this.reportError);
         },
+
+	_createGeoformSections: function () {
+            array.forEach(query(".geoformSection"), lang.hitch(this, function (currentSection, index) {
+                if (this.config.form_layer.id === nls.user.selectedLayerText) {
+                    currentSection.innerHTML = string.substitute(currentSection.innerHTML, { formSection: ++index + "." });
+                } else {
+                    if (index !== 0) {
+                        currentSection.innerHTML = string.substitute(currentSection.innerHTML, { formSection: index + "." });
+                    } else {
+                        domStyle.set(dom.byId("selectLayer"), "display", "none");
+                    }
+                }
+            }));
+        },
+
         _mapLoaded: function () {
             // center coords
             setTimeout(lang.hitch(this, function () {
@@ -1782,7 +1823,7 @@ define([
                 domClass.remove(this.map.root, 'panel');
                 domConstruct.place(mapNode, fsContainerNode);
                 domClass.replace(btnNode, "glyphicon glyphicon-remove", "glyphicon glyphicon-fullscreen");
-                // move map node and clear hash
+				// move map node and clear hash
                 window.location.hash = "";
                 btnNode.title = nls.user.mapRestore;
             } else {
@@ -2211,13 +2252,13 @@ define([
             if (sr.wkid === 4326) {
                 def.resolve(geometry);
             }
-                //map is mercator
+            // map is mercator
             else if (sr.isWebMercator()) {
                 // convert lat lon to mercator. No network request.
                 var pt = webMercatorUtils.geographicToWebMercator(geometry);
                 def.resolve(pt);
             }
-                //map is something else & has geometry service
+            // map is something else & has geometry service
             else if (esriConfig.defaults.geometryService) {
                 // project params
                 var params = new ProjectParameters();
@@ -2234,7 +2275,7 @@ define([
                     def.reject(error);
                 });
             }
-                // cant do anything, leave lat/lon
+            // cant do anything, leave lat/lon
             else {
                 def.resolve(geometry);
             }
@@ -2398,6 +2439,9 @@ define([
                         }
                         // set id
                         this.config.form_layer.id = currentLayer.id;
+                        //Add the default fields in the fields object
+                        //This case will work when application is running without app id
+                        this.config.fields[this.config.form_layer.id] = this.map.getLayer(this.config.form_layer.id).fields;
                         return true;
                     }
                 }));
@@ -2434,11 +2478,23 @@ define([
                         }
                     }));
                 }
-            }
-            if (this.config.showLayer) {
-                this._formLayer.setVisibility(true);
+                if (this.config.showLayer) {
+                    this._formLayer.setVisibility(true);
+                } else {
+                    this._formLayer.setVisibility(false);
+                }
+                //This logic will convert the old array structure to equivalent object
+                if (this.config.fields.length) {
+                    var fieldsArray = lang.clone(this.config.fields);
+                    this.config.fields = {};
+                    this.config.fields[this._formLayer.id] = fieldsArray;
+                }
             } else {
-                this._formLayer.setVisibility(false);
+                if (this.config.form_layer.id !== nls.user.selectedLayerText) {
+                    var error = new Error(nls.user.invalidLayerMessage);
+                    this.reportError(error);
+                    return;
+                }
             }
         },
         // set defaults for app settings

@@ -84,8 +84,7 @@
                     <div class="form-group">
                         <button type="button" id="selectWebmapBtn" class="btn btn-default" data-loading-text="${builder.btnSelectWebmapTextLoading}"><span class="glyphicon glyphicon-pencil"></span>${builder.btnSelectWebmapText}</button>
                     </div>
-                    <div class="form-group">
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+                    <div class="form-group"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
                 <div id="layer" class="tab-pane">
@@ -118,8 +117,7 @@
                                 <input id="jumbotronEnableOption" name="headerSize" type="radio" value="Use Big Header" />${builder.bigHeader}</label>
                         </div>
                         <div class="help-block">
-                            ${builder.jumbotronDescription}
-                        </div>
+                            ${builder.jumbotronDescription}</div>
                     </div>
                     <div class="form-group">
                         <label for="detailTitleInput">${builder.detailTitleLabelText}</label>
@@ -143,24 +141,28 @@
                     </div>
                 </div>
                 <div id="fields" class="tab-pane">
-                    <h2>${builder.selectFieldsText}</h2>
-                    <p>${builder.fieldsTabText}</p>
+                    <div id="layerSelectPane">
+                        <h2>
+                            ${builder.selectLayerFieldTabText}</h2>
+                            <select id="layerSelect" class="form-control">
+                                    </select></div>
+                    <h2>
+                        ${builder.selectFieldsText}</h2>
+                    <p>
+                        ${builder.fieldsTabText}</p>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped" id="tableDND">
+                        <table class="table table-bordered table-striped tableDND">
                             <thead>
                                 <tr>
                                     <th>${builder.fieldTabOrderColumnText}</th>
                                     <th>
                                         <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b></label>
+                                            <label><input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b></label>
                                         </div>
                                     </th>
                                     <th class="tableDimension">
                                         <div class="radio">
-                                            <label>
-                                                <b>${builder.displayFieldText}</b></label>
-                                            <a id="displayFieldInfo" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right"></a>
+                                            <label><b>${builder.displayFieldText}</b></label><a id="displayFieldInfo" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right"></a>
                                         </div>
                                     </th>
                                     <th>${builder.fieldTabFieldHeaderText}</th>
@@ -236,10 +238,17 @@
                     </div>
                     <div class="form-group">
                         <div class="checkbox">
-                            <label for="disableViewerModeLink">
-                                <input id="disableViewerModeLink" type="checkbox" value="disableViewerModeLink" />${builder.disableViewerModeLink}</label>
+                          <label for="locateOnLoad">
+                                <input id="locateOnLoad" type="checkbox" value="locateOnLoad" />${builder.locateOnLoadText}</label>
                         </div>
-                        <div class="help-block">${builder.disableViewerModeLinkDescription}</div>
+                       <div class="help-block">${builder.locateOnLoadDescription}</div>
+                   </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                           <label for="disableViewer">
+                                <input id="disableViewer" type="checkbox" value="disableViewer" />${builder.disableViewer}</label>
+                        </div>
+                        <div class="help-block">${builder.disableViewerDescription}</div>
                     </div>
                     <div class="form-group">
                         <label for="pushpinInput">${builder.pushpinText}</label>
@@ -292,6 +301,38 @@
                         <div class="help-block">${builder.selectLocationSDescription}</div>
                     </div>
                     <div class="form-group">
+                        <label for="defaultBasemap">
+                            ${builder.defaultBasemap}</label>
+                        <div class="form-inline">
+                             <div class="form-group">
+                                <select id="defaultBasemap" class="form-control">
+                                </select>
+                            </div>
+                            <div class="form-group thumbnailContainer">
+                                <div class="form-group" id="defaultBasemapThumbnail">
+                                </div>
+                                <div id="defaultBasemapLabel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="secondaryBasemap">
+                            ${builder.secondaryBasemap}</label>
+                        <div class="form-inline">
+                             <div class="form-group">
+                                <select id="secondaryBasemap" class="form-control">
+                                </select>
+                            </div>
+                            <div class="form-group thumbnailContainer">
+                                <div id="secondaryBasemapThumbnail">
+                                </div>
+                                <div id="secondaryBasemapLabel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="style"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span>${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
                         <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
@@ -322,8 +363,7 @@
     <!-- col for tabs -->
     <hr />
     <footer>
-        <div class="panel-body text-center">
-            <a href="#top">${user.backToTop}</a>
+        <div class="panel-body text-center"><a href="#top">${user.backToTop}</a>
         </div>
     </footer>
 </div>

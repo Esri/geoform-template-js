@@ -15,6 +15,7 @@ define([
         "dojo/dom-attr",
         "esri/arcgis/utils",
         "dojo/Deferred",
+        "dojo/promise/all",
         "esri/geometry/Point",
         "esri/layers/GraphicsLayer",
         "esri/graphic",
@@ -22,7 +23,7 @@ define([
         "dijit/layout/ContentPane",
         "application/ShareModal",
         "dojo/text!views/modal.html",
-        "dojo/text!views/Viewer.html",
+        "dojo/text!views/viewer.html",
         "dojo/i18n!application/nls/resources",
         "esri/dijit/Legend",
         "esri/tasks/query",
@@ -31,11 +32,11 @@ define([
         "esri/lang",
         "esri/dijit/Geocoder",
         "vendor/bootstrapmap",
-        "esri/geometry/Point",
         "esri/geometry/Extent",
         "esri/symbols/SimpleMarkerSymbol",
         "esri/symbols/SimpleLineSymbol",
         "esri/Color",
+        "esri/layers/FeatureLayer",
         "dijit/registry",
         "dojo/parser",
         "application/wrapper/main-jquery-deps",
@@ -55,10 +56,12 @@ define([
         domAttr,
         arcgisUtils,
         Deferred,
+        all,
         Point,
         GraphicsLayer,
-        Graphic, BorderContainer, ContentPane, ShareModal, modalTemplate, ViewerTemplate, nls, Legend, Query, QueryTask, BasemapToggle, esriLang, Geocoder, bootstrapmap, Point, Extent, SimpleMarkerSymbol, SimpleLineSymbol, Color, registry, parser) {
+        Graphic, BorderContainer, ContentPane, ShareModal, modalTemplate, ViewerTemplate, nls, Legend, Query, QueryTask, BasemapToggle, esriLang, Geocoder, bootstrapmap, Extent, SimpleMarkerSymbol, SimpleLineSymbol, Color, FeatureLayer, registry, parser) {
     return declare([], {
+        layerClickHandle: null,
         nls: nls,
         config: {},
         map: null,
@@ -88,13 +91,13 @@ define([
             // any url parameters and any application specific configuration information.
             if (config) {
                 this.config = config;
-                if (this.config.disableViewerModeLink) {
+                if (this.config.disableViewer) {
                     this._reportError();
                 }
                 this._init();
             }
             else {
-                alert("Unable to load config");
+                alert(nls.viewer.unavailableConfigMessage);
             }
             // modal i18n
             modalTemplate = string.substitute(modalTemplate, nls);
@@ -113,7 +116,7 @@ define([
             on(dom.byId("aboutUs"), "click", lang.hitch(this, function (evt) {
                 this._showLeftPanel(evt.currentTarget);
             }));
-            on(dom.byId("Map"), "click", lang.hitch(this, function (evt) {
+            on(dom.byId("mapOption"), "click", lang.hitch(this, function (evt) {
                 this._showLeftPanel(evt.currentTarget);
             }));
             on(dom.byId("legend"), "click", lang.hitch(this, function (evt) {
@@ -124,18 +127,19 @@ define([
             });
             this.iconPathSVG = "M 1784,238 1805,238 1805,259 1784,259 1784,238 M 1777,248 1784,248 M 1794,231 1794,238 M 1812,248 1805,248 M 1794,266 1794,259";
             this.selectedGraphics = new GraphicsLayer({ id: "highlightedGraphic" });
-            //Set Dynamic height of searchPanelBody in the left panel
-            domStyle.set(dom.byId("searchPanelBody"), "height", ($(window).height() - 112) + "px");
-            domStyle.set(dom.byId("legendPanelBody"), "height", ($(window).height() - 112) + "px");
-            domStyle.set(dom.byId("aboutusPanelBody"), "height", ($(window).height() - 112) + "px");
+            //Set Dynamic height of PanelBody in the left panel for large screen devices
+            domStyle.set(dom.byId("searchPanelBody"), "height", ($(window).height() - 118) + "px");
+            domStyle.set(dom.byId("legendPanelBody"), "height", ($(window).height() - 118) + "px");
+            domStyle.set(dom.byId("aboutusPanelBody"), "height", ($(window).height() - 118) + "px");
             on(window, "resize", lang.hitch(this, function () {
-                var HeaderNode = query('.nav-tabs', dom.byId("panelHeader"));
+                var HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
                 if ($(window).width() > 767) {
-                    domClass.replace(dom.byId("viewer_pills"), "nav-pills", "nav-tabs");
                     domClass.remove(dom.byId("panelHeader"), "navbar-fixed-bottom");
-                    domStyle.set(dom.byId("searchPanelBody"), "height", ($(window).height() - 112) + "px");
-                    domStyle.set(dom.byId("legendPanelBody"), "height", ($(window).height() - 112) + "px");
-                    domStyle.set(dom.byId("aboutusPanelBody"), "height", ($(window).height() - 112) + "px");
+                    domClass.remove(dom.byId("panelHeader"), "navbar-inverse");
+                    //Set Dynamic height of PanelBody in the left panel for large screen devices
+                    domStyle.set(dom.byId("searchPanelBody"), "height", ($(window).height() - 118) + "px");
+                    domStyle.set(dom.byId("legendPanelBody"), "height", ($(window).height() - 118) + "px");
+                    domStyle.set(dom.byId("aboutusPanelBody"), "height", ($(window).height() - 118) + "px");
                     domConstruct.place(dom.byId("mapDiv"), dom.byId("mapLayoutContainer"), "first");
                     domConstruct.place(dom.byId("featureDetailsContainer"), dom.byId("mapLayoutContainer"), "last");
                     this._resizeMap();
@@ -154,13 +158,16 @@ define([
                     domStyle.set(dom.byId("searchPanelBody"), 'display', 'block');
                 }
                 else {
-                    domClass.replace(dom.byId("viewer_pills"), "nav-tabs", "nav-pills");
+                    domClass.add(dom.byId("panelHeader"), "navbar-inverse");
                     domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
                     this._moveMapContainer();
                 }
+                setTimeout(lang.hitch(this, function () {
+                    dom.byId("appTitle").focus();
+                }), 300);
             }));
             if ($(window).width() <= 767) {
-                domClass.replace(dom.byId("viewer_pills"), "nav-tabs", "nav-pills");
+                domClass.add(dom.byId("panelHeader"), "navbar-inverse");
                 domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
                 this._moveMapContainer();
             }
@@ -188,10 +195,10 @@ define([
             this._resizeMap();
             domConstruct.place(dom.byId("featureDetailsContainer"), dom.byId("mapPanelBody"), "last");
             this._showTabsMobileView();
-            domStyle.set(dom.byId("legendPanelBody"), "height", ($(window).height() - 110) + "px");
-            domStyle.set(dom.byId("mapPanelBody"), "height", ($(window).height() - 110) + "px");
-            domStyle.set(dom.byId("aboutusPanelBody"), "height", ($(window).height() - 110) + "px");
-            domStyle.set(dom.byId("searchPanelBody"), "height", ($(window).height() - 110) + "px");
+            //Set Dynamic height of PanelBody in the left panel for small screen devices
+            query(".panelBody").forEach(function (node) {
+                domStyle.set(node, "height", ($(window).height() - 116) + "px");
+            });
         },
 
         //Function to resize map with respect to the screen resolution.
@@ -199,38 +206,28 @@ define([
             try {
                 var mapCenter;
                 registry.byId("mainContainer").resize();
-                if (this.map && domStyle.get(dom.byId("mapLayoutContainer"), "display") === "block") {
-                    mapCenter = this.map.extent.getCenter();
-                    domStyle.set(dom.byId("mapDiv"), "height", "100%");
-                    domStyle.set(dom.byId("mapDiv"), "width", "100%");
-                    setTimeout(lang.hitch(this, function () {
-                        this.map.resize();
-                        this.map.reposition();
-                        this.map.centerAt(mapCenter);
-                    }), 500);
-                } else {
-                    mapCenter = this.map.extent.getCenter();
-                    domStyle.set(dom.byId("mapDiv"), "height", "100%");
-                    domStyle.set(dom.byId("mapDiv"), "width", "100%");
-                    setTimeout(lang.hitch(this, function () {
-                        this.map.resize();
-                        this.map.reposition();
-                        this.map.centerAt(mapCenter);
-                    }), 0);
-                }
+                domStyle.set(dom.byId("mapDiv"), "height", "100%");
+                domStyle.set(dom.byId("mapDiv"), "width", "100%");
+                mapCenter = this.map.extent.getCenter();
+                setTimeout(lang.hitch(this, function () {
+                    this.map.resize();
+                    this.map.reposition();
+                    this.map.centerAt(mapCenter);
+                }), 0);
             } catch (err) {
             }
         },
 
         //Arrange the navigation pane on small screen devices
         _showTabsMobileView: function () {
-            var HeaderNode = query('.nav-tabs', dom.byId("panelHeader"));
+            var HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
             array.some(HeaderNode[0].children, function (currentNode) {
-                if (domClass.contains(currentNode, "active") && domAttr.get(currentNode, "id") !== "Map") {
+                if (domClass.contains(currentNode, "active") && domAttr.get(currentNode, "id") !== "mapOption") {
                     domClass.remove(currentNode, "active");
+                    return true;
                 }
             });
-            domClass.add(dom.byId("Map"), "active");
+            domClass.add(dom.byId("mapOption"), "active");
             domStyle.set(dom.byId("aboutusPanelBody"), 'display', 'none');
             domStyle.set(dom.byId("legendPanelBody"), 'display', 'none');
             domStyle.set(dom.byId("searchPanelBody"), 'display', 'none');
@@ -244,7 +241,6 @@ define([
             viewerHTML = string.substitute(ViewerTemplate, nls);
             testTemplate = domConstruct.toDom(viewerHTML);
             parser.parse(testTemplate);
-
             if (!this.config.theme) {
                 // lets use bootstrap theme!
                 this.config.theme = "bootstrap";
@@ -303,7 +299,7 @@ define([
             // empty modal node
             domConstruct.empty(query(".modal-body")[0]);
             // set modal title
-            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.viewer.shareViewerTitleMessage);
+            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.shareThisForm);
             // create nodes for modal
             iconContainer = domConstruct.create("div", {
                 className: "iconContainer"
@@ -364,7 +360,7 @@ define([
             if (domAttr.get(currentNode, "id") === "aboutUs") {
                 domStyle.set(dom.byId("aboutusPanelBody"), 'display', 'block');
             }
-            if (domAttr.get(currentNode, "id") === "Map") {
+            if (domAttr.get(currentNode, "id") === "mapOption") {
                 domStyle.set(dom.byId("mapPanelBody"), 'display', 'block');
                 domConstruct.place(dom.byId("mapDiv"), dom.byId("mapPanelBody"), "first");
                 this._resizeMap();
@@ -374,7 +370,6 @@ define([
 
         // create a map based on the input web map id
         _createWebMap: function (itemInfo) {
-            var toggle, layers, submitFormButtonNode;
             bootstrapmap.createWebMap(itemInfo, dom.byId("mapDiv"), {
                 editable: true,
                 bingMapsKey: this.config.bingKey,
@@ -390,64 +385,65 @@ define([
                 this._gl = new GraphicsLayer();
                 this.map.addLayer(this._gl);
                 this._setLayerDefaults();
-                domClass.remove(document.body, "app-loading");
-                this._createGeocoders();
-                toggle = new BasemapToggle({
-                    map: this.map,
-                    basemap: "topo",
-                    defaultBasemap: "hybrid"
-                }, dom.byId("toggleContainer"));
-                toggle.startup();
-                layers = this.map.getLayersVisibleAtScale(this.map.getScale());
-                this._calculateTotalFeaturesLength();
-                this._queryLayer(this._formLayer);
-                this._updatePaginationMessage(false);
-                on.once(this.map, 'basemap-change', lang.hitch(this, function () {
-                    for (var i = 0; i < layers.length; i++) {
-                        var layer;
-                        if (layers[i]._basemapGalleryLayerType) {
-                            layer = this.map.getLayer(layers[i].id);
-                            this.map.removeLayer(layer);
-                        }
-                    }
-                }));
-                on(this.map, "click", lang.hitch(this, function () {
-                    if (this.map.infoWindow.isShowing) {
-                        this.map.infoWindow.hide();
-                    }
+            }));
+        },
 
-                }));
-                on(this._formLayer, "click", lang.hitch(this, function (evt) {
+        _executeLayerTasks: function (_formLayer) {
+            var toggle, layers;
+            this._calculateTotalFeaturesLength(_formLayer);
+            domClass.remove(document.body, "app-loading");
+            this._createGeocoders();
+            toggle = new BasemapToggle({
+                map: this.map,
+                basemap: this.config.nextBasemap,
+                defaultBasemap: this.config.defaultBasemap
+            }, dom.byId("toggleContainer"));
+            toggle.startup();
+            layers = this.map.getLayersVisibleAtScale(this.map.getScale());
+            this._updatePaginationMessage(false);
+            on.once(this.map, 'basemap-change', lang.hitch(this, function () {
+                for (var i = 0; i < layers.length; i++) {
+                    var layer;
+                    if (layers[i]._basemapGalleryLayerType) {
+                        layer = this.map.getLayer(layers[i].id);
+                        this.map.removeLayer(layer);
+                    }
+                }
+            }));
+            on(this.map, "click", lang.hitch(this, function () {
+                if (this.map.infoWindow.isShowing) {
                     this.map.infoWindow.hide();
-                    if (evt.graphic && evt.mapPoint) {
-                        this._highlightMapGraphics(evt.graphic);
-                        this._executeQueryTask(evt.mapPoint).then(lang.hitch(this, function (result) {
-                            var objectIdField = this._formLayer.objectIdField;
-                            array.forEach(query('.formList .list-group-item'), function (node) {
-                                if (domClass.contains(node, "active")) {
-                                    domClass.remove(node, "active");
-                                }
-                                if (domAttr.get(node, "fieldValue") === result.features[0].attributes[objectIdField].toString()) {
-                                    domClass.add(node, "active");
-                                }
-                            });
-                        }));
-                    }
-                }));
-                on(dom.byId("nextFeature"), "click", lang.hitch(this, function () {
-                    this._resetPaginationArrows(dom.byId("nextFeature"), true);
-                }));
+                }
+            }));
+            on(_formLayer, "click", lang.hitch(this, function (evt) {
+                this.map.infoWindow.hide();
+                if (evt.graphic && evt.mapPoint) {
+                    this._highlightMapGraphics(evt.graphic);
+                    this._executeQueryTask(evt.mapPoint).then(lang.hitch(this, function (result) {
+                        var objectIdField = _formLayer.objectIdField;
+                        array.forEach(query('.formList .list-group-item'), function (node) {
+                            if (domClass.contains(node, "active")) {
+                                domClass.remove(node, "active");
+                            }
+                            if (domAttr.get(node, "fieldValue") === result.features[0].attributes[objectIdField].toString()) {
+                                domClass.add(node, "active");
+                            }
+                        });
+                    }));
+                }
+            }));
+            on(dom.byId("nextFeature"), "click", lang.hitch(this, function () {
+                this._resetPaginationArrows(dom.byId("nextFeature"), true);
+            }));
 
-                on(dom.byId("prevFeature"), "click", lang.hitch(this, function () {
-                    this._resetPaginationArrows(dom.byId("prevFeature"), false);
-                }));
+            on(dom.byId("prevFeature"), "click", lang.hitch(this, function () {
+                this._resetPaginationArrows(dom.byId("prevFeature"), false);
+            }));
 
-                submitFormButtonNode = dom.byId("submitForm");
-                on(submitFormButtonNode, "click", lang.hitch(this, function () {
-                    var urlString = "index.html";
-                    urlString = this.config.appid ? urlString + "?appid=" + this.config.appid : urlString;
-                    window.location.assign(urlString);
-                }));
+            on(dom.byId("submitForm"), "click", lang.hitch(this, function () {
+                var urlString = "index.html";
+                urlString = this.config.appid ? urlString + "?appid=" + this.config.appid : urlString;
+                window.location.assign(urlString);
             }));
         },
 
@@ -458,18 +454,14 @@ define([
                     this.currentFeatureIndex++;
                     if (this.currentFeatureIndex >= this.carouselPaulData.totalFeatures.length) {
                         domClass.add(dom.byId("nextFeature"), "disabled");
-                        domClass.remove(dom.byId("prevFeature"), "disabled");
-                    } else {
-                        domClass.remove(dom.byId("prevFeature"), "disabled");
                     }
+                    domClass.remove(dom.byId("prevFeature"), "disabled");
                 } else {
                     this.currentFeatureIndex--;
                     if (this.currentFeatureIndex <= 0) {
                         domClass.add(dom.byId("prevFeature"), "disabled");
-                        domClass.remove(dom.byId("nextFeature"), "disabled");
-                    } else {
-                        domClass.remove(dom.byId("nextFeature"), "disabled");
                     }
+                    domClass.remove(dom.byId("nextFeature"), "disabled");
                 }
                 this._mapClicked(this.carouselPaulData.tableAttributes[this.currentFeatureIndex]);
                 this._highlightMapGraphics(this.carouselPaulData.tableAttributes[this.currentFeatureIndex]);
@@ -482,7 +474,7 @@ define([
         //function will  check whether the layer is hosted or not
         //If layer is hosted or layer supports pagination then data will be fetched in small chunks with geometry
         //Otherwise only objectIds and display fields will be fetched
-        _queryLayer: function (layer) {
+        _queryLayer: function () {
             var queryTask, queryLayer, currentClass, i = 1;
             queryTask = new QueryTask(this._formLayer.url);
             queryLayer = new Query();
@@ -494,17 +486,14 @@ define([
                 currentClass = "DESC";
             }
             queryLayer.orderByFields = [dom.byId("sortbyInput").value + " " + currentClass];
+            queryLayer.returnGeometry = true;
+            queryLayer.outFields = ["*"];
             if (array.indexOf(this._formLayer.url.split('/'), "rest") == 5) {
                 //Hosted layer, data can be fetched in small chunks
                 queryLayer.num = this.numberOfRecords; //This value will be configurable
                 queryLayer.start = this.featureCount;
                 this.featureCount += this.numberOfRecords;
                 this.isHosted = true;
-                queryLayer.returnGeometry = true;
-                queryLayer.outFields = ["*"];
-            } else {
-                //Fetch all features
-                queryLayer.outFields = [layer.objectIdField + "," + this.displayFields];
             }
             queryTask.execute(queryLayer, lang.hitch(this, function (results) {
                 var records = [];
@@ -531,14 +520,19 @@ define([
         },
 
         //function to calculate the total number of features in a layer
-        _calculateTotalFeaturesLength: function () {
+        _calculateTotalFeaturesLength: function (form_Layer) {
+            this.layerPagination = [];
             var queryTask, queryLayer;
-            queryTask = new QueryTask(this._formLayer.url);
+            queryTask = new QueryTask(form_Layer.url);
             queryLayer = new Query();
             queryLayer.where = "1=1";
             queryLayer.returnCountOnly = true;
+            queryLayer.returnGeometry = false;
             queryTask.execute(queryLayer, lang.hitch(this, function (count) {
                 this.totalNumberOfRecords = count.features.length;
+                this._populateSortOptions(form_Layer);
+                this._queryLayer(form_Layer);
+                this._clickMap(form_Layer);
             }), function (error) {
                 console.log(error);
             });
@@ -553,6 +547,34 @@ define([
             this._mapLegend.startup();
         },
 
+        //function to check if layer is editable from all the layers in webmap and then create dropdown to select select layer
+        _validateFeatureServer: function (layer, canCreate, layerId) {
+            if (canCreate) {
+                var selectLayerbyInput;
+                selectLayerbyInput = domConstruct.create("option", {
+                    "innerHTML": layer.name,
+                    "value": layerId
+                }, dom.byId("selectLayerInput"));
+            }
+        },
+
+        _queryAllLayers: function (layerUrl, layerId) {
+            var capabilities = null, layer, layerDeferred;
+            if (layerUrl) {
+                layer = new FeatureLayer(layerUrl);
+                layerDeferred = new Deferred();
+                on(layer, "load", lang.hitch(this, function () {
+                    capabilities = layer.getEditCapabilities();
+                    this._validateFeatureServer(layer, capabilities.canCreate, layerId);
+                    layerDeferred.resolve(true);
+                }));
+                on(layer, "error", function () {
+                    layerDeferred.resolve(true);
+                });
+                return layerDeferred.promise;
+            }
+        },
+
         //set defaults for layer
         _setLayerDefaults: function () {
             // if no layer id is set, try to use first feature layer
@@ -565,38 +587,103 @@ define([
                         }
                         // set id
                         this.config.form_layer.id = currentLayer.id;
+                        this._formLayer = this.map.getLayer(this.config.form_layer.id);
                         return true;
                     }
                 }));
             }
-            // get editable layer
-            this._formLayer = this.map.getLayer(this.config.form_layer.id);
-            // if we have a layer
-            if (this._formLayer) {
-                // if fields not set or empty
-                if (!this.config.fields || (this.config.fields && this.config.fields.length === 0)) {
-                    this.config.fields = this._formLayer.fields;
-                }
-                if (!this.config.selectedTitleField) {
-                    this.config.selectedTitleField = this._formLayer.displayField;
-                }
+            if (this.config.form_layer.id === "All") {
+                var layerListArray = [];
+                domAttr.set(dom.byId("layerSelectBox"), 'display', 'block');
+                array.forEach(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
+                    if (currentLayer.layerType && currentLayer.layerType === "ArcGISFeatureLayer") {
+                        layerListArray.push(this._queryAllLayers(currentLayer.url, currentLayer.id));
+                    }
+                }));
+                all(layerListArray).then(lang.hitch(this, function () {
+                    this.config.form_layer.id = dom.byId("selectLayerInput")[0].value;
+                    this._formLayer = this.map.getLayer(this.config.form_layer.id);
+                    domStyle.set(dom.byId("layerSelectBox"), 'display', 'block');
+                    if (!this.config.selectedTitleField[this.config.form_layer.id]) {
+                        this.config.selectedTitleField[this.config.form_layer.id] = this._formLayer.displayField;
+                    }
+                    on(dom.byId("selectLayerInput"), "change", lang.hitch(this, function () {
+                        domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
+                        this.selectedGraphics.clear();
+                        this.config.form_layer.id = dom.byId("selectLayerInput").value;
+                        this._formLayer = this.map.getLayer(this.config.form_layer.id);
+                        if (!this.config.selectedTitleField[this.config.form_layer.id]) {
+                            this.config.selectedTitleField[this.config.form_layer.id] = this._formLayer.displayField;
+                        }
+                        this._calculateTotalFeaturesLength(this._formLayer);
+                    }));
+                    this._executeLayerTasks(this._formLayer);
+                }));
             }
-            this._populateSortOptions(this._formLayer);
+            else {
+                this._formLayer = this.map.getLayer(this.config.form_layer.id);
+                // if we have a layer
+                if (this._formLayer) {
+                    // if fields not set or empty
+                    if (!this.config.fields || (this.config.fields && this.config.fields.length === 0)) {
+                        this.config.fields = this._formLayer.fields;
+                    }
+                    if (!this.config.selectedTitleField[this.config.form_layer.id]) {
+                        this.config.selectedTitleField[this.config.form_layer.id] = this._formLayer.displayField;
+                    }
+                }
+                this._executeLayerTasks(this._formLayer);
+            }
+        },
+
+        //function to click on map to select features
+        _clickMap: function (_formLayer) {
+            if (this.layerClickHandle !== null) {
+                this.layerClickHandle.remove();
+            }
+            this.layerClickHandle = on(_formLayer, "click", lang.hitch(this, function (evt) {
+                this.map.infoWindow.hide();
+                if (evt.graphic && evt.mapPoint) {
+                    array.forEach(_formLayer.renderer.infos, lang.hitch(this, function (currentInfo) {
+                        if (currentInfo.value == evt.graphic.attributes[_formLayer.renderer.attributeField]) {
+                            var graphicSVG = new Graphic(new Point([evt.graphic.geometry.x, evt.graphic.geometry.y], this.map.spatialReference), this._createSVGSymbol(currentInfo.symbol.size));
+                            this.selectedGraphics.clear();
+                            this.selectedGraphics.add(graphicSVG);
+                            if (!this.map.getLayer("highlightedGraphic")) {
+                                this.map.addLayer(this.selectedGraphics);
+                            }
+                        }
+                    }));
+                    this._executeQueryTask(evt.mapPoint).then(lang.hitch(this, function (result) {
+                        var objectIdField = _formLayer.objectIdField;
+                        array.forEach(query('.formList .list-group-item'), lang.hitch(this, function (node) {
+                            if (domClass.contains(node, "active")) {
+                                domClass.remove(node, "active");
+                            }
+                            if (domAttr.get(node, "fieldValue") === result.features[0].attributes[objectIdField].toString()) {
+                                domClass.add(node, "active");
+                            }
+                        }));
+                    }));
+                }
+            }));
         },
 
         //function to create sort options in dropdown
         _populateSortOptions: function (_formLayer) {
             var SortOption;
-            if (this.config.selectedTitleField) {
+            this.displayFields = [];
+            dom.byId("sortbyInput").options.length = 0;
+            if (this.config.selectedTitleField[this.config.form_layer.id]) {
                 domConstruct.create("option", {
-                    "innerHTML": this.config.selectedTitleField,
-                    "value": this.config.selectedTitleField
+                    "innerHTML": this.config.selectedTitleField[this.config.form_layer.id],
+                    "value": this.config.selectedTitleField[this.config.form_layer.id]
                 }, dom.byId("sortbyInput"));
             }
-            this.displayFields = this.config.selectedTitleField + ",";
+            this.displayFields = this.config.selectedTitleField[this.config.form_layer.id] + ",";
             array.forEach(_formLayer.fields, lang.hitch(this, function (currentfield) {
                 //Populate all date type fields in sort drop down
-                if (currentfield.type === "esriFieldTypeDate" && this.config.selectedTitleField !== currentfield.name) {
+                if (currentfield.type === "esriFieldTypeDate" && this.config.selectedTitleField[this.config.form_layer.id] !== currentfield.name) {
                     SortOption = domConstruct.create("option", {
                         "value": currentfield.name,
                         "innerHTML": currentfield.alias
@@ -605,13 +692,13 @@ define([
                 }
             }));
             on(dom.byId("sortbyInput"), "change", lang.hitch(this, function () {
+                this.selectedGraphics.clear();
                 this.layerPagination = [];
                 this.pageIndex = 0;
                 this.featureCount = 0;
                 this._queryLayer(this._formLayer);
             }));
         },
-
 
         // function to populate the list of features of layer in a listview
         _populateFeatures: function (_formLayer, layerPageIndex) {
@@ -623,12 +710,12 @@ define([
                 listElement = domConstruct.create("ul", { "id": "featureList", "class": "list-group formListContent" }, listContainer);
                 array.forEach(graphicAttribute, lang.hitch(this, function (currentKey, index) {
                     listItem = domConstruct.create("li", { "class": "list-group-item", "id": index }, listElement);
-                    titleField = this.config.selectedTitleField;
+                    titleField = this.config.selectedTitleField[this.config.form_layer.id];
                     var listTitle = currentKey.attributes[titleField];
                     domAttr.set(listItem, "fieldValue", currentKey.attributes[_formLayer.objectIdField]);
                     this._fetchListTitle(_formLayer, listTitle, titleField, true, listItem);
                     on(listItem, 'click', lang.hitch(this, function (evt) {
-                        var activeListElement = query(".active", listElement), HeaderNode = query('.nav-tabs', dom.byId("panelHeader"));
+                        var activeListElement = query(".active", listElement), HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
                         if (activeListElement.length > 0) {
                             domClass.remove(query(".active", listElement)[0], "active");
                         }
@@ -637,6 +724,7 @@ define([
                             array.some(HeaderNode[0].children, function (currentNode) {
                                 if (domClass.contains(currentNode, "active")) {
                                     domClass.remove(currentNode, "active");
+                                    return true;
                                 }
                             });
                             this._showTabsMobileView();
@@ -650,8 +738,9 @@ define([
                 }));
                 if ((this.layerPagination.length * this.numberOfRecords) <= this.totalNumberOfRecords) {
                     listItem = domConstruct.create("li", { "class": "list-group-item" }, listElement);
-                    var loadMoreButton = domConstruct.create("button", { "class": "btn btn-default center-block", "innerHTML": "Load More", "id": "loadMoreButton" }, listItem);
+                    var loadMoreButton = domConstruct.create("button", { "class": "btn btn-default center-block", "innerHTML": nls.viewer.btnLoadMoreText, "id": "loadMoreButton" }, listItem);
                     on(loadMoreButton, "click", lang.hitch(this, function () {
+                        this.selectedGraphics.clear();
                         domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
                         this.pageIndex++;
                         this._queryLayer(this._formLayer);
@@ -665,7 +754,7 @@ define([
         //Merge features as user clicks on load more button
         _mergeLayerPages: function (index) {
             var newGraphicsArray = [];
-            array.some(this.layerPagination, function (currentGraphicsArray, pageIndex) {
+            array.forEach(this.layerPagination, function (currentGraphicsArray, pageIndex) {
                 if (pageIndex <= index) {
                     array.forEach(currentGraphicsArray, function (currentGraphic) {
                         newGraphicsArray.push(currentGraphic);
@@ -683,14 +772,14 @@ define([
                         if (currentField.type === "esriFieldTypeDate") {
                             listTitle = new Date(listTitle).toLocaleString();
                             if (listItem) {
-                                domAttr.set(listItem, "innerHTML", listTitle ? listTitle : "na");
+                                domAttr.set(listItem, "innerHTML", listTitle ? listTitle : nls.viewer.unavailableTitleText);
                             }
                         }
                         else {
                             if (listTitle && lang.trim(listTitle)) {
                                 listTitle = lang.trim(listTitle);
                             } else {
-                                listTitle = "na";
+                                listTitle = nls.viewer.unavailableTitleText;
                             }
                             if (listItem) {
                                 domAttr.set(listItem, "innerHTML", listTitle);
@@ -700,11 +789,12 @@ define([
                 }
                 else {
                     if (listItem) {
-                        domAttr.set(listItem, "innerHTML", "na");
+                        domAttr.set(listItem, "innerHTML", nls.viewer.unavailableTitleText);
                     }
                 }
+                //setting the title for feature Details Container
                 if (isPanelTitle) {
-                    domAttr.set(dom.byId("panelTitle"), "innerHTML", listTitle ? listTitle : "na");
+                    domAttr.set(dom.byId("panelTitle"), "innerHTML", listTitle ? listTitle : nls.viewer.unavailableTitleText);
                 }
             });
         },
@@ -750,6 +840,7 @@ define([
             mapPoint2 = this.map.toMap(pnt2);
             return new Extent(mapPoint1.x, mapPoint1.y, mapPoint2.x, mapPoint2.y, this.map.spatialReference);
         },
+
         //create svg symbol based on features selected on map
         _createSVGSymbol: function (size) {
             var sls = new SimpleLineSymbol(
@@ -784,8 +875,8 @@ define([
                     var layerGraphics = result.features[0];
                     for (key in layerGraphicsAttributes) {
                         var attributeValue = layerGraphicsAttributes[key];
-                        if (this.config.selectedTitleField === key) {
-                            this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField, true, listItem);
+                        if (this.config.selectedTitleField[this.config.form_layer.id] === key) {
+                            this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField[this.config.form_layer.id], true, listItem);
                         }
                         this._createFeatureDetailsContainer(key, attributeValue, layerGraphics);
                     }
@@ -806,14 +897,17 @@ define([
                 layerGraphicsAttributes = selectedFeature.attributes;
                 for (key in layerGraphicsAttributes) {
                     var attributeValue = layerGraphicsAttributes[key];
-                    if (this.config.selectedTitleField === key) {
-                        this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField, true, listItem);
+                    if (this.config.selectedTitleField[this.config.form_layer.id] === key) {
+                        this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField[this.config.form_layer.id], true, listItem);
                     }
                     this._createFeatureDetailsContainer(key, attributeValue, selectedFeature);
                 }
-                this.map.centerAt(selectedFeature.geometry);
+                if (selectedFeature.geometry) {
+                    this.map.centerAt(selectedFeature.geometry);
+                }
             }
         },
+
         //Function internally calls other function to create SVG symbol and then highlights it on map
         _highlightMapGraphics: function (result) {
             var symbolAttribute;
@@ -822,6 +916,7 @@ define([
                     if (currentInfo.value == result.attributes[this._formLayer.renderer.attributeField]) {
                         symbolAttribute = currentInfo.symbol.size;
                         this._drawSymbol(result, symbolAttribute);
+                        return true;
                     }
                 }));
             }
@@ -829,15 +924,14 @@ define([
                 symbolAttribute = this._formLayer.renderer.symbol.size;
                 this._drawSymbol(result, symbolAttribute);
             }
-
         },
 
         //function checks if the geometry of the symbol Geometry is not NaN and then draws the symbol or shows an error message
         _drawSymbol: function (result, symbolAttribute) {
+            this.selectedGraphics.clear();
             if (result.geometry) {
                 if (!isNaN(result.geometry.x) && !isNaN(result.geometry.y)) {
                     var graphicSVG = new Graphic(new Point([result.geometry.x, result.geometry.y], this.map.spatialReference), this._createSVGSymbol(symbolAttribute));
-                    this.selectedGraphics.clear();
                     this.selectedGraphics.add(graphicSVG);
                     this.map.centerAt(result.geometry);
                     if (!this.map.getLayer("highlightedGraphic")) {
@@ -858,8 +952,8 @@ define([
             }
             for (var key in graphics.attributes) {
                 var attributeValue = graphics.attributes[key];
-                if (this.config.selectedTitleField === key) {
-                    this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField, true);
+                if (this.config.selectedTitleField[this.config.form_layer.id] === key) {
+                    this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField[this.config.form_layer.id], true);
                 }
                 this._createFeatureDetailsContainer(key, attributeValue, graphics);
             }
@@ -1078,11 +1172,13 @@ define([
                 }));
             }
         },
+
         _showMobileGeocoder: function () {
             if (this._mobileSearchNode && this._mobileGeocoderIconContainerNode) {
                 domClass.add(this._mobileSearchNode, this.css.mobileSearchDisplay);
             }
         },
+
         _hideMobileGeocoder: function () {
             if (this._mobileSearchNode && this._mobileGeocoderIconContainerNode) {
                 domClass.remove(this._mobileSearchNode, this.css.mobileSearchDisplay);
