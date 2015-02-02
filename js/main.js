@@ -636,7 +636,7 @@ define([
                 this._createFormElements(currentField, index, null);
             }));
             // if form has attachments
-            if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id]) {
+            if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id].enableAttachments) {
                 var requireField = null, helpBlock, labelHTML = "", divRowContainer, divRow, divColumn1, fileBtnSpan, fileInput, fileChange,
                     divColumn2, fileListContainer, fileListRow, fileListColumn;
                 userFormNode = dom.byId('userForm');
@@ -682,6 +682,7 @@ define([
                     "type": "file",
                     "class": "hideFileInputUI",
                     "accept": "image/*",
+                    "title": nls.user.selectFileTitle,
                     "name": "attachment"
                 }, fileBtnSpan);
                 fileChange = on(fileInput, "change", lang.hitch(this, function (evt) {
@@ -693,9 +694,10 @@ define([
                         alert(nls.user.exceededFileCountError);
                         return true;
                     }
-                    //statement to remove error message after selection of file
+                    //block to remove error message after selection of file and to replace error class with success class.
                     if (query(".errorMessage", formContent)[0]) {
                         this._removeErrorNode(query(".errorMessage", formContent)[0]);
+                        domClass.replace(formContent, "has-success", "has-error");
                     }
                     fileChange.remove();
                     this._attachEvent(fileInput, fileBtnSpan, formContent, evt.currentTarget.files[0]);
@@ -736,19 +738,23 @@ define([
             }
             fileSize = fileSize.toFixed(2) + unit;
             alertHtml = "<div class=\"alert alert-dismissable alert-success\">";
-            //alertHtml += "<div class=\"alert alert-dismissable alert-success\">";
             alertHtml += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">" + "&times" + "</button>";
             alertHtml += "<strong>" + fileDetails.name + "<br/>" + fileSize + "</strong>";
             alertHtml += "</div>";
-
             alertHtml = domConstruct.place(alertHtml, dom.byId("fileListColumn"), "last");
             domConstruct.place(fileInput, alertHtml, "last");
-
+            //binding event to perform activities on removal of a selected file from the file list
+            on(query(".close", alertHtml)[0], "click", function (evt) {
+                if (query(".alert-dismissable").length === 1) {
+                    domClass.remove(formContent,".has-success");
+                }
+            });
             fileInput = "";
             fileInput = domConstruct.create("input", {
                 "type": "file",
                 "class": "hideFileInputUI",
                 "accept": "image/*",
+                "title": nls.user.selectFileTitle,
                 "name": "attachment"
             }, null);
             domConstruct.place(fileInput, fileBtnSpan, "first");
@@ -765,9 +771,10 @@ define([
                     evt.currentTarget.value = "";
                     return true;
                 }
-                //statement to remove error message after selection of file
+                //block to remove error message after selection of file and to replace error class with success class.
                 if (query(".errorMessage", formContent)[0]) {
                     this._removeErrorNode(query(".errorMessage", formContent)[0]);
+                    domClass.replace(formContent, "has-success", "has-error");
                 }
                 fileChange.remove();
                 this._attachEvent(fileInput, fileBtnSpan, formContent, evt.currentTarget.files[0]);
@@ -2327,6 +2334,7 @@ define([
                     this.flagAttachingPrevFile = false;
                     successCounter++;
                     domClass.replace(currentBadge.parentNode, "alert-success", "alert-info");
+                    domClass.replace(currentBadge, "glyphicon-ok", "glyphicon-upload");
                     domStyle.set(currentBadge, "cursor", "auto");
                     currentBadge.innerHTML = nls.user.successBadge;
                     if (successCounter === query(".fileToSubmit", dom.byId("userForm")).length) {
@@ -2348,13 +2356,13 @@ define([
                     this.objFailedAttachments[currentElement[0].id] = currentElement;
                     domClass.replace(currentBadge.parentNode, "alert-warning", "alert-info");
                     domClass.remove(query(".attachment-error-message", currentBadge.parentNode)[0], "hide");
-                    domClass.add(currentBadge, "btn btn-danger btn-xs glyphicon glyphicon-repeat");
-                    currentBadge.innerHTML = "";
+                    domClass.replace(currentBadge, "btn btn-danger btn-xs", "glyphicon-upload");
+                    currentBadge.innerHTML = nls.user.retryBadge;
                     domStyle.set(currentBadge, "cursor", "pointer");
                     on.once(currentBadge, "click", lang.hitch(this, function (evt) {
                         domClass.replace(currentBadge.parentNode, "alert-info", "alert-warning");
                         domClass.add(query(".attachment-error-message", currentBadge.parentNode)[0], "hide");
-                        domClass.remove(currentBadge, "btn btn-danger btn-xs glyphicon glyphicon-repeat");
+                        domClass.replace(currentBadge, "glyphicon-upload", "btn btn-danger btn-xs glyphicon-repeat");
                         evt.currentTarget.innerHTML = nls.user.uploadingBadge;
                         domStyle.set(evt.currentTarget, "cursor", "auto");
                         this.arrRetryAttachments.push(this.objFailedAttachments[domAttr.get(evt.currentTarget, "data-badge")]);
@@ -2509,7 +2517,7 @@ define([
 
             for (var i = 0; i < fileList.length; i++) {
                 fileUploadStatusMsgLi = domConstruct.create("li", { "class": "message alert alert-info" }, fileUploadStatusMsgUl);
-                fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right file-upload-status-badge", "innerHTML": nls.user.uploadingBadge, "id": "badge" + i }, fileUploadStatusMsgLi);
+                fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right file-upload-status-badge glyphicon glyphicon-upload", "innerHTML": nls.user.uploadingBadge, "id": "badge" + i }, fileUploadStatusMsgLi);
                 fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right hide attachment-error-message", "innerHTML": nls.user.errorBadge }, fileUploadStatusMsgLi);
                 fileUploadStatusMsgLi.innerHTML += fileList[i].files[0].name;
                 domAttr.set(dom.byId("badge" + i), "data-badge", fileList[i].id);

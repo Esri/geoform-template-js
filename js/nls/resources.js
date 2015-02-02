@@ -112,12 +112,13 @@ define({
       invalidLayerMessage: "Form layer does not exist. Please configure the application and set the layer.",
       selectedLayerText: "All",
       fileUploadStatus: "File Upload Status",
-      uploadingBadge: "Uploading&hellip;",
-      successBadge: "Uploaded",
+      uploadingBadge: "&nbsp;Uploading&hellip;",
+      successBadge: "&nbsp;Uploaded",
       retryBadge: "Retry",
-      errorBadge: "Error uploading&nbsp;",
+      errorBadge: "Error uploading&nbsp;&nbsp;&nbsp;",
       fileTooLargeError: "File too large to attach",
-      exceededFileCountError: "Exceeded maximum no. of attachments allowed"
+      exceededFileCountError: "Exceeded maximum no. of attachments allowed",
+      selectFileTitle: "Select a file"
     },
     builder: {
       invalidUser: "Sorry, you don't have permission to view this item",
