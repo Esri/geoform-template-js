@@ -1,75 +1,81 @@
 ﻿<div>
     <div data-dojo-type="dijit/layout/BorderContainer" id="mainContainer"
         class="mainContainer" data-dojo-props="design:'headline', gutters:false">
-        <div class="headerWrapper">
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" class="headerPanel ">
-                <div class="appTitle" id="appTitle">
-                </div>
-                <div id="shareDialog" class="shareBtnContainer">
-                    <div class="fa fa-share-alt shareIconClass">
-                    </div>
-                </div>
-                <div class="locateBox">
-                    <div id="geocoderSearch">
-                    </div>
-                </div>
-                <div id="mobileGeocoderIcon" class="mobileGeocoderIcon icon-right">
-                    <div id="mobileGeocoderIconContainer" class="button-container toggle-grey glyphicon glyphicon-search">
-                    </div>
-                </div>
-                <div id="mobileSearch" class="mobile-locate-box-hidden">
-                    <div class="mobile-search-container">
-                        <div id="geocoderMobile">
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" class="headerPanel">
+            <div class="headerWrapper">
+                <div class="navbar navbar-inverse">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <a class="navbar-brand appTitle " href="#" id="appTitle"></a>
                         </div>
-                        <div id="btnCloseGeocoder" class="close-geocoder-button">
-                            ${viewer.geocoderCancelText}
+                        <div id="shareDialog" class="shareBtnContainer navbar-right">
+                            <a class="fa fa-share-alt shareIconClass"></a>
                         </div>
-                        <div class="clearfix"></div>
+                        <div class="locateBox nav navbar-nav navbar-right">
+                            <div id="geocoderSearch"></div>
+                        </div>
+                        <div id="mobileGeocoderIcon" class="mobileGeocoderIcon pull-right">
+                            <a id="mobileGeocoderIconContainer" class="button-container toggle-grey glyphicon glyphicon-search"></a>
+                        </div>
+                        <div id="mobileSearch" class="mobile-locate-box-hidden">
+                            <div class="navbar navbar-inverse mobile-search-container">
+                                <div id="geocoderMobile"></div>
+                                <a id="btnCloseGeocoder" class="close-geocoder-button">${viewer.geocoderCancelText}
+                                </a>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'" class="leftPanelContainer">
             <div id="panelContainer" class="panelContainer">
-                <div id="panelHeader" style="font-size: 18px;">
-                    <ul class="nav nav-pills nav-justified" id="viewer_pills" role="tablist">
-                        <li title="${viewer.MapTabTooltip}" id="Map" class="map-link">
+                <div id="panelHeader" class="navbar navbar-default">
+                    <ul class="nav navbar-nav" id="viewer_pills" role="tablist">
+                        <li title="${viewer.mapTabTooltip}" id="mapOption" class="mapLink">
                             <a href="#" data-toggle="tab">
                                 <span class="glyphicon glyphicon-globe"></span>
-                                <span class="tab-text">${viewer.viewMapTabText}</span>
+                                <span class="tabText">${viewer.viewMapTabText}</span>
                             </a>
                         </li>
                         <li class="active" id="search" title="${viewer.recordsTabTooltip}">
                             <a href="#" data-toggle="tab">
                                 <span class="glyphicon glyphicon-map-marker"></span>
-                                <span class="tab-text">${viewer.viewReportsTabText}</span>
+                                <span class="tabText">${viewer.viewReportsTabText}</span>
                             </a>
                         </li>
                         <li title="${viewer.legendTabTooltip}" id="legend">
                             <a href="#" data-toggle="tab">
                                 <span class="glyphicon glyphicon-list"></span>
-                                <span class="tab-text">${viewer.viewLegendTabText}</span>
+                                <span class="tabText">${viewer.viewLegendTabText}</span>
                             </a>
                         </li>
                         <li title="${viewer.aboutUsTabTooltip}" id="aboutUs">
                             <a href="#" data-toggle="tab">
                                 <span class="glyphicon glyphicon-info-sign"></span>
-                                <span class="tab-text">${viewer.viewAboutusTabText}</span>
+                                <span class="tabText">${viewer.viewAboutusTabText}</span>
                             </a>
                         </li>
                     </ul>
                 </div>
-                <div class="panelBody">
-                    <div id="mapPanelBody" class="">
-                    </div>
+                <div id="mapPanelBody" class="panelBody">
                 </div>
                 <div id="searchPanelBody" class="panelBody searchPanelBody">
+                    <div class="layerSelectBox" id="layerSelectBox">
+                        <div class="selectLayerHeader">
+                            <h5>Select Layer:
+                            </h5>
+                        </div>
+                        <select id="selectLayerInput" class="form-control">
+                        </select>
+                    </div>
                     <div id="sortOptionDiv" class="sortOptionDiv clearfix">
-                        <div class="left_text">
+                        <div class="sortHeaderContainer">
                             <h5>${viewer.sortHeaderText}
                             </h5>
                         </div>
-                        <div class="right_box">
+                        <div class="sortContainer">
                             <select id="sortbyInput" class="form-control sortSelect">
                             </select>
                             <div class="btnSortByOrder">
@@ -83,22 +89,19 @@
                     <div class="submitFormNode">
                         <button id="submitForm" type="button" class="btn btn-primary">
                             ${viewer.btnSubmitReportText}
+                       
                         </button>
                     </div>
                 </div>
-                <div class="panelBody">
-                    <div id="legendPanelBody" class="legendPanelBody"></div>
-                </div>
-                <div class="panelBody">
-                    <div id="aboutusPanelBody" class="aboutusPanelBody">
-                    </div>
+                <div id="legendPanelBody" class="panelBody legendPanelBody"></div>
+                <div id="aboutusPanelBody" class="panelBody aboutusPanelBody">
                 </div>
             </div>
         </div>
         <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'" id="mapLayoutContainer">
             <div id="mapDiv" data-dojo-props="region:'center'" class="mapDiv">
-            </div>
-            <div class="BasemapToggle" id="toggleContainer">
+                <div class="BasemapToggle" id="toggleContainer">
+                </div>
             </div>
             <div class="panel panel-default featureDetailsContainer" id="featureDetailsContainer">
                 <div class="panel-heading">

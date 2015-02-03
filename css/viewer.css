@@ -7,28 +7,24 @@ html, body
     height: 100%;
     width: 100%;
 }
+
 .mainContainer
 {
     height: 100%;
     width: 100%;
 }
 
-.headerWrapper .dijitContentPane
-{
-    /*Geocode Results are invisible if this style property is not marked important*/
-    overflow: visible !important;
-}
+    .mainContainer .dijitContentPane, .leftPanelContainer
+    {
+        overflow: hidden;
+    }
 
-.mainContainer .dijitContentPane, .leftPanelContainer
-{
-    overflow: hidden;
-}
-
+/*geocoder is not visible if we don't apply the important tag to the style given below */
 .headerPanel
 {
-    height: 46px;
-    z-index:999999;
+    z-index: 999999;
     width: 100%;
+    overflow: visible !important;
 }
 
 .BasemapToggle
@@ -38,17 +34,14 @@ html, body
     right: 15px;
     z-index: 35;
     -webkit-box-sizing: content-box;
+}
 
-}
-.BasemapToggle .basemapTitle
-{
-    width: 100% !important;
-}
 .leftPanelContainer
 {
-    width: 270px;
+    width: 271px;
     border-right: 1px solid #ddd;
 }
+
 .mapDiv
 {
     padding: 0;
@@ -62,33 +55,24 @@ html, body
 {
     top: 12px;
 }
-.appTitle
-{
-    line-height: 44px;
-    font-size: 18px;
-    font-weight: 700;
-    max-width: 40%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    float: left;
-    margin-left: 15px;
-}
+
 
 .panelBody
 {
     height: 100%;
     width: 100%;
 }
+
 .legendPanelBody
 {
-    padding: 10px;
+    padding: 5px;
     display: none;
     overflow: auto;
 }
+
 .aboutusPanelBody
 {
-    padding: 10px;
+    padding: 5px;
     display: none;
     overflow: auto;
 }
@@ -98,16 +82,24 @@ html, body
     overflow-y: auto;
 }
 
+.layerSelectBox
+{
+    padding: 5px;
+    display: none;
+}
+
 .sortOptionDiv
 {
     width: 100%;
     padding: 0px 0px 10px 10px;
 }
+
 .sortSelect
 {
     float: left;
     max-width: 140px;
 }
+
 .btnSortByOrder
 {
     margin-left: 10px;
@@ -120,24 +112,18 @@ html, body
     width: 100%;
     margin-bottom: 10px;
 }
+
 .formListContent
 {
-    cursor: pointer;
-}
-
-.listGroupItem
-{
-    width: 100%;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
     cursor: pointer;
 }
 
 .submitFormNode
 {
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 30px;
 }
+
 #geoform .shareIconClass
 {
     font-size: 25px;
@@ -170,7 +156,7 @@ html, body
 
 .featureDetailsContainer .panel-heading
 {
-    text-align:center;
+    text-align: center;
 }
 
 .panel-title, .panel-middle, .panel-button
@@ -180,7 +166,7 @@ html, body
 
 .panel-title
 {
-    float:left;
+    float: left;
 }
 
 .closeButton
@@ -193,7 +179,7 @@ html, body
 
 .panel-middle .pager
 {
-    margin:0px !important;
+    margin: 0px !important;
 }
 
 
@@ -201,11 +187,12 @@ html, body
 {
     float: right;
     padding: 0;
-    margin: 8px 4px 8px 0;
+    margin: 11px 0px 0px 0px;
 }
+
 .shareBtnContainer
 {
-    margin: 10px 0px 0px 15px;
+    margin: 14px 0px 0px 15px;
     float: right;
     cursor: pointer;
 }
@@ -213,6 +200,7 @@ html, body
 .mobileGeocoderIcon
 {
     display: none;
+    cursor: pointer;
 }
 
 .geocoder-mobile
@@ -236,10 +224,10 @@ html, body
     border: 1px solid #ccc;
 }
 
-.geocoder-mobile .esriGeocoder input
-{
-    width: 75%;
-}
+    .geocoder-mobile .esriGeocoder input
+    {
+        width: 75%;
+    }
 
 .close-geocoder-button
 {
@@ -248,12 +236,16 @@ html, body
     padding: 1px 0;
     line-height: 36px;
     height: 36px;
-    color: #999;
     margin-left: 10px;
     font-size: 17px;
     cursor: pointer;
     text-align: center;
 }
+
+    .close-geocoder-button:hover
+    {
+        text-decoration: none;
+    }
 
 .esriRTL .close-geocoder-button
 {
@@ -262,18 +254,13 @@ html, body
     margin-right: 10px;
 }
 
-.close-geocoder-button:hover
-{
-    color: #333;
-}
-
 .mobile-locate-box-hidden
 {
     display: none;
     position: absolute;
     z-index: 460;
     left: 0;
-    top: 44px;
+    top: 50px;
     width: 100%;
 }
 
@@ -286,14 +273,8 @@ html, body
 .mobile-locate-box-hidden .mobile-search-container
 {
     padding: 12px 15px;
-    background: #fff;
 }
 
-.icon-right
-{
-    float: right;
-    cursor: pointer;
-}
 .button-container
 {
     text-align: center;
@@ -303,7 +284,7 @@ html, body
 
 #panelHeader
 {
-    font-size: 16px;
+    font-size: 20px;
 }
 
 @media screen and (max-width: 680px)
@@ -313,17 +294,12 @@ html, body
         display: none;
     }
 
-    .mobile-locate-box-display, .mobileGeocoderIcon, .geocoder-mobile
-    {
-        display: block !important;
-    }
-
     .mobile-locate-box-hidden
     {
         display: none;
     }
 
-    #mobileGeocoderIcon
+    .mobileGeocoderIcon
     {
         display: block;
     }
@@ -332,23 +308,14 @@ html, body
     {
         width: 100%;
     }
-
-    .appTitle
-    {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        max-width: 65%;
-    }
-
 }
 
-.map-link
+.mapLink
 {
-    display:none !important;
+    display: none !important;
 }
 
-.tab-text
+.tabText
 {
     display: block;
     font-size: 11px;
@@ -357,7 +324,12 @@ html, body
 
 @media screen and (max-width: 767px)
 {
-        .mapDiv .esriSimpleSlider
+    .mobile-locate-box-display, .mobileGeocoderIcon, .geocoder-mobile
+    {
+        display: block !important;
+    }
+
+    .mapDiv .esriSimpleSlider
     {
         display: none;
     }
@@ -370,71 +342,51 @@ html, body
         content: " ";
         clear: both;
         height: 0;
-	}
+    }
 
-	.sortOptionDiv
-	{
+    .sortOptionDiv
+    {
         width: 100%;
         padding: 10px;
     }
 
     #mapLayoutContainer
     {
-        display:none;
+        display: none;
     }
 
     .leftPanelContainer
     {
-        width:100%;
-        position:relative;
-    }
-
-    .nav-tabs li
-    {
-        float:left !important;
-    }
-
-    .nav-tabs li  a
-    {
+        width: 100%;
         position: relative;
+    }
+
+    .sortHeaderContainer
+    {
+        float: left;
+        margin-right: 5px;
+    }
+
+    .sortContainer
+    {
         display: block;
-        padding: 10px 22px;
-        margin-bottom:0px !important;
-        font-size: 22px;
-    }
-
-    .left_text
-    {
-        float:left;
-        margin-right:5px;
-    }
-
-    .right_box
-    {
-         display:block;
     }
 
     .mainContainer .dijitContentPane, .leftPanelContainer
     {
-        overflow:hidden;
+        overflow: hidden;
     }
 
-    .map-link
+    .mapLink
     {
-        display:block !important;
+        display: block !important;
     }
 
-    .tab-text
+    .tabText
     {
         display: block;
         font-size: 11px;
         margin-top: 6px;
-
-    }
-
-    .nav-tabs.nav-justified > li > a > span.glyphicon
-    {
-        display:block;
     }
 
     .featureDetailsContainer
@@ -443,8 +395,125 @@ html, body
         margin: 0px auto;
         left: 50%;
         position: fixed;
-        bottom:75px;
-        margin-left:-45%;
+        bottom: 75px;
+        margin-left: -45%;
     }
 
+    .locateBox
+    {
+        display: none;
+    }
+
+
+    .navbar-fixed-bottom .navbar-nav
+    {
+        margin: 0px;
+    }
+
+        .navbar-fixed-bottom .navbar-nav li
+        {
+            float: left;
+        }
+
+    .mobileGeocoderIcon
+    {
+        position: absolute;
+        right: 60px;
+        top: 0px;
+        display: block;
+    }
+
+    .shareBtnContainer
+    {
+        position: absolute;
+        right: 7px;
+        top: 11px;
+        margin: 0px;
+    }
+
+    .mobileGeocoderIcon a:hover
+    {
+        text-decoration: none;
+    }
+}
+
+a.appTitle
+{
+    outline: none;
+}
+
+.navbar
+{
+    border-radius: 0px;
+}
+
+.esriGeocoderResultsOpen .esriGeocoderContainer
+{
+    z-index: 9999999;
+}
+
+.esriGeocoderResults
+{
+    z-index: 9999999;
+}
+
+.navbar-header .navbar-icon-container
+{
+    margin-right: 15px;
+}
+
+.navbar-icon-container a.navbar-icon
+{
+    margin-left: 25px;
+    line-height: 50px;
+    height: 50px;
+    font-size: 18px;
+}
+
+.navbar
+{
+    border: none;
+    margin-bottom: 0px;
+}
+
+.navbar-nav > li > a
+{
+    text-align: center;
+}
+
+.nav > li > a
+{
+    padding: 10px 0px;
+    width: 90px;
+}
+
+#panelHeader ul.nav
+{
+    width: 100%;
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .active > a
+{
+    background-image: none;
+    background-image: none;
+    background-image: none;
+    background-image: none;
+    filter: none;
+    background-repeat: no-repeat;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.navbar-brand, .navbar-nav > li > a
+{
+    text-shadow: none;
+}
+
+@media screen and (max-width:320px)
+{
+
+    .navbar-icon-container a.navbar-icon
+    {
+        margin-left: 15px;
+    }
 }
