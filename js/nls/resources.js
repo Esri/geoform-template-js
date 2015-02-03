@@ -119,6 +119,8 @@ define({
       fileTooLargeError: "File too large to attach",
       exceededFileCountError: "Exceeded maximum no. of attachments allowed",
       selectFileTitle: "Select a file"
+
+        btnViewSubmissions: "View Submissions"
     },
     builder: {
       invalidUser: "Sorry, you don't have permission to view this item",
@@ -159,6 +161,7 @@ define({
       fieldTabDisplayTypeHeaderText: "Display As",
       fieldTabOrderColumnText: "Order",
       fieldTabVisibleColumnText: "Enabled",
+      displayFieldText: "Display Field",
       selectMenuOption: "Select Menu",
       selectRadioOption: "Radio Button",
       selectTextOption: "Text",
@@ -225,7 +228,33 @@ define({
       locateOnLoadText: "Locate On Load",
       locateOnLoadDescription: "You can configure the GeoForm to use the current location on page load",
       selectLayerFieldTabText: "Select Layer",
-      allLayerSelectOptionText:"All"
+      allLayerSelectOptionText: "All",
+      disableViewer: "Disable Viewer",
+      disableViewerDescription: "You can configure the GeoForm to disable/enable Viewer",
+      displayFieldHintText: "Selected display field will be shown in viewerMode as title field"
+    },
+    viewer: {
+      geocoderCancelText: "Cancel",
+      viewReportsTabText: "Submissions",
+      viewLegendTabText: "Legend",
+      viewAboutusTabText: "About",
+      viewMapTabText: "Map",
+      sortHeaderText: "Sort By:",
+      btnSubmitReportText: "Submit a Report",
+      geocoderPlaceholderText: "Zip Code, city, etc.",
+      noSearchResult: "No result found",
+      recordsTabTooltip: "View Submissions",
+      legendTabTooltip: "Legend",
+      aboutUsTabTooltip: "AboutUs",
+      mapTabTooltip: "Map",
+      appLoadingFailedMessage: "ViewerMode is Unavailable",
+      btnDescendingText: "Desc",
+      btnAscendingText: "Asc",
+      geometryUnavailableErrorMessage: "Unable to find the geometry of the feature",
+      infoPopupOffErrorMessage: "InfoPopup is off",
+      btnLoadMoreText: "Load More",
+      unavailableTitleText: "Untitled",
+      unavailableConfigMessage: "Unable to load config"
     }
   }),
   "ar": 1,
