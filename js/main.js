@@ -64,6 +64,10 @@ define([
     userTemplate,
     nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, usng, locale) {
     return declare([], {
+        arrPendingAttachments: [],
+        objFailedAttachments: {},
+        arrRetryAttachments: [],
+        flagAttachingPrevFile: true,
         nls: nls,
         config: {},
         map: null,
@@ -270,12 +274,9 @@ define([
             var erroneousFields = [];
             array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
                 if (domClass.contains(currentField, "hasAttachment")) {
-                    if (domClass.contains(currentField, "mandatory") && dom.byId("geoFormAttachment").value === "") {
-                        this._validateUserInput(nls.user.requiredFields, currentField, dom.byId("geoFormAttachment").value, true);
+                    if (domClass.contains(currentField, "mandatory") && query(".alert-dismissable", dom.byId("fileListRow")).length === 0) {
+                        this._validateUserInput(nls.user.requiredFields, currentField, query(".hideFileInputUI")[0].value, true);
                         erroneousFields.push(currentField);
-                    }
-                    else {
-                        this._removeErrorNode(query("#errorMessage", currentField));
                     }
                     return true;
                 }
@@ -336,7 +337,7 @@ define([
               var elementId;
                 if (!erroneousFields[0].children[0].id) {
                     elementId = erroneousFields[0].parentElement.children[0].id;
-                    domClass.remove(elementId, "has-success");  
+                    domClass.remove(elementId, "has-success");
                 } else {
                     elementId = erroneousFields[0].children[0].id;
                 }
@@ -552,7 +553,7 @@ define([
         _createForm: function (fields) {
             domConstruct.empty(dom.byId('userForm'));
             this.sortedFields = [];
-            var formContent, labelContent, fileInput, matchingField, newAddedFields = [], userFormNode;
+            var formContent, labelContent, matchingField, newAddedFields = [], userFormNode;
             if (!this._formLayer) {
                 this._showErrorMessageDiv(nls.user.noLayerConfiguredMessage, dom.byId("errorMessageDiv"));
                 array.some(query(".row"), lang.hitch(this, function (currentNode) {
@@ -635,8 +636,9 @@ define([
                 this._createFormElements(currentField, index, null);
             }));
             // if form has attachments
-            if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id]) {
-                var requireField = null, helpBlock;
+            if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id].enableAttachments) {
+                var requireField = null, helpBlock, labelHTML = "", divRowContainer, divRow, divColumn1, fileBtnSpan, fileInput, fileChange,
+                    divColumn2, fileListContainer, fileListRow, fileListColumn;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group hasAttachment geoFormQuestionare"
@@ -650,7 +652,6 @@ define([
                     }, formContent);
                 }
                 // attachment label html
-                var labelHTML = "";
                 labelHTML += "<span class=\"glyphicon glyphicon-paperclip\"></span> ";
                 labelHTML += (this.config.attachmentInfo[this._formLayer.id].attachmentLabel || nls.user.attachment);
                 // attachment label
@@ -662,13 +663,45 @@ define([
                 if (requireField && labelContent) {
                     domConstruct.place(requireField, labelContent, "last");
                 }
+                divRowContainer = domConstruct.create("div", {
+                    "class": "container",
+                    "style": "width:inherit;"
+                }, formContent);
+                divRow = domConstruct.create("div", {
+                    "class": "row"
+                }, divRowContainer);
+                divColumn1 = domConstruct.create("div", {
+                    "class": "col-sm-2"
+                }, divRow);
+                fileBtnSpan = domConstruct.create("span", {
+                    "class": "btn-file",
+                    "innerHTML": "Select File"
+                }, divColumn1);
+
                 fileInput = domConstruct.create("input", {
                     "type": "file",
-                    "id": "geoFormAttachment",
+                    "class": "hideFileInputUI",
                     "accept": "image/*",
-                    //"capture": "camera",
+                    "title": nls.user.selectFileTitle,
                     "name": "attachment"
-                }, formContent);
+                }, fileBtnSpan);
+                fileChange = on(fileInput, "change", lang.hitch(this, function (evt) {
+                    if (evt.currentTarget.files[0].size > 26214400) {
+                        alert(nls.user.fileTooLargeError);
+                        return true;
+                    }
+                    if (query(".alert-dismissable", dom.byId("fileListRow")).length > 19) {
+                        alert(nls.user.exceededFileCountError);
+                        return true;
+                    }
+                    //block to remove error message after selection of file and to replace error class with success class.
+                    if (query(".errorMessage", formContent)[0]) {
+                        this._removeErrorNode(query(".errorMessage", formContent)[0]);
+                        domClass.replace(formContent, "has-success", "has-error");
+                    }
+                    fileChange.remove();
+                    this._attachEvent(fileInput, fileBtnSpan, formContent, evt.currentTarget.files[0]);
+                }));
                 if (this.config.attachmentInfo[this._formLayer.id].attachmentIsRequired) {
                     fileInput.setAttribute("aria-required", true);
                     fileInput.setAttribute("required", "");
@@ -679,8 +712,73 @@ define([
                         innerHTML: this.config.attachmentInfo[this._formLayer.id].attachmentHelpText
                     }, formContent);
                 }
+                //prepare domnode to show the selected file list
+                divColumn2 = domConstruct.create("div", {
+                    "class": "col-sm-10"
+                }, divRow);
+                domStyle.set(divColumn2, "padding-left", "0px");
+                fileListContainer = domConstruct.create("div", { "class": "container", "style": "width:inherit;" }, divColumn2);
+                fileListRow = domConstruct.create("div", { "class": "row", "id": "fileListRow" }, fileListContainer);
+                fileListColumn = domConstruct.create("div", { "class": "col-sm-12", "id": "fileListColumn" }, fileListRow);
             }
             this._verifyHumanEntry();
+        },
+        _attachEvent: function (fileInput, fileBtnSpan, formContent, fileDetails) {
+            var unit, fileSize, alertHtml, fileChange;
+            fileInput.id = "geoformAttachment" + query(".fileToSubmit", dom.byId('userForm')).length;
+            domAttr.set(fileInput, "disabled", "disabled");
+            domClass.replace(fileInput, "fileToSubmit", "hideFileInputUI");
+            domStyle.set(fileInput, "opacity", "0");
+            domStyle.set(fileInput, "position", "absolute");
+            fileSize = parseFloat(fileDetails.size / 1024);
+            unit = "kb";
+            if (fileSize > 999) {
+                unit = "mb";
+                fileSize = parseFloat(fileSize / 1024);
+            }
+            fileSize = fileSize.toFixed(2) + unit;
+            alertHtml = "<div class=\"alert alert-dismissable alert-success\">";
+            alertHtml += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">" + "&times" + "</button>";
+            alertHtml += "<strong>" + fileDetails.name + "<br/>" + fileSize + "</strong>";
+            alertHtml += "</div>";
+            alertHtml = domConstruct.place(alertHtml, dom.byId("fileListColumn"), "last");
+            domConstruct.place(fileInput, alertHtml, "last");
+            //binding event to perform activities on removal of a selected file from the file list
+            on(query(".close", alertHtml)[0], "click", function (evt) {
+                if (query(".alert-dismissable").length === 1) {
+                    domClass.remove(formContent,".has-success");
+                }
+            });
+            fileInput = "";
+            fileInput = domConstruct.create("input", {
+                "type": "file",
+                "class": "hideFileInputUI",
+                "accept": "image/*",
+                "title": nls.user.selectFileTitle,
+                "name": "attachment"
+            }, null);
+            domConstruct.place(fileInput, fileBtnSpan, "first");
+            fileChange = on(fileInput, "change", lang.hitch(this, function (evt) {
+                if (evt.currentTarget.files[0].size > 26214400) {
+                    alert(nls.user.fileTooLargeError);
+                    //this line to change the value of fileinput so that on-change event fires
+                    evt.currentTarget.value = "";
+                    return true;
+                }
+                if (query(".alert-dismissable", dom.byId("fileListRow")).length > 19) {
+                    alert(nls.user.exceededFileCountError);
+                    //this line to change the value of fileinput so that on-change event fires
+                    evt.currentTarget.value = "";
+                    return true;
+                }
+                //block to remove error message after selection of file and to replace error class with success class.
+                if (query(".errorMessage", formContent)[0]) {
+                    this._removeErrorNode(query(".errorMessage", formContent)[0]);
+                    domClass.replace(formContent, "has-success", "has-error");
+                }
+                fileChange.remove();
+                this._attachEvent(fileInput, fileBtnSpan, formContent, evt.currentTarget.files[0]);
+            }));
         },
         //function to create elements of form.
         _createFormElements: function (currentField, index, referenceNode) {
@@ -742,7 +840,7 @@ define([
                     if (!radioInput) {
                         inputContent = domConstruct.create("select", {
                             className: "selectDomain",
-                            "id": fieldname,
+                            "id": fieldname
                         }, formContent);
                         if (currentField.domain && !currentField.typeField) {
                             if (currentField.displayType == "Filter Select") {
@@ -784,7 +882,7 @@ define([
                                 selectOptions.value = currentOption.id;
                                 //default values for subtypes(if any) has to be handled here
                             }));
-                          
+
                         }
                         on($("#" + fieldname), "change", lang.hitch(this, function (evt) {
                             //function call to take appropriate actions on selection of a subtypes
@@ -1147,8 +1245,7 @@ define([
             });
             return rangeHelpText;
         },
-        _createFilterSelectInput: function (inputContent, fieldname)
-        {
+        _createFilterSelectInput: function (inputContent, fieldname) {
             domClass.add(inputContent, "filterSelect");
             domStyle.set(inputContent, "width", "100%");
             var options = domConstruct.create("option", {}, inputContent);
@@ -1404,6 +1501,9 @@ define([
                 //This is just work around and we are searching for single solution which will work in all the browsers
                 $(dom.byId("geoFormAttachment")).replaceWith($(dom.byId("geoFormAttachment")).clone(true));
             }
+            query('.alert-dismissable').forEach(function (node) {
+                domConstruct.destroy(node);
+            });
         },
         // validate form input
         _validateUserInput: function (error, node, inputValue, iskeyPress) {
@@ -1748,7 +1848,7 @@ define([
                 }
             }), this.reportError);
         },
-	
+
 	_createGeoformSections: function () {
             array.forEach(query(".geoformSection"), lang.hitch(this, function (currentSection, index) {
                 if (this.config.form_layer.id === nls.user.selectedLayerText) {
@@ -1762,7 +1862,7 @@ define([
                 }
             }));
         },
-	
+
         _mapLoaded: function () {
             // center coords
             setTimeout(lang.hitch(this, function () {
@@ -1818,7 +1918,7 @@ define([
                 domClass.add(this.map.root, 'panel');
                 domConstruct.place(mapNode, mapContainerNode);
                 domClass.replace(btnNode, "glyphicon glyphicon-fullscreen", "glyphicon glyphicon-remove");
-                window.location.hash = "#mapDiv";   
+                window.location.hash = "#mapDiv";
                 btnNode.title = nls.user.mapFullScreen;
             }
             this._resizeMap();
@@ -2120,7 +2220,7 @@ define([
         },
         // submit form with applyedits
         _addFeatureToLayer: function () {
-            var userFormNode, featureData, key, value;
+            var userFormNode, featureData, key, value, formElement;
             userFormNode = dom.byId('userForm');
             //To populate data for apply edits
             featureData = new Graphic();
@@ -2167,19 +2267,23 @@ define([
             this._formLayer.applyEdits([featureData], null, null, lang.hitch(this, function (addResults) {
                 // Add attachment on success
                 if (addResults[0].success && this.isHumanEntry) {
-                    if (userFormNode[userFormNode.length - 1].value !== "" && this._formLayer.hasAttachments) {
-                        this._formLayer.addAttachment(addResults[0].objectId, userFormNode, function () { }, function () {
-                            console.log(nls.user.addAttachmentFailedMessage);
-                        });
+                    if (query(".fileToSubmit", userFormNode).length === 0) {
+                        this._resetAndShare();
                     }
-                    // remove graphic
-                    this._clearSubmissionGraphic();
-                    // reset form
-                    this._clearFormFields();
-                    // reset to default extent
-                    if (this.config.defaultMapExtent) {
-                        this.map.setExtent(this.defaultExtent);
+                    else {
+                        this._openFileUploadStatusModal(query(".fileToSubmit", userFormNode));
+                        var fileObjArray = [];
+                        while (query(".fileToSubmit", userFormNode).length !== 0) {
+                            formElement = "";
+                            formElement = domConstruct.create("form", {
+                            }, null);
+                            formElement.appendChild(query(".fileToSubmit", userFormNode)[0]);
+                            fileObjArray.push(formElement);
+                        }
+                        this.arrPendingAttachments = fileObjArray.reverse();
+                        this._addAttachment(addResults[0].objectId, this.arrPendingAttachments.pop());
                     }
+                    return true;
                 }
                 domConstruct.destroy(query(".errorMessage")[0]);
                 // open error modal if unsuccessful
@@ -2188,14 +2292,7 @@ define([
                     this._verifyHumanEntry();
                     return;
                 }
-                this._verifyHumanEntry();
-                this._openShareModal();
-                // reset submit button
-                this._resetButton();
-                window.location.href = '#top';
-                // After moving geoform to top, map was not getting resized properly.
-                // And pushpin was not getting placed correctly.
-                this._resizeMap();
+
             }), lang.hitch(this, function () {
                 // no longer editable
                 this._formLayer.setEditable(false);
@@ -2205,6 +2302,86 @@ define([
                 this._openErrorModal();
                 // log for development
                 console.log(nls.user.addFeatureFailedMessage);
+            }));
+        },
+        _resetAndShare: function () {
+            //$("#myModal").modal('hide');
+            // remove graphic
+            this._clearSubmissionGraphic();
+            // reset form
+            this._clearFormFields();
+            // reset to default extent
+            if (this.config.defaultMapExtent) {
+                this.map.setExtent(this.defaultExtent);
+            }
+            this._verifyHumanEntry();
+            this._openShareModal();
+
+            // reset submit button
+            this._resetButton();
+            window.location.href = '#top';
+            // After moving geoform to top, map was not getting resized properly.
+            // And pushpin was not getting placed correctly.
+            this._resizeMap();
+        },
+        _addAttachment: function (recordId, currentElement) {
+            var successCounter, currentBadge;
+            this.flagAttachingPrevFile = true;
+            currentBadge = query(".file-upload-status-badge[data-badge=" + currentElement[0].id + "]")[0];
+            domAttr.set(currentElement[0], "disabled", false);
+            this._formLayer.addAttachment(recordId, currentElement, lang.hitch(this, function (callback) {
+                if (dom.byId("fileUploadStatusMsgContainer")) {
+                    this.flagAttachingPrevFile = false;
+                    successCounter++;
+                    domClass.replace(currentBadge.parentNode, "alert-success", "alert-info");
+                    domClass.replace(currentBadge, "glyphicon-ok", "glyphicon-upload");
+                    domStyle.set(currentBadge, "cursor", "auto");
+                    currentBadge.innerHTML = nls.user.successBadge;
+                    if (successCounter === query(".fileToSubmit", dom.byId("userForm")).length) {
+                        this._resetAndShare();
+                    }
+                    if (this.arrRetryAttachments.length !== 0) {
+                        this._addAttachment(recordId, this.arrRetryAttachments.pop());
+                        return true;
+                    }
+                    if (this.arrPendingAttachments.length !== 0) {
+                        this._addAttachment(recordId, this.arrPendingAttachments.pop());
+                        return true;
+                    }
+                }
+            }), lang.hitch(this, function (errBack) {
+                //condition to check whether file upload status modal is open or not
+                if (dom.byId("fileUploadStatusMsgContainer")) {
+                    this.flagAttachingPrevFile = false;
+                    this.objFailedAttachments[currentElement[0].id] = currentElement;
+                    domClass.replace(currentBadge.parentNode, "alert-warning", "alert-info");
+                    domClass.remove(query(".attachment-error-message", currentBadge.parentNode)[0], "hide");
+                    domClass.replace(currentBadge, "btn btn-danger btn-xs", "glyphicon-upload");
+                    currentBadge.innerHTML = nls.user.retryBadge;
+                    domStyle.set(currentBadge, "cursor", "pointer");
+                    on.once(currentBadge, "click", lang.hitch(this, function (evt) {
+                        domClass.replace(currentBadge.parentNode, "alert-info", "alert-warning");
+                        domClass.add(query(".attachment-error-message", currentBadge.parentNode)[0], "hide");
+                        domClass.replace(currentBadge, "glyphicon-upload", "btn btn-danger btn-xs glyphicon-repeat");
+                        evt.currentTarget.innerHTML = nls.user.uploadingBadge;
+                        domStyle.set(evt.currentTarget, "cursor", "auto");
+                        this.arrRetryAttachments.push(this.objFailedAttachments[domAttr.get(evt.currentTarget, "data-badge")]);
+                        delete this.objFailedAttachments[domAttr.get(evt.currentTarget, "data-badge")];
+                        if (this.flagAttachingPrevFile === false) {
+                            this._addAttachment(recordId, this.arrRetryAttachments.pop());
+                        }
+                        return true;
+                    }));
+                    console.log(nls.user.addAttachmentFailedMessage);
+                    if (this.arrRetryAttachments.length !== 0) {
+                        this._addAttachment(recordId, this.arrRetryAttachments.pop());
+                        return true;
+                    }
+                    if (this.arrPendingAttachments.length !== 0) {
+                        this._addAttachment(recordId, this.arrPendingAttachments.pop());
+                        return true;
+                    }
+                }
             }));
         },
         // remove point graphic
@@ -2330,6 +2507,28 @@ define([
             }, errorMsgContainer);
             $("#myModal").modal('show');
             this._resetButton();
+        },
+        _openFileUploadStatusModal: function (fileList) {
+            var fileUploadStatusMsgContainer, fileUploadStatusMsgUl, fileUploadStatusMsgLi, fileUploadStatusMsgBadge;
+            domConstruct.empty(query(".modal-body")[0]);
+            domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.fileUploadStatus);
+            fileUploadStatusMsgContainer = domConstruct.create("div", { "id": "fileUploadStatusMsgContainer" }, query(".modal-body")[0]);
+            fileUploadStatusMsgUl = domConstruct.create("ul", { "class": "list-group" }, fileUploadStatusMsgContainer);
+
+            for (var i = 0; i < fileList.length; i++) {
+                fileUploadStatusMsgLi = domConstruct.create("li", { "class": "message alert alert-info" }, fileUploadStatusMsgUl);
+                fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right file-upload-status-badge glyphicon glyphicon-upload", "innerHTML": nls.user.uploadingBadge, "id": "badge" + i }, fileUploadStatusMsgLi);
+                fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right hide attachment-error-message", "innerHTML": nls.user.errorBadge }, fileUploadStatusMsgLi);
+                fileUploadStatusMsgLi.innerHTML += fileList[i].files[0].name;
+                domAttr.set(dom.byId("badge" + i), "data-badge", fileList[i].id);
+            }
+            $('#myModal').on('hidden.bs.modal', lang.hitch(this, function (e) {
+                if (dom.byId("fileUploadStatusMsgContainer")) {
+                    this._resetAndShare();
+                }
+            }));
+
+            $("#myModal").modal('show');
         },
         // share modal content
         _createShareDlgContent: function () {
@@ -2470,7 +2669,7 @@ define([
                     this._formLayer.setVisibility(true);
                 } else {
                     this._formLayer.setVisibility(false);
-                } 
+                }
                 //This logic will convert the old array structure to equivalent object
                 if (this.config.fields.length) {
                     var fieldsArray = lang.clone(this.config.fields);

@@ -274,10 +274,38 @@ body.modal-open,
 .hintBackgroundColor {
     background-color:#f2dede;
 }
+/*hide the UI of file input*/
+.btn-file
+{
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    background-color: #008cba;
+    border-color: #0079a1;
+    padding: 8px 12px;
+    display: inline-block;
+}
+
+.hideFileInputUI
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    background: red;
+    display: block;
+    cursor: pointer;
+}
 
 .fileInputButton
 {
-    position:absolute;
+    position: absolute;
+    cursor: pointer;
 }
 
 .fullScreenButtonContainer {
@@ -303,6 +331,14 @@ body.modal-open,
 
 .tableDimension a {
     text-decoration:none;
+}
+.message
+{
+    display: block;
+}
+.right
+{
+    float: right;
 }
 
 .thumbnailContainer
