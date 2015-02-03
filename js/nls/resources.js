@@ -118,9 +118,8 @@ define({
       errorBadge: "Error uploading&nbsp;&nbsp;&nbsp;",
       fileTooLargeError: "File too large to attach",
       exceededFileCountError: "Exceeded maximum no. of attachments allowed",
-      selectFileTitle: "Select a file"
-
-        btnViewSubmissions: "View Submissions"
+      selectFileTitle: "Select a file",
+      btnViewSubmissions: "View Submissions"
     },
     builder: {
       invalidUser: "Sorry, you don't have permission to view this item",
