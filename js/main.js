@@ -216,6 +216,7 @@ define([
         },
 
         _init: function () {
+            var userHTML, itemInfo;
             // no theme set
             if (!this.config.theme) {
                 // lets use bootstrap theme!
@@ -223,10 +224,10 @@ define([
             }
             // set theme
             this._switchStyle(this.config.theme);
-            var userHTML = string.substitute(userTemplate, nls);
+            userHTML = string.substitute(userTemplate, nls);
             dom.byId("parentContainter").innerHTML = userHTML;
             // get item info from template
-            var itemInfo = this.config.itemInfo || this.config.webmap;
+            itemInfo = this.config.itemInfo || this.config.webmap;
             // create map
             this._createWebMap(itemInfo);
             // if small header is set
@@ -686,7 +687,8 @@ define([
                     "name": "attachment"
                 }, fileBtnSpan);
                 fileChange = on(fileInput, "change", lang.hitch(this, function (evt) {
-                    if (evt.currentTarget.files[0].size > 26214400) {
+                    if (evt.currentTarget.files && evt.currentTarget.files[0].size > 26214400) {
+                        evt.currentTarget.value = "";
                         alert(nls.user.fileTooLargeError);
                         return true;
                     }
@@ -700,7 +702,7 @@ define([
                         domClass.replace(formContent, "has-success", "has-error");
                     }
                     fileChange.remove();
-                    this._attachEvent(fileInput, fileBtnSpan, formContent, evt.currentTarget.files[0]);
+                    this._addToFileList(fileInput, fileBtnSpan, formContent, evt.currentTarget);
                 }));
                 if (this.config.attachmentInfo[this._formLayer.id].attachmentIsRequired) {
                     fileInput.setAttribute("aria-required", true);
@@ -723,23 +725,25 @@ define([
             }
             this._verifyHumanEntry();
         },
-        _attachEvent: function (fileInput, fileBtnSpan, formContent, fileDetails) {
-            var unit, fileSize, alertHtml, fileChange;
+        _addToFileList: function (fileInput, fileBtnSpan, formContent, fileDetails) {
+            var unit, fileSize = "", alertHtml, fileChange;
             fileInput.id = "geoformAttachment" + query(".fileToSubmit", dom.byId('userForm')).length;
             domAttr.set(fileInput, "disabled", "disabled");
             domClass.replace(fileInput, "fileToSubmit", "hideFileInputUI");
             domStyle.set(fileInput, "opacity", "0");
             domStyle.set(fileInput, "position", "absolute");
-            fileSize = parseFloat(fileDetails.size / 1024);
-            unit = "kb";
-            if (fileSize > 999) {
-                unit = "mb";
-                fileSize = parseFloat(fileSize / 1024);
+            if (fileDetails.files) {
+                fileSize = parseFloat(fileDetails.files[0].size / 1024);
+                unit = "kb";
+                if (fileSize > 999) {
+                    unit = "mb";
+                    fileSize = parseFloat(fileSize.files[0].size / 1024);
+                }
+                fileSize = fileSize.toFixed(2) + unit;
             }
-            fileSize = fileSize.toFixed(2) + unit;
             alertHtml = "<div class=\"alert alert-dismissable alert-success\">";
             alertHtml += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">" + "&times" + "</button>";
-            alertHtml += "<strong>" + fileDetails.name + "<br/>" + fileSize + "</strong>";
+            alertHtml += "<strong>" + fileDetails.value.split('\\').pop() + "<br/>" + fileSize + "</strong>";
             alertHtml += "</div>";
             alertHtml = domConstruct.place(alertHtml, dom.byId("fileListColumn"), "last");
             domConstruct.place(fileInput, alertHtml, "last");
@@ -759,7 +763,7 @@ define([
             }, null);
             domConstruct.place(fileInput, fileBtnSpan, "first");
             fileChange = on(fileInput, "change", lang.hitch(this, function (evt) {
-                if (evt.currentTarget.files[0].size > 26214400) {
+                if (evt.currentTarget.files && evt.currentTarget.files[0].size > 26214400) {
                     alert(nls.user.fileTooLargeError);
                     //this line to change the value of fileinput so that on-change event fires
                     evt.currentTarget.value = "";
@@ -777,7 +781,7 @@ define([
                     domClass.replace(formContent, "has-success", "has-error");
                 }
                 fileChange.remove();
-                this._attachEvent(fileInput, fileBtnSpan, formContent, evt.currentTarget.files[0]);
+                this._addToFileList(fileInput, fileBtnSpan, formContent, evt.currentTarget);
             }));
         },
         //function to create elements of form.
@@ -1470,8 +1474,10 @@ define([
                     domClass.remove(node, "has-error");
                     domClass.remove(node, "has-success");
                 } else {
-                    currentInput.options[0].selected = true;
-                    domClass.remove(node, "has-success");
+                    if (!domClass.contains(currentInput, "allLayerList")) {
+                        currentInput.options[0].selected = true;
+                        domClass.remove(node, "has-success");
+                    }
                 }
             });
             array.forEach(query(".geoFormQuestionare .input-group"), function (currentInput) {
@@ -1591,14 +1597,13 @@ define([
                 if (this.config.form_layer.id == nls.user.selectedLayerText) {
                     var webmapLayers;
                     this.layerCollection = {};
-                    webmapLayers = domConstruct.create("select", { class: "form-control" }, dom.byId("multipleLayers"));
+                    webmapLayers = domConstruct.create("select", { "class": "form-control selectDomain allLayerList" }, dom.byId("multipleLayers"));
                     for (var key in this.config.fields) {
                         //Fetch all the layers at once
                         this.layerCollection[key] = this.map.getLayer(key);
-                        var option = domConstruct.create("option", {}, null);
+                        var option = domConstruct.create("option", {}, webmapLayers);
                         option.text = this.layerCollection[key].name;
                         option.value = key;
-                        webmapLayers.appendChild(option);
                     }
                     webmapLayers.options[0].selected = true;
                     this._formLayer = this.layerCollection[webmapLayers.options[0].value];
@@ -1804,8 +1809,8 @@ define([
                     this._checkUTM();
                 }));
                 // fullscreen
-                var fsButton = domConstruct.create("div", { class: "fullScreenButtonContainer" }, mapDiv);
-                var fullscreenButton = domConstruct.create("span", { id: "fullscreen_icon", title:"Full Screen", class: "glyphicon glyphicon-fullscreen fullScreenImage" }, fsButton);
+                var fsButton = domConstruct.create("div", { "class": "fullScreenButtonContainer" }, mapDiv);
+                var fullscreenButton = domConstruct.create("span", { id: "fullscreen_icon", title: "Full Screen", "class": "glyphicon glyphicon-fullscreen fullScreenImage" }, fsButton);
                 if (fsButton) {
                     on(fsButton, "click", lang.hitch(this, function () {
                         this._toggleFullscreen();
@@ -1911,7 +1916,7 @@ define([
                 domClass.remove(this.map.root, 'panel');
                 domConstruct.place(mapNode, fsContainerNode);
                 domClass.replace(btnNode, "glyphicon glyphicon-remove", "glyphicon glyphicon-fullscreen");
-				// move map node and clear hash
+                // move map node and clear hash
                 window.location.hash = "";
                 btnNode.title = nls.user.mapRestore;
             } else {
@@ -2305,7 +2310,6 @@ define([
             }));
         },
         _resetAndShare: function () {
-            //$("#myModal").modal('hide');
             // remove graphic
             this._clearSubmissionGraphic();
             // reset form
@@ -2325,21 +2329,17 @@ define([
             this._resizeMap();
         },
         _addAttachment: function (recordId, currentElement) {
-            var successCounter, currentBadge;
+            var currentBadge;
             this.flagAttachingPrevFile = true;
             currentBadge = query(".file-upload-status-badge[data-badge=" + currentElement[0].id + "]")[0];
             domAttr.set(currentElement[0], "disabled", false);
             this._formLayer.addAttachment(recordId, currentElement, lang.hitch(this, function (callback) {
                 if (dom.byId("fileUploadStatusMsgContainer")) {
                     this.flagAttachingPrevFile = false;
-                    successCounter++;
                     domClass.replace(currentBadge.parentNode, "alert-success", "alert-info");
                     domClass.replace(currentBadge, "glyphicon-ok", "glyphicon-upload");
                     domStyle.set(currentBadge, "cursor", "auto");
                     currentBadge.innerHTML = nls.user.successBadge;
-                    if (successCounter === query(".fileToSubmit", dom.byId("userForm")).length) {
-                        this._resetAndShare();
-                    }
                     if (this.arrRetryAttachments.length !== 0) {
                         this._addAttachment(recordId, this.arrRetryAttachments.pop());
                         return true;
@@ -2519,7 +2519,7 @@ define([
                 fileUploadStatusMsgLi = domConstruct.create("li", { "class": "message alert alert-info" }, fileUploadStatusMsgUl);
                 fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right file-upload-status-badge glyphicon glyphicon-upload", "innerHTML": nls.user.uploadingBadge, "id": "badge" + i }, fileUploadStatusMsgLi);
                 fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right hide attachment-error-message", "innerHTML": nls.user.errorBadge }, fileUploadStatusMsgLi);
-                fileUploadStatusMsgLi.innerHTML += fileList[i].files[0].name;
+                fileUploadStatusMsgLi.innerHTML += fileList[i].value.split('\\').pop();
                 domAttr.set(dom.byId("badge" + i), "data-badge", fileList[i].id);
             }
             $('#myModal').on('hidden.bs.modal', lang.hitch(this, function (e) {
