@@ -82,11 +82,15 @@
                 //The config object contains the following properties: helper services, (optionally)
                 //i18n, appid, webmap and any custom values defined by the application.
                 //In this example we have one called theme.
+                var appResponse = config.appResponse;
+                if(config.appResponse){
+                  delete config.appResponse;
+                }
                 if (config.edit && config.appid) {
                     // get the app builder code
                     require(["application/builder/builder"], function (builderMode) {
                         // create configuration app builder
-                        var builder = new builderMode(config, config.appResponse);
+                        var builder = new builderMode(config, appResponse);
                         // start it
                         builder.startup().otherwise(function (error) {
                             // something went wrong. Let's report it.
@@ -95,7 +99,7 @@
                     });
                 } else {
                     // lets go!
-                    myApp.startup(config, config.appResponse);
+                    myApp.startup(config, appResponse);
                 }
             }, function (error) {
                 // something went wrong. Let's report it.
