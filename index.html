@@ -86,7 +86,7 @@
                     // get the app builder code
                     require(["application/builder/builder"], function (builderMode) {
                         // create configuration app builder
-                        var builder = new builderMode(config, myTemplate.appResponse);
+                        var builder = new builderMode(config, config.appResponse);
                         // start it
                         builder.startup().otherwise(function (error) {
                             // something went wrong. Let's report it.
@@ -95,7 +95,7 @@
                     });
                 } else {
                     // lets go!
-                    myApp.startup(config, myTemplate.appResponse);
+                    myApp.startup(config, config.appResponse);
                 }
             }, function (error) {
                 // something went wrong. Let's report it.
