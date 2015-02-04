@@ -239,7 +239,9 @@ define([
             var cssStyle;
             // if local storage supported
             if (this.localStorageSupport.supportsStorage()) {
-                localStorage.setItem("geoform_config", JSON.stringify(this.config));
+              var cfg = this.config;
+              delete cfg.appResponse;
+                localStorage.setItem("geoform_config", JSON.stringify(cfg));
             }
             // set theme to selected
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
