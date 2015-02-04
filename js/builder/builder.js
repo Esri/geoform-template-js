@@ -12,7 +12,6 @@ define([
     "dojo/dom-style",
     "dojo/_base/lang",
     "dojo/string",
-    "dojo/Deferred",
     "dojo/promise/all",
     "dojo/number",
     "dojo/text!views/modal.html",
@@ -30,7 +29,7 @@ define([
     "esri/basemaps",
     "application/wrapper/builder-jquery-deps",
     "dojo/domReady!"
-], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, Deferred, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer, Deferred, esriBasemaps) {
+], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer, Deferred, esriBasemaps) {
     return declare([], {
         nls: nls,
         currentState: "webmap",
