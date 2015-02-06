@@ -119,7 +119,8 @@ define({
       fileTooLargeError: "File too large to attach",
       exceededFileCountError: "Exceeded maximum no. of attachments allowed",
       selectFileTitle: "Select a file",
-      btnViewSubmissions: "View Submissions"
+      btnViewSubmissions: "View Submissions",
+      dateFormat: "MM/DD/YYYY h:mm a"
     },
     builder: {
       invalidUser: "Sorry, you don't have permission to view this item",
