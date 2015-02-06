@@ -12,7 +12,7 @@ define([
     "dojo/dom-class",
     "dojo/dom-construct",
     "esri/request",
-    "dojo/i18n!application/nls/resources",
+    "dojo/i18n!application/nls/resources"
 ],
 function (
     declare,
