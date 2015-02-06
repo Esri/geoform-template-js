@@ -1,4 +1,4 @@
-/*global $,define,document */
+/*global $,define,document,moment */
 /*jslint sloppy:true,nomen:true */
 define([
     "dojo/_base/declare",
