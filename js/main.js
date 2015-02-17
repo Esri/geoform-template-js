@@ -80,11 +80,6 @@ define([
         sortedFields: [],
         isHumanEntry: null,
         currentLocation:null,
-        constructor: function () {
-            if (dom.byId("geoform").dir == "rtl") {
-                this._loadCSS();
-            }
-        },
 
         _createGeocoderOptions: function () {
             //Check for multiple geocoder support and setup options for geocoder widget.
@@ -182,6 +177,9 @@ define([
             var isPreview = arguments[2];
             var node = arguments[3];
             var localStorageSupport = new localStorageHelper();
+            if (config && config.i18n && config.i18n.direction == "rtl") {
+                this._loadCSS();
+            }
             if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
                 config = JSON.parse(localStorage.getItem("geoform_config"));
                 localStorage.clear();
@@ -2651,7 +2649,7 @@ define([
                                         formLayerField.editable = popupField.isEditable;
                                         formLayerField.visible = popupField.isEditable;
                                         formLayerField.tooltip = popupField.tooltip;
-                                        this.config.fields.push(formLayerField);
+                                        this.config.fields[this._formLayer.id].push(formLayerField);
                                         return true;
                                     }
                                 }));
