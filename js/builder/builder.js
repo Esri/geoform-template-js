@@ -83,7 +83,9 @@ define([
                 "enableMGRS": false,
                 "enableUTM": false
             };
-
+            if (this.config && this.config.i18n && this.config.i18n.direction == "rtl") {
+                this._loadCSS();
+            }
             signIn.createPortal().then(lang.hitch(this, function (loggedInUser) {
                 var isValidUser = signIn.authenticateUser(true, this.response, loggedInUser);
                 if (isValidUser) {
@@ -101,6 +103,12 @@ define([
                 def.reject(error);
             }));
             return def.promise;
+        },
+
+        _loadCSS: function () {
+            var cssStyle;
+            cssStyle = dom.byId("rtlCSS");
+            cssStyle.href = "css/bootstrap.rtl.css";
         },
 
         _swapContents:function(){
@@ -321,7 +329,7 @@ define([
             // set title
             window.document.title = appTitle;
             //Change the arrow directions for next and previous buttons if application runs in RTL mode
-            if (dom.byId("geoform").dir == "rtl") {
+            if (this.config && this.config.i18n && this.config.i18n.direction == "rtl") {
                 this._swapContents();
             }
         },
