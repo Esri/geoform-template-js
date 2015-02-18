@@ -177,9 +177,6 @@ define([
             var isPreview = arguments[2];
             var node = arguments[3];
             var localStorageSupport = new localStorageHelper();
-            if (config && config.i18n && config.i18n.direction == "rtl") {
-                this._loadCSS();
-            }
             if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
                 config = JSON.parse(localStorage.getItem("geoform_config"));
                 localStorage.clear();
@@ -222,6 +219,9 @@ define([
             }
             // set theme
             this._switchStyle(this.config.theme);
+            if (this.config && this.config.i18n && this.config.i18n.direction == "rtl") {
+                this._loadCSS();
+            }
             userHTML = string.substitute(userTemplate, nls);
             dom.byId("parentContainter").innerHTML = userHTML;
             // get item info from template

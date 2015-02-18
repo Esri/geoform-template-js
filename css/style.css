@@ -344,7 +344,6 @@ body.modal-open,
 .thumbnailContainer
 {
     position: relative;
-    left: 10px;
     border: 1px solid #cdcdcd;
     width: 77px;
     height: 77px;
