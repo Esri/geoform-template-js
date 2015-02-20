@@ -767,6 +767,16 @@ define([
                                 innerHTML: nls.builder.selectCheckboxOption,
                                 value: "checkbox"
                             }, typeSelect);
+                            on(typeSelect, "change", lang.hitch(this, function (evt) {
+                                var placeHolder = evt.currentTarget.parentNode.previousSibling.children[0];
+                                if (evt.currentTarget.value === "checkbox") {
+                                    placeHolder.value = "";
+                                    domClass.add(placeHolder, "hide");
+                                }
+                                else {
+                                    domClass.remove(placeHolder, "hide");
+                                }
+                            }));
                         } else {
                             if (currentField.type == "esriFieldTypeString" && currentField.length >= 20) {
                                 typeSelect = domConstruct.create("select", {
@@ -894,8 +904,7 @@ define([
             } else {
                 if (this.currentConfig.form_layer.id !== "") {
                     array.some(dom.byId("selectLayer").options, lang.hitch(this, function (currentOption) {
-                        if(currentOption.value==this.currentConfig.form_layer.id)
-                        {
+                        if (currentOption.value == this.currentConfig.form_layer.id) {
                             currentOption.selected = true;
                             return true;
                         }

@@ -637,7 +637,7 @@ define([
             // if form has attachments
             if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id].enableAttachments) {
                 var requireField = null, helpBlock, labelHTML = "", divRowContainer, divRow, divColumn1, fileBtnSpan, fileInput, fileChange,
-                    divColumn2, fileListContainer, fileListRow, fileListColumn;
+                    divColumn2, fileListContainer, fileListRow, fileListColumn, fileForm;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group hasAttachment geoFormQuestionare"
@@ -676,31 +676,16 @@ define([
                     "class": "btn-file",
                     "innerHTML": "Select File"
                 }, divColumn1);
-
+                fileForm = domConstruct.create("form", { "class": "selectFileForm" }, fileBtnSpan);
                 fileInput = domConstruct.create("input", {
                     "type": "file",
                     "class": "hideFileInputUI",
                     "accept": "image/*",
                     "title": nls.user.selectFileTitle,
                     "name": "attachment"
-                }, fileBtnSpan);
+                }, fileForm);
                 fileChange = on(fileInput, "change", lang.hitch(this, function (evt) {
-                    if (evt.currentTarget.files && evt.currentTarget.files[0].size > 26214400) {
-                        evt.currentTarget.value = "";
-                        alert(nls.user.fileTooLargeError);
-                        return true;
-                    }
-                    if (query(".alert-dismissable", dom.byId("fileListRow")).length > 19) {
-                        alert(nls.user.exceededFileCountError);
-                        return true;
-                    }
-                    //block to remove error message after selection of file and to replace error class with success class.
-                    if (query(".errorMessage", formContent)[0]) {
-                        this._removeErrorNode(query(".errorMessage", formContent)[0]);
-                        domClass.replace(formContent, "has-success", "has-error");
-                    }
-                    fileChange.remove();
-                    this._addToFileList(fileInput, fileBtnSpan, formContent, evt.currentTarget);
+                    this._validateSelectedFile(evt, fileInput, fileBtnSpan, formContent, fileChange);
                 }));
                 if (this.config.attachmentInfo[this._formLayer.id].attachmentIsRequired) {
                     fileInput.setAttribute("aria-required", true);
@@ -724,27 +709,42 @@ define([
             this._verifyHumanEntry();
         },
         _addToFileList: function (fileInput, fileBtnSpan, formContent, fileDetails) {
-            var unit, fileSize = "", alertHtml, fileChange;
-            fileInput.id = "geoformAttachment" + query(".fileToSubmit", dom.byId('userForm')).length;
-            domAttr.set(fileInput, "disabled", "disabled");
+            var unit, fileSize = "", alertHtml, fileChange, fileForm, formsToSubmit, formId;
+            formsToSubmit = query(".formToSubmit", dom.byId('userForm'));
+            //Toggle class and give unique id to the form selected for attachment
+            domClass.replace(fileInput.parentNode, "formToSubmit", "selectFileForm");
+            if (formsToSubmit.length === 0) {
+                formId = 0;
+            }
+            else {
+                formId = parseInt(formsToSubmit[formsToSubmit.length - 1].id.split("formToSubmit")[1]) + 1;
+            }
+            fileInput.parentNode.id = "formToSubmit" + formId;
+            //Toggle class and give unique id to the form selected for attachment
             domClass.replace(fileInput, "fileToSubmit", "hideFileInputUI");
+            fileInput.id = "geoformAttachment" + formId;
+            //disabling and hiding the selected file so that it is neither clickable nor visible
+            //need to re-enable the file before submitting
+            domAttr.set(fileInput, "disabled", "disabled");
             domStyle.set(fileInput, "opacity", "0");
             domStyle.set(fileInput, "position", "absolute");
-            if (fileDetails.files) {
+            //check for availability of HTML-5 file handling properties and then display the file size on domNode
+            if (fileDetails.files && fileDetails.files[0]) {
                 fileSize = parseFloat(fileDetails.files[0].size / 1024);
                 unit = "kb";
                 if (fileSize > 999) {
                     unit = "mb";
-                    fileSize = parseFloat(fileSize.files[0].size / 1024);
+                    fileSize = parseFloat(fileSize / 1024);
                 }
                 fileSize = fileSize.toFixed(2) + unit;
             }
+            //Preparing the domNode for selected file
             alertHtml = "<div class=\"alert alert-dismissable alert-success\">";
             alertHtml += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">" + "&times" + "</button>";
             alertHtml += "<strong>" + fileDetails.value.split('\\').pop() + "<br/>" + fileSize + "</strong>";
             alertHtml += "</div>";
             alertHtml = domConstruct.place(alertHtml, dom.byId("fileListColumn"), "last");
-            domConstruct.place(fileInput, alertHtml, "last");
+            domConstruct.place(fileInput.parentNode, alertHtml, "last");
             //binding event to perform activities on removal of a selected file from the file list
             on(query(".close", alertHtml)[0], "click", function (evt) {
                 if (query(".alert-dismissable").length === 1) {
@@ -752,35 +752,53 @@ define([
                 }
             });
             fileInput = "";
+            fileForm = domConstruct.create("form", { "class": "selectFileForm" }, fileBtnSpan);
             fileInput = domConstruct.create("input", {
                 "type": "file",
                 "class": "hideFileInputUI",
                 "accept": "image/*",
                 "title": nls.user.selectFileTitle,
                 "name": "attachment"
-            }, null);
-            domConstruct.place(fileInput, fileBtnSpan, "first");
+            }, fileForm);
+            domConstruct.place(fileForm, fileBtnSpan, "first");
             fileChange = on(fileInput, "change", lang.hitch(this, function (evt) {
-                if (evt.currentTarget.files && evt.currentTarget.files[0].size > 26214400) {
-                    alert(nls.user.fileTooLargeError);
-                    //this line to change the value of fileinput so that on-change event fires
-                    evt.currentTarget.value = "";
-                    return true;
-                }
-                if (query(".alert-dismissable", dom.byId("fileListRow")).length > 19) {
-                    alert(nls.user.exceededFileCountError);
-                    //this line to change the value of fileinput so that on-change event fires
-                    evt.currentTarget.value = "";
-                    return true;
-                }
-                //block to remove error message after selection of file and to replace error class with success class.
-                if (query(".errorMessage", formContent)[0]) {
-                    this._removeErrorNode(query(".errorMessage", formContent)[0]);
-                    domClass.replace(formContent, "has-success", "has-error");
-                }
-                fileChange.remove();
-                this._addToFileList(fileInput, fileBtnSpan, formContent, evt.currentTarget);
+                this._validateSelectedFile(evt, fileInput, fileBtnSpan, formContent, fileChange);
             }));
+        },
+        _validateSelectedFile: function (evt, fileInput, fileBtnSpan, formContent, fileChange) {
+            fileChange.remove();
+            if (evt.currentTarget.files && evt.currentTarget.files[0] && evt.currentTarget.files[0].size > 26214400) {
+                $(fileBtnSpan).popover({ content: nls.user.fileTooLargeError, container: 'body', trigger: 'manual', placement: 'bottom' });
+                $(fileBtnSpan).popover('show');
+                setTimeout(function () {
+                    $(fileBtnSpan).popover('hide');
+                }, 3000);
+                //this line to change the value of fileinput so that on-change event fires
+                $(evt.currentTarget).replaceWith($(evt.currentTarget).val('').clone(true));
+                fileChange = on(query(".hideFileInputUI")[0], "change", lang.hitch(this, function (evt) {
+                    this._validateSelectedFile(evt, fileInput, fileBtnSpan, formContent, fileChange);
+                }));
+                return true;
+            }
+            if (query(".alert-dismissable", dom.byId("fileListRow")).length > 19) {
+                $(fileBtnSpan).popover({ content: nls.user.exceededFileCountError, container: 'body', trigger: 'manual', placement: 'bottom' });
+                $(fileBtnSpan).popover('show');
+                setTimeout(function () {
+                    $(fileBtnSpan).popover('hide');
+                }, 3000);
+                //this line to change the value of fileinput so that on-change event fires
+                $(evt.currentTarget).replaceWith($(evt.currentTarget).val('').clone(true));
+                fileChange = on(query(".hideFileInputUI")[0], "change", lang.hitch(this, function (evt) {
+                    this._validateSelectedFile(evt, fileInput, fileBtnSpan, formContent, fileChange);
+                }));
+                return true;
+            }
+            //block to remove error message after selection of file and to replace error class with success class.
+            if (query(".errorMessage", formContent)[0]) {
+                this._removeErrorNode(query(".errorMessage", formContent)[0]);
+                domClass.replace(formContent, "has-success", "has-error");
+            }
+            this._addToFileList(query(".hideFileInputUI")[0], fileBtnSpan, formContent, evt.currentTarget);
         },
         //function to create elements of form.
         _createFormElements: function (currentField, index, referenceNode) {
@@ -2271,15 +2289,11 @@ define([
                     else {
                         this._openFileUploadStatusModal(query(".fileToSubmit", userFormNode));
                         var fileObjArray = [];
-                        while (query(".fileToSubmit", userFormNode).length !== 0) {
-                            formElement = "";
-                            formElement = domConstruct.create("form", {
-                            }, null);
-                            formElement.appendChild(query(".fileToSubmit", userFormNode)[0]);
-                            fileObjArray.push(formElement);
+                        for (var i = 0; i < query(".formToSubmit", userFormNode).length; i++) {
+                            fileObjArray.push(query(".formToSubmit", userFormNode)[i].id);
                         }
                         this.arrPendingAttachments = fileObjArray.reverse();
-                        this._addAttachment(addResults[0].objectId, this.arrPendingAttachments.pop());
+                        this._addAttachment(addResults[0].objectId, dom.byId(this.arrPendingAttachments.pop()));
                     }
                     return true;
                 }
@@ -2290,8 +2304,7 @@ define([
                     this._verifyHumanEntry();
                     return;
                 }
-
-            }), lang.hitch(this, function () {
+            }), lang.hitch(this, function (err) {
                 // no longer editable
                 this._formLayer.setEditable(false);
                 // remove error
@@ -2325,20 +2338,22 @@ define([
             var currentBadge;
             this.flagAttachingPrevFile = true;
             currentBadge = query(".file-upload-status-badge[data-badge=" + currentElement[0].id + "]")[0];
+            //re-enabling the file i/p field before sending to attach
             domAttr.set(currentElement[0], "disabled", false);
             this._formLayer.addAttachment(recordId, currentElement, lang.hitch(this, function (callback) {
                 if (dom.byId("fileUploadStatusMsgContainer")) {
                     this.flagAttachingPrevFile = false;
+                    //adding/removing attributes to keep the user updated on current state of file attachment
                     domClass.replace(currentBadge.parentNode, "alert-success", "alert-info");
                     domClass.replace(currentBadge, "glyphicon-ok", "glyphicon-upload");
                     domStyle.set(currentBadge, "cursor", "auto");
                     currentBadge.innerHTML = nls.user.successBadge;
                     if (this.arrRetryAttachments.length !== 0) {
-                        this._addAttachment(recordId, this.arrRetryAttachments.pop());
+                        this._addAttachment(recordId, dom.byId(this.arrRetryAttachments.pop()));
                         return true;
                     }
                     if (this.arrPendingAttachments.length !== 0) {
-                        this._addAttachment(recordId, this.arrPendingAttachments.pop());
+                        this._addAttachment(recordId, dom.byId(this.arrPendingAttachments.pop()));
                         return true;
                     }
                 }
@@ -2346,13 +2361,19 @@ define([
                 //condition to check whether file upload status modal is open or not
                 if (dom.byId("fileUploadStatusMsgContainer")) {
                     this.flagAttachingPrevFile = false;
-                    this.objFailedAttachments[currentElement[0].id] = currentElement;
+                    //Keep a copy of ids that failed to upload to pick them back while retrying to upload the failed file
+                    this.objFailedAttachments[currentElement[0].id] = currentElement.id;
+
+                    //adding/removing attributes to keep the user updated on current state of file attachment
                     domClass.replace(currentBadge.parentNode, "alert-warning", "alert-info");
                     domClass.remove(query(".attachment-error-message", currentBadge.parentNode)[0], "hide");
                     domClass.replace(currentBadge, "btn btn-danger btn-xs", "glyphicon-upload");
                     currentBadge.innerHTML = nls.user.retryBadge;
                     domStyle.set(currentBadge, "cursor", "pointer");
+                    //This click event will work on retry button in case of failure in attachment
+                    //and process to re-upload the file will start
                     on.once(currentBadge, "click", lang.hitch(this, function (evt) {
+                        //adding/removing attributes to keep the user updated on current state of file attachment
                         domClass.replace(currentBadge.parentNode, "alert-info", "alert-warning");
                         domClass.add(query(".attachment-error-message", currentBadge.parentNode)[0], "hide");
                         domClass.replace(currentBadge, "glyphicon-upload", "btn btn-danger btn-xs glyphicon-repeat");
@@ -2361,17 +2382,17 @@ define([
                         this.arrRetryAttachments.push(this.objFailedAttachments[domAttr.get(evt.currentTarget, "data-badge")]);
                         delete this.objFailedAttachments[domAttr.get(evt.currentTarget, "data-badge")];
                         if (this.flagAttachingPrevFile === false) {
-                            this._addAttachment(recordId, this.arrRetryAttachments.pop());
+                            this._addAttachment(recordId, dom.byId(this.arrRetryAttachments.pop()));
                         }
                         return true;
                     }));
                     console.log(nls.user.addAttachmentFailedMessage);
                     if (this.arrRetryAttachments.length !== 0) {
-                        this._addAttachment(recordId, this.arrRetryAttachments.pop());
+                        this._addAttachment(recordId, dom.byId(this.arrRetryAttachments.pop()));
                         return true;
                     }
                     if (this.arrPendingAttachments.length !== 0) {
-                        this._addAttachment(recordId, this.arrPendingAttachments.pop());
+                        this._addAttachment(recordId, dom.byId(this.arrPendingAttachments.pop()));
                         return true;
                     }
                 }
