@@ -120,7 +120,7 @@
       exceededFileCountError: "Överskrider högsta antalet tillåtna bilagor",
       selectFileTitle: "Välj en fil",
       btnViewSubmissions: "Visa bidrag",
-      dateFormat: "Å_MM/DD/YYYY h:mm a_ö"
+      dateFormat: "yyyy-MM-dd H:mm"
     },
     builder: {
       invalidUser: "Du har tyvärr inte behörighet att visa det här objektet",

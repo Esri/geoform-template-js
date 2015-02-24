@@ -120,7 +120,7 @@
       exceededFileCountError: "Vượt quá số lượng tệp đính kèm tối đa được cho phép",
       selectFileTitle: "Chọn một tệp",
       btnViewSubmissions: "Xem Các đệ trình",
-      dateFormat: "Đ_MM/DD/YYYY h:mm a_ớ"
+      dateFormat: "MM/DD/YYYY h:mm a"
     },
     builder: {
       invalidUser: "Rất tiếc, bạn không có quyền xem mục này",

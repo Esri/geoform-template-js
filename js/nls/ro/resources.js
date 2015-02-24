@@ -120,7 +120,7 @@
       exceededFileCountError: "S-a depăşit numărul maxim de ataşări permis.",
       selectFileTitle: "Selectaţi un fişier",
       btnViewSubmissions: "Vizualizare trimiteri",
-      dateFormat: "Ă_MM/DD/YYYY h:mm a_ș"
+      dateFormat: "LL/ZZ/AAAA h:mm a"
     },
     builder: {
       invalidUser: "Ne pare rău, nu aveţi permisiunea de a vizualiza acest element",

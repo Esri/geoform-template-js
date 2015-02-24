@@ -120,7 +120,7 @@
       exceededFileCountError: "İzin verilen ek sayısı üst sınırı aşıldı",
       selectFileTitle: "Dosya seç",
       btnViewSubmissions: "Gönderimleri Görüntüle",
-      dateFormat: "ı_MM/DD/YYYY h:mm a_İ"
+      dateFormat: "DD/MM/YYYY h:mm a"
     },
     builder: {
       invalidUser: "Üzgünüz, bu öğeyi görüntüleme izniniz yok",

@@ -120,7 +120,7 @@
       exceededFileCountError: "Pārsniegts maksimālais atļautais pielikumu skaits",
       selectFileTitle: "Izvēlieties failu",
       btnViewSubmissions: "Skatīt iesniegumus",
-      dateFormat: "ķ_MM/DD/YYYY h:mm a_ū"
+      dateFormat: "MM/DD/GGGG h:mm a"
     },
     builder: {
       invalidUser: "Atvainojiet, jums nav atļaujas skatīt šo vienību",
@@ -171,8 +171,8 @@
       selectMailOption: "E-pasts",
       selectUrlOption: "URL",
       selectTextAreaOption: "Teksta zona",
-      previewApplicationText: "Priekšskatīt aplikāciju",
-      saveApplicationText: "Saglabāt aplikāciju",
+      previewApplicationText: "Priekšskatīt lietojumprogrammu",
+      saveApplicationText: "Saglabāt lietojumprogrammu",
       saveText: "Saglabāt",
       toggleNavigationText: "Pārslēgt navigāciju",
       formPlaceholderText: "Mana veidlapa",
@@ -187,7 +187,7 @@
       detailsTabText: "Izmantojiet tālāk esošos veidlapas informācijas lodziņus, lai pielāgotu virsrakstu un pievienotu pielāgotu logotipu, kā arī sniedziet īsu aprakstu, kas paredzēts jūsu GeoForm auditorijai. Aprakstā varat pievienot saites uz citiem resursiem, kontaktinformāciju, kā arī novirzīt savu auditoriju uz web kartēšanas aplikāciju, kurā ir pieejami visi dati, kas apkopoti, izmantojot GeoForm.",
       fieldsTabText: "Šeit varat atlasīt, kuri lauki būs redzami jūsu GeoForm auditorijai, rediģēt apzīmējumus, kurus viņi redzēs, un pievienot īsu aprakstu, lai atvieglotu datu ievadi.",
       styleTabText: "Veidojiet savas GeoForm stilu, atbilstoši savām vēlmēm izmantojot tālāk esošos motīvus.",
-      publishTabText: "Ja esat pabeidzis GeoForm pielāgošanu, saglabājiet aplikāciju un sāciet kopīgot ar savu auditoriju. Jebkurā laikā varat atgriezties šajā veidotājā un turpināt pielāgošanu atbilstoši atsauksmēm.",
+      publishTabText: "Ja esat pabeidzis GeoForm pielāgošanu, saglabājiet lietotni un sāciet kopīgot ar savu auditoriju. Jebkurā laikā varat atgriezties šajā veidotājā un turpināt pielāgošanu atbilstoši atsauksmēm.",
       headerSizeLabel: "Galvenes lielums",
       smallHeader: "Izmantot mazu galveni",
       bigHeader: "Lietot lielu galveni",
@@ -228,7 +228,7 @@
       locateOnLoadText: "Atrast ielādes laikā",
       locateOnLoadDescription: "GeoForm varat konfigurēt pašreizējā izvietojuma lietošanai lapas ielādes laikā",
       selectLayerFieldTabText: "Atlasīt slāni",
-      allLayerSelectOptionText: "VISS",
+      allLayerSelectOptionText: "Viss",
       disableViewer: "Deaktivizēt skatītāju",
       disableViewerDescription: "Varat konfigurēt GeoForm, lai deaktivizētu/aktivizētu skatītāju",
       displayFieldHintText: "Izvēlētais displeja lauks tiks parādīts viewerMode kā nosaukuma lauks"

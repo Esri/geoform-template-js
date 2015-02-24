@@ -120,7 +120,7 @@
       exceededFileCountError: "Liitteiden sallittu enimmäismäärä on ylittynyt",
       selectFileTitle: "Valitse tiedosto",
       btnViewSubmissions: "Näytä lähetykset",
-      dateFormat: "Å_MM/DD/YYYY h:mm a_ö"
+      dateFormat: "DD/MM/YYYY h:mm a"
     },
     builder: {
       invalidUser: "Sinulla ei ole oikeuksia tarkastella tätä kohdetta",

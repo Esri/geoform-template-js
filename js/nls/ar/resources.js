@@ -120,7 +120,7 @@
       exceededFileCountError: "تم تجاوز العدد الأقصى للمرفقات المسموح بها",
       selectFileTitle: "حدد ملفًا",
       btnViewSubmissions: "عرض عمليات الإرسال",
-      dateFormat: "بيت_MM/DD/YYYY h:mm a_لاحقة"
+      dateFormat: "MM/DD/YYYY h:mm a"
     },
     builder: {
       invalidUser: "عذرًا، لا يوجد لديك الإذن اللازم لعرض هذا العنصر",

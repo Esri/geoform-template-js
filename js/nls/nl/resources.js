@@ -120,7 +120,7 @@
       exceededFileCountError: "Maximaal aantal toegestane bijlagen overschreden",
       selectFileTitle: "Een bestand selecteren",
       btnViewSubmissions: "Meldingen bekijken",
-      dateFormat: "Ĳ_MM/DD/YYYY h:mm a_ä"
+      dateFormat: "MM/DD/YYYY h:mm a"
     },
     builder: {
       invalidUser: "U beschikt niet over de nodige machtigingen om dit item te bekijken",

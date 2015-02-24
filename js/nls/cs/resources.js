@@ -120,7 +120,7 @@
       exceededFileCountError: "Překročili jste maximální povolený počet příloh",
       selectFileTitle: "Vyberte soubor",
       btnViewSubmissions: "Zobrazit odeslané položky",
-      dateFormat: "Ř_MM/DD/YYYY h:mm a_ů"
+      dateFormat: "MM/DD/RRRR h:mm a"
     },
     builder: {
       invalidUser: "Nemáte bohužel oprávnění prohlížet tuto položku.",

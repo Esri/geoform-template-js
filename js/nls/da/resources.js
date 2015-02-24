@@ -120,7 +120,7 @@
       exceededFileCountError: "Har overskredet det maksimale antal tillladte vedhæftninger",
       selectFileTitle: "Vælg en fil",
       btnViewSubmissions: "Vis afsendelser",
-      dateFormat: "ø_MM/DD/YYYY h:mm a_å"
+      dateFormat: "DD/MM/YYYY h:mm a"
     },
     builder: {
       invalidUser: "Du har desværre ikke tilladelse til at få dette element vist",

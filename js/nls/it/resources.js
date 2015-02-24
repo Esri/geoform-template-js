@@ -120,7 +120,7 @@
       exceededFileCountError: "È stato superato il numero massimo di allegati consentito",
       selectFileTitle: "Seleziona un file",
       btnViewSubmissions: "Visualizza invii",
-      dateFormat: "é_MM/DD/YYYY h:mm a_È"
+      dateFormat: "dd/MM/yyyy h.mm a"
     },
     builder: {
       invalidUser: "Non si dispone dell\'autorizzazione per visualizzare questo elemento",

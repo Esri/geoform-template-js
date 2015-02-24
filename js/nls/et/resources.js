@@ -120,7 +120,7 @@
       exceededFileCountError: "Manuste suurim lubatud arv on täis",
       selectFileTitle: "Faili valimine",
       btnViewSubmissions: "Kuva edastused",
-      dateFormat: "Š_MM/DD/YYYY h:mm a_ä"
+      dateFormat: "MM/DD/YYYY h:mm a"
     },
     builder: {
       invalidUser: "Kahjuks pole Teil selle sisuobjekti vaatamiseks õigusi",

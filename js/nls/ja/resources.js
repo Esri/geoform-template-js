@@ -120,7 +120,7 @@
       exceededFileCountError: "アタッチメントの最大許容数を超えました",
       selectFileTitle: "ファイルの選択",
       btnViewSubmissions: "送信内容の表示",
-      dateFormat: "須_MM/DD/YYYY h:mm a_鷗"
+      dateFormat: "MM/DD/YYYY h:mm a"
     },
     builder: {
       invalidUser: "このアイテムを表示する権限がありません",

@@ -120,7 +120,7 @@
       exceededFileCountError: "Maximal zulässige Anzahl von Anlagen wurde überschritten",
       selectFileTitle: "Datei auswählen",
       btnViewSubmissions: "Übermittlungen anzeigen",
-      dateFormat: "ä_MM/DD/YYYY h:mm a_Ü"
+      dateFormat: "MM/TT/JJJJ h:mm a"
     },
     builder: {
       invalidUser: "Sie verfügen leider nicht über die Berechtigungen zum Anzeigen dieses Elements",

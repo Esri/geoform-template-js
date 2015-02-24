@@ -120,7 +120,7 @@
       exceededFileCountError: "חריגה מהמספר המרבי המותר של קבצים מצורפים",
       selectFileTitle: "בחר קובץ",
       btnViewSubmissions: "הצג הגשות",
-      dateFormat: "כן_MM/DD/YYYY h:mm a_ש"
+      dateFormat: "MM/DD/YYYY‏ h:mm a"
     },
     builder: {
       invalidUser: "מצטערים, איך לך הרשאה לצפייה בפריט זה",

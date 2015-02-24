@@ -120,7 +120,7 @@
       exceededFileCountError: "Viršytas maksimalus leidžiamas priedų skaičius",
       selectFileTitle: "Pasirinkite failą",
       btnViewSubmissions: "Peržiūrėti pateikimus",
-      dateFormat: "Į_MM/DD/YYYY h:mm a_š"
+      dateFormat: "yyy MM dd hh:mm"
     },
     builder: {
       invalidUser: "Atsiprašome, tačiau neturite teisės peržiūrėti šį elementą",

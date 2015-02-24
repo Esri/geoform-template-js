@@ -120,7 +120,7 @@
       exceededFileCountError: "超出允许的最大附件数",
       selectFileTitle: "选择一个文件",
       btnViewSubmissions: "查看提交内容",
-      dateFormat: "试_MM/DD/YYYY h:mm a_验"
+      dateFormat: "MM/DD/YYYY h:mm a"
     },
     builder: {
       invalidUser: "抱歉，您无权查看此项目",

@@ -120,7 +120,7 @@
       exceededFileCountError: "Превышено максимальное количество вложений",
       selectFileTitle: "Выбрать файл",
       btnViewSubmissions: "Посмотреть отправки",
-      dateFormat: "Ж_MM/DD/YYYY h:mm a_Я"
+      dateFormat: "ДД/ММ/ГГ  ч:мм"
     },
     builder: {
       invalidUser: "Извините, у вас нет прав на просмотр этого элемента",
@@ -143,7 +143,7 @@
       btnNextText: "Следующий",
       webmapTabTitleText: "Выбрать веб-карту",
       viewWebmap: "Посмотреть веб-карту",
-      webmapDetailsText: "Выбрана веб-карта ${webMapTitleLink}${webMapTitle}${closeLink}. Чтобы выбрать другую, щелкните кнопку 'Выбрать веб-карту'",
+      webmapDetailsText: "Выбрана веб-карта ${webMapTitleLink}${webMapTitle}${closeLink}. Чтобы выбрать другую, щелкните кнопку \'Выбрать веб-карту\'",
       btnSelectWebmapText: "Выбрать веб-карту",
       btnSelectWebmapTextLoading: "Загрузка&hellip;",
       layerTabTitleText: "Выбрать редактируемый слой",

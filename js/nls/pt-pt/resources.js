@@ -120,7 +120,7 @@
       exceededFileCountError: "Foi excedido o número máximo de anexos permitidos",
       selectFileTitle: "Selecionar um ficheiro",
       btnViewSubmissions: "Visualizar Submissões",
-      dateFormat: "ã_MM/DD/YYYY h:mm a_Ç"
+      dateFormat: "MM/DD/YYYY h:mm a"
     },
     builder: {
       invalidUser: "Lamentamos, mas não tem permissão para visualizar este item",
