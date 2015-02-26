@@ -1610,7 +1610,7 @@ define([
                     webmapLayers = domConstruct.create("select", { "class": "form-control selectDomain allLayerList" }, dom.byId("multipleLayers"));
                     for (var key in this.config.fields) {
                         //Fetch all the layers at once
-                        if (this.map.getLayer(key).isEditable() && this.map.getLayer(key).geometryType === 'esriGeometryPoint') {
+                        if (this.map.getLayer(key) && this.map.getLayer(key).geometryType === 'esriGeometryPoint') {
                             this.layerCollection[key] = this.map.getLayer(key);
                             var option = domConstruct.create("option", {}, webmapLayers);
                             option.text = this.layerCollection[key].name;
