@@ -1,4 +1,4 @@
-/*global $ */
+/*global $,define,document,require */
 define([
    "dojo/_base/declare",
     "dojo/on",
@@ -919,7 +919,7 @@ define([
 
         //function to filter editable layers from all the layers in webmap
         _validateFeatureServer: function (layer, canCreate, layerId) {
-            if (canCreate) {
+            if (canCreate && layer.geometryType === 'esriGeometryPoint') {
                 var filteredLayer, fLayer;
                 filteredLayer = document.createElement("option");
                 fLayer = document.createElement("option");
@@ -1388,13 +1388,13 @@ define([
                     "innerHTML": nls.builder.attachmentHint
                 }, attachmentDetails);
                 this._setAttachmentInputState();
-                on(dom.byId("enableAttachmentInfo"), "change", lang.hitch(this, function (evt) {
+                on(dom.byId("enableAttachmentInfo"), "change", lang.hitch(this, function () {
                     this._setAttachmentInputState();
                 }));
             }
         },
 
-        _setAttachmentInputState: function (evt) {
+        _setAttachmentInputState: function () {
             if (!dom.byId("enableAttachmentInfo").checked) {
                 domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", true);
                 domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", true);

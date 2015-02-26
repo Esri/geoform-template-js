@@ -1,4 +1,4 @@
-/*global $,define,document,moment */
+/*global $,define,document,require,moment */
 /*jslint sloppy:true,nomen:true */
 define([
     "dojo/_base/declare",
@@ -37,7 +37,6 @@ define([
     "application/themes",
     "application/pushpins",
     "vendor/usng",
-    "dojo/date/locale",
     "dojo/NodeList-traverse",
     "application/wrapper/main-jquery-deps",
     "dojo/domReady!"
@@ -62,7 +61,7 @@ define([
     Geocoder,
     modalTemplate,
     userTemplate,
-    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, usng, locale) {
+    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, usng) {
     return declare([], {
         arrPendingAttachments: [],
         objFailedAttachments: {},
@@ -746,7 +745,7 @@ define([
             alertHtml = domConstruct.place(alertHtml, dom.byId("fileListColumn"), "last");
             domConstruct.place(fileInput.parentNode, alertHtml, "last");
             //binding event to perform activities on removal of a selected file from the file list
-            on(query(".close", alertHtml)[0], "click", function (evt) {
+            on(query(".close", alertHtml)[0], "click", function () {
                 if (query(".alert-dismissable").length === 1) {
                     domClass.remove(formContent,".has-success");
                 }
@@ -1138,7 +1137,7 @@ define([
                     on(inputContent, "focusout", lang.hitch(this, function (evt) {
                         this._validateField(evt, true);
                     }));
-                    on(inputContent, "keyup", lang.hitch(this, function (evt) {
+                    on(inputContent, "keyup", lang.hitch(this, function () {
                         if (currentField.displayType === "textarea") {
                             var availableLength;
                             if (inputContent.value.length > currentField.length) {
@@ -1611,19 +1610,27 @@ define([
                     webmapLayers = domConstruct.create("select", { "class": "form-control selectDomain allLayerList" }, dom.byId("multipleLayers"));
                     for (var key in this.config.fields) {
                         //Fetch all the layers at once
-                        this.layerCollection[key] = this.map.getLayer(key);
-                        var option = domConstruct.create("option", {}, webmapLayers);
-                        option.text = this.layerCollection[key].name;
-                        option.value = key;
+                        if (this.map.getLayer(key).isEditable() && this.map.getLayer(key).geometryType === 'esriGeometryPoint') {
+                            this.layerCollection[key] = this.map.getLayer(key);
+                            var option = domConstruct.create("option", {}, webmapLayers);
+                            option.text = this.layerCollection[key].name;
+                            option.value = key;
+                        }
                     }
-                    webmapLayers.options[0].selected = true;
-                    this._formLayer = this.layerCollection[webmapLayers.options[0].value];
-                    this._createForm(this.config.fields[webmapLayers.options[0].value]);
-                    on(webmapLayers, "change", lang.hitch(this, function (evt) {
-                        var fields = this.config.fields[evt.currentTarget.value];
-                        this._formLayer = this.layerCollection[evt.currentTarget.value];
-                        this._createForm(fields);
-                    }));
+                    if (webmapLayers.options[0]) {
+                        webmapLayers.options[0].selected = true;
+                        this._formLayer = this.layerCollection[webmapLayers.options[0].value];
+                        this._createForm(this.config.fields[webmapLayers.options[0].value]);
+                        on(webmapLayers, "change", lang.hitch(this, function (evt) {
+                            var fields = this.config.fields[evt.currentTarget.value];
+                            this._formLayer = this.layerCollection[evt.currentTarget.value];
+                            this._createForm(fields);
+                        }));
+                    }
+                    else {
+                        var error = new Error(nls.user.invalidLayerMessage);
+                        this.reportError(error);
+                    }
                 } else {
                     // create form fields
                     this._createForm(this.config.fields[this._formLayer.id]);
@@ -1694,7 +1701,7 @@ define([
                     var coords = this._calculateLatLong(evt.mapPoint);
                     domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
                 }));
-                mouseWheel = on(this.map, 'mouse-wheel', lang.hitch(this, function (evt) {
+                mouseWheel = on(this.map, 'mouse-wheel', lang.hitch(this, function () {
                     //Enables scrollwheel zoom 3 seconds after a user hovers over the map
                     setTimeout(lang.hitch(this, function () {
                         this.map.enableScrollWheelZoom();
@@ -1728,7 +1735,7 @@ define([
                 // Lat/Lng coordinate events
                 var latNode = dom.byId('lat_coord');
                 var lngNode = dom.byId('lng_coord');
-                on(latNode, "keyup", lang.hitch(this, function (evt) {
+                on(latNode, "keyup", lang.hitch(this, function () {
                     this._validateLocationInputs('lat');
                 }));
                 on(latNode, "keypress", lang.hitch(this, function (evt) {
@@ -1739,7 +1746,7 @@ define([
                     this._findLocation(evt);
                     this._checkLatLng();
                 }));
-                on(lngNode, "keyup", lang.hitch(this, function (evt) {
+                on(lngNode, "keyup", lang.hitch(this, function () {
                     this._validateLocationInputs('lng');
                 }));
                 // lat/lng changed
@@ -1821,7 +1828,7 @@ define([
                 }));
                 // fullscreen
                 var fsButton = domConstruct.create("div", { "class": "fullScreenButtonContainer" }, mapDiv);
-                var fullscreenButton = domConstruct.create("span", { id: "fullscreen_icon", title: "Full Screen", "class": "glyphicon glyphicon-fullscreen fullScreenImage" }, fsButton);
+                domConstruct.create("span", { id: "fullscreen_icon", title: "Full Screen", "class": "glyphicon glyphicon-fullscreen fullScreenImage" }, fsButton);
                 if (fsButton) {
                     on(fsButton, "click", lang.hitch(this, function () {
                         this._toggleFullscreen();
@@ -2236,7 +2243,7 @@ define([
         },
         // submit form with applyedits
         _addFeatureToLayer: function () {
-            var userFormNode, featureData, key, value, formElement;
+            var userFormNode, featureData, key, value;
             userFormNode = dom.byId('userForm');
             //To populate data for apply edits
             featureData = new Graphic();
@@ -2304,7 +2311,7 @@ define([
                     this._verifyHumanEntry();
                     return;
                 }
-            }), lang.hitch(this, function (err) {
+            }), lang.hitch(this, function () {
                 // no longer editable
                 this._formLayer.setEditable(false);
                 // remove error
@@ -2340,7 +2347,7 @@ define([
             currentBadge = query(".file-upload-status-badge[data-badge=" + currentElement[0].id + "]")[0];
             //re-enabling the file i/p field before sending to attach
             domAttr.set(currentElement[0], "disabled", false);
-            this._formLayer.addAttachment(recordId, currentElement, lang.hitch(this, function (callback) {
+            this._formLayer.addAttachment(recordId, currentElement, lang.hitch(this, function () {
                 if (dom.byId("fileUploadStatusMsgContainer")) {
                     this.flagAttachingPrevFile = false;
                     //adding/removing attributes to keep the user updated on current state of file attachment
@@ -2357,7 +2364,7 @@ define([
                         return true;
                     }
                 }
-            }), lang.hitch(this, function (errBack) {
+            }), lang.hitch(this, function () {
                 //condition to check whether file upload status modal is open or not
                 if (dom.byId("fileUploadStatusMsgContainer")) {
                     this.flagAttachingPrevFile = false;
@@ -2536,7 +2543,7 @@ define([
                 fileUploadStatusMsgLi.innerHTML += fileList[i].value.split('\\').pop();
                 domAttr.set(dom.byId("badge" + i), "data-badge", fileList[i].id);
             }
-            $('#myModal').on('hidden.bs.modal', lang.hitch(this, function (e) {
+            $('#myModal').on('hidden.bs.modal', lang.hitch(this, function () {
                 if (dom.byId("fileUploadStatusMsgContainer")) {
                     this._resetAndShare();
                 }
@@ -2630,22 +2637,34 @@ define([
         },
         // set defaults for layer
         _setLayerDefaults: function () {
+            var error, flagPointFeatureLayer;
             // if no layer id is set, try to use first feature layer
             if (!this.config.form_layer || !this.config.form_layer.id) {
+                flagPointFeatureLayer = false;
                 array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                     if (currentLayer.layerType && currentLayer.layerType === "ArcGISFeatureLayer") {
-                        // if no object present
-                        if (!this.config.form_layer) {
-                            this.config.form_layer = {};
+                        if (currentLayer.resourceInfo.geometryType === 'esriGeometryPoint') {
+                            flagPointFeatureLayer = true;
+                            // if no object present
+                            if (!this.config.form_layer) {
+                                this.config.form_layer = {};
+                            }
+                            // set id
+                            this.config.form_layer.id = currentLayer.id;
+                            //Add the default fields in the fields object
+                            //This case will work when application is running without app id
+                            this.config.fields[this.config.form_layer.id] = this.map.getLayer(this.config.form_layer.id).fields;
+                            return true;
                         }
-                        // set id
-                        this.config.form_layer.id = currentLayer.id;
-                        //Add the default fields in the fields object
-                        //This case will work when application is running without app id
-                        this.config.fields[this.config.form_layer.id] = this.map.getLayer(this.config.form_layer.id).fields;
-                        return true;
+                        else {
+                            flagPointFeatureLayer = false;
+                        }
                     }
                 }));
+                if (!flagPointFeatureLayer) {
+                    error = new Error(nls.user.invalidLayerMessage);
+                    this._reportError(error);
+                }
             }
             // get editable layer
             this._formLayer = this.map.getLayer(this.config.form_layer.id);
@@ -2692,7 +2711,7 @@ define([
                 }
             } else {
                 if (this.config.form_layer.id !== nls.user.selectedLayerText) {
-                    var error = new Error(nls.user.invalidLayerMessage);
+                    error = new Error(nls.user.invalidLayerMessage);
                     this.reportError(error);
                     return;
                 }
