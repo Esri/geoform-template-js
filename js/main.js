@@ -13,6 +13,7 @@ define([
     "dojo/dom-style",
     "dojo/on",
     "dojo/Deferred",
+    "dojo/promise/all",
     "dojo/query",
     "dojo/io-query",
     "dojo/_base/array",
@@ -52,6 +53,7 @@ define([
     domClass, domStyle,
     on,
     Deferred,
+    all,
     query,
     ioQuery,
     array,
@@ -1605,32 +1607,31 @@ define([
                     window.document.title = this.config.details.Title;
                 }
                 if (this.config.form_layer.id == nls.user.selectedLayerText) {
-                    var webmapLayers;
+                    var webmapLayers, deferredListArray = [];
                     this.layerCollection = {};
                     webmapLayers = domConstruct.create("select", { "class": "form-control selectDomain allLayerList" }, dom.byId("multipleLayers"));
                     for (var key in this.config.fields) {
-                        //Fetch all the layers at once
-                        if (this.map.getLayer(key) && this.map.getLayer(key).geometryType === 'esriGeometryPoint') {
-                            this.layerCollection[key] = this.map.getLayer(key);
-                            var option = domConstruct.create("option", {}, webmapLayers);
-                            option.text = this.layerCollection[key].name;
-                            option.value = key;
+                        deferredListArray.push(this._loadNewLayer(webmapLayers, key));
+                    }
+                    //run this block after all the layers are loaded and are correspondingly pushed in the layer-select-box
+                    all(deferredListArray).then(lang.hitch(this, function () {
+                        //if at-least one editable point layer is found then create the form or else show error message
+                        if (webmapLayers.options[0]) {
+                            webmapLayers.options[0].selected = true;
+                            this._formLayer = this.layerCollection[webmapLayers.options[0].value];
+                            this._createForm(this.config.fields[webmapLayers.options[0].value]);
+                            on(webmapLayers, "change", lang.hitch(this, function (evt) {
+                                var fields = this.config.fields[evt.currentTarget.value];
+                                this._formLayer = this.layerCollection[evt.currentTarget.value];
+                                this._createForm(fields);
+                                this._resizeMap();
+                            }));
+                        } 
+			else {
+                            var error = new Error(nls.user.invalidLayerMessage);
+                            this.reportError(error);
                         }
-                    }
-                    if (webmapLayers.options[0]) {
-                        webmapLayers.options[0].selected = true;
-                        this._formLayer = this.layerCollection[webmapLayers.options[0].value];
-                        this._createForm(this.config.fields[webmapLayers.options[0].value]);
-                        on(webmapLayers, "change", lang.hitch(this, function (evt) {
-                            var fields = this.config.fields[evt.currentTarget.value];
-                            this._formLayer = this.layerCollection[evt.currentTarget.value];
-                            this._createForm(fields);
-                        }));
-                    }
-                    else {
-                        var error = new Error(nls.user.invalidLayerMessage);
-                        this.reportError(error);
-                    }
+                    }));
                 } else {
                     // create form fields
                     this._createForm(this.config.fields[this._formLayer.id]);
@@ -1871,8 +1872,51 @@ define([
                 }
             }), this.reportError);
         },
-
-	_createGeoformSections: function () {
+        //this function ensures that the layer is either loaded or throws an error in console naming the layer that did not load successfully
+        _loadNewLayer: function (webmapLayers, key) {
+            var layerLoadedEvent, errorLoadEvent, def, layer;
+            //Fetch all the layers at once
+            def = new Deferred();
+            layer = this.map.getLayer(key);
+            //this block will be called if the layer is already loaded
+            if (layer.loaded) {
+                if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
+                    this._pushToLayerDrpDwn(webmapLayers, key, layer);
+                }
+                def.resolve();
+            }
+            else {
+                //this block will be called if there is some error in layer load
+                if (layer.loadError) {
+                    console.log(nls.user.error + ": " + layer.name);
+                    def.resolve();
+                }
+                //this block attaches 'load' and 'loadError' events respectively
+                else {
+                    layerLoadedEvent = on.once(layer, "load", lang.hitch(this, function () {
+                        errorLoadEvent.remove();
+                        if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
+                            this._pushToLayerDrpDwn(webmapLayers, key, layer);
+                        }
+                        def.resolve();
+                    }));
+                    errorLoadEvent = on.once(layer, "error", lang.hitch(this, function () {
+                        layerLoadedEvent.remove();
+                        console.log(nls.user.error + ": " + layer.name);
+                        def.resolve();
+                    }));
+                }
+            }
+            return def.promise;
+        },
+        //function to push the layer name to layer drop down
+        _pushToLayerDrpDwn: function (webmapLayers, key, layer) {
+            this.layerCollection[key] = layer;
+            var option = domConstruct.create("option", {}, webmapLayers);
+            option.text = this.layerCollection[key].name;
+            option.value = key;
+        },
+        _createGeoformSections: function () {
             array.forEach(query(".geoformSection"), lang.hitch(this, function (currentSection, index) {
                 if (this.config.form_layer.id === nls.user.selectedLayerText) {
                     currentSection.innerHTML = string.substitute(currentSection.innerHTML, { formSection: ++index + "." });
