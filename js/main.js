@@ -1633,8 +1633,10 @@ define([
                         }
                     }));
                 } else {
-                    // create form fields
-                    this._createForm(this.config.fields[this._formLayer.id]);
+                    if(this._formLayer){
+                      // create form fields
+                      this._createForm(this.config.fields[this._formLayer.id]);
+                    }
                 }
                 // create locate button
                 this._createLocateButton();
