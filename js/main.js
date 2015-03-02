@@ -1881,33 +1881,41 @@ define([
             def = new Deferred();
             layer = this.map.getLayer(key);
             //this block will be called if the layer is already loaded
-            if (layer.loaded) {
-                if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
-                    this._pushToLayerDrpDwn(webmapLayers, key, layer);
-                }
-                def.resolve();
-            }
-            else {
-                //this block will be called if there is some error in layer load
-                if (layer.loadError) {
-                    console.log(nls.user.error + ": " + layer.name);
+            if (layer.url) {
+                if (layer.loaded) {
+                    if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
+                        this._pushToLayerDrpDwn(webmapLayers, key, layer);
+                    }
                     def.resolve();
                 }
-                //this block attaches 'load' and 'loadError' events respectively
                 else {
-                    layerLoadedEvent = on.once(layer, "load", lang.hitch(this, function () {
-                        errorLoadEvent.remove();
-                        if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
-                            this._pushToLayerDrpDwn(webmapLayers, key, layer);
-                        }
-                        def.resolve();
-                    }));
-                    errorLoadEvent = on.once(layer, "error", lang.hitch(this, function () {
-                        layerLoadedEvent.remove();
+                    //this block will be called if there is some error in layer load
+                    if (layer.loadError) {
                         console.log(nls.user.error + ": " + layer.name);
                         def.resolve();
-                    }));
+                    }
+                    //this block attaches 'load' and 'loadError' events respectively
+                    else {
+                        layerLoadedEvent = on.once(layer, "load", lang.hitch(this, function () {
+                            errorLoadEvent.remove();
+                            if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
+                                this._pushToLayerDrpDwn(webmapLayers, key, layer);
+                            }
+                            def.resolve();
+                        }));
+                        errorLoadEvent = on.once(layer, "error", lang.hitch(this, function () {
+                            layerLoadedEvent.remove();
+                            console.log(nls.user.error + ": " + layer.name);
+                            def.resolve();
+                        }));
+                    }
                 }
+            }
+            else {
+                //This error will be logged in case the layer is undefined
+                //this will happen in case where the key from this.config.fields supplies a layer id not present in the map
+                console.log(nls.user.invalidLayerMessage + ": " + key);
+                def.resolve();
             }
             return def.promise;
         },
