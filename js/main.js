@@ -2717,7 +2717,7 @@ define([
                 }));
                 if (!flagPointFeatureLayer) {
                     error = new Error(nls.user.invalidLayerMessage);
-                    this._reportError(error);
+                    this.reportError(error);
                 }
             }
             // get editable layer
