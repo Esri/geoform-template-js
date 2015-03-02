@@ -11,9 +11,9 @@
     configure: {
       mapdlg: {
         items: {
-          organizationLabel: "Ο Οργανισμός μου",
+          organizationLabel: "Οργανισμός",
           onlineLabel: "ArcGIS Online",
-          contentLabel: "Το Περιεχόμενό μου",
+          contentLabel: "Περιεχόμενo",
           favoritesLabel: "Τα Αγαπημένα μου"
         },
         title: "Επιλογή web χάρτη",
@@ -24,9 +24,9 @@
       },
       groupdlg: {
         items: {
-          organizationLabel: "Ο Οργανισμός μου",
+          organizationLabel: "Οργανισμός",
           onlineLabel: "ArcGIS Online",
-          contentLabel: "Το Περιεχόμενό μου",
+          contentLabel: "Περιεχόμενo",
           favoritesLabel: "Τα Αγαπημένα μου"
         },
         title: "Επιλογή ομάδας",
@@ -120,7 +120,7 @@
       exceededFileCountError: "Έχει ξεπεραστεί ο μέγιστος επιτρεπτός αριθμός συνημμένων",
       selectFileTitle: "Επιλέξτε ένα αρχείο",
       btnViewSubmissions: "Προβολή υποβολών",
-      dateFormat: "Đ_MM/DD/YYYY h:mm a_ớ"
+      dateFormat: "DD/ΜΜ/YYYY hh:mm"
     },
     builder: {
       invalidUser: "Λυπούμαστε, δεν έχετε δικαίωμα προβολής αυτού του αντικειμένου",
@@ -150,7 +150,7 @@
       selectLayerLabelText: "Θεματικό επίπεδο",
       selectLayerDefaultOptionText: "Επιλογή θεματικού επιπέδου",
       defaultBasemap: "Εναλλαγή υποβάθρου",
-      secondaryBasemap: "Προεπιλεγμένο υπόβαθρο",
+      secondaryBasemap: "Προκαθορισμένο υπόβαθρο",
       detailsTabTitleText: "Λεπτομέρειες φόρμας",
       detailTitleLabelText: "Τίτλος",
       detailLogoLabelText: "Εικόνα λογοτύπου",
@@ -205,8 +205,8 @@
       jumbotronDescription: "Χρησιμοποιήστε μεγάλη ή μικρή κεφαλίδα για τη φόρμα σας. Μια μεγάλη κεφαλίδα μπορεί να βοηθάει στον καθορισμό του σκοπού της εφαρμογής σας, αλλά καταλαμβάνει περισσότερο χώρο στην οθόνη σας.",
       shareGeoformText: "Κοινοποίηση του GeoForm",
       shareDescription: "Το πλαίσιο κοινοποίησης διευκολύνει το κοινό σας να κοινοποιεί το GeoForm σε άλλους συνεργάτες, αφού προγουμένως πραγματοποιήσουν κάποια υποβολή - αυτό μπορεί να απενεργοποιηθεί οποιαδήποτε στιγμή.",
-      defaultMapExtent: "Προεπιλεγμένη έκταση χάρτη",
-      defaultMapExtentDescription: "Στο web χάρτη σας  μετά την υποβολή, θα γίνει επαναφορά στην προεπιλεγμένη έκταση - αυτό μπορεί να απενεργοποιηθεί οποιαδήποτε στιγμή.",
+      defaultMapExtent: "Προκαθορισμένη έκταση χάρτη",
+      defaultMapExtentDescription: "Στο web χάρτη σας  μετά την υποβολή, θα γίνει επαναφορά στην προκαθορισμένη έκταση - αυτό μπορεί να απενεργοποιηθεί οποιαδήποτε στιγμή.",
       pushpinOptionsDescription: "Επιλέξτε από μια ποικιλία χρωμάτων για την πινέζα του χάρτη, η οποία θα πρέπει να διαφέρει από τα σύμβολα του χάρτη ώστε ο χρήστης να τοποθετεί εύκολα την υποβολή του στο χάρτη",
       selectLocationText: "Επιλογή τοποθεσίας με βάση",
       myLocationText: "Η τοποθεσία μου",

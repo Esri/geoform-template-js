@@ -120,7 +120,7 @@
       exceededFileCountError: "จำนวนไฟล์แนบมากเกินกว่าที่จำนวนที่อนุญาต",
       selectFileTitle: "เลือกไฟล์",
       btnViewSubmissions: "ดูการส่ง",
-      dateFormat: "ก้_MM/DD/YYYY h:mm a_ษฺ"
+      dateFormat: "วว/ดด/ปปปป ชั่วโมง:นาที"
     },
     builder: {
       invalidUser: "ขออภัย คุณไม่ได้สิทธิในการดูรายการนี้",

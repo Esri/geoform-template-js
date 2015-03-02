@@ -120,7 +120,7 @@
       exceededFileCountError: "허용된 첨부의 최대 개수 초과",
       selectFileTitle: "파일 선택",
       btnViewSubmissions: "제출 내역 보기",
-      dateFormat: "MM/DD/YYYY h:mm a"
+      dateFormat: "YYYY/MM/DD a h:mm"
     },
     builder: {
       invalidUser: "죄송합니다. 이 항목을 볼 수 있는 권한이 없습니다.",

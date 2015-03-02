@@ -120,7 +120,7 @@
       exceededFileCountError: "Przekroczono maksymalną liczbę dozwolonych załączników",
       selectFileTitle: "Wybierz plik",
       btnViewSubmissions: "Wyświetl zgłoszenia",
-      dateFormat: "MM/DD/YYYY h:mm a"
+      dateFormat: "MM/DD/YYYY g:mm a"
     },
     builder: {
       invalidUser: "Przepraszamy, nie masz uprawnień do wyświetlania tego elementu",

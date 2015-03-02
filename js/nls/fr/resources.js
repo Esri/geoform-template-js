@@ -120,7 +120,7 @@
       exceededFileCountError: "Le nombre maximum de pièces jointes autorisées a été dépassé",
       selectFileTitle: "Sélectionner un fichier",
       btnViewSubmissions: "Consulter les envois",
-      dateFormat: "MM/JJ/AAAA h:mm a"
+      dateFormat: "DD/MM/YYYY h:mm a"
     },
     builder: {
       invalidUser: "Vous n'êtes pas autorisé à consulter cet élément",
