@@ -1556,10 +1556,12 @@ define([
             domClass.add(popup.domNode, 'light');
             var mapDiv = dom.byId('mapDiv');
             // fullscreen button HTML
-            var fsHTML = '';
-            fsHTML = '<div class="basemapToggle-button"><div class="basemapToggle-button" id="BasemapToggle"></div></div>';
-            fsHTML += '</div>';
-            mapDiv.innerHTML = fsHTML;
+            if (this.config.enableBasemapToggle) {
+                var fsHTML = '';
+                fsHTML = '<div class="basemapToggle-button"><div class="basemapToggle-button" id="BasemapToggle"></div></div>';
+                fsHTML += '</div>';
+                mapDiv.innerHTML = fsHTML;
+            }
             arcgisUtils.createMap(itemInfo, mapDiv, {
                 mapOptions: {
                     infoWindow: popup
@@ -1578,22 +1580,24 @@ define([
                 this._createGeoformSections();
                 this.map = response.map;
                 // Disable scroll zoom handler
-		var toggle = new basemapToggle({
-                    map: this.map,
-                    basemap: this.config.defaultBasemap,
-                    defaultBasemap: this.config.nextBasemap
-                }, "BasemapToggle");
-                toggle.startup();
+                if (this.config.enableBasemapToggle) {
+                    var toggle = new basemapToggle({
+                        map: this.map,
+                        basemap: this.config.defaultBasemap,
+                        defaultBasemap: this.config.nextBasemap
+                    }, "BasemapToggle");
+                    toggle.startup();
 
-                var layers = this.map.getLayersVisibleAtScale(this.map.getScale());
-                on.once(this.map, 'basemap-change', lang.hitch(this, function () {
-                    for (var i = 0; i < layers.length; i++) {
-                        if (layers[i]._basemapGalleryLayerType) {
-                            var layer = this.map.getLayer(layers[i].id);
-                            this.map.removeLayer(layer);
+                    var layers = this.map.getLayersVisibleAtScale(this.map.getScale());
+                    on.once(this.map, 'basemap-change', lang.hitch(this, function () {
+                        for (var i = 0; i < layers.length; i++) {
+                            if (layers[i]._basemapGalleryLayerType) {
+                                var layer = this.map.getLayer(layers[i].id);
+                                this.map.removeLayer(layer);
+                            }
                         }
-                    }
-                }));
+                    }));
+                }
                 this.map.disableScrollWheelZoom();
                 this.defaultExtent = this.map.extent;
                 // webmap defaults
