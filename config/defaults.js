@@ -39,7 +39,7 @@ define({
     "attachmentHelpText": "",
     "showLayer": true,
     "disableLogo": false,
-    "enableBasemapToggle": true,
+    "enableBasemapToggle": false,
     "locate":false,
     "locationSearchOptions": {
         "enableMyLocation": true,
