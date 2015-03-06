@@ -636,7 +636,7 @@ define([
                 this._createFormElements(currentField, index, null);
             }));
             // if form has attachments
-            if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id].enableAttachments) {
+            if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id] && this.config.attachmentInfo[this._formLayer.id].enableAttachments) {
                 var requireField = null, helpBlock, labelHTML = "", divRowContainer, divRow, divColumn1, fileBtnSpan, fileInput, fileChange,
                     divColumn2, fileListContainer, fileListRow, fileListColumn, fileForm;
                 userFormNode = dom.byId('userForm');
