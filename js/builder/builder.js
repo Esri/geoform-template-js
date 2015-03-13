@@ -1,4 +1,4 @@
-/*global $ */
+/*global $,define,document,require */
 define([
    "dojo/_base/declare",
     "dojo/on",
@@ -68,7 +68,7 @@ define([
                     "type": "css",
                     "path": "js/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css"
                 }
-            ];
+         ];
         },
 
         startup: function () {
@@ -83,7 +83,9 @@ define([
                 "enableMGRS": false,
                 "enableUTM": false
             };
-
+            if (this.config && this.config.i18n && this.config.i18n.direction == "rtl") {
+                this._loadCSS();
+            }
             signIn.createPortal().then(lang.hitch(this, function (loggedInUser) {
                 var isValidUser = signIn.authenticateUser(true, this.response, loggedInUser);
                 if (isValidUser) {
@@ -103,7 +105,13 @@ define([
             return def.promise;
         },
 
-        _swapContents: function () {
+        _loadCSS: function () {
+            var cssStyle;
+            cssStyle = dom.byId("rtlCSS");
+            cssStyle.href = "js/vendor/bootstrap-3.3.0-dist/css/bootstrap.rtl.css";
+        },
+
+        _swapContents:function(){
             array.forEach(query(".invertedArrows"), lang.hitch(this, function (currentNode) {
                 if (domClass.contains(currentNode, "glyphicon-arrow-left")) {
                     domClass.replace(currentNode, "glyphicon-arrow-right", "glyphicon-arrow-left");
@@ -176,6 +184,15 @@ define([
             $('#disableLogo').on('click', lang.hitch(this, function () {
                 this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
             }));
+            $('#enableBasemapToggle').on('click', lang.hitch(this, function () {
+                this.currentConfig.enableBasemapToggle = $('#enableBasemapToggle')[0].checked;
+                if (this.currentConfig.enableBasemapToggle) {
+                    $('#basemapContainer').show();
+                }
+                else {
+                    $('#basemapContainer').hide();
+                }
+            }));
             $('#locateOnLoad').on('click', lang.hitch(this, function () {
                 this.currentConfig.locate = !this.currentConfig.locate;
             }));
@@ -202,6 +219,7 @@ define([
             this._populateThemes();
             this._populatePushpins();
             this._enableDisableLogo();
+            this._enableDisableBasemapToggle();
             this._locateCurrentLocation();
             this._enableDisableViewer();
             //Check if the object is messed up with other type.if yes replace it with default object
@@ -325,13 +343,22 @@ define([
             // set title
             window.document.title = appTitle;
             //Change the arrow directions for next and previous buttons if application runs in RTL mode
-            if (dom.byId("geoform").dir == "rtl") {
+            if (this.config && this.config.i18n && this.config.i18n.direction == "rtl") {
                 this._swapContents();
             }
         },
 
         _enableDisableLogo: function () {
             dom.byId("disableLogo").checked = this.currentConfig.disableLogo;
+        },
+        _enableDisableBasemapToggle: function () {
+            dom.byId("enableBasemapToggle").checked = this.currentConfig.enableBasemapToggle;
+            if (this.currentConfig.enableBasemapToggle) {
+                $('#basemapContainer').show();
+            }
+            else {
+                $('#basemapContainer').hide();
+            }
         },
 
         _locateCurrentLocation: function () {
@@ -575,10 +602,10 @@ define([
         //function will populate all editable fields with validations
         _populateFields: function (layerName) {
             var fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
-                fieldCheckBoxInput, tdFieldRadioButton, fieldRadioButtonInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
+                fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [],
                 sortedFields = [],
-                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect, labelPopupContent, helpTextPopupContent, placeholderPopupContent, displayFieldInfoContent;
+                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect, labelPopupContent, helpTextPopupContent, placeholderPopupContent, displayFieldInfoContent, tdFieldRadioButton, fieldRadioButtonInput;
             var formFieldsNode = dom.byId('geoFormFieldsTable');
             labelPopupContent = '<div class="form-group"><label class="text-danger">'+nls.builder.labelHelpMessage +'</label><input type="text" class="form-control" data-input-type="String" placeholder="' +nls.builder.placeHolderHintMessage +'" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             helpTextPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="text-danger">' + nls.builder.placeHolderHelpMessage + '</p></div>';
@@ -801,6 +828,16 @@ define([
                                 innerHTML: nls.builder.selectCheckboxOption,
                                 value: "checkbox"
                             }, typeSelect);
+                            on(typeSelect, "change", lang.hitch(this, function (evt) {
+                                var placeHolder = evt.currentTarget.parentNode.previousSibling.children[0];
+                                if (evt.currentTarget.value === "checkbox") {
+                                    placeHolder.value = "";
+                                    domClass.add(placeHolder, "hide");
+                                }
+                                else {
+                                    domClass.remove(placeHolder, "hide");
+                                }
+                            }));
                         } else {
                             if (currentField.type == "esriFieldTypeString" && currentField.length >= 20) {
                                 typeSelect = domConstruct.create("select", {
@@ -943,7 +980,7 @@ define([
 
         //function to filter editable layers from all the layers in webmap
         _validateFeatureServer: function (layer, canCreate, layerId) {
-            if (canCreate) {
+            if (canCreate && layer.geometryType === 'esriGeometryPoint') {
                 var filteredLayer, fLayer;
                 filteredLayer = document.createElement("option");
                 fLayer = document.createElement("option");
@@ -968,9 +1005,9 @@ define([
         //function to allow user to udate/select webmap from the list
         _initWebmapSelection: function () {
             var browseParams = {
-                portal: this.userInfo.portal,
-                galleryType: "webmap" //valid values are webmap or group
-            },
+                    portal: this.userInfo.portal,
+                    galleryType: "webmap" //valid values are webmap or group
+                },
                 webmapButton, bootstrapButton;
             this.browseDlg = new BrowseIdDlg(browseParams, this.userInfo);
             on(this.browseDlg, "close", lang.hitch(this, function () {
@@ -1059,24 +1096,24 @@ define([
         //function takes the previous tab's details as input parameter and saves the setting to config
         _updateAppConfiguration: function (prevNavigationTab, layerObj) {
             switch (prevNavigationTab) {
-                case "webmap":
-                    break;
-                case "details":
-                    this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
-                    this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
-                    this.currentConfig.details.Description = $('#detailDescriptionInput').code();
-                    break;
-                case "fields":
+            case "webmap":
+                break;
+            case "details":
+                this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
+                this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
+                this.currentConfig.details.Description = $('#detailDescriptionInput').code();
+                break;
+            case "fields":
                     if (layerObj !== nls.builder.allLayerSelectOptionText) {
                     var innerObj = [];
                     var fieldName, fieldLabel, fieldDescription, visible;
                     this.currentSelectedLayer[layerObj] = dom.byId('geoFormFieldsTable');
                     array.forEach(this.currentSelectedLayer[layerObj].children, lang.hitch(this, function (currentRow, currentFieldIndex) {
-                        if (currentRow.getAttribute("rowIndex")) {
-                            fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
-                            fieldLabel = query(".fieldLabel", currentRow)[0].value;
-                            fieldDescription = query(".fieldDescription", currentRow)[0].value;
-                            visible = query(".fieldCheckbox", currentRow)[0].checked;
+                    if (currentRow.getAttribute("rowIndex")) {
+                        fieldName = query(".layerFieldsName", currentRow)[0].innerHTML;
+                        fieldLabel = query(".fieldLabel", currentRow)[0].value;
+                        fieldDescription = query(".fieldDescription", currentRow)[0].value;
+                        visible = query(".fieldCheckbox", currentRow)[0].checked;
                             var layerFields = {};
                             layerFields.name = fieldName;
                             layerFields.alias = fieldLabel;
@@ -1130,6 +1167,7 @@ define([
                 "useSmallHeader": this.currentConfig.useSmallHeader,
                 "webmap": this.currentConfig.webmap,
                 "disableLogo": this.currentConfig.disableLogo,
+                "enableBasemapToggle": this.currentConfig.enableBasemapToggle,
                 "defaultBasemap": this.currentConfig.defaultBasemap,
                 "nextBasemap": this.currentConfig.nextBasemap,
                 "locate": this.currentConfig.locate,
@@ -1416,13 +1454,13 @@ define([
                     "innerHTML": nls.builder.attachmentHint
                 }, attachmentDetails);
                 this._setAttachmentInputState();
-                on(dom.byId("enableAttachmentInfo"), "change", lang.hitch(this, function (evt) {
+                on(dom.byId("enableAttachmentInfo"), "change", lang.hitch(this, function () {
                     this._setAttachmentInputState();
                 }));
             }
         },
 
-        _setAttachmentInputState: function (evt) {
+        _setAttachmentInputState: function () {
             if (!dom.byId("enableAttachmentInfo").checked) {
                 domAttr.set(dom.byId("requiredAttachmentInfo"), "disabled", true);
                 domAttr.set(dom.byId("attachmentLabelInfo"), "disabled", true);

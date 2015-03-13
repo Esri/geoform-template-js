@@ -1,4 +1,4 @@
-﻿/*global $,define,document */
+﻿/*global $,define,document*/
 /*jslint sloppy:true,nomen:true */
 define([
         "dojo/_base/declare",
@@ -36,7 +36,6 @@ define([
         "esri/symbols/SimpleMarkerSymbol",
         "esri/symbols/SimpleLineSymbol",
         "esri/Color",
-        "esri/layers/FeatureLayer",
         "dijit/registry",
         "dojo/parser",
         "application/wrapper/main-jquery-deps",
@@ -59,12 +58,13 @@ define([
         all,
         Point,
         GraphicsLayer,
-        Graphic, BorderContainer, ContentPane, ShareModal, modalTemplate, ViewerTemplate, nls, Legend, Query, QueryTask, BasemapToggle, esriLang, Geocoder, bootstrapmap, Extent, SimpleMarkerSymbol, SimpleLineSymbol, Color, FeatureLayer, registry, parser) {
+        Graphic, BorderContainer, ContentPane, ShareModal, modalTemplate, ViewerTemplate, nls, Legend, Query, QueryTask, BasemapToggle, esriLang, Geocoder, bootstrapmap, Extent, SimpleMarkerSymbol, SimpleLineSymbol, Color, registry, parser) {
     return declare([], {
         layerClickHandle: null,
         nls: nls,
         config: {},
         map: null,
+        _mapLegend: null,
         themes: theme,
         localStorageSupport: null,
         currentFeatureIndex: null,
@@ -75,7 +75,9 @@ define([
         pageIndex: 0,
         layerPagination: [],
         numberOfRecords: 20,
+        totalRecordsDisplayed: 0,
         totalNumberOfRecords: 0,
+        activeElementId: null,
         constructor: function () {
             this.css = {
                 desktopGeocoderTheme: "geocoder-desktop",
@@ -92,7 +94,7 @@ define([
             if (config) {
                 this.config = config;
                 if (this.config.disableViewer) {
-                    this._reportError();
+                    this._reportError(nls.viewer.appLoadingFailedMessage);
                 }
                 this._init();
             }
@@ -106,21 +108,25 @@ define([
             on(dom.byId("shareDialog"), "click", lang.hitch(this, function () {
                 this._openShareModal();
             }));
+            on(dom.byId("shareDialogMobileView"), "click", lang.hitch(this, function () {
+                this._openShareModal();
+            }));
             on(dom.byId("btnSortByOrder"), "click", lang.hitch(this, function () {
                 domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
+                this.selectedGraphics.clear();
                 this._sortByOrder();
             }));
             on(dom.byId("search"), "click", lang.hitch(this, function (evt) {
-                this._showLeftPanel(evt.currentTarget);
+                this._navigatePanel(evt.currentTarget);
             }));
-            on(dom.byId("aboutUs"), "click", lang.hitch(this, function (evt) {
-                this._showLeftPanel(evt.currentTarget);
+            on(dom.byId("aboutus"), "click", lang.hitch(this, function (evt) {
+                this._navigatePanel(evt.currentTarget);
             }));
             on(dom.byId("mapOption"), "click", lang.hitch(this, function (evt) {
-                this._showLeftPanel(evt.currentTarget);
+                this._navigatePanel(evt.currentTarget);
             }));
             on(dom.byId("legend"), "click", lang.hitch(this, function (evt) {
-                this._showLeftPanel(evt.currentTarget);
+                this._navigatePanel(evt.currentTarget);
             }));
             on(dom.byId("closeButton"), "click", function () {
                 domStyle.set(dom.byId("featureDetailsContainer"), 'display', 'none');
@@ -128,52 +134,68 @@ define([
             this.iconPathSVG = "M 1784,238 1805,238 1805,259 1784,259 1784,238 M 1777,248 1784,248 M 1794,231 1794,238 M 1812,248 1805,248 M 1794,266 1794,259";
             this.selectedGraphics = new GraphicsLayer({ id: "highlightedGraphic" });
             //Set Dynamic height of PanelBody in the left panel for large screen devices
-            domStyle.set(dom.byId("searchPanelBody"), "height", ($(window).height() - 118) + "px");
-            domStyle.set(dom.byId("legendPanelBody"), "height", ($(window).height() - 118) + "px");
-            domStyle.set(dom.byId("aboutusPanelBody"), "height", ($(window).height() - 118) + "px");
             on(window, "resize", lang.hitch(this, function () {
                 var HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
                 if ($(window).width() > 767) {
                     domClass.remove(dom.byId("panelHeader"), "navbar-fixed-bottom");
                     domClass.remove(dom.byId("panelHeader"), "navbar-inverse");
                     //Set Dynamic height of PanelBody in the left panel for large screen devices
-                    domStyle.set(dom.byId("searchPanelBody"), "height", ($(window).height() - 118) + "px");
-                    domStyle.set(dom.byId("legendPanelBody"), "height", ($(window).height() - 118) + "px");
-                    domStyle.set(dom.byId("aboutusPanelBody"), "height", ($(window).height() - 118) + "px");
+                    this._setLeftPanelDimension();
                     domConstruct.place(dom.byId("mapDiv"), dom.byId("mapLayoutContainer"), "first");
                     domConstruct.place(dom.byId("featureDetailsContainer"), dom.byId("mapLayoutContainer"), "last");
                     this._resizeMap();
+                    //Making search tab active for large screen devices
                     if (HeaderNode[0]) {
                         array.some(HeaderNode[0].children, function (currentElement, index) {
                             if (index === 1) {
                                 domClass.add(HeaderNode[0].children[index], "active");
                             } else {
+                                setTimeout(function () {
+                                    HeaderNode[0].children[index].blur();
+                                    dom.byId("geocoderSearch_input").focus();
+                                }, 0);
                                 domClass.remove(HeaderNode[0].children[index], "active");
                             }
                         });
                     }
-                    domStyle.set(dom.byId("aboutusPanelBody"), 'display', 'none');
-                    domStyle.set(dom.byId("legendPanelBody"), 'display', 'none');
-                    domStyle.set(dom.byId("mapPanelBody"), 'display', 'none');
-                    domStyle.set(dom.byId("searchPanelBody"), 'display', 'block');
+                    this._navigatePanel(dom.byId("search"));
                 }
                 else {
                     domClass.add(dom.byId("panelHeader"), "navbar-inverse");
                     domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
                     this._moveMapContainer();
+                    this._resizeSearchPanel();
                 }
-                setTimeout(lang.hitch(this, function () {
-                    dom.byId("appTitle").focus();
-                }), 300);
             }));
-            if ($(window).width() <= 767) {
-                domClass.add(dom.byId("panelHeader"), "navbar-inverse");
-                domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
-                this._moveMapContainer();
+        },
+        //Function to show the panel body of current active tab
+        _navigatePanel: function (activeNode) {
+            var activeNodeId;
+            query(".panelBody").forEach(function (node) {
+                domStyle.set(node, 'display', 'none');
+            });
+            if (domAttr.get(activeNode, "id") === "mapOption") {
+                domStyle.set(dom.byId('mapPanelBody'), 'display', 'block');
+                domConstruct.place(dom.byId("mapDiv"), dom.byId("mapPanelBody"), "first");
+                this._resizeMap();
+                domConstruct.place(dom.byId("featureDetailsContainer"), dom.byId("mapPanelBody"), "last");
+            }
+            else {
+                activeNodeId = activeNode.id + 'PanelBody';
+                domStyle.set(dom.byId(activeNodeId), 'display', 'block');
             }
         },
 
-        _reportError: function () {
+        _showMapTab: function () {
+            //Arrange the navigation pane on small screen devices
+            this._activateMapTabOption();
+            domStyle.set(dom.byId("aboutusPanelBody"), 'display', 'none');
+            domStyle.set(dom.byId("legendPanelBody"), 'display', 'none');
+            domStyle.set(dom.byId("searchPanelBody"), 'display', 'none');
+            domStyle.set(dom.byId("mapPanelBody"), 'display', 'block');
+        },
+
+        _reportError: function (error) {
             var node;
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
@@ -185,20 +207,36 @@ define([
             // set message
             node = dom.byId("loading_message");
             if (node) {
-                node.innerHTML = nls.viewer.appLoadingFailedMessage;
+                domAttr.set(node, "innerHTML", error);
             }
         },
 
-        //Change map div's parent as per screen resolution
+        //Change map div's parent as per screen resolution and setting dynamic height to PanelBody contents
         _moveMapContainer: function () {
+            var diffHeightMobileView;
             domConstruct.place(dom.byId("mapDiv"), dom.byId("mapPanelBody"), "first");
-            this._resizeMap();
             domConstruct.place(dom.byId("featureDetailsContainer"), dom.byId("mapPanelBody"), "last");
-            this._showTabsMobileView();
+            this._activateMapTabOption();
+            this._navigatePanel(dom.byId("mapOption"));
             //Set Dynamic height of PanelBody in the left panel for small screen devices
+            diffHeightMobileView = domStyle.get(dom.byId("navHeader"), "height") + domStyle.get(dom.byId("viewer_pills"), "height");
             query(".panelBody").forEach(function (node) {
-                domStyle.set(node, "height", ($(window).height() - 116) + "px");
+                domStyle.set(node, "height", ($(window).height() - diffHeightMobileView) + "px");
             });
+            this._resizeMap();
+        },
+
+        // set Dynamic height of formList in the left panel for small screen devices
+        _resizeSearchPanel: function () {
+            var navbarHeight;
+            if (domStyle.get(dom.byId("layerSelectBox"), "display") === 'block') {
+                navbarHeight = domStyle.get(dom.byId("selectBoxWrapper"), "height") + domStyle.get(dom.byId("submitFormNode"), "height") + 220;
+                domStyle.set(dom.byId('formList'), "height", ($('#searchPanelBody').height() - navbarHeight) + "px");
+            }
+            else {
+                navbarHeight = domStyle.get(dom.byId("selectBoxWrapper"), "height") + domStyle.get(dom.byId("submitFormNode"), "height") + 136;
+                domStyle.set(dom.byId('formList'), "height", ($('#searchPanelBody').height() - navbarHeight) + "px");
+            }
         },
 
         //Function to resize map with respect to the screen resolution.
@@ -219,20 +257,19 @@ define([
         },
 
         //Arrange the navigation pane on small screen devices
-        _showTabsMobileView: function () {
+        _activateMapTabOption: function () {
             var HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
             array.some(HeaderNode[0].children, function (currentNode) {
                 if (domClass.contains(currentNode, "active") && domAttr.get(currentNode, "id") !== "mapOption") {
+                    setTimeout(function () {
+                        currentNode.children[0].blur();
+                        dom.byId("mapOption").focus();
+                    }, 0);
                     domClass.remove(currentNode, "active");
                     return true;
                 }
             });
             domClass.add(dom.byId("mapOption"), "active");
-            domStyle.set(dom.byId("aboutusPanelBody"), 'display', 'none');
-            domStyle.set(dom.byId("legendPanelBody"), 'display', 'none');
-            domStyle.set(dom.byId("searchPanelBody"), 'display', 'none');
-            this._resizeMap();
-            domStyle.set(dom.byId("mapPanelBody"), 'display', 'block');
         },
 
         _init: function () {
@@ -345,29 +382,6 @@ define([
             }, group);
         },
 
-        //Function to show left panel options
-        _showLeftPanel: function (currentNode) {
-            domStyle.set(dom.byId("searchPanelBody"), 'display', 'none');
-            domStyle.set(dom.byId("aboutusPanelBody"), 'display', 'none');
-            domStyle.set(dom.byId("legendPanelBody"), 'display', 'none');
-            domStyle.set(dom.byId("mapPanelBody"), 'display', 'none');
-            if (domAttr.get(currentNode, "id") === "legend") {
-                domStyle.set(dom.byId("legendPanelBody"), 'display', 'block');
-            }
-            if (domAttr.get(currentNode, "id") === "search") {
-                domStyle.set(dom.byId("searchPanelBody"), 'display', 'block');
-            }
-            if (domAttr.get(currentNode, "id") === "aboutUs") {
-                domStyle.set(dom.byId("aboutusPanelBody"), 'display', 'block');
-            }
-            if (domAttr.get(currentNode, "id") === "mapOption") {
-                domStyle.set(dom.byId("mapPanelBody"), 'display', 'block');
-                domConstruct.place(dom.byId("mapDiv"), dom.byId("mapPanelBody"), "first");
-                this._resizeMap();
-                domConstruct.place(dom.byId("featureDetailsContainer"), dom.byId("mapPanelBody"), "last");
-            }
-        },
-
         // create a map based on the input web map id
         _createWebMap: function (itemInfo) {
             bootstrapmap.createWebMap(itemInfo, dom.byId("mapDiv"), {
@@ -375,71 +389,90 @@ define([
                 bingMapsKey: this.config.bingKey,
                 scrollWheelZoom: true
             }).then(lang.hitch(this, function (response) {
+                //Since different themes in bootstrap has different dimensions we need to set the height dynamically
+                setTimeout(lang.hitch(this, function () {
+                    this._resizeMap();
+                }), 0);
                 this.layerInfos = arcgisUtils.getLegendLayers(response);
                 this.map = response.map;
-                dom.byId("appTitle").innerHTML = response.itemInfo.item.title ? response.itemInfo.item.title : this.config.details.Title;
-                dom.byId("aboutusPanelBody").innerHTML = response.itemInfo.item.description;
+                domAttr.set(dom.byId('appTitle'), "innerHTML", response.itemInfo.item.title ? response.itemInfo.item.title : this.config.details.Title);
+                domAttr.set(dom.byId('aboutusPanelBody'), "innerHTML", response.itemInfo.item.description ? response.itemInfo.item.description : "");
                 this._initLegend();
                 this.defaultExtent = this.map.extent;
                 // make graphics layer
                 this._gl = new GraphicsLayer();
                 this.map.addLayer(this._gl);
-                this._setLayerDefaults();
+                this._setLayerDefaults().then(lang.hitch(this, function () {
+                    this._resizeSearchPanel();
+                }));
+                //Resize map and takes dimensions according to small screen devices on load
+                if ($(window).width() <= 767) {
+                    domClass.add(dom.byId("panelHeader"), "navbar-inverse");
+                    domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
+                    this._moveMapContainer();
+                } else {
+                    this._setLeftPanelDimension();
+                }
             }));
+        },
+
+        // Setting dynamic height to PanelBody contents
+        _setLeftPanelDimension: function () {
+            var navbarHeight, diffHeight;
+            //Set Dynamic height of PanelBody in the left panel for large screen devices
+            diffHeight = domStyle.get(dom.byId("navHeader"), "height") + domStyle.get(dom.byId("viewer_pills"), "height");
+            domStyle.set(dom.byId("searchPanelBody"), "height", ($(window).height() - diffHeight) + "px");
+            domStyle.set(dom.byId("legendPanelBody"), "height", ($(window).height() - diffHeight) + "px");
+            domStyle.set(dom.byId("aboutusPanelBody"), "height", ($(window).height() - diffHeight) + "px");
+            setTimeout(lang.hitch(this, function () {
+                navbarHeight = domStyle.get(dom.byId("selectBoxWrapper"), "height") + domStyle.get(dom.byId("submitFormNode"), "height") + 25;
+                domStyle.set(dom.byId("formList"), "height", ($('#searchPanelBody').height() - navbarHeight) + "px");
+                registry.byId("mainContainer").resize();
+                this._resizeMap();
+            }), 100);
         },
 
         _executeLayerTasks: function (_formLayer) {
             var toggle, layers;
+            if (!this._formLayer.advancedQueryCapabilities.supportsOrderBy) {
+                domAttr.set(dom.byId("btnSortByOrder"), "disabled", true);
+            }
             this._calculateTotalFeaturesLength(_formLayer);
+            if ($(window).width() > 767) {
+                this._setLeftPanelDimension();
+            }
             domClass.remove(document.body, "app-loading");
             this._createGeocoders();
-            toggle = new BasemapToggle({
-                map: this.map,
-                basemap: this.config.nextBasemap,
-                defaultBasemap: this.config.defaultBasemap
-            }, dom.byId("toggleContainer"));
-            toggle.startup();
+            if (this.config.enableBasemapToggle) {
+                toggle = new BasemapToggle({
+                    map: this.map,
+                    basemap: this.config.nextBasemap,
+                    defaultBasemap: this.config.defaultBasemap
+                }, dom.byId("toggleContainer"));
+                toggle.startup();
+                on.once(this.map, 'basemap-change', lang.hitch(this, function () {
+                    for (var i = 0; i < layers.length; i++) {
+                        var layer;
+                        if (layers[i]._basemapGalleryLayerType) {
+                            layer = this.map.getLayer(layers[i].id);
+                            this.map.removeLayer(layer);
+                        }
+                    }
+                }));
+            }
             layers = this.map.getLayersVisibleAtScale(this.map.getScale());
             this._updatePaginationMessage(false);
-            on.once(this.map, 'basemap-change', lang.hitch(this, function () {
-                for (var i = 0; i < layers.length; i++) {
-                    var layer;
-                    if (layers[i]._basemapGalleryLayerType) {
-                        layer = this.map.getLayer(layers[i].id);
-                        this.map.removeLayer(layer);
-                    }
-                }
-            }));
             on(this.map, "click", lang.hitch(this, function () {
                 if (this.map.infoWindow.isShowing) {
                     this.map.infoWindow.hide();
                 }
             }));
-            on(_formLayer, "click", lang.hitch(this, function (evt) {
-                this.map.infoWindow.hide();
-                if (evt.graphic && evt.mapPoint) {
-                    this._highlightMapGraphics(evt.graphic);
-                    this._executeQueryTask(evt.mapPoint).then(lang.hitch(this, function (result) {
-                        var objectIdField = _formLayer.objectIdField;
-                        array.forEach(query('.formList .list-group-item'), function (node) {
-                            if (domClass.contains(node, "active")) {
-                                domClass.remove(node, "active");
-                            }
-                            if (domAttr.get(node, "fieldValue") === result.features[0].attributes[objectIdField].toString()) {
-                                domClass.add(node, "active");
-                            }
-                        });
-                    }));
-                }
-            }));
             on(dom.byId("nextFeature"), "click", lang.hitch(this, function () {
                 this._resetPaginationArrows(dom.byId("nextFeature"), true);
             }));
-
             on(dom.byId("prevFeature"), "click", lang.hitch(this, function () {
                 this._resetPaginationArrows(dom.byId("prevFeature"), false);
             }));
-
             on(dom.byId("submitForm"), "click", lang.hitch(this, function () {
                 var urlString = "index.html";
                 urlString = this.config.appid ? urlString + "?appid=" + this.config.appid : urlString;
@@ -463,7 +496,7 @@ define([
                     }
                     domClass.remove(dom.byId("nextFeature"), "disabled");
                 }
-                this._mapClicked(this.carouselPaulData.tableAttributes[this.currentFeatureIndex]);
+                this._updateFeatureDetails(this.carouselPaulData.tableAttributes[this.currentFeatureIndex]);
                 this._highlightMapGraphics(this.carouselPaulData.tableAttributes[this.currentFeatureIndex]);
                 if ((this.currentFeatureIndex + 1) === this.carouselPaulData.totalFeatures) {
                     domClass.add(node, "disabled");
@@ -474,7 +507,7 @@ define([
         //function will  check whether the layer is hosted or not
         //If layer is hosted or layer supports pagination then data will be fetched in small chunks with geometry
         //Otherwise only objectIds and display fields will be fetched
-        _queryLayer: function () {
+        _queryLayer: function (layer) {
             var queryTask, queryLayer, currentClass, i = 1;
             queryTask = new QueryTask(this._formLayer.url);
             queryLayer = new Query();
@@ -486,14 +519,21 @@ define([
                 currentClass = "DESC";
             }
             queryLayer.orderByFields = [dom.byId("sortbyInput").value + " " + currentClass];
-            queryLayer.returnGeometry = true;
-            queryLayer.outFields = ["*"];
             if (array.indexOf(this._formLayer.url.split('/'), "rest") == 5) {
                 //Hosted layer, data can be fetched in small chunks
                 queryLayer.num = this.numberOfRecords; //This value will be configurable
                 queryLayer.start = this.featureCount;
                 this.featureCount += this.numberOfRecords;
                 this.isHosted = true;
+                queryLayer.returnGeometry = true;
+                queryLayer.outFields = ["*"];
+            } else {
+                //Fetch all features
+                queryLayer.outFields = [layer.objectIdField + "," + this.displayFields + this._formLayer.renderer.attributeField];
+                this.isHosted = false;
+            }
+            if (this.totalRecordsDisplayed === 0) {
+                this.totalRecordsDisplayed = this.numberOfRecords;
             }
             queryTask.execute(queryLayer, lang.hitch(this, function (results) {
                 var records = [];
@@ -515,19 +555,20 @@ define([
                     }
                 }
                 //populate the features in left panel
-                this._populateFeatures(this._formLayer, this.pageIndex, this.layerPagination.length, this.numberOfRecords);
+                this._populateFeatures(this._formLayer, this.pageIndex);
             }));
         },
 
         //function to calculate the total number of features in a layer
         _calculateTotalFeaturesLength: function (form_Layer) {
-            this.layerPagination = [];
             var queryTask, queryLayer;
+            this.layerPagination = [];
             queryTask = new QueryTask(form_Layer.url);
             queryLayer = new Query();
             queryLayer.where = "1=1";
             queryLayer.returnCountOnly = true;
             queryLayer.returnGeometry = false;
+            queryLayer.outFields = ["*"];
             queryTask.execute(queryLayer, lang.hitch(this, function (count) {
                 this.totalNumberOfRecords = count.features.length;
                 this._populateSortOptions(form_Layer);
@@ -547,40 +588,15 @@ define([
             this._mapLegend.startup();
         },
 
-        //function to check if layer is editable from all the layers in webmap and then create dropdown to select select layer
-        _validateFeatureServer: function (layer, canCreate, layerId) {
-            if (canCreate) {
-                var selectLayerbyInput;
-                selectLayerbyInput = domConstruct.create("option", {
-                    "innerHTML": layer.name,
-                    "value": layerId
-                }, dom.byId("selectLayerInput"));
-            }
-        },
-
-        _queryAllLayers: function (layerUrl, layerId) {
-            var capabilities = null, layer, layerDeferred;
-            if (layerUrl) {
-                layer = new FeatureLayer(layerUrl);
-                layerDeferred = new Deferred();
-                on(layer, "load", lang.hitch(this, function () {
-                    capabilities = layer.getEditCapabilities();
-                    this._validateFeatureServer(layer, capabilities.canCreate, layerId);
-                    layerDeferred.resolve(true);
-                }));
-                on(layer, "error", function () {
-                    layerDeferred.resolve(true);
-                });
-                return layerDeferred.promise;
-            }
-        },
-
         //set defaults for layer
         _setLayerDefaults: function () {
-            // if no layer id is set, try to use first feature layer
+            var setLayerDeferred = new Deferred();
+            // if no layer id is set, try to use first point-type feature layer
             if (!this.config.form_layer || !this.config.form_layer.id) {
+                var isPointFeatureLayer = false;
                 array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
-                    if (currentLayer.layerType && currentLayer.layerType === "ArcGISFeatureLayer") {
+                    if (currentLayer.layerType && currentLayer.layerType === "ArcGISFeatureLayer" && currentLayer.resourceInfo.geometryType === 'esriGeometryPoint') {
+                        isPointFeatureLayer = true;
                         // if no object present
                         if (!this.config.form_layer) {
                             this.config.form_layer = {};
@@ -590,34 +606,56 @@ define([
                         this._formLayer = this.map.getLayer(this.config.form_layer.id);
                         return true;
                     }
+                    else {
+                        isPointFeatureLayer = false;
+                    }
                 }));
+                if (!isPointFeatureLayer) {
+                    var error = new Error(nls.user.invalidLayerMessage);
+                    this._reportError(error);
+                }
             }
-            if (this.config.form_layer.id === "All") {
-                var layerListArray = [];
+            if (this.config.form_layer.id === nls.user.selectedLayerText) {
+                var deferredListArray = [];
                 domAttr.set(dom.byId("layerSelectBox"), 'display', 'block');
-                array.forEach(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
-                    if (currentLayer.layerType && currentLayer.layerType === "ArcGISFeatureLayer") {
-                        layerListArray.push(this._queryAllLayers(currentLayer.url, currentLayer.id));
-                    }
-                }));
-                all(layerListArray).then(lang.hitch(this, function () {
-                    this.config.form_layer.id = dom.byId("selectLayerInput")[0].value;
-                    this._formLayer = this.map.getLayer(this.config.form_layer.id);
-                    domStyle.set(dom.byId("layerSelectBox"), 'display', 'block');
-                    if (!this.config.selectedTitleField[this.config.form_layer.id]) {
-                        this.config.selectedTitleField[this.config.form_layer.id] = this._formLayer.displayField;
-                    }
-                    on(dom.byId("selectLayerInput"), "change", lang.hitch(this, function () {
-                        domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
-                        this.selectedGraphics.clear();
-                        this.config.form_layer.id = dom.byId("selectLayerInput").value;
+                this.layerCollection = {};
+                for (var key in this.config.fields) {
+                    deferredListArray.push(this._loadNewLayer(key));
+                }
+                //run this block after all the layers are loaded and are correspondingly pushed in the layer-select-box
+                all(deferredListArray).then(lang.hitch(this, function () {
+                    //if at-least one editable point layer is found then execute the layer based tasks or else show error message
+                    if (dom.byId("selectLayerInput").options[0]) {
+                        dom.byId("selectLayerInput").options[0].selected = true;
+                        this.config.form_layer.id = dom.byId("selectLayerInput")[0].value;
                         this._formLayer = this.map.getLayer(this.config.form_layer.id);
+                        domStyle.set(dom.byId("layerSelectBox"), 'display', 'block');
                         if (!this.config.selectedTitleField[this.config.form_layer.id]) {
                             this.config.selectedTitleField[this.config.form_layer.id] = this._formLayer.displayField;
                         }
-                        this._calculateTotalFeaturesLength(this._formLayer);
-                    }));
-                    this._executeLayerTasks(this._formLayer);
+                        on(dom.byId("selectLayerInput"), "change", lang.hitch(this, function () {
+                            this.layerPagination = [];
+                            this.pageIndex = 0;
+                            this.totalRecordsDisplayed = 0;
+                            this.featureCount = 0;
+                            domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
+                            this.selectedGraphics.clear();
+                            this.config.form_layer.id = dom.byId("selectLayerInput").value;
+                            this._formLayer = this.map.getLayer(this.config.form_layer.id);
+                            if (!this._formLayer.advancedQueryCapabilities.supportsOrderBy) {
+                                domClass.add(dom.byId("btnSortByOrder"), "disabled");
+                            }
+                            if (!this.config.selectedTitleField[this.config.form_layer.id]) {
+                                this.config.selectedTitleField[this.config.form_layer.id] = this._formLayer.displayField;
+                            }
+                            this._calculateTotalFeaturesLength(this._formLayer);
+                        }));
+                        this._executeLayerTasks(this._formLayer);
+                        setLayerDeferred.resolve();
+                    }
+                    else {
+                        this._reportError(nls.user.invalidLayerMessage);
+                    }
                 }));
             }
             else {
@@ -632,8 +670,65 @@ define([
                         this.config.selectedTitleField[this.config.form_layer.id] = this._formLayer.displayField;
                     }
                 }
-                this._executeLayerTasks(this._formLayer);
+                setTimeout(lang.hitch(this, function () {
+                    this._executeLayerTasks(this._formLayer);
+                    setLayerDeferred.resolve();
+                }), 100);
             }
+            return setLayerDeferred.promise;
+        },
+
+        //this function ensures that the layer is either loaded or throws an error in console naming the layer that did not load successfully
+        _loadNewLayer: function (key) {
+            var layerLoadedEvent, errorLoadEvent, def, layer;
+            //Fetch all the layers at once
+            def = new Deferred();
+            layer = this.map.getLayer(key);
+            //this block will be called if the layer is already loaded
+            if (layer.url) {
+                if (layer.loaded) {
+                    if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
+                        this._pushToLayerDrpDwn(key, layer);
+                    }
+                    def.resolve();
+                }
+                else {
+                    //this block will be called if there is some error in layer load
+                    if (layer.loadError) {
+                        console.log(nls.user.error + ": " + layer.name);
+                        def.resolve();
+                    }
+                        //this block attaches 'load' and 'loadError' events respectively
+                    else {
+                        layerLoadedEvent = on.once(layer, "load", lang.hitch(this, function () {
+                            errorLoadEvent.remove();
+                            if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
+                                this._pushToLayerDrpDwn(key, layer);
+                            }
+                            def.resolve();
+                        }));
+                        errorLoadEvent = on.once(layer, "error", lang.hitch(this, function () {
+                            layerLoadedEvent.remove();
+                            console.log(nls.user.error + ": " + layer.name);
+                            def.resolve();
+                        }));
+                    }
+                }
+            }
+            else {
+                //This error will be logged in case the layer is undefined
+                //this will happen in case where the key from this.config.fields supplies a layer id not present in the map
+                console.log(nls.user.invalidLayerMessage + ": " + key);
+                def.resolve();
+            }
+            return def.promise;
+        },
+        //function to push the layer name to layer drop down
+        _pushToLayerDrpDwn: function (key, layer) {
+            this.layerCollection[key] = layer;
+            var option = domConstruct.create("option", {}, dom.byId("selectLayerInput"));
+            option.text = this.layerCollection[key].name;
+            option.value = key;
         },
 
         //function to click on map to select features
@@ -644,26 +739,23 @@ define([
             this.layerClickHandle = on(_formLayer, "click", lang.hitch(this, function (evt) {
                 this.map.infoWindow.hide();
                 if (evt.graphic && evt.mapPoint) {
-                    array.forEach(_formLayer.renderer.infos, lang.hitch(this, function (currentInfo) {
-                        if (currentInfo.value == evt.graphic.attributes[_formLayer.renderer.attributeField]) {
-                            var graphicSVG = new Graphic(new Point([evt.graphic.geometry.x, evt.graphic.geometry.y], this.map.spatialReference), this._createSVGSymbol(currentInfo.symbol.size));
-                            this.selectedGraphics.clear();
-                            this.selectedGraphics.add(graphicSVG);
-                            if (!this.map.getLayer("highlightedGraphic")) {
-                                this.map.addLayer(this.selectedGraphics);
-                            }
-                        }
-                    }));
+                    this._highlightMapGraphics(evt.graphic);
                     this._executeQueryTask(evt.mapPoint).then(lang.hitch(this, function (result) {
-                        var objectIdField = _formLayer.objectIdField;
-                        array.forEach(query('.formList .list-group-item'), lang.hitch(this, function (node) {
-                            if (domClass.contains(node, "active")) {
-                                domClass.remove(node, "active");
-                            }
-                            if (domAttr.get(node, "fieldValue") === result.features[0].attributes[objectIdField].toString()) {
-                                domClass.add(node, "active");
-                            }
-                        }));
+                        if (result.features.length !== 0) {
+                            var objectIdField = _formLayer.objectIdField;
+                            array.forEach(query('.formList .list-group-item'), lang.hitch(this, function (node) {
+                                if (domClass.contains(node, "active")) {
+                                    domClass.remove(node, "active");
+                                }
+                                if (domAttr.get(node, "fieldValue") === result.features[0].attributes[objectIdField].toString()) {
+                                    domClass.add(node, "active");
+                                    this.activeElementId = node.fieldValue;
+                                }
+                            }));
+                        }
+                        else {
+                            console.log(nls.user.error + ": " + nls.viewer.geometryUnavailableErrorMessage);
+                        }
                     }));
                 }
             }));
@@ -671,7 +763,6 @@ define([
 
         //function to create sort options in dropdown
         _populateSortOptions: function (_formLayer) {
-            var SortOption;
             this.displayFields = [];
             dom.byId("sortbyInput").options.length = 0;
             if (this.config.selectedTitleField[this.config.form_layer.id]) {
@@ -684,37 +775,45 @@ define([
             array.forEach(_formLayer.fields, lang.hitch(this, function (currentfield) {
                 //Populate all date type fields in sort drop down
                 if (currentfield.type === "esriFieldTypeDate" && this.config.selectedTitleField[this.config.form_layer.id] !== currentfield.name) {
-                    SortOption = domConstruct.create("option", {
+                    domConstruct.create("option", {
                         "value": currentfield.name,
                         "innerHTML": currentfield.alias
                     }, dom.byId("sortbyInput"));
                     this.displayFields += currentfield.name + ",";
                 }
             }));
+            $("#sortbyInput option:first").attr('selected', 'selected');
             on(dom.byId("sortbyInput"), "change", lang.hitch(this, function () {
                 this.selectedGraphics.clear();
+                domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
                 this.layerPagination = [];
                 this.pageIndex = 0;
                 this.featureCount = 0;
+                this.totalRecordsDisplayed = 0;
                 this._queryLayer(this._formLayer);
             }));
         },
 
         // function to populate the list of features of layer in a listview
         _populateFeatures: function (_formLayer, layerPageIndex) {
-            var graphicAttribute, listContainer, listElement, listItem, titleField;
+            var graphicAttribute, listElement, listItem, titleField, listTitle;
             graphicAttribute = this._mergeLayerPages(layerPageIndex);
             domConstruct.empty(dom.byId("formList"));
             if (_formLayer) {
-                listContainer = dom.byId("formList");
-                listElement = domConstruct.create("ul", { "id": "featureList", "class": "list-group formListContent" }, listContainer);
+                listElement = domConstruct.create("ul", { "id": "featureList", "class": "list-group formListContent" }, dom.byId("formList"));
                 array.forEach(graphicAttribute, lang.hitch(this, function (currentKey, index) {
                     listItem = domConstruct.create("li", { "class": "list-group-item", "id": index }, listElement);
                     titleField = this.config.selectedTitleField[this.config.form_layer.id];
-                    var listTitle = currentKey.attributes[titleField];
+                    if (currentKey.attributes[titleField]) {
+                        listTitle = currentKey.attributes[titleField].toString();
+                    }
+                    else {
+                        listTitle = currentKey.attributes[titleField];
+                    }
                     domAttr.set(listItem, "fieldValue", currentKey.attributes[_formLayer.objectIdField]);
                     this._fetchListTitle(_formLayer, listTitle, titleField, true, listItem);
                     on(listItem, 'click', lang.hitch(this, function (evt) {
+                        this.activeElementId = domAttr.get(evt.currentTarget, "fieldValue");
                         var activeListElement = query(".active", listElement), HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
                         if (activeListElement.length > 0) {
                             domClass.remove(query(".active", listElement)[0], "active");
@@ -727,7 +826,7 @@ define([
                                     return true;
                                 }
                             });
-                            this._showTabsMobileView();
+                            this._showMapTab();
                         }
                         this._updatePaginationMessage(false);
                         if (this.map.infoWindow.isShowing) {
@@ -736,17 +835,23 @@ define([
                         this._showFeatureDetails(evt.currentTarget, graphicAttribute);
                     }));
                 }));
-                if ((this.layerPagination.length * this.numberOfRecords) <= this.totalNumberOfRecords) {
+                array.some(query('.formList .list-group-item'), lang.hitch(this, function (node) {
+                    if (domAttr.get(node, "fieldValue") === this.activeElementId) {
+                        domClass.add(node, "active");
+                        return true;
+                    }
+                }));
+                if (this.totalRecordsDisplayed <= this.totalNumberOfRecords) {
+                    var loadMoreButton;
                     listItem = domConstruct.create("li", { "class": "list-group-item" }, listElement);
-                    var loadMoreButton = domConstruct.create("button", { "class": "btn btn-default center-block", "innerHTML": nls.viewer.btnLoadMoreText, "id": "loadMoreButton" }, listItem);
+                    loadMoreButton = domConstruct.create("button", { "class": "btn btn-default center-block", "innerHTML": nls.viewer.btnLoadMoreText, "id": "loadMoreButton" }, listItem);
                     on(loadMoreButton, "click", lang.hitch(this, function () {
                         this.selectedGraphics.clear();
-                        domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
                         this.pageIndex++;
                         this._queryLayer(this._formLayer);
                         this._formLayer.redraw();
+                        this.totalRecordsDisplayed += this.numberOfRecords;
                     }));
-                    $(listContainer).scrollTop(0);
                 }
             }
         },
@@ -764,7 +869,7 @@ define([
             return newGraphicsArray;
         },
 
-        //Update the result panel table as user clicks on list or map
+        //Update the list title when list is created or refreshed, and result panel table as user clicks on list or map
         _fetchListTitle: function (_formLayer, listTitle, titleField, isPanelTitle, listItem) {
             array.forEach(_formLayer.fields, function (currentField) {
                 if (titleField) {
@@ -786,11 +891,12 @@ define([
                             }
                         }
                     }
-                }
-                else {
-                    if (listItem) {
+                    else if (listItem && !listTitle) {
                         domAttr.set(listItem, "innerHTML", nls.viewer.unavailableTitleText);
                     }
+                }
+                else if (listItem) {
+                    domAttr.set(listItem, "innerHTML", nls.viewer.unavailableTitleText);
                 }
                 //setting the title for feature Details Container
                 if (isPanelTitle) {
@@ -799,6 +905,7 @@ define([
             });
         },
 
+        //function to perform query on layer and update the pagination message
         _executeQueryTask: function (mapPoint) {
             var queryTask, queryLayer, currentDate = new Date().getTime().toString(), deferred;
             queryTask = new QueryTask(this._formLayer.url);
@@ -810,19 +917,23 @@ define([
             queryLayer.outFields = ["*"];
             deferred = new Deferred();
             queryTask.execute(queryLayer, lang.hitch(this, function (results) {
-                this.carouselPaulData["totalFeatures"] = results.features.length;
-                this.carouselPaulData["tableAttributes"] = results.features;
-                this.currentFeatureIndex = 0;
-                domClass.add(dom.byId("prevFeature"), "disabled");
-                domClass.remove(dom.byId("nextFeature"), "disabled");
-                this._mapClicked(results.features[this.currentFeatureIndex]);
-                if (results.features.length > 1) {
-                    this._updatePaginationMessage(true);
-                } else {
-                    this._updatePaginationMessage(false);
+                if (results.features) {
+                    this.carouselPaulData["totalFeatures"] = results.features.length;
+                    this.carouselPaulData["tableAttributes"] = results.features;
+                    this.currentFeatureIndex = 0;
+                    domClass.add(dom.byId("prevFeature"), "disabled");
+                    domClass.remove(dom.byId("nextFeature"), "disabled");
+                    this._updateFeatureDetails(results.features[this.currentFeatureIndex]);
+                    if (results.features.length > 1) {
+                        this._updatePaginationMessage(true);
+                    } else {
+                        this._updatePaginationMessage(false);
+                    }
+                    deferred.resolve(results);
                 }
-                deferred.resolve(results);
-
+                else {
+                    console.log(nls.user.error + ": " + nls.viewer.geometryUnavailableErrorMessage);
+                }
             }), function (err) {
                 alert(err.message);
                 deferred.reject();
@@ -842,7 +953,7 @@ define([
         },
 
         //create svg symbol based on features selected on map
-        _createSVGSymbol: function (size) {
+        _createSVGSymbol: function (size, xoffset, yoffset) {
             var sls = new SimpleLineSymbol(
                 SimpleLineSymbol.STYLE_SOLID,
                 new Color([0, 255, 255]),
@@ -850,18 +961,23 @@ define([
             markerSymbol = new SimpleMarkerSymbol();
             markerSymbol.setPath(this.iconPathSVG);
             markerSymbol.setOutline(sls);
-            markerSymbol.setSize(size + 15);
+            markerSymbol.setSize(size);
             markerSymbol.setColor(null);
+            markerSymbol.xoffset = xoffset;
+            markerSymbol.yoffset = yoffset;
             return markerSymbol;
         },
 
-        // function to show the Details of the feature of layer in a table
+        // function to show the Details of selected feature in result panel
         _showFeatureDetails: function (listItem, graphicAttribute) {
-            var queryTask, queryLayer, objectIdField = this._formLayer.objectIdField;
+            var queryTask, queryLayer, objectIdField = this._formLayer.objectIdField, attributeValue, key, layerGraphicsAttributes;
+            domStyle.set(dom.byId("errorMessageBox"), "display", "none");
             if (dom.byId("featureDetailsBody")) {
                 domConstruct.empty(dom.byId("featureDetailsBody"));
             }
+            $("featureDetaisTable").show();
             if (!this.isHosted) {
+                var layerGraphics;
                 queryTask = new QueryTask(this._formLayer.url);
                 queryLayer = new Query();
                 queryLayer.where = objectIdField + "='" + domAttr.get(listItem, "fieldValue") + "'";
@@ -869,18 +985,19 @@ define([
                 queryLayer.returnGeometry = true;
                 queryLayer.outFields = ["*"];
                 queryTask.execute(queryLayer, lang.hitch(this, function (result) {
-                    var key;
                     this._highlightMapGraphics(result.features[0]);
-                    var layerGraphicsAttributes = result.features[0].attributes;
-                    var layerGraphics = result.features[0];
+                    layerGraphicsAttributes = result.features[0].attributes;
+                    layerGraphics = result.features[0];
                     for (key in layerGraphicsAttributes) {
-                        var attributeValue = layerGraphicsAttributes[key];
+                        attributeValue = layerGraphicsAttributes[key];
                         if (this.config.selectedTitleField[this.config.form_layer.id] === key) {
                             this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField[this.config.form_layer.id], true, listItem);
                         }
-                        this._createFeatureDetailsContainer(key, attributeValue, layerGraphics);
+                        this._validateFeatureDetails(key, attributeValue, layerGraphics);
                     }
-                    this.map.centerAt(result.features[0].geometry);
+                    if (result.features[0].geometry) {
+                        this.map.centerAt(result.features[0].geometry);
+                    }
                     return true;
                 }));
 
@@ -892,52 +1009,124 @@ define([
                         return true;
                     }
                 });
-                this._highlightMapGraphics(selectedFeature);
-                var key, layerGraphicsAttributes;
                 layerGraphicsAttributes = selectedFeature.attributes;
                 for (key in layerGraphicsAttributes) {
-                    var attributeValue = layerGraphicsAttributes[key];
+                    if (layerGraphicsAttributes[key]) {
+                        attributeValue = layerGraphicsAttributes[key].toString();
+                    }
+                    else {
+                        attributeValue = layerGraphicsAttributes[key];
+                    }
                     if (this.config.selectedTitleField[this.config.form_layer.id] === key) {
                         this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField[this.config.form_layer.id], true, listItem);
                     }
-                    this._createFeatureDetailsContainer(key, attributeValue, selectedFeature);
+                    this._validateFeatureDetails(key, attributeValue, selectedFeature);
                 }
-                if (selectedFeature.geometry) {
-                    this.map.centerAt(selectedFeature.geometry);
+                this._highlightMapGraphics(selectedFeature);
+                if (this._formLayer.geometryType === 'esriGeometryPoint') {
+                    if (selectedFeature.geometry && !isNaN(selectedFeature.geometry.x) && !isNaN(selectedFeature.geometry.y)) {
+                        this.map.centerAt(selectedFeature.geometry);
+                    }
                 }
+            }
+        },
+
+        //Function checks if the infoPopup of layer is off or not and updates the featureDetailsContainer accordingly
+        _validateFeatureDetails: function (key, attributeValue, selectedFeature) {
+            if (this._formLayer.infoTemplate) {
+                this._createFeatureDetailsContainer(key, attributeValue, selectedFeature);
+            }
+            else {
+                domStyle.set(dom.byId("featureDetailsContainer"), "display", "block");
+                $("featureDetaisTable").hide();
+                domStyle.set(dom.byId("errorMessageBox"), "display", "block");
+                domAttr.set(dom.byId('errorMessageBox'), "innerHTML", nls.viewer.infoPopupOffErrorMessage);
+                domClass.add(dom.byId('errorMessageBox'), "alert alert-danger");
             }
         },
 
         //Function internally calls other function to create SVG symbol and then highlights it on map
         _highlightMapGraphics: function (result) {
-            var symbolAttribute;
-            if (this._formLayer.renderer.infos) {
-                array.some(this._formLayer.renderer.infos, lang.hitch(this, function (currentInfo) {
-                    if (currentInfo.value == result.attributes[this._formLayer.renderer.attributeField]) {
-                        symbolAttribute = currentInfo.symbol.size;
-                        this._drawSymbol(result, symbolAttribute);
-                        return true;
-                    }
-                }));
+            var isSymbolFound=false;
+            if (this._formLayer.toJson().layerDefinition.drawingInfo.renderer.type === "classBreaks") {
+                if (((this._formLayer.renderer.infos) && (this._formLayer.renderer.infos.length > 0))) {
+                    array.some(this._formLayer.renderer.infos, lang.hitch(this, function (currentInfo) {
+                        if (result.attributes[this._formLayer.renderer.attributeField] > currentInfo.minValue && result.attributes[this._formLayer.renderer.attributeField] <= currentInfo.maxValue) {
+                            isSymbolFound = true;
+                            this._setSymbolSize(currentInfo.symbol, result.geometry);
+                            return true;
+                        }
+                    }));
+                }
             }
             else {
-                symbolAttribute = this._formLayer.renderer.symbol.size;
-                this._drawSymbol(result, symbolAttribute);
+                if (((this._formLayer.renderer.infos) && (this._formLayer.renderer.infos.length > 0))) {
+                    array.some(this._formLayer.renderer.infos, lang.hitch(this, function (currentInfo) {
+                        if (currentInfo.value !== null && currentInfo.value !== "") {
+                            if (currentInfo.value == result.attributes[this._formLayer.renderer.attributeField]) {
+                                isSymbolFound = true;
+                                this._setSymbolSize(currentInfo.symbol, result.geometry);
+                                return true;
+                            }
+                        }
+                    }));
+                    if (!isSymbolFound) {
+                        if (this._formLayer.renderer.defaultSymbol) {
+                            isSymbolFound = true;
+                            this._setSymbolSize(this._formLayer.renderer.defaultSymbol, result.geometry);
+                            return true;
+                        }
+                    }
+                }
+                else {
+                    if (this._formLayer.renderer.symbol) {
+                        isSymbolFound = true;
+                        this._setSymbolSize(this._formLayer.renderer.symbol, result.geometry);
+                        return true;
+                    }
+                }
             }
         },
 
-        //function checks if the geometry of the symbol Geometry is not NaN and then draws the symbol or shows an error message
-        _drawSymbol: function (result, symbolAttribute) {
+        _setSymbolSize: function (symbol, geometry) {
+            var height, width, size, symbolSize, xoffset = null, yoffset = null;
+            symbolSize = 50; //set default Symbol size which will be used in case symbol not found.
+            if (symbol.hasOwnProperty("height") && symbol.hasOwnProperty("width")) {
+                height = symbol.height;
+                width = symbol.width;
+                // To display cross hair properly around feature its size needs to be calculated
+                size = (height > width) ? height : width;
+                size = size + 15;
+                symbolSize = size;
+            }
+            if (symbol.hasOwnProperty("size")) {
+                if (!size || size < symbol.size) {
+                    size = symbol.size + 15;
+                    symbolSize = size;
+                }
+            }
+            if (symbol.hasOwnProperty("xoffset") && symbol.hasOwnProperty("yoffset")) {
+                xoffset = symbol.xoffset;
+                yoffset = symbol.yoffset;
+            }
+            this._drawSymbol(geometry, symbolSize, xoffset, yoffset);
+        },
+
+        //function checks if the geometry of the symbol is not a number and then draws the symbol or shows an error message
+        _drawSymbol: function (pointGeometry, size, xoffset, yoffset) {
             this.selectedGraphics.clear();
-            if (result.geometry) {
-                if (!isNaN(result.geometry.x) && !isNaN(result.geometry.y)) {
-                    var graphicSVG = new Graphic(new Point([result.geometry.x, result.geometry.y], this.map.spatialReference), this._createSVGSymbol(symbolAttribute));
+            if (pointGeometry) {
+                if (!isNaN(pointGeometry.x) && !isNaN(pointGeometry.y)) {
+                    var graphicSVG = new Graphic(new Point([pointGeometry.x, pointGeometry.y], this.map.spatialReference), this._createSVGSymbol(size, xoffset, yoffset));
                     this.selectedGraphics.add(graphicSVG);
-                    this.map.centerAt(result.geometry);
                     if (!this.map.getLayer("highlightedGraphic")) {
                         this.map.addLayer(this.selectedGraphics);
                     }
+                    this.map.centerAt(pointGeometry);
                     return true;
+                }
+                else {
+                    alert(nls.viewer.geometryUnavailableErrorMessage);
                 }
             }
             else {
@@ -945,64 +1134,61 @@ define([
             }
         },
 
-        //Function to show details of feature clicked on map
-        _mapClicked: function (graphics) {
-            if (dom.byId("featureDetailsBody")) {
-                domConstruct.empty(dom.byId("featureDetailsBody"));
-            }
-            for (var key in graphics.attributes) {
-                var attributeValue = graphics.attributes[key];
-                if (this.config.selectedTitleField[this.config.form_layer.id] === key) {
-                    this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField[this.config.form_layer.id], true);
+        //Function to update and show details of feature clicked on map
+        _updateFeatureDetails: function (graphics) {
+            if (graphics) {
+                if (dom.byId("featureDetailsBody")) {
+                    domConstruct.empty(dom.byId("featureDetailsBody"));
                 }
-                this._createFeatureDetailsContainer(key, attributeValue, graphics);
+                this.map.centerAt(graphics.geometry);
+                for (var key in graphics.attributes) {
+                    var attributeValue = graphics.attributes[key];
+                    if (this.config.selectedTitleField[this.config.form_layer.id] === key) {
+                        this._fetchListTitle(this._formLayer, attributeValue, this.config.selectedTitleField[this.config.form_layer.id], true);
+                    }
+                    this._validateFeatureDetails(key, attributeValue, graphics);
+                }
             }
         },
 
         //function to create table and show details of features
         _createFeatureDetailsContainer: function (key, attributeValue, graphics) {
             var fields, fieldRow, fieldKeyTD, fieldAttrTD;
-            if (this._formLayer.infoTemplate) {
-                fields = this._formLayer.infoTemplate.info.fieldInfos;
-                array.forEach(fields, lang.hitch(this, function (currentfield) {
-                    array.some(this._formLayer.fields, function (layerField) {
-                        if (layerField.name == key && layerField.type === "esriFieldTypeDate") {
-                            attributeValue = new Date(graphics.attributes[key]).toLocaleString();
-                            return true;
-                        }
-                    });
-                    if (key === currentfield.fieldName && currentfield.visible) {
-                        fieldRow = domConstruct.create("tr", {
-                        }, dom.byId("featureDetailsBody"));
-                        fieldKeyTD = domConstruct.create("td", {
-                            className: "drag-cursor",
-                            innerHTML: key
-                        }, fieldRow);
-                        fieldAttrTD = domConstruct.create("td", {
-                            className: "drag-cursor",
-                            innerHTML: attributeValue
-                        }, fieldRow);
-                        domStyle.set(dom.byId("featureDetailsContainer"), "display", "block");
+            fields = this._formLayer.infoTemplate.info.fieldInfos;
+            array.forEach(fields, lang.hitch(this, function (currentfield) {
+                array.some(this._formLayer.fields, function (layerField) {
+                    if (layerField.name == key && layerField.type === "esriFieldTypeDate") {
+                        attributeValue = new Date(graphics.attributes[key]).toLocaleString();
+                        return true;
                     }
-                }));
-                $("#featureDetailsPanelBody").scrollTop(0);
-            }
-            else {
-                domStyle.set(dom.byId("featureDetailsContainer"), "display", "block");
-                domStyle.set(dom.byId("featureDetaisTable"), "display", "none");
-                dom.byId("errorMessageBox").innerHTML = nls.viewer.infoPopupOffErrorMessage;
-                domClass.add(dom.byId("errorMessageBox"), "alert alert-danger");
-            }
+                });
+                if (key === currentfield.fieldName && currentfield.visible) {
+                    fieldRow = domConstruct.create("tr", {
+                    }, dom.byId("featureDetailsBody"));
+                    fieldKeyTD = domConstruct.create("td", {
+                        className: "drag-cursor",
+                        innerHTML: key
+                    }, fieldRow);
+                    fieldAttrTD = domConstruct.create("td", {
+                        className: "drag-cursor",
+                        innerHTML: attributeValue
+                    }, fieldRow);
+                    domStyle.set(dom.byId("featureDetailsContainer"), "display", "block");
+                }
+            }));
+            $("#featureDetailsPanelBody").scrollTop(0);
         },
 
         //function to update pagination to show all feature details
         _updatePaginationMessage: function (isPaginationRequired) {
-            if (isPaginationRequired) {
+            if (isPaginationRequired && this._formLayer.infoTemplate) {
                 domAttr.set(dom.byId("paginationMessage"), "innerHTML", +(this.currentFeatureIndex + 1) + " of " + (this.carouselPaulData.totalFeatures));
                 domStyle.set(dom.byId("featurePagination"), "display", "block");
+                domClass.replace(dom.byId("panelTitle"), "panel-title", "panelTitleWithoutPager");
             } else {
                 domStyle.set(dom.byId("featurePagination"), "display", "none");
                 domConstruct.empty(dom.byId("paginationMessage"));
+                domClass.replace(dom.byId("panelTitle"), "panelTitleWithoutPager", "panel-title");
             }
         },
 
@@ -1011,16 +1197,17 @@ define([
             this.layerPagination = [];
             this.pageIndex = 0;
             this.featureCount = 0;
+            this.totalRecordsDisplayed = 0;
             if (domClass.contains(dom.byId("btnSortByOrder"), "fa-caret-up")) {
                 domClass.replace(dom.byId("btnSortByOrder"), "fa-caret-down", "fa-caret-up");
-                dom.byId("btnSortByOrderText").innerHTML = nls.viewer.btnDescendingText;
+                domAttr.set(dom.byId("btnSortByOrderText"), "innerHTML", nls.viewer.btnDescendingText);
             } else {
                 domClass.replace(dom.byId("btnSortByOrder"), "fa-caret-up", "fa-caret-down");
-                dom.byId("btnSortByOrderText").innerHTML = nls.viewer.btnAscendingText;
+                domAttr.set(dom.byId("btnSortByOrderText"), "innerHTML", nls.viewer.btnAscendingText);
             }
-
             this._queryLayer(this._formLayer);
         },
+
         _createGeocoderOptions: function () {
             var hasEsri = false, esriIdx, geocoders = lang.clone(this.config.helperServices.geocode), options;
             // default options
@@ -1098,14 +1285,15 @@ define([
 
         // create geocoder widgets
         _createGeocoders: function () {
+            var createdOptions, desktopOptions, mobileOptions, closeMobileGeocoderNode;
             // get options
-            var createdOptions = this._createGeocoderOptions();
+            createdOptions = this._createGeocoderOptions();
             // desktop geocoder options
-            var desktopOptions = lang.mixin({}, createdOptions, {
+            desktopOptions = lang.mixin({}, createdOptions, {
                 theme: this.css.desktopGeocoderTheme
             });
             // mobile geocoder options
-            var mobileOptions = lang.mixin({}, createdOptions, {
+            mobileOptions = lang.mixin({}, createdOptions, {
                 theme: this.css.mobileGeocoderTheme
             });
             // desktop size geocoder
@@ -1118,7 +1306,7 @@ define([
                 }
                 else {
                     if ($(window).width() <= 767) {
-                        this._showTabsMobileView();
+                        this._showMapTab();
                         this._resizeMap();
                     }
                 }
@@ -1132,13 +1320,12 @@ define([
                     alert(nls.viewer.noSearchResult);
                 }
                 else {
-                    this._showTabsMobileView();
+                    this._showMapTab();
                 }
-                this._hideMobileGeocoder();
             }));
             //Navigate to the 'Map Tab' on selecting a place
             on(this._mobileGeocoder, 'select', lang.hitch(this, function () {
-                this._showTabsMobileView();
+                this._showMapTab();
             }));
             // keep geocoder values in sync
             this._geocoder.watch("value", lang.hitch(this, function () {
@@ -1150,10 +1337,22 @@ define([
                 var value = arguments[2];
                 this._geocoder.set("value", value);
             }));
-            // geocoder nodes
+            domClass.add(this._geocoder.submitNode, "glyphicon glyphicon-search");
+            domClass.add(this._mobileGeocoder.submitNode, "glyphicon glyphicon-search");
+            on(dom.byId("geocoderSearch_input"), "keyup", function () {
+                var esriGeocoderResetContainer = query('.esriGeocoderReset');
+                if (esriGeocoderResetContainer[0]) {
+                    domClass.add(esriGeocoderResetContainer[0], "glyphicon glyphicon-remove");
+                }
+            });
+            on(dom.byId("geocoderMobile_input"), "keyup", function () {
+                var esriGeocoderResetContainer = query('.esriGeocoderReset');
+                if (esriGeocoderResetContainer[1]) {
+                    domClass.add(esriGeocoderResetContainer[1], "glyphicon glyphicon-remove");
+                }
+            });
             this._mobileGeocoderIconNode = dom.byId("mobileGeocoderIcon");
             this._mobileSearchNode = dom.byId("mobileSearch");
-            this._mobileGeocoderIconContainerNode = dom.byId("mobileGeocoderIconContainer");
             // mobile geocoder toggle
             if (this._mobileGeocoderIconNode) {
                 on(this._mobileGeocoderIconNode, "click", lang.hitch(this, function () {
@@ -1164,7 +1363,7 @@ define([
                     }
                 }));
             }
-            var closeMobileGeocoderNode = dom.byId("btnCloseGeocoder");
+            closeMobileGeocoderNode = dom.byId("btnCloseGeocoder");
             if (closeMobileGeocoderNode) {
                 // cancel mobile geocoder
                 on(closeMobileGeocoderNode, "click", lang.hitch(this, function () {
@@ -1174,13 +1373,16 @@ define([
         },
 
         _showMobileGeocoder: function () {
-            if (this._mobileSearchNode && this._mobileGeocoderIconContainerNode) {
+            var mobileSearchNodeTop;
+            if (this._mobileSearchNode && this._mobileGeocoderIconNode) {
+                mobileSearchNodeTop = domStyle.get(dom.byId("navHeader"), "height");
+                domStyle.set(this._mobileSearchNode, "top", mobileSearchNodeTop + "px");
                 domClass.add(this._mobileSearchNode, this.css.mobileSearchDisplay);
             }
         },
 
         _hideMobileGeocoder: function () {
-            if (this._mobileSearchNode && this._mobileGeocoderIconContainerNode) {
+            if (this._mobileSearchNode && this._mobileGeocoderIconNode) {
                 domClass.remove(this._mobileSearchNode, this.css.mobileSearchDisplay);
                 domStyle.set(this._mobileSearchNode, "display", "none");
             }

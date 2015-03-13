@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,14 +11,15 @@
     <meta property="og:title" content="GeoForm">
     <meta property="og:image" content="images/item.png">
     <meta property="og:site_name" content="esri">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <!-- Chrome for Android -->
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <title>GeoForm</title>
     <!-- Bootstrap core CSS -->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap-3.3.0-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.13/esri/css/esri.css">
-    <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.13/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.13/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.13/dijit/themes/claro/claro.css">
     <link rel="stylesheet" type="text/css" href="css/geocoder.css" />
     <link rel="stylesheet" type="text/css" href="js/vendor/font-awesome-4.2.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
@@ -29,15 +29,17 @@
     <!--[if lt IE 9]>
     <script src="js/vendor/html5shiv.min.js"></script>
     <script src="js/vendor/respond.min.js"></script>
-  <![endif]-->
+    <![endif]-->
 </head>
-
 <body id="geoform" class="claro calcite app-loading">
-    <a id="top"><!-- Top of page --></a>
+    <a id="top">
+        <!-- Top of page -->
+    </a>
     <div class="loading-indicator">
         <div class="icon-loading fa fa-spinner fa-spin"></div>
         <div class="loading-error">
-            <div class="alert alert-danger"><span class="icon-frown"></span> <span id="loading_message"></span>
+            <div class="alert alert-danger">
+                <span class="icon-frown"></span><span id="loading_message"></span>
             </div>
         </div>
     </div>
@@ -65,7 +67,7 @@
         };
     </script>
     <link href="css/viewer.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="//jsdev.arcgis.com/3.13"></script>
+    <script type="text/javascript" src="//js.arcgis.com/3.13"></script>
     <script type="text/javascript" src="js/vendor/offline/offline.min.js"></script>
     <script type="text/javascript" src="js/offlineOptions.js"></script>
     <script type="text/javascript" src="js/vendor/IndexedDBShim.min.js"></script>
@@ -80,11 +82,15 @@
                 //The config object contains the following properties: helper services, (optionally)
                 //i18n, appid, webmap and any custom values defined by the application.
                 //In this example we have one called theme.
+                var appResponse = config.appResponse;
+                if (config.appResponse) {
+                    delete config.appResponse;
+                }
                 // lets go!
-                myApp.startup(config, myTemplate.appResponse);
+                myApp.startup(config, appResponse);
             }, function (error) {
                 // something went wrong. Let's report it.
-                alert("error");
+                myApp._reportError(error);
             });
         });
     </script>
@@ -105,5 +111,4 @@
         })();
     </script>
 </body>
-
 </html>

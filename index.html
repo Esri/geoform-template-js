@@ -19,8 +19,8 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap-3.3.0-dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
-    <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.13/esri/css/esri.css">
-    <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.13/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.13/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.13/dijit/themes/claro/claro.css">
     <link rel="stylesheet" type="text/css" href="js/vendor/font-awesome-4.2.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link id="rtlCSS" rel="stylesheet" />
@@ -30,7 +30,7 @@
     <!--[if lt IE 9]>
     <script src="js/vendor/html5shiv.min.js"></script>
     <script src="js/vendor/respond.min.js"></script>
-  <![endif]-->
+    <![endif]-->
 </head>
 
 <body id="geoform" class="claro app-loading">
@@ -67,7 +67,7 @@
             }]
         };
     </script>
-    <script type="text/javascript" src="//jsdev.arcgis.com/3.13"></script>
+    <script type="text/javascript" src="//js.arcgis.com/3.13"></script>
     <script type="text/javascript" src="js/vendor/offline/offline.min.js"></script>
     <script type="text/javascript" src="js/offlineOptions.js"></script>
     <script type="text/javascript" src="js/vendor/IndexedDBShim.min.js"></script>
@@ -82,11 +82,15 @@
                 //The config object contains the following properties: helper services, (optionally)
                 //i18n, appid, webmap and any custom values defined by the application.
                 //In this example we have one called theme.
+                var appResponse = config.appResponse;
+                if(config.appResponse){
+                  delete config.appResponse;
+                }
                 if (config.edit && config.appid) {
                     // get the app builder code
                     require(["application/builder/builder"], function (builderMode) {
                         // create configuration app builder
-                        var builder = new builderMode(config, myTemplate.appResponse);
+                        var builder = new builderMode(config, appResponse);
                         // start it
                         builder.startup().otherwise(function (error) {
                             // something went wrong. Let's report it.
@@ -95,7 +99,7 @@
                     });
                 } else {
                     // lets go!
-                    myApp.startup(config, myTemplate.appResponse);
+                    myApp.startup(config, appResponse);
                 }
             }, function (error) {
                 // something went wrong. Let's report it.
