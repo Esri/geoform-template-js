@@ -112,6 +112,7 @@ define([
                 this._openShareModal();
             }));
             on(dom.byId("btnSortByOrder"), "click", lang.hitch(this, function () {
+                this.activeElementId = null;
                 domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
                 this.selectedGraphics.clear();
                 this._sortByOrder();
@@ -138,7 +139,7 @@ define([
                 var HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
                 if ($(window).width() > 767) {
                     domClass.remove(dom.byId("panelHeader"), "navbar-fixed-bottom");
-                    domClass.remove(dom.byId("panelHeader"), "navbar-inverse");
+                    domClass.replace(dom.byId("panelHeader"), "navbar-default", "navbar-inverse");
                     //Set Dynamic height of PanelBody in the left panel for large screen devices
                     this._setLeftPanelDimension();
                     domConstruct.place(dom.byId("mapDiv"), dom.byId("mapLayoutContainer"), "first");
@@ -161,7 +162,7 @@ define([
                     this._navigatePanel(dom.byId("search"));
                 }
                 else {
-                    domClass.add(dom.byId("panelHeader"), "navbar-inverse");
+                    domClass.replace(dom.byId("panelHeader"), "navbar-inverse", "navbar-default");
                     domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
                     this._moveMapContainer();
                     this._resizeSearchPanel();
@@ -407,7 +408,7 @@ define([
                 }));
                 //Resize map and takes dimensions according to small screen devices on load
                 if ($(window).width() <= 767) {
-                    domClass.add(dom.byId("panelHeader"), "navbar-inverse");
+                    domClass.replace(dom.byId("panelHeader"), "navbar-inverse", "navbar-default");
                     domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
                     this._moveMapContainer();
                 } else {
@@ -739,9 +740,9 @@ define([
             this.layerClickHandle = on(_formLayer, "click", lang.hitch(this, function (evt) {
                 this.map.infoWindow.hide();
                 if (evt.graphic && evt.mapPoint) {
-                    this._highlightMapGraphics(evt.graphic);
                     this._executeQueryTask(evt.mapPoint).then(lang.hitch(this, function (result) {
                         if (result.features.length !== 0) {
+                            this._highlightMapGraphics(evt.graphic);
                             var objectIdField = _formLayer.objectIdField;
                             array.forEach(query('.formList .list-group-item'), lang.hitch(this, function (node) {
                                 if (domClass.contains(node, "active")) {
@@ -785,6 +786,7 @@ define([
             $("#sortbyInput option:first").attr('selected', 'selected');
             on(dom.byId("sortbyInput"), "change", lang.hitch(this, function () {
                 this.selectedGraphics.clear();
+                this.activeElementId = null;
                 domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
                 this.layerPagination = [];
                 this.pageIndex = 0;
@@ -835,18 +837,19 @@ define([
                         this._showFeatureDetails(evt.currentTarget, graphicAttribute);
                     }));
                 }));
-                array.some(query('.formList .list-group-item'), lang.hitch(this, function (node) {
-                    if (domAttr.get(node, "fieldValue") === this.activeElementId) {
-                        domClass.add(node, "active");
-                        return true;
-                    }
-                }));
+                if (this.activeElementId) {
+                    array.some(query('.formList .list-group-item'), lang.hitch(this, function (node) {
+                        if (domAttr.get(node, "fieldValue") === this.activeElementId) {
+                            domClass.add(node, "active");
+                            return true;
+                        }
+                    }));
+                }
                 if (this.totalRecordsDisplayed <= this.totalNumberOfRecords) {
                     var loadMoreButton;
                     listItem = domConstruct.create("li", { "class": "list-group-item" }, listElement);
                     loadMoreButton = domConstruct.create("button", { "class": "btn btn-default center-block", "innerHTML": nls.viewer.btnLoadMoreText, "id": "loadMoreButton" }, listItem);
                     on(loadMoreButton, "click", lang.hitch(this, function () {
-                        this.selectedGraphics.clear();
                         this.pageIndex++;
                         this._queryLayer(this._formLayer);
                         this._formLayer.redraw();
