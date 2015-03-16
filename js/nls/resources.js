@@ -149,6 +149,8 @@ define({
       layerTabTitleText: "Select Editable Layer",
       selectLayerLabelText: "Layer",
       selectLayerDefaultOptionText: "Select Layer",
+      enableBasemapToggle: "Show Basemap Toggle",
+      enableBasemapToggleDescription: "You can configure the GeoForm to Show/Hide the Basemap Toggle",
       defaultBasemap: "Basemap Toggle",
       secondaryBasemap: "Default Basemap",
       detailsTabTitleText: "Form Details",

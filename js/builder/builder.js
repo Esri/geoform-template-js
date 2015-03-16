@@ -184,6 +184,15 @@ define([
             $('#disableLogo').on('click', lang.hitch(this, function () {
                 this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
             }));
+            $('#enableBasemapToggle').on('click', lang.hitch(this, function () {
+                this.currentConfig.enableBasemapToggle = $('#enableBasemapToggle')[0].checked;
+                if (this.currentConfig.enableBasemapToggle) {
+                    $('#basemapContainer').show();
+                }
+                else {
+                    $('#basemapContainer').hide();
+                }
+            }));
             $('#locateOnLoad').on('click', lang.hitch(this, function () {
                 this.currentConfig.locate = !this.currentConfig.locate;
             }));
@@ -207,6 +216,7 @@ define([
             this._populateThemes();
             this._populatePushpins();
             this._enableDisableLogo();
+            this._enableDisableBasemapToggle();
             this._locateCurrentLocation();
             //Check if the object is messed up with other type.if yes replace it with default object
             if (!this.currentConfig.locationSearchOptions.length) {
@@ -336,6 +346,15 @@ define([
 
         _enableDisableLogo: function () {
             dom.byId("disableLogo").checked = this.currentConfig.disableLogo;
+        },
+        _enableDisableBasemapToggle: function () {
+            dom.byId("enableBasemapToggle").checked = this.currentConfig.enableBasemapToggle;
+            if (this.currentConfig.enableBasemapToggle) {
+                $('#basemapContainer').show();
+            }
+            else {
+                $('#basemapContainer').hide();
+            }
         },
 
         _locateCurrentLocation: function () {
@@ -1104,6 +1123,7 @@ define([
                 "useSmallHeader": this.currentConfig.useSmallHeader,
                 "webmap": this.currentConfig.webmap,
                 "disableLogo": this.currentConfig.disableLogo,
+                "enableBasemapToggle": this.currentConfig.enableBasemapToggle,
                 "defaultBasemap": this.currentConfig.defaultBasemap,
                 "nextBasemap": this.currentConfig.nextBasemap,
                 "locate":this.currentConfig.locate
