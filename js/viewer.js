@@ -403,14 +403,13 @@ define([
                 // make graphics layer
                 this._gl = new GraphicsLayer();
                 this.map.addLayer(this._gl);
-                this._setLayerDefaults().then(lang.hitch(this, function () {
-                    this._resizeSearchPanel();
-                }));
+                this._setLayerDefaults();
                 //Resize map and takes dimensions according to small screen devices on load
                 if ($(window).width() <= 767) {
                     domClass.replace(dom.byId("panelHeader"), "navbar-inverse", "navbar-default");
                     domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
                     this._moveMapContainer();
+                    this._resizeSearchPanel();
                 } else {
                     this._setLeftPanelDimension();
                 }
