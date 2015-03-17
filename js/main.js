@@ -2591,6 +2591,9 @@ define([
             this._ShareModal.startup();
             // show modal
             $("#myModal").modal('show');
+            on(dom.byId("viewSubmissionsOption"), "click", lang.hitch(this, function () {
+                this._viewSubmissions();
+            }));
         },
         // error modal content
         _openErrorModal: function () {
@@ -2608,6 +2611,9 @@ define([
         _openFileUploadStatusModal: function (fileList) {
             var fileUploadStatusMsgContainer, fileUploadStatusMsgUl, fileUploadStatusMsgLi, fileUploadStatusMsgBadge;
             domConstruct.empty(query(".modal-body")[0]);
+            if (dom.byId("viewSubmissionsOption")) {
+                domConstruct.destroy(query(".modal-footer")[0].children[1]);
+            }
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.fileUploadStatus);
             fileUploadStatusMsgContainer = domConstruct.create("div", { "id": "fileUploadStatusMsgContainer" }, query(".modal-body")[0]);
             fileUploadStatusMsgUl = domConstruct.create("ul", { "class": "list-group" }, fileUploadStatusMsgContainer);
@@ -2632,6 +2638,9 @@ define([
             var iconContainer, group;
             // empty modal node
             domConstruct.empty(query(".modal-body")[0]);
+            if (dom.byId("viewSubmissionsOption")) {
+                domConstruct.destroy(query(".modal-footer")[0].children[1]);
+            }
             // set modal title
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.shareUserTitleMessage);
             // create nodes for modal
@@ -2685,6 +2694,14 @@ define([
                 className: "form-control",
                 id: "shareMapUrlText"
             }, group);
+            domConstruct.create("button", {
+                className: "btn btn-default pull-left",
+                id: "viewSubmissionsOption",
+                innerHTML: nls.user.btnViewSubmissions
+            }, query(".modal-footer")[0]);
+            if (this.config.disableViewer) {
+                domAttr.set(dom.byId("viewSubmissionsOption"), 'disabled', 'disabled');
+            }
         },
         // display error message
         _showErrorMessageDiv: function (errorMessage, errorMessageNode) {
