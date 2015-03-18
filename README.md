@@ -108,6 +108,12 @@ Setting the layer ID like so:
     "form_layer": {
         "id": "GeoFormTryItLive_v3_7854"
     },
+    
+If you'd like to use all layers:
+
+    "form_layer": {
+      "id": "All"
+    },
 
 #### Configuring Fields
 
