@@ -115,11 +115,12 @@ By default, the fields property is an empty array. When an empty array, all fiel
 
 Default Fields property
 
-    "fields": [],
+    "fields": {},
     
 Modified fields property
 
-    fields:[{
+    fields:{
+      "GeoForm_Sample_3731": [{
         "name": "email", // field ID
         "alias": "Email", // label
         "fieldDescription": "Let us contact you.", // help text
@@ -127,7 +128,8 @@ Modified fields property
         "typeField": false, // subtype field?
         "tooltip": "test@test.com", // placeholder text
         "displayType": "email" // text, checkbox, radio, textarea, url, email
-    }]
+      }]
+    }
 
 #### Configuring Application Details
 
@@ -157,8 +159,20 @@ If you'd like the map to be reset after each submission, set this option to true
 
 Use this text option to tell users what kind of file to attach.
 
-    "attachmentLabel": "Cat Image",
-    "attachmentHelpText": "Select a cat photo!",
+    "attachmentInfo": {
+      "GeoForm_Sample_3731": {
+        "enableAttachments": false,
+        "attachmentIsRequired": false,
+        "attachmentLabel": "",
+        "attachmentHelpText": ""
+      },
+      "Test_secured_geoform_9625": {
+        "enableAttachments": true,
+        "attachmentIsRequired": false,
+        "attachmentLabel": "",
+        "attachmentHelpText": ""
+      }
+    }
 
 #### Use Small Header
 
