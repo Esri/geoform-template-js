@@ -211,7 +211,6 @@ define([
             this._populateDetails();
             this._populateJumbotronOption(this.currentConfig.useSmallHeader);
             this._populateShareOption(this.currentConfig.enableSharing);
-            this._populateShowLayerOption(this.currentConfig.showLayer);
             this._populateDefaultExtentOption(this.currentConfig.defaultMapExtent);
             this._populateThemes();
             this._populatePushpins();
@@ -448,6 +447,7 @@ define([
                         }
                     }));
                 }
+                this._populateShowLayerOption(this.currentConfig.showLayer);
             }));
         },
 
@@ -554,11 +554,17 @@ define([
         },
 
         _populateShowLayerOption: function (showlayeropt) {
-            if (this.config.form_layer.id !== nls.builder.allLayerSelectOptionText) {
-                $("#ShowHideLayerOption")[0].checked = showlayeropt;
-            } else {
-                $("#ShowHideLayerOption")[0].disabled = true;
-            }
+            array.some(dom.byId("selectLayer").options, function (currentElement) {
+                if (currentElement.value === nls.builder.allLayerSelectOptionText && currentElement.selected) {
+                        $("#ShowHideLayerOption")[0].checked = false;
+                        $("#ShowHideLayerOption")[0].disabled = true;
+                        return true;
+                }
+                else {
+                    $("#ShowHideLayerOption")[0].disabled = false;
+                    $("#ShowHideLayerOption")[0].checked = showlayeropt;
+                }
+            });
         },
         _populateJumbotronOption: function (jumbotronOption) {
             $("#jumbotronDisableOption")[0].checked = jumbotronOption;
