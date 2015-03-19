@@ -671,10 +671,10 @@ define([
                     "class": "row"
                 }, divRowContainer);
                 divColumn1 = domConstruct.create("div", {
-                    "class": "col-sm-2"
+                    "class": "col-sm-2 form-group"
                 }, divRow);
                 fileBtnSpan = domConstruct.create("span", {
-                    "class": "btn-file",
+                    "class": "btn btn-default btn-file",
                     "innerHTML": "Select File"
                 }, divColumn1);
                 fileForm = domConstruct.create("form", { "class": "selectFileForm" }, fileBtnSpan);
@@ -742,7 +742,7 @@ define([
             //Preparing the domNode for selected file
             alertHtml = "<div class=\"alert alert-dismissable alert-success\">";
             alertHtml += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">" + "&times" + "</button>";
-            alertHtml += "<strong>" + fileDetails.value.split('\\').pop() + "<br/>" + fileSize + "</strong>";
+            alertHtml += "<strong class=\"fileInputUI\">" + fileDetails.value.split('\\').pop() + "<br/>" + fileSize + "</strong>";
             alertHtml += "</div>";
             alertHtml = domConstruct.place(alertHtml, dom.byId("fileListColumn"), "last");
             domConstruct.place(fileInput.parentNode, alertHtml, "last");
@@ -2595,7 +2595,7 @@ define([
             fileUploadStatusMsgUl = domConstruct.create("ul", { "class": "list-group" }, fileUploadStatusMsgContainer);
 
             for (var i = 0; i < fileList.length; i++) {
-                fileUploadStatusMsgLi = domConstruct.create("li", { "class": "message alert alert-info" }, fileUploadStatusMsgUl);
+                fileUploadStatusMsgLi = domConstruct.create("li", { "class": "message alert alert-info fileInputUI" }, fileUploadStatusMsgUl);
                 fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right file-upload-status-badge glyphicon glyphicon-upload", "innerHTML": nls.user.uploadingBadge, "id": "badge" + i }, fileUploadStatusMsgLi);
                 fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right hide attachment-error-message", "innerHTML": nls.user.errorBadge }, fileUploadStatusMsgLi);
                 fileUploadStatusMsgLi.innerHTML += fileList[i].value.split('\\').pop();

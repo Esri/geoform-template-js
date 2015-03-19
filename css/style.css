@@ -279,9 +279,6 @@ body.modal-open,
 {
     position: relative;
     overflow: hidden;
-    color: #fff;
-    background-color: #008cba;
-    border-color: #0079a1;
     padding: 8px 12px;
     display: inline-block;
 }
@@ -297,7 +294,6 @@ body.modal-open,
     text-align: right;
     filter: alpha(opacity=0);
     opacity: 0;
-    background: red;
     display: block;
     cursor: pointer;
 }
@@ -363,4 +359,7 @@ body.modal-open,
     opacity: 0.8;
     text-align: center;
     color: #000;
+}
+.fileInputUI{
+      word-wrap: break-word;
 }
