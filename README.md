@@ -211,6 +211,26 @@ Use this template in an ArcGIS organization or portal application by changing th
 
     "sharinghost": "http://myorg.maps.arcgis.com",
 
+#### Reset to default extent on submission
+
+    defaultMapExtent: true,
+
+#### Basemap Toggle Dijit
+
+    enableBasemapToggle: false,
+
+#### Basemap Toggle next basemap
+
+    nextBasemap: "hybrid",
+
+#### Basemap Toggle default basemap
+
+    defaultBasemap: "topo",
+
+#### Automatically locate user on page load
+
+    locate: false,
+
 ## Localizing the template
 
 If you'd like to use this template with a language that is not currently supported, please follow these instructions to translate the template for a new locale.
