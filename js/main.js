@@ -274,7 +274,7 @@ define([
             var erroneousFields = [];
             array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
                 if (domClass.contains(currentField, "hasAttachment")) {
-                    if (domClass.contains(currentField, "mandatory") && query(".alert-dismissable", dom.byId("fileListRow")).length === 0) {
+                    if (domClass.contains(currentField, "mandatory") && query(".alert-dismissable", dom.byId("divColumn2")).length === 0) {
                         this._validateUserInput(nls.user.requiredFields, currentField, query(".hideFileInputUI")[0].value, true);
                         erroneousFields.push(currentField);
                     }
@@ -637,8 +637,7 @@ define([
             }));
             // if form has attachments
             if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id] && this.config.attachmentInfo[this._formLayer.id].enableAttachments) {
-                var requireField = null, helpBlock, labelHTML = "", divRowContainer, divRow, divColumn1, fileBtnSpan, fileInput, fileChange,
-                    divColumn2, fileListContainer, fileListRow, fileListColumn, fileForm;
+                var requireField = null, helpBlock, labelHTML = "", divRow, divColumn1, fileBtnSpan, fileInput, fileChange, divColumn2, fileForm;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group hasAttachment geoFormQuestionare"
@@ -663,19 +662,15 @@ define([
                 if (requireField && labelContent) {
                     domConstruct.place(requireField, labelContent, "last");
                 }
-                divRowContainer = domConstruct.create("div", {
-                    "class": "container",
-                    "style": "width:inherit;"
-                }, formContent);
                 divRow = domConstruct.create("div", {
                     "class": "row"
-                }, divRowContainer);
+                }, formContent);
                 divColumn1 = domConstruct.create("div", {
                     "class": "col-sm-2 form-group"
                 }, divRow);
                 fileBtnSpan = domConstruct.create("span", {
                     "class": "btn btn-default btn-file",
-                    "innerHTML": "Select File"
+                    "innerHTML": nls.user.btnSelectFileText
                 }, divColumn1);
                 fileForm = domConstruct.create("form", { "class": "selectFileForm" }, fileBtnSpan);
                 fileInput = domConstruct.create("input", {
@@ -700,12 +695,9 @@ define([
                 }
                 //prepare domnode to show the selected file list
                 divColumn2 = domConstruct.create("div", {
-                    "class": "col-sm-10"
+                    "class": "col-sm-10",
+                    "id": "divColumn2"
                 }, divRow);
-                domStyle.set(divColumn2, "padding-left", "0px");
-                fileListContainer = domConstruct.create("div", { "class": "container", "style": "width:inherit;" }, divColumn2);
-                fileListRow = domConstruct.create("div", { "class": "row", "id": "fileListRow" }, fileListContainer);
-                fileListColumn = domConstruct.create("div", { "class": "col-sm-12", "id": "fileListColumn" }, fileListRow);
             }
             this._verifyHumanEntry();
         },
@@ -744,7 +736,7 @@ define([
             alertHtml += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">" + "&times" + "</button>";
             alertHtml += "<strong class=\"fileInputUI\">" + fileDetails.value.split('\\').pop() + "<br/>" + fileSize + "</strong>";
             alertHtml += "</div>";
-            alertHtml = domConstruct.place(alertHtml, dom.byId("fileListColumn"), "last");
+            alertHtml = domConstruct.place(alertHtml, dom.byId("divColumn2"), "last");
             domConstruct.place(fileInput.parentNode, alertHtml, "last");
             //binding event to perform activities on removal of a selected file from the file list
             on(query(".close", alertHtml)[0], "click", function () {
@@ -781,7 +773,7 @@ define([
                 }));
                 return true;
             }
-            if (query(".alert-dismissable", dom.byId("fileListRow")).length > 19) {
+            if (query(".alert-dismissable", dom.byId("divColumn2")).length > 19) {
                 $(fileBtnSpan).popover({ content: nls.user.exceededFileCountError, container: 'body', trigger: 'manual', placement: 'bottom' });
                 $(fileBtnSpan).popover('show');
                 setTimeout(function () {
