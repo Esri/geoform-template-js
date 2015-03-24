@@ -64,16 +64,14 @@
                 <div id="location_panel_body" class="panel-body">
                     <div id="location_tabs" class="tab-content">
                         <div id="address" class="tab-pane">
+                          <div class="form-inline">
                             <div class="form-group">
-                                <div class="input-group">
-                                    <input id="searchInput" type="text" class="form-control">
-                                    <div class="input-group-btn" id="geocoder_buttons">
-                                        <button id="searchSubmit" class="btn btn-default" type="button"><span id="geocoder_spinner" class="glyphicon glyphicon-search"></span>
-                                        </button>
-                                        <button title="${user.findMyLocation}" id="geolocate_button" class="btn btn-default" data-loading-text="${user.finding}"><span class="fa fa-location-arrow"></span> <span>${user.findMyLocation}</span></button>
-                                    </div>
-                                </div>
+                              <div id="search-widget"></div>
                             </div>
+                              <div class="form-group">
+                                <button title="${user.findMyLocation}" id="geolocate_button" class="btn btn-default" data-loading-text="${user.finding}"><span class="fa fa-location-arrow"></span> <span>${user.findMyLocation}</span></button>
+                            </div>
+                          </div>
                         </div>
                         <div id="coordinates" class="tab-pane">
                             <div class="form-group">

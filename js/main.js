@@ -20,10 +20,12 @@ define([
     "dojo/dom-construct",
     "dojo/dom-attr",
     "esri/dijit/LocateButton",
-    "esri/dijit/Geocoder",
+    "esri/dijit/Search",
     "dojo/text!views/modal.html",
     "dojo/text!views/user.html",
     "dojo/i18n!application/nls/resources",
+    "esri/tasks/locator",
+    "esri/layers/FeatureLayer",
     "esri/tasks/ProjectParameters",
     "esri/geometry/webMercatorUtils",
     "esri/geometry/Point",
@@ -60,10 +62,10 @@ define([
     domConstruct,
     domAttr,
     LocateButton,
-    Geocoder,
+    Search,
     modalTemplate,
     userTemplate,
-    nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, usng) {
+    nls, Locator, FeatureLayer, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, usng) {
     return declare([], {
         arrPendingAttachments: [],
         objFailedAttachments: {},
@@ -82,97 +84,7 @@ define([
         isHumanEntry: null,
         currentLocation:null,
 
-        _createGeocoderOptions: function () {
-            //Check for multiple geocoder support and setup options for geocoder widget.
-            var hasEsri = false,
-                geocoders = lang.clone(this.config.helperServices.geocode);
-            // each geocoder
-            array.forEach(geocoders, lang.hitch(this, function (geocoder) {
-                // if its the esri world geocoder
-                if (geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
-                    hasEsri = true;
-                    geocoder.name = "Esri World Geocoder";
-                    geocoder.outFields = "Match_addr, stAddr, City";
-                    geocoder.singleLineFieldName = "SingleLine";
-                    geocoder.esri = geocoder.placefinding = true;
-                    geocoder.placeholder = nls.user.find;
-                }
-            }));
-            //only use geocoders with a singleLineFieldName that allow placefinding
-            geocoders = array.filter(geocoders, function (geocoder) {
-                return (esriLang.isDefined(geocoder.singleLineFieldName) && esriLang.isDefined(geocoder.placefinding) && geocoder.placefinding);
-            });
-            var esriIdx;
-            // if we have the esri Geocoder
-            if (hasEsri) {
-                for (var i = 0; i < geocoders.length; i++) {
-                    if (esriLang.isDefined(geocoders[i].esri) && geocoders[i].esri === true) {
-                        esriIdx = i;
-                        break;
-                    }
-                }
-            }
-            // options object
-            var options = {
-                map: this.map,
-                autoComplete: hasEsri
-            };
-            //If there is a valid search id and field defined add the feature layer to the geocoder array
-            var searchLayers = [];
-            if (this.config.itemInfo.itemData && this.config.itemInfo.itemData.applicationProperties && this.config.itemInfo.itemData.applicationProperties.viewing && this.config.itemInfo.itemData.applicationProperties.viewing.search) {
-                var searchOptions = this.config.itemInfo.itemData.applicationProperties.viewing.search;
-                // add layers from webmap to geocoder widget
-                array.forEach(searchOptions.layers, lang.hitch(this, function (searchLayer) {
-                    var operationalLayers = this.config.itemInfo.itemData.operationalLayers;
-                    var layer = null;
-                    array.some(operationalLayers, function (opLayer) {
-                        if (opLayer.id === searchLayer.id) {
-                            layer = opLayer;
-                            return true;
-                        }
-                    });
-                    var url = layer.url;
-                    var field = searchLayer.field.name;
-                    var name = layer.title;
-                    // if its a sublayer
-                    if (esriLang.isDefined(searchLayer.subLayer)) {
-                        url = url + "/" + searchLayer.subLayer;
-                        array.some(layer.layerObject.layerInfos, function (info) {
-                            if (info.id == searchLayer.subLayer) {
-                                name += " - " + layer.layerObject.layerInfos[searchLayer.subLayer].name;
-                                return true;
-                            }
-
-                        });
-                    }
-                    // create layer object
-                    searchLayers.push({
-                        "name": name,
-                        "url": url,
-                        "field": field,
-                        "exactMatch": (searchLayer.field.exactMatch || false),
-                        "placeholder": searchOptions.hintText,
-                        "outFields": "*",
-                        "type": "query",
-                        "layerId": searchLayer.id,
-                        "subLayerId": parseInt(searchLayer.subLayer) || null
-                    });
-                }));
-            }
-            // if we have esri geocoder and its first
-            if (hasEsri && esriIdx === 0) { // Esri geocoder is primary
-                options.arcgisGeocoder = false;
-                if (geocoders.length > 0) {
-                    options.geocoders = searchLayers.length ? searchLayers.concat(geocoders) : geocoders;
-                } else if (searchLayers.length > 0) {
-                    options.geocoders = searchLayers;
-                }
-            } else { // Esri geocoder is not primary
-                options.arcgisGeocoder = false;
-                options.geocoders = searchLayers.length ? searchLayers.concat(geocoders) : geocoders;
-            }
-            return options;
-        },
+        
         startup: function () {
             var config = arguments[0];
             var isPreview = arguments[2];
@@ -1967,8 +1879,8 @@ define([
                     this.currentLocation.locate();
                     break;
                 case "search":
-                    dom.byId('searchInput').value = value;
-                    this._searchGeocoder();
+                    this.geocodeAddress.set("value", value);
+                    this.geocodeAddress.search();
                     break;
                 case "latlon":
                     var latlonValue = value.split(",");
@@ -2184,121 +2096,116 @@ define([
                 $('#geolocate_button').button('reset');
             }));
             // event for clicking node
-            on(dom.byId('geolocate_button'), 'click', lang.hitch(this, function () {
+            on(dom.byId('geolocate_button'), 'click', lang.hitch(this, function (evt) {
                 // remove graphic
                 this._clearSubmissionGraphic();
                 // set loading button
                 $('#geolocate_button').button('loading');
                 // widget locate
                 this.currentLocation.locate();
+                evt.stopPropagation();
+                evt.preventDefault();
             }));
         },
-        // geocoder search submitted
-        _searchGeocoder: function () {
-            // remove error
-            var errorMessageNode = dom.byId('errorMessageDiv');
-            domConstruct.empty(errorMessageNode);
-            // remove graphic
-            this._clearSubmissionGraphic();
-            // get nodes and value
-            var value = dom.byId('searchInput').value;
-            var node = dom.byId('geocoder_spinner');
-            if (value) {
-                // remove searching class
-                domClass.remove(node, 'glyphicon glyphicon-search');
-                // add spinner
-                domClass.add(node, 'fa fa-spinner fa-spin');
-                // find location
-                this.geocodeAddress.find(value).then(lang.hitch(this, function (evt) {
-                    // switch classes
-                    domClass.remove(node, 'fa fa-spinner fa-spin');
-                    domClass.add(node, 'glyphicon glyphicon-search');
-                    // if results, select
-                    if (evt.results && evt.results.length) {
-                        this.geocodeAddress.select(evt.results[0]);
-                        var coords = this._calculateLatLong(evt.results[0].feature.geometry);
-                        domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
-                        //this will remove the error message if it exists
-                        this._removeErrorNode(dom.byId("select_location").nextSibling);
-                    } else {
-                        alert(nls.user.locationNotFound);
-                    }
-                }));
+        
+      _templateSearchOptions: function(w){
+        var sources = [];
+        var searchLayers;
+        //setup geocoders defined in common config 
+        if (this.config.helperServices.geocode) {
+          var geocoders = lang.clone(this.config.helperServices.geocode);
+          array.forEach(geocoders, lang.hitch(this, function(geocoder) {
+            if (geocoder.url.indexOf(".arcgis.com/arcgis/rest/services/World/GeocodeServer") > -1) {
+              // use the default esri locator from the search widget
+              geocoder = lang.clone(w.sources[0]);
+              geocoder.hasEsri = true;
+              sources.push(geocoder);
+            } else if (esriLang.isDefined(geocoder.singleLineFieldName)) {
+              //Add geocoders with a singleLineFieldName defined 
+              geocoder.locator = new Locator(geocoder.url);
+              sources.push(geocoder);
             }
-        },
-        // create menu items for multiple geocoders
-        _geocoderMenuItems: function () {
-            var html = '';
-            for (var i = 0; i < this.geocodeAddress._geocoders.length; i++) {
-                var gc = this.geocodeAddress._geocoders[i];
-                var active = '';
-                if (i === this.geocodeAddress.activeGeocoderIndex) {
-                    active = 'active';
-                }
-                html += '<li class="' + active + '"><a data-index="' + i + '" href="#">' + gc.name + '</a></li>';
+          }));
+        }
+        //Add search layers defined on the web map item 
+        if (this.config.itemInfo.itemData && this.config.itemInfo.itemData.applicationProperties && this.config.itemInfo.itemData.applicationProperties.viewing && this.config.itemInfo.itemData.applicationProperties.viewing.search) {
+          var searchOptions = this.config.itemInfo.itemData.applicationProperties.viewing.search;
+          array.forEach(searchOptions.layers, lang.hitch(this, function(searchLayer) {
+            //we do this so we can get the title specified in the item
+            var operationalLayers = this.config.itemInfo.itemData.operationalLayers;
+            var layer = null;
+            array.some(operationalLayers, function(opLayer) {
+              if (opLayer.id === searchLayer.id) {
+                layer = opLayer;
+                return true;
+              }
+            });
+            if (layer && layer.url) {
+              var source = {};
+              var url = layer.url;
+              if (esriLang.isDefined(searchLayer.subLayer)) {
+                url = url + "/" + searchLayer.subLayer;
+                array.some(layer.layerObject.layerInfos, function(info) {
+                  if (info.id == searchLayer.subLayer) {
+                    return true;
+                  }
+                });
+              }
+              source.featureLayer = new FeatureLayer(url);
+              source.name = layer.title || layer.name;
+              source.exactMatch = searchLayer.field.exactMatch;
+              source.searchFields = [searchLayer.field.name];
+              source.placeholder = searchOptions.hintText;
+              sources.push(source);
+              searchLayers = true;
             }
-            var node = dom.byId('geocoder_menu');
-            node.innerHTML = html;
-        },
+          }));
+        }
+        //set the first non esri layer as active if search layers are defined. 
+        var activeIndex = 0;
+        if (searchLayers) {
+          array.some(sources, function(s, index) {
+            if (!s.hasEsri) {
+              activeIndex = index;
+              return true;
+            }
+          });
+        }
+        // get back the sources and active index
+        return {
+          sources: sources,
+          activeSourceIndex: activeIndex
+        };
+      },
+      
         // geocoder with bootstrap
         _createGeocoderButton: function () {
             // create options
-            var options = this._createGeocoderOptions();
+            var options = {
+              enableHighlight: false,
+              enableInfoWindow: false,
+              map: this.map
+            };
             // create geocoder
-            this.geocodeAddress = new Geocoder(options, domConstruct.create('div'));
+            this.geocodeAddress = new Search(options, "search-widget");
+            var templateOptions = this._templateSearchOptions(this.geocodeAddress);
+            this.geocodeAddress.set("sources", templateOptions.sources);
+            this.geocodeAddress.set("activeSourceIndex", templateOptions.activeSourceIndex);
             this.geocodeAddress.startup();
-            // if we need a locator switch menu
-            if (this.geocodeAddress._geocoders && this.geocodeAddress._geocoders.length > 1) {
-                var html = '';
-                html += '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">';
-                html += '<span class="caret"></span>';
-                html += '<span class="sr-only">' + nls.user.toggleDropdown + '</span>';
-                html += '</button>';
-                html += '<ul class="dropdown-menu" role="menu" id="geocoder_menu">';
-                html += '</ul>';
-                var node = dom.byId('geocoder_buttons');
-                domConstruct.place(html, node, 'last');
-                this._geocoderMenuItems();
-            }
-            // search input
-            var searchInputNode = dom.byId('searchInput');
-            // search placeholder
-            domAttr.set(searchInputNode, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
-            // input keyup
-            on(searchInputNode, 'keyup', lang.hitch(this, function (evt) {
-                var keyCode = evt.charCode || evt.keyCode;
-                if (keyCode === 13) {
-                    this._searchGeocoder();
-                }
-            }));
-            // submit button
-            on(dom.byId('searchSubmit'), 'click', lang.hitch(this, function () {
-                this._searchGeocoder();
-            }));
             // on find
-            on(this.geocodeAddress, "select", lang.hitch(this, function (evt) {
+            on(this.geocodeAddress, "select-result", lang.hitch(this, function (evt) {
+                var coords = this._calculateLatLong(evt.result.feature.geometry);
+                domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
+                //this will remove the error message if it exists
+                this._removeErrorNode(dom.byId("select_location").nextSibling);
                 this.addressGeometry = evt.result.feature.geometry;
                 this._setSymbol(evt.result.feature.geometry);
                 this.map.centerAt(evt.result.feature.geometry).then(lang.hitch(this, function () {
                     this._resizeMap();
                 }));
             }));
-            // geocoder menu select event
-            on(this.geocodeAddress, "geocoder-select", lang.hitch(this, function () {
-                domAttr.set(searchInputNode, 'placeholder', this.geocodeAddress.activeGeocoder.placeholder);
-                this._geocoderMenuItems();
-            }));
-            // geocoder menu
-            var gcMenu = dom.byId('geocoder_menu');
-            if (gcMenu) {
-                // menu item clicked
-                on(gcMenu, 'a:click', lang.hitch(this, function (evt) {
-                    var idx = parseInt(domAttr.get(evt.target, 'data-index'), 10);
-                    this.geocodeAddress.set('activeGeocoderIndex', idx);
-                    evt.preventDefault();
-                }));
-            }
         },
+
         // submit form with applyedits
         _addFeatureToLayer: function () {
             var userFormNode, featureData, key, value;
