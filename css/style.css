@@ -369,3 +369,15 @@ body.modal-open,
     width:150px; 
   }
 }
+
+.arcgisSearch .searchBtn,
+.arcgisSearch .searchGroup .searchInput,
+.dj_rtl .arcgisSearch .searchGroup .searchInput,
+.arcgisSearch .searchMenu {
+  border-color: #ccc;
+}
+
+.arcgisSearch .searchGroup,
+.arcgisSearch .searchGroup .searchInput {
+  color: #666;
+}
