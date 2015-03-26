@@ -363,3 +363,21 @@ body.modal-open,
 .fileInputUI{
       word-wrap: break-word;
 }
+
+@media screen and (max-width: 768px) {
+  .arcgisSearch .searchGroup .searchInput{
+    width:150px; 
+  }
+}
+
+.arcgisSearch .searchBtn,
+.arcgisSearch .searchGroup .searchInput,
+.dj_rtl .arcgisSearch .searchGroup .searchInput,
+.arcgisSearch .searchMenu {
+  border-color: #ccc;
+}
+
+.arcgisSearch .searchGroup,
+.arcgisSearch .searchGroup .searchInput {
+  color: #666;
+}
