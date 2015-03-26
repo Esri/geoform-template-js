@@ -1,0 +1,623 @@
+/* General */
+
+html, body
+{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.mainContainer
+{
+    height: 100%;
+    width: 100%;
+}
+
+.mainContainer .dijitContentPane, .leftPanelContainer
+{
+    overflow: hidden;
+}
+
+/*geocoder is not visible if we don't apply the important tag to the style given below */
+.headerPanel
+{
+    z-index: 999999;
+    width: 100%;
+    overflow: visible !important;
+}
+
+.BasemapToggle
+{
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    z-index: 35;
+    -webkit-box-sizing: content-box;
+}
+
+.leftPanelContainer
+{
+    width: 280px;
+    border-right: 1px solid #ddd;
+}
+
+.mapDiv
+{
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.esriSimpleSlider
+{
+    top: 12px;
+}
+
+.panelBody
+{
+    height: 100%;
+    width: 100%;
+}
+
+.legendPanelBody
+{
+    padding: 5px;
+    display: none;
+    overflow: auto;
+}
+
+.aboutusPanelBody
+{
+    padding: 5px;
+    display: none;
+    overflow: auto;
+}
+
+.searchPanelBody
+{
+    overflow-y: auto;
+}
+
+.layerSelectBox
+{
+    padding: 5px;
+    display: none;
+}
+
+.sortOptionDiv
+{
+    width: 100%;
+    padding: 0px 0px 10px 10px;
+}
+
+.sortSelect
+{
+    float: left;
+    max-width: 140px;
+}
+
+.btnSortByOrder
+{
+    margin-left: 10px;
+    float: left;
+    margin-bottom: 5px;
+}
+
+.formList
+{
+    width: 100%;
+    margin-bottom: 10px;
+    overflow: auto;
+}
+
+.formListContent
+{
+    cursor: pointer;
+}
+
+.submitFormNode
+{
+    text-align: center;
+}
+
+.featureDetailsContainer
+{
+    position: absolute;
+    bottom: 10px;
+    left: 20%;
+    width: 60%;
+    right: auto;
+    display: none;
+}
+
+.featureDetailsBody
+{
+    max-height: 130px;
+    overflow-y: auto;
+}
+
+.errorMessageBox
+{
+    width: 50%;
+    text-align: center;
+}
+
+
+.panel-heading
+{
+    position: relative;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.panel-title
+{
+    display: table-cell;
+    width: 33.33%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+    vertical-align: top;
+}
+
+.panelTitleWithoutPager
+{
+    display: table-cell;
+    width: 88.88%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+    vertical-align: top;
+}
+
+.pagerContainer
+{
+    display: table-cell;
+    width: 33.33%;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: top;
+}
+
+.close
+{
+    display: table-cell;
+    text-align: right;
+    vertical-align: top;
+}
+
+.pagerContainer .pager
+{
+    margin: 0px !important;
+}
+
+.mobileGeocoderIcon
+{
+    display: none;
+}
+
+.mobile-locate-box-hidden
+{
+    display: none;
+    position: absolute;
+    z-index: 460;
+    left: 0;
+    top: 50px;
+    width: 100%;
+}
+
+.geocoder-mobile
+{
+    float: left;
+    width: 75%;
+}
+
+.esriRTL .geocoder-mobile
+{
+    float: right;
+}
+
+.geocoder-mobile .esriGeocoderContainer
+{
+    width: 100%;
+}
+
+.geocoder-mobile .esriGeocoder
+{
+    border: 1px solid #ccc;
+}
+
+    .geocoder-mobile .esriGeocoder input
+    {
+        width: 75%;
+    }
+
+.close-geocoder-button
+{
+    float: left;
+    width: 60px;
+    padding: 1px 0;
+    line-height: 27px;
+    height: 36px;
+    margin-left: 10px;
+    font-size: 17px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.close-geocoder-button:hover
+{
+    text-decoration: none;
+}
+
+.esriRTL .close-geocoder-button
+{
+    float: right;
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+
+
+.esriRTL .mobile-locate-box-hidden
+{
+    left: auto;
+    right: 0;
+}
+
+.mobile-locate-box-hidden .mobile-search-container
+{
+    padding: 12px 15px;
+}
+
+.mobileComponent
+{
+    display: none;
+}
+
+.mapLink
+{
+    display: none !important;
+}
+
+.tabText
+{
+    display: block;
+    margin-top: 6px;
+}
+
+
+a.appTitle
+{
+    outline: none;
+}
+
+.navbar
+{
+    border-radius: 0px;
+    border: none;
+    margin-bottom: 0px;
+}
+
+.esriGeocoderResultsOpen .esriGeocoderContainer
+{
+    z-index: 9999999;
+}
+
+.esriGeocoderResults
+{
+    z-index: 9999999;
+}
+
+.navbar-header .navbar-icon-container
+{
+    margin-right: 15px;
+}
+
+.navbar-nav > li > a
+{
+    text-align: center;
+}
+
+#panelHeader ul.nav
+{
+    width: 100%;
+}
+
+.navbar-brand, .navbar-nav > li > a
+{
+    text-shadow: none;
+}
+
+.navbar-collapse.in
+{
+    overflow-y: visible;
+}
+
+.headerWrapper .navbar-inverse .navbar-nav > li > a
+{
+    font-size: 20px;
+}
+
+.mobile-search-container .esriGeocoderIcon
+{
+    margin: 5px 3px;
+}
+
+.tableResponsive
+{
+    overflow-x: auto;
+    min-height: 0.01%;
+}
+
+
+.navbar-left
+{
+    float:none !important;
+    overflow: hidden;
+}
+
+.navbar-left .navbar-nav, .navbar-left .navbar-nav li
+{
+    width:100%;
+}
+
+.navbar-left .navbar-nav li a
+{
+    text-align:left;
+}
+
+.navbar-right
+{
+    margin-right: 0px;
+}
+
+.appTitle
+{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.pull-left
+{
+    float:none !important;
+}
+
+.mobile-locate-box-hidden
+{
+    display: none;
+    position: absolute;
+    z-index: 460;
+    left: 0;
+    top: 40px;
+    width: 100%;
+}
+
+@media screen and (max-width: 767px)
+{
+
+    .headerWrapper .navbar-inverse .navbar-nav > li > a
+    {
+
+    }
+    .navbar-right
+    {
+        float: right;
+    }
+
+
+    .mobile-locate-box-display, .mobileGeocoderIcon, .geocoder-mobile
+    {
+        display: block !important;
+    }
+
+    .mapDiv .esriSimpleSlider
+    {
+        display: none;
+    }
+
+    .sortOptionDiv
+    {
+        width: 100%;
+        padding: 10px;
+    }
+
+    #mapLayoutContainer
+    {
+        display: none;
+    }
+
+    .leftPanelContainer
+    {
+        width: 100%;
+        position: relative;
+    }
+
+    .sortHeaderContainer
+    {
+        float: left;
+        margin-right: 5px;
+    }
+
+    .sortContainer
+    {
+        display: block;
+    }
+
+    .mainContainer .dijitContentPane, .leftPanelContainer
+    {
+        overflow: hidden;
+    }
+
+    .mapLink
+    {
+        display: block !important;
+    }
+
+    .tabText
+    {
+        display: block;
+        margin-top: 6px;
+    }
+
+    .featureDetailsContainer
+    {
+        width: 90%;
+        margin: 0px auto;
+        left: 50%;
+        position: fixed;
+        bottom: 110px;
+        margin-left: -45%;
+        z-index: 99999;
+    }
+
+    .featureDetailsBody
+    {
+        max-height: 95px;
+    }
+
+    .navbar-fixed-bottom .navbar-nav
+    {
+        margin: 0px;
+    }
+
+    .navbar-fixed-bottom .navbar-nav li
+    {
+        float: left;
+    }
+
+    .headerComponent
+    {
+        display: none;
+    }
+
+    .mobileComponent
+    {
+        float: right;
+        display: block;
+    }
+
+    .mobile-locate-box-hidden
+    {
+        display: none;
+    }
+
+    .mobile-search-container
+    {
+        padding: 10px 0px;
+    }
+}
+
+@media screen and (max-width: 680px)
+{
+    .mobileGeocoderIcon
+    {
+        display: block;
+    }
+
+    .geocoder-mobile .esriGeocoder
+    {
+        width: 100%;
+    }
+
+    .featureDetailsContainer
+    {
+        bottom: 100px;
+    }
+}
+
+
+@media screen and (max-width: 480px)
+{
+
+    .featureDetailsContainer
+    {
+        bottom: 90px;
+    }
+}
+
+@media screen and (max-width:320px)
+{
+
+    .navbar-icon-container a.navbar-icon
+    {
+        margin-left: 15px;
+    }
+
+    .featureDetailsBody
+    {
+        max-height: 90px;
+    }
+}
+
+@media screen and (max-width: 680px) and (orientation: landscape)
+{
+    .BasemapToggle
+    {
+        display: none !important;
+    }
+
+    .featureDetailsContainer
+    {
+        bottom: 90px;
+    }
+
+    .featureDetailsBody
+    {
+        max-height: 85px !important;
+    }
+
+    .panel-body, .panel-heading
+    {
+        padding: 5px 15px;
+    }
+}
+
+/* iPhone 5 landscape = Only work on mobile device */
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 568px) and (orientation : landscape)
+{
+    .BasemapToggle
+    {
+        display: none !important;
+    }
+
+    .featureDetailsContainer
+    {
+        bottom: 90px;
+    }
+
+    .featureDetailsBody
+    {
+        max-height: 90px;
+    }
+}
+
+
+/* iPhone 6 landscape = Only work on mobile device */
+
+@media screen and (min-device-width : 375px) and (max-device-width : 667px) and (orientation : landscape)
+{
+
+    .BasemapToggle
+    {
+        display: none !important;
+    }
+
+    .featureDetailsContainer
+    {
+        bottom: 90px;
+    }
+
+    .featureDetailsBody
+    {
+        max-height: 90px;
+    }
+}

@@ -1,0 +1,144 @@
+﻿<div>
+    <div data-dojo-type="dijit/layout/BorderContainer" id="mainContainer"
+        class="mainContainer" data-dojo-props="design:'headline', gutters:false">
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" class="headerPanel">
+            <div class="headerWrapper">
+                <div class="navbar navbar-inverse" id="navHeader">
+                    <div class="container-fluid">
+                        <div class="navbar-right">
+                            <ul class="nav navbar-nav">
+                                <li class="navbar-brand hidden-xs">
+                                    <div id="geocoderSearch" class="form-group"></div>
+                                </li>
+                                <li class="hidden-xs"><a href="#" id="shareDialog"><i class="fa fa-share-alt fa-lg"></i></a></li>
+                                <li class="pull-right hidden-lg hidden-md hidden-sm">
+                                    <a href="#" id="shareDialogMobileView" class=""><i class="fa fa-share-alt"></i></a>
+                                </li>
+                                <li class="pull-right hidden-lg hidden-md hidden-sm" id="mobileGeocoderIcon">
+                                    <a href="#" class=""><i class="glyphicon glyphicon-search"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="navbar-left">
+                            <ul class="nav navbar-nav">
+                                <li><a class="pull-left appTitle" href="#" id="appTitle"></a></li>
+                            </ul>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="navbar-collapse" id="mobileGeocoder">
+                            <div id="mobileSearch" class="mobile-locate-box-hidden">
+                                <div class="navbar navbar-inverse mobile-search-container">
+                                    <div id="geocoderMobile"></div>
+                                    <a id="btnCloseGeocoder" data-toggle="collapse" data-target=".navbar-responsive-collapse" class="navbar-brand close-geocoder-button">${viewer.geocoderCancelText}</a>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'" class="leftPanelContainer" id="leftMapPanel">
+            <div id="panelContainer" class="panelContainer">
+                <div id="panelHeader" class="navbar navbar-default">
+                    <ul class="nav navbar-nav" id="viewer_pills" role="tablist">
+                        <li title="${viewer.mapTabTooltip}" id="mapOption" class="mapLink">
+                            <a href="#" data-toggle="tab">
+                                <span class="glyphicon glyphicon-globe"></span>
+                                <span class="tabText">${viewer.viewMapTabText}</span>
+                            </a>
+                        </li>
+                        <li class="active" id="search" title="${viewer.recordsTabTooltip}">
+                            <a href="#" data-toggle="tab">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                                <span class="tabText">${viewer.viewReportsTabText}</span>
+                            </a>
+                        </li>
+                        <li title="${viewer.legendTabTooltip}" id="legend">
+                            <a href="#" data-toggle="tab">
+                                <span class="glyphicon glyphicon-list"></span>
+                                <span class="tabText">${viewer.viewLegendTabText}</span>
+                            </a>
+                        </li>
+                        <li title="${viewer.aboutUsTabTooltip}" id="aboutus">
+                            <a href="#" data-toggle="tab">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                                <span class="tabText">${viewer.viewAboutusTabText}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="mapPanelBody" class="panelBody">
+                </div>
+                <div id="searchPanelBody" class="panelBody searchPanelBody">
+                    <div id="selectBoxWrapper">
+                        <div class="layerSelectBox" id="layerSelectBox">
+                            <div class="selectLayerHeader">
+                                <h5>Select Layer:
+                                </h5>
+                            </div>
+                            <select id="selectLayerInput" class="form-control">
+                            </select>
+                        </div>
+                        <div id="sortOptionDiv" class="sortOptionDiv clearfix">
+                            <div class="sortHeaderContainer">
+                                <h5>${viewer.sortHeaderText}
+                                </h5>
+                            </div>
+                            <div class="sortContainer">
+                                <select id="sortbyInput" class="form-control sortSelect">
+                                </select>
+                                <div class="btnSortByOrder">
+                                    <button id="btnSortByOrder" type="button" class="btn btn-default form-control fa fa-caret-down">
+                                        <span id="btnSortByOrderText">${viewer.btnDescendingText}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="formList" class="formList"></div>
+                    <div class="submitFormNode" id="submitFormNode">
+                        <button id="submitForm" type="button" class="btn btn-primary">
+                            ${viewer.btnSubmitReportText}
+                        </button>
+                    </div>
+                </div>
+                <div id="legendPanelBody" class="panelBody legendPanelBody"></div>
+                <div id="aboutusPanelBody" class="panelBody aboutusPanelBody">
+                </div>
+            </div>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'" id="mapLayoutContainer">
+            <div id="mapDiv" data-dojo-props="region:'center'" class="mapDiv">
+                <div class="BasemapToggle" id="toggleContainer">
+                </div>
+            </div>
+            <div class="panel panel-default featureDetailsContainer" id="featureDetailsContainer">
+                <div class="panel-heading">
+                    <div class="panel-title" id="panelTitle"></div>
+                    <div class="pagerContainer">
+                        <ul class="pager" id="featurePagination">
+                            <li id="prevFeature"><a href="#" class="fa fa-chevron-circle-left"></a></li>
+                            <li id="paginationMessage"></li>
+                            <li id="nextFeature"><a href="#" class="fa fa-chevron-circle-right"></a></li>
+                        </ul>
+                    </div>
+                    <div class="close glyphicon glyphicon-remove" id="closeButton"></div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="panel-body featureDetailsBody" id="featureDetailsPanelBody">
+                    <div class="tableResponsive" id="featureDetaisTable">
+                        <table class="table table-bordered table-striped">
+                            <tbody id="featureDetailsBody" class="featureDetailsBody">
+                            </tbody>
+                        </table>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div id="errorMessageBox" class="center-block errorMessageBox"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

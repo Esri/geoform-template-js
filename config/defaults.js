@@ -33,6 +33,8 @@ define({
     "pushpinColor": "blue",
     "nextBasemap": "hybrid",
     "defaultBasemap": "topo",
+    "selectedTitleField": {},
+    "disableViewer": false,
     "enableAttachments": true,
     "attachmentIsRequired": false,
     "attachmentLabel": "",
