@@ -731,6 +731,19 @@ define([
             option.value = key;
         },
 
+        //function highlights the selected feature in the list group
+        _activateListItem: function (objectIdFieldValue) {
+            array.forEach(query('.formList .list-group-item'), lang.hitch(this, function (node) {
+                if (domClass.contains(node, "active")) {
+                    domClass.remove(node, "active");
+                }
+                if (domAttr.get(node, "fieldValue") === objectIdFieldValue.toString()) {
+                    domClass.add(node, "active");
+                    this.activeElementId = node.fieldValue;
+                }
+            }));
+        },
+
         //function to click on map to select features
         _clickMap: function (_formLayer) {
             if (this.layerClickHandle !== null) {
@@ -743,15 +756,7 @@ define([
                         if (result.features.length !== 0) {
                             this._highlightMapGraphics(evt.graphic);
                             var objectIdField = _formLayer.objectIdField;
-                            array.forEach(query('.formList .list-group-item'), lang.hitch(this, function (node) {
-                                if (domClass.contains(node, "active")) {
-                                    domClass.remove(node, "active");
-                                }
-                                if (domAttr.get(node, "fieldValue") === result.features[0].attributes[objectIdField].toString()) {
-                                    domClass.add(node, "active");
-                                    this.activeElementId = node.fieldValue;
-                                }
-                            }));
+                            this._activateListItem(result.features[0].attributes[objectIdField]);
                         }
                         else {
                             console.log(nls.user.error + ": " + nls.viewer.geometryUnavailableErrorMessage);
@@ -1139,6 +1144,8 @@ define([
         //Function to update and show details of feature clicked on map
         _updateFeatureDetails: function (graphics) {
             if (graphics) {
+                var objectIdField= this._formLayer.objectIdField;
+                this._activateListItem(graphics.attributes[objectIdField]);
                 if (dom.byId("featureDetailsBody")) {
                     domConstruct.empty(dom.byId("featureDetailsBody"));
                 }

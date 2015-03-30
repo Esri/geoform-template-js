@@ -235,7 +235,7 @@ define({
       allLayerSelectOptionText: "All",
       disableViewer: "Disable Viewer",
       disableViewerDescription: "You can configure the GeoForm to disable/enable Viewer",
-      displayFieldHintText: "Selected display field will be shown in viewerMode as title field"
+      displayFieldHintText: "Selected display field will be shown in the viewer as a title"
     },
     viewer: {
       geocoderCancelText: "Cancel",
