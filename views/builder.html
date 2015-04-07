@@ -160,6 +160,8 @@
                                             <label><input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b></label>
                                         </div>
                                     </th>
+                                    <th class="tableDimension2">${builder.displayFieldText}<a id="displayFieldInfo" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right"></a>
+                                    </th>
                                     <th>${builder.fieldTabFieldHeaderText}</th>
                                     <th class="tableDimension">${builder.fieldTabLabelHeaderText}<a id="LabelInfo" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right pointer"></a></th>
                                     <th class="tableDimension">${builder.fieldDescriptionLabelText}<a id="helpTextInfo" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right"></a></th>
@@ -244,6 +246,13 @@
                                 <input id="enableBasemapToggle" type="checkbox" value="enableBasemapToggle" />${builder.enableBasemapToggle}</label>
                         </div>
                         <div class="help-block">${builder.enableBasemapToggleDescription}</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                           <label for="disableViewer">
+                                <input id="disableViewer" type="checkbox" value="disableViewer" />${builder.disableViewer}</label>
+                        </div>
+                        <div class="help-block">${builder.disableViewerDescription}</div>
                     </div>
                     <div class="form-group">
                         <label for="pushpinInput">${builder.pushpinText}</label>

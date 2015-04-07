@@ -186,7 +186,7 @@ define([
             var erroneousFields = [];
             array.forEach(query(".geoFormQuestionare"), lang.hitch(this, function (currentField) {
                 if (domClass.contains(currentField, "hasAttachment")) {
-                    if (domClass.contains(currentField, "mandatory") && query(".alert-dismissable", dom.byId("fileListRow")).length === 0) {
+                    if (domClass.contains(currentField, "mandatory") && query(".alert-dismissable", dom.byId("divColumn2")).length === 0) {
                         this._validateUserInput(nls.user.requiredFields, currentField, query(".hideFileInputUI")[0].value, true);
                         erroneousFields.push(currentField);
                     }
@@ -325,7 +325,7 @@ define([
             }
         },
         // set symbol for submitting location
-        _setSymbol: function (point) {
+        _setSymbol: function (point, isMapClicked) {
             if (this.map.infoWindow) {
                 var symbolUrl, pictureMarkerSymbol, graphic, it;
                 // use appropriate symbol pin image
@@ -345,7 +345,7 @@ define([
                         // add to graphics layer
                         this._gl.add(graphic);
                         // get current features
-                        var features = this.map.infoWindow.features || [];
+                        var features = isMapClicked ? this.map.infoWindow.features : [];
                         // remove existing geoform graphic(s)
                         var filtered = array.filter(features, function (item) {
                             return !item._geoformGraphic;
@@ -549,8 +549,7 @@ define([
             }));
             // if form has attachments
             if (this._formLayer.hasAttachments && this.config.attachmentInfo[this._formLayer.id] && this.config.attachmentInfo[this._formLayer.id].enableAttachments) {
-                var requireField = null, helpBlock, labelHTML = "", divRowContainer, divRow, divColumn1, fileBtnSpan, fileInput, fileChange,
-                    divColumn2, fileListContainer, fileListRow, fileListColumn, fileForm;
+                var requireField = null, helpBlock, labelHTML = "", divRow, divColumn1, fileBtnSpan, fileInput, fileChange, divColumn2, fileForm;
                 userFormNode = dom.byId('userForm');
                 formContent = domConstruct.create("div", {
                     className: "form-group hasAttachment geoFormQuestionare"
@@ -575,19 +574,15 @@ define([
                 if (requireField && labelContent) {
                     domConstruct.place(requireField, labelContent, "last");
                 }
-                divRowContainer = domConstruct.create("div", {
-                    "class": "container",
-                    "style": "width:inherit;"
-                }, formContent);
                 divRow = domConstruct.create("div", {
                     "class": "row"
-                }, divRowContainer);
+                }, formContent);
                 divColumn1 = domConstruct.create("div", {
                     "class": "col-sm-2 form-group"
                 }, divRow);
                 fileBtnSpan = domConstruct.create("span", {
                     "class": "btn btn-default btn-file",
-                    "innerHTML": "Select File"
+                    "innerHTML": nls.user.btnSelectFileText
                 }, divColumn1);
                 fileForm = domConstruct.create("form", { "class": "selectFileForm" }, fileBtnSpan);
                 fileInput = domConstruct.create("input", {
@@ -612,12 +607,9 @@ define([
                 }
                 //prepare domnode to show the selected file list
                 divColumn2 = domConstruct.create("div", {
-                    "class": "col-sm-10"
+                    "class": "col-sm-10",
+                    "id": "divColumn2"
                 }, divRow);
-                domStyle.set(divColumn2, "padding-left", "0px");
-                fileListContainer = domConstruct.create("div", { "class": "container", "style": "width:inherit;" }, divColumn2);
-                fileListRow = domConstruct.create("div", { "class": "row", "id": "fileListRow" }, fileListContainer);
-                fileListColumn = domConstruct.create("div", { "class": "col-sm-12", "id": "fileListColumn" }, fileListRow);
             }
             this._verifyHumanEntry();
         },
@@ -656,7 +648,7 @@ define([
             alertHtml += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">" + "&times" + "</button>";
             alertHtml += "<strong class=\"fileInputUI\">" + fileDetails.value.split('\\').pop() + "<br/>" + fileSize + "</strong>";
             alertHtml += "</div>";
-            alertHtml = domConstruct.place(alertHtml, dom.byId("fileListColumn"), "last");
+            alertHtml = domConstruct.place(alertHtml, dom.byId("divColumn2"), "last");
             domConstruct.place(fileInput.parentNode, alertHtml, "last");
             //binding event to perform activities on removal of a selected file from the file list
             on(query(".close", alertHtml)[0], "click", function () {
@@ -693,7 +685,7 @@ define([
                 }));
                 return true;
             }
-            if (query(".alert-dismissable", dom.byId("fileListRow")).length > 19) {
+            if (query(".alert-dismissable", dom.byId("divColumn2")).length > 19) {
                 $(fileBtnSpan).popover({ content: nls.user.exceededFileCountError, container: 'body', trigger: 'manual', placement: 'bottom' });
                 $(fileBtnSpan).popover('show');
                 setTimeout(function () {
@@ -743,7 +735,7 @@ define([
                 fieldLabelText = currentField.name;
             }
             fieldname = currentField.name;
-            if (currentField.displayType !== "checkbox") {
+            if (currentField.displayType !== "checkbox" || currentField.domain) {
                 labelContent = domConstruct.create("label", {
                     "for": fieldname,
                     className: "control-label",
@@ -1194,7 +1186,10 @@ define([
                     if (!currentInput.isTypeDependent) {
                         return true;
                     }
-                    this._resetSubTypeFields(currentInput);
+                    if (dom.byId(currentInput.name)) {
+                        var domToDestroy = this._getFormElement(dom.byId(currentInput.name));
+                        domConstruct.destroy(domToDestroy);
+                    }
                     this._resizeMap();
                 }));
                 return true;
@@ -1269,14 +1264,12 @@ define([
                 }
                 //code to be executed when the input is already present
                 if (dom.byId(field.name)) {
-                    this._resetSubTypeFields(field);
+                    var domToDestroy;
+                    domToDestroy = this._getFormElement(dom.byId(field.name));
+                    domConstruct.destroy(domToDestroy);
                 }
                 this._createFormElements(field, index, referenceNode);
-                if (field.type == "esriFieldTypeDate" || field.displayType == "url" || field.displayType == "email" || (field.type == "esriFieldTypeSingle" || field.type == "esriFieldTypeDouble" || field.type == "esriFieldTypeSmallInteger" || field.type == "esriFieldTypeInteger") && (field.domain && field.domain.type && field.domain.type === "range")) {
-                    referenceNode = dom.byId(field.name).parentNode.parentNode;
-                } else {
-                    referenceNode = dom.byId(field.name).parentNode;
-                }
+                referenceNode = this._getFormElement(dom.byId(field.name));
             }));
             this._resizeMap();
         },
@@ -1608,7 +1601,7 @@ define([
                     this._removeErrorNode(dom.byId("select_location").nextSibling);
                     this._clearSubmissionGraphic();
                     this.addressGeometry = evt.mapPoint;
-                    this._setSymbol(this.addressGeometry);
+                    this._setSymbol(this.addressGeometry, true);
                     // get coords string
                     var coords = this._calculateLatLong(evt.mapPoint);
                     domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
@@ -1767,6 +1760,14 @@ define([
                         this._submitForm();
                     }));
                 }
+                //disable viewSubmissionsButton
+                if (this.config.disableViewer) {
+                    domAttr.set(dom.byId("viewSubmissionsButton"), 'disabled', 'disabled');
+                }
+                //Open Viewer Mode
+                on(dom.byId("viewSubmissionsButton"), "click", lang.hitch(this, function () {
+                    this._viewSubmissions();
+                }));
                 // set location options
                 this._populateLocationsOptions();
                 // resize map
@@ -1790,6 +1791,16 @@ define([
                 }
             }), this.reportError);
         },
+
+        //this function opens viewer page
+        _viewSubmissions: function(){
+                var urlString = "viewer.html";
+                if (this.config.appid) {
+                    urlString += "?appid=" + this.config.appid;
+                }
+                window.location.assign(urlString);
+        },
+
         //this function ensures that the layer is either loaded or throws an error in console naming the layer that did not load successfully
         _loadNewLayer: function (webmapLayers, key) {
             var layerLoadedEvent, errorLoadEvent, def, layer;
@@ -2480,6 +2491,9 @@ define([
             this._ShareModal.startup();
             // show modal
             $("#myModal").modal('show');
+            on(dom.byId("viewSubmissionsOption"), "click", lang.hitch(this, function () {
+                this._viewSubmissions();
+            }));
         },
         // error modal content
         _openErrorModal: function () {
@@ -2497,6 +2511,9 @@ define([
         _openFileUploadStatusModal: function (fileList) {
             var fileUploadStatusMsgContainer, fileUploadStatusMsgUl, fileUploadStatusMsgLi, fileUploadStatusMsgBadge;
             domConstruct.empty(query(".modal-body")[0]);
+            if (dom.byId("viewSubmissionsOption")) {
+                domConstruct.destroy(query(".modal-footer")[0].children[1]);
+            }
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.fileUploadStatus);
             fileUploadStatusMsgContainer = domConstruct.create("div", { "id": "fileUploadStatusMsgContainer" }, query(".modal-body")[0]);
             fileUploadStatusMsgUl = domConstruct.create("ul", { "class": "list-group" }, fileUploadStatusMsgContainer);
@@ -2521,6 +2538,9 @@ define([
             var iconContainer, group;
             // empty modal node
             domConstruct.empty(query(".modal-body")[0]);
+            if (dom.byId("viewSubmissionsOption")) {
+                domConstruct.destroy(query(".modal-footer")[0].children[1]);
+            }
             // set modal title
             domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.shareUserTitleMessage);
             // create nodes for modal
@@ -2574,6 +2594,14 @@ define([
                 className: "form-control",
                 id: "shareMapUrlText"
             }, group);
+            domConstruct.create("button", {
+                className: "btn btn-default pull-left",
+                id: "viewSubmissionsOption",
+                innerHTML: nls.user.btnViewSubmissions
+            }, query(".modal-footer")[0]);
+            if (this.config.disableViewer) {
+                domAttr.set(dom.byId("viewSubmissionsOption"), 'disabled', 'disabled');
+            }
         },
         // display error message
         _showErrorMessageDiv: function (errorMessage, errorMessageNode) {
@@ -2736,19 +2764,26 @@ define([
                 };
             }
             for (var key in this.config.locationSearchOptions) {
-                if (key === "enableMyLocation" && !this.config.locationSearchOptions[key]) {
-                    domStyle.set(dom.byId("geolocate_button"), 'display', 'none');
-                }
                 if (this.config.locationSearchOptions.hasOwnProperty(key) && key !== "enableMyLocation") {
-                    if (!this.config.locationSearchOptions[key]) {
+                    if (!this.config.locationSearchOptions[key] && key !== "enableSearch") {
                         domStyle.set(locationTabs[count], 'display', 'none');
-                    } else {
+                    }
+                    else if (key === "enableSearch" && !this.config.locationSearchOptions[key] && !this.config.locationSearchOptions.enableMyLocation) {
+                        domStyle.set(locationTabs[count], 'display', 'none');
+                    }
+                    else {
                         //resize the map to set the correct info-window anchor
                         on(locationTabs[count], 'click', lang.hitch(this, this._resizeMap));
                         total++;
                     }
                     count++;
                 }
+            }
+            if (!this.config.locationSearchOptions.enableMyLocation) {
+                domStyle.set(dom.byId("geolocate_button"), 'display', 'none');
+            }
+            if (!this.config.locationSearchOptions.enableSearch) {
+                domStyle.set(dom.byId("search-widget"), 'display', 'none');
             }
             //add 'active' class to first tab and its content
             array.some(locationTabs, lang.hitch(this, function (tab, idx) {
@@ -2798,12 +2833,12 @@ define([
             }, inputIconGroupAddOn);
             return inputIconGroupContainer;
         },
-        _resetSubTypeFields: function (currentInput) {
-            if (currentInput.type == "esriFieldTypeDate" || currentInput.displayType == "url" || currentInput.displayType == "email" || (currentInput.type == "esriFieldTypeSmallFloat" || currentInput.type == "esriFieldTypeSmallInteger" || currentInput.type == "esriFieldTypeDouble" || currentInput.type == "esriFieldTypeInteger") && (currentInput.domain && currentInput.domain.type && currentInput.domain.type === "range")) {
-                domConstruct.destroy(dom.byId(currentInput.name).parentNode.parentNode);
-            } else {
-                domConstruct.destroy(dom.byId(currentInput.name).parentNode);
+        _getFormElement: function (currentDom) {
+            var formElement = currentDom;
+            while (!domClass.contains(formElement, "geoFormQuestionare")) {
+                formElement = formElement.parentNode;
             }
+            return formElement;
         },
 
         _createDateField: function (parentNode, isRangeField, fieldname, currentField) {

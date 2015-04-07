@@ -151,6 +151,9 @@ input::-ms-clear {
 .tableDimension2 {
     min-width: 100px;
 }
+.tableDimension2 a {
+    text-decoration:none;
+}
 .geocoder-container {
     position: relative;
     z-index: 50;

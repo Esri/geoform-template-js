@@ -196,6 +196,9 @@ define([
             $('#locateOnLoad').on('click', lang.hitch(this, function () {
                 this.currentConfig.locate = !this.currentConfig.locate;
             }));
+            $('#disableViewer').on('click', lang.hitch(this, function () {
+                this.currentConfig.disableViewer = !this.currentConfig.disableViewer;
+            }));
             this._loadResources();
             this.currentConfig = config;
 	    //This logic will convert the old array structure to equivalent object
@@ -217,6 +220,7 @@ define([
             this._enableDisableLogo();
             this._enableDisableBasemapToggle();
             this._locateCurrentLocation();
+            this._enableDisableViewer();
             //Check if the object is messed up with other type.if yes replace it with default object
             if (!this.currentConfig.locationSearchOptions.length) {
                 for (var searchOption in this.locationSearchOption) {
@@ -358,6 +362,10 @@ define([
 
         _locateCurrentLocation: function () {
             dom.byId("locateOnLoad").checked = this.currentConfig.locate;
+        },
+
+        _enableDisableViewer: function () {
+            dom.byId("disableViewer").checked = this.currentConfig.disableViewer;
         },
 
         _setTabCaption: function () {
@@ -504,14 +512,6 @@ define([
 
         _locationInputChange: function (evt) {
             this.currentConfig.locationSearchOptions[domAttr.get(evt.currentTarget, "checkedField")] = evt.currentTarget.checked;
-            if (evt.currentTarget.id === "search" && !evt.currentTarget.checked) {
-                domAttr.set(dom.byId("myLocation"), "checked", false);
-                this.currentConfig.locationSearchOptions[domAttr.get(dom.byId("myLocation"), "checkedField")] = evt.currentTarget.checked;
-            }
-            if (evt.currentTarget.id === "myLocation" && evt.currentTarget.checked) {
-                domAttr.set(dom.byId("search"), "checked", true);
-                this.currentConfig.locationSearchOptions[domAttr.get(dom.byId("search"), "checkedField")] = evt.currentTarget.checked;
-            }
         },
 
         _populateLocations: function () {
@@ -520,10 +520,6 @@ define([
                 if (this.currentConfig.locationSearchOptions.hasOwnProperty(key)) {
                     currentInput = query("input", dom.byId('location_options'))[count];
                     if (currentInput) {
-                        if (key === "enableSearch" && !this.currentConfig.locationSearchOptions[key]) {
-                            domAttr.set(dom.byId("myLocation"), "checked", false);
-                            this.currentConfig.locationSearchOptions[domAttr.get(dom.byId("myLocation"), "checkedField")] = false;
-                        }
                         if (this.currentConfig.locationSearchOptions[key]) {
                             currentInput.checked = true;
                         }
@@ -603,25 +599,35 @@ define([
                 fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [],
                 sortedFields = [],
-                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect, labelPopupContent, helpTextPopupContent, placeholderPopupContent;
+                fieldPlaceholder, fieldPlaceholderInput, fieldType, typeSelect, labelPopupContent, helpTextPopupContent, placeholderPopupContent, displayFieldInfoContent, tdFieldRadioButton, fieldRadioButtonInput;
             var formFieldsNode = dom.byId('geoFormFieldsTable');
             labelPopupContent = '<div class="form-group"><label class="text-danger">'+nls.builder.labelHelpMessage +'</label><input type="text" class="form-control" data-input-type="String" placeholder="' +nls.builder.placeHolderHintMessage +'" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             helpTextPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="text-danger">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             placeholderPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control hintBackgroundColor" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
+            displayFieldInfoContent = nls.builder.displayFieldHintText;
             $('#LabelInfo').popover({ placement: 'bottom', content: labelPopupContent, html: true, trigger: 'click' });
             $('#helpTextInfo').popover({ placement: 'bottom', content: helpTextPopupContent, html: true, trigger: 'click' });
             $('#hintTextInfo').popover({ placement: 'bottom', content: placeholderPopupContent, html: true, trigger: 'click' });
+            $('#displayFieldInfo').popover({ placement: 'bottom', content: displayFieldInfoContent, html: true, trigger: 'click' });
             on($('#LabelInfo'), 'click', lang.hitch(this, function () {
                 $("#helpTextInfo").popover('hide');
                 $("#hintTextInfo").popover('hide');
+                $("#displayFieldInfo").popover('hide');
             }));
             on($('#helpTextInfo'), 'click', lang.hitch(this, function () {
                 $("#LabelInfo").popover('hide');
                 $("#hintTextInfo").popover('hide');
+                $("#displayFieldInfo").popover('hide');
             }));
             on($('#hintTextInfo'), 'click', lang.hitch(this, function () {
                 $("#LabelInfo").popover('hide');
                 $("#helpTextInfo").popover('hide');
+                $("#displayFieldInfo").popover('hide');
+            }));
+            on($("#displayFieldInfo"), 'click', lang.hitch(this, function () {
+                $("#LabelInfo").popover('hide');
+                $("#helpTextInfo").popover('hide');
+                $("#hintTextInfo").popover('hide');
             }));
             if (formFieldsNode) {
                 domConstruct.empty(formFieldsNode);
@@ -714,6 +720,30 @@ define([
                     }
                     this._getFieldCheckboxState();
                 }));
+                tdFieldRadioButton = domConstruct.create("td", {}, fieldRow);
+                if (currentField.type === "esriFieldTypeString") {
+                    fieldRadioButtonInput = domConstruct.create("input", {
+                        className: "fieldRadiobutton",
+                        type: "radio",
+                        name: 'optionsRadios',
+                        index: currentIndex
+                    }, tdFieldRadioButton);
+                    if (this.currentConfig.selectedTitleField[layerName]) {
+                        if (currentField.name === this.currentConfig.selectedTitleField[layerName]) {
+                            fieldRadioButtonInput.checked = true;
+                        }
+                    }
+                    else {
+                        if (this.fieldInfo[layerName].displayField && currentField.name === this.fieldInfo[layerName].displayField) {
+                            fieldRadioButtonInput.checked = true;
+                            this.currentConfig.selectedTitleField[layerName] = this.fieldInfo[layerName].displayField;
+                        }
+                    }
+                    domAttr.set(fieldRadioButtonInput, "value", currentField.name);
+                    on(fieldRadioButtonInput, "change", lang.hitch(this, function (evt) {
+                        this.currentConfig.selectedTitleField[layerName] = evt.currentTarget.value;
+                    }));
+                }
 
                 fieldName = domConstruct.create("td", {
                     className: "fieldName layerFieldsName",
@@ -958,6 +988,7 @@ define([
                 this.fieldInfo[layerId].Fields = layer.fields;
                 this.fieldInfo[layerId].layerUrl = layer.url;
                 this.fieldInfo[layerId].hasAttachments = layer.hasAttachments;
+                this.fieldInfo[layerId].displayField = layer.displayField;
                 if (layer.typeIdField !== "") {
                     this.fieldInfo[layerId].types = layer.types;
                     this.fieldInfo[layerId].typeIdField = layer.typeIdField;
@@ -990,6 +1021,7 @@ define([
                     arcgisUtils.getItem(this.currentConfig.webmap).then(lang.hitch(this, function (itemInfo) {
                         this.currentConfig.fields = {};
                         this.currentConfig.form_layer.id = "";
+                        this.currentConfig.selectedTitleField = {};
                         this.currentConfig.attachmentInfo = {};
                         domConstruct.empty(dom.byId('geoFormFieldsTable'));
                         this.currentConfig.itemInfo = itemInfo;
@@ -1132,7 +1164,9 @@ define([
                 "enableBasemapToggle": this.currentConfig.enableBasemapToggle,
                 "defaultBasemap": this.currentConfig.defaultBasemap,
                 "nextBasemap": this.currentConfig.nextBasemap,
-                "locate":this.currentConfig.locate
+                "locate": this.currentConfig.locate,
+                "disableViewer": this.currentConfig.disableViewer,
+                "selectedTitleField": this.currentConfig.selectedTitleField
             };
             this.response.itemData.values = this.appSettings;
             this.response.item.tags = typeof (this.response.item.tags) == "object" ? this.response.item.tags.join(',') : this.response.item.tags;

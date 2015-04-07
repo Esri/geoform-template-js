@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Keywords" content="GeoForm, GeoForm Template, Template, Map, Esri">
+    <meta name="description" content="GeoForm is a configurable template for form based data editing of a Feature Service. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the Web Map and editable Feature Services.">
+    <meta name="author" content="esri">
+    <!-- Facebook -->
+    <meta property="og:title" content="GeoForm">
+    <meta property="og:image" content="images/item.png">
+    <meta property="og:site_name" content="esri">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- Chrome for Android -->
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <title>GeoForm</title>
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap-3.3.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.13/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.13/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" type="text/css" href="css/geocoder.css" />
+    <link rel="stylesheet" type="text/css" href="js/vendor/font-awesome-4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link id="rtlCSS" rel="stylesheet" />
+    <link href="css/select2.css" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/vendor/html5shiv.min.js"></script>
+    <script src="js/vendor/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body id="geoform" class="claro calcite app-loading">
+    <a id="top">
+        <!-- Top of page -->
+    </a>
+    <div class="loading-indicator">
+        <div class="icon-loading fa fa-spinner fa-spin"></div>
+        <div class="loading-error">
+            <div class="alert alert-danger">
+                <span class="icon-frown"></span><span id="loading_message"></span>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+        var dojoConfig = {
+            // The locationPath logic below may look confusing but all its doing is
+            // enabling us to load the api from a CDN and load local modules from the correct location.
+            packages: [{
+                name: "application",
+                location: package_path + '/js'
+            }, {
+                name: "config",
+                location: package_path + '/config'
+            }, {
+                name: "arcgis_templates",
+                location: package_path + '/..'
+            }, {
+                name: "vendor",
+                location: package_path + '/js/vendor'
+            }, {
+                name: "views",
+                location: package_path + '/views'
+            }]
+        };
+    </script>
+    <link href="css/viewer.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="//js.arcgis.com/3.13"></script>
+    <script type="text/javascript" src="js/vendor/offline/offline.min.js"></script>
+    <script type="text/javascript" src="js/offlineOptions.js"></script>
+    <script type="text/javascript" src="js/vendor/IndexedDBShim.min.js"></script>
+    <script type="text/javascript">
+        require(["config/templateConfig", "application/template", "application/viewer"], function (templateOptions, Template, viewer) {
+            // start template
+            var myTemplate = new Template(templateOptions);
+            // create my main application. Start placing your logic in the main.js file.
+            var myApp = new viewer();
+            // create my main application. Start placing your logic in the main.js file.
+            myTemplate.startup().then(function (config) {
+                //The config object contains the following properties: helper services, (optionally)
+                //i18n, appid, webmap and any custom values defined by the application.
+                //In this example we have one called theme.
+                var appResponse = config.appResponse;
+                if (config.appResponse) {
+                    delete config.appResponse;
+                }
+                // lets go!
+                myApp.startup(config, appResponse);
+            }, function (error) {
+                // something went wrong. Let's report it.
+                myApp._reportError(error);
+            });
+        });
+    </script>
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-215788-4']);
+        //_gaq.push(['_setDomainName', 'esri.com']);
+        _gaq.push(['_trackPageview']);
+        _gaq.push(['_trackPageLoadTime']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+</body>
+</html>
