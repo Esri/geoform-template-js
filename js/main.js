@@ -2,6 +2,7 @@
 /*jslint sloppy:true,nomen:true */
 define([
     "dojo/_base/declare",
+    "dojo/_base/kernel",
     "dojo/_base/lang",
     "dojo/string",
     "esri/dijit/BasemapToggle",
@@ -45,6 +46,7 @@ define([
     "dojo/domReady!"
 ], function (
     declare,
+    kernel,
     lang,
     string,
     basemapToggle,
@@ -2230,7 +2232,7 @@ define([
                     key = domAttr.get(currentField, "id");
                     if (domClass.contains(currentField, "hasDatetimepicker")) {
                         var picker = $(currentField.parentNode).data('DateTimePicker');
-                        var d = picker.getDate();
+                        var d = picker.date();
                         // need to get time of date in ms for service
                         value = d.valueOf();
                     } else {
@@ -2861,15 +2863,15 @@ define([
             on(dateInputField, "blur", function () {
                 $(this.parentElement).data("DateTimePicker").hide();
             });
-            
+
             $(parentNode).datetimepicker({
-                useSeconds: false,
                 useStrict: false,
+                locale: kernel.locale,
                 format: nls.user.dateFormat,
                 useCurrent: isDefaultDate
             }).on('dp.show', function (evt) {
                 var picker = $(this).data('DateTimePicker');
-                var selectedDate = picker.getDate();
+                var selectedDate = picker.date();
                 if (selectedDate === null) {
                     query("input", this)[0].value = "";
                 }

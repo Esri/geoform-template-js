@@ -1,4 +1,4 @@
-// Darkly 3.3.0
+// Darkly 3.3.4
 // Bootswatch
 // -----------------------------------------------------
 
@@ -26,7 +26,7 @@
   }
 
   &-brand {
-    padding: 18.5px 15px 20.5px;
+    line-height: 1;
   }
 
   &-form {
@@ -96,7 +96,9 @@ table,
   .info {
     color: #fff;
 
-    a {
+    > th > a,
+    > td > a,
+    > a {
       color: #fff;
     }
   }
@@ -275,6 +277,48 @@ textarea {
 
 .well {
   .box-shadow(none);
+}
+
+a.list-group-item {
+
+  &.active,
+  &.active:hover,
+  &.active:focus {
+    border-color: @list-group-border;
+  }
+
+  &-success {
+    &.active {
+      background-color: @state-success-bg;
+    }
+
+    &.active:hover,
+    &.active:focus {
+      background-color: darken(@state-success-bg, 5%);
+    }
+  }
+
+  &-warning {
+    &.active {
+      background-color: @state-warning-bg;
+    }
+    
+    &.active:hover,
+    &.active:focus {
+      background-color: darken(@state-warning-bg, 5%);
+    }
+  }
+
+  &-danger {
+    &.active {
+      background-color: @state-danger-bg;
+    }
+    
+    &.active:hover,
+    &.active:focus {
+      background-color: darken(@state-danger-bg, 5%);
+    }
+  }
 }
 
 .popover {

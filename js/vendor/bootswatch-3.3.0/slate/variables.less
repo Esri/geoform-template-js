@@ -1,4 +1,4 @@
-// Slate 3.3.0
+// Slate 3.3.4
 // Variables
 // --------------------------------------------------
 
@@ -99,7 +99,7 @@
 @padding-xs-vertical:       1px;
 @padding-xs-horizontal:     5px;
 
-@line-height-large:         1.33;
+@line-height-large:         1.3333333; // extra decimals for Win 8.1 Chrome
 @line-height-small:         1.5;
 
 @border-radius-base:        4px;
@@ -145,7 +145,7 @@
 @btn-font-weight:                normal;
 
 @btn-default-color:              #fff;
-@btn-default-bg:                 @navbar-default-bg;
+@btn-default-bg:                 @gray-dark;
 @btn-default-border:             @btn-default-bg;
 
 @btn-primary-color:              @btn-default-color;
@@ -187,6 +187,7 @@
 
 // TODO: Rename `@input-border-radius` to `@input-border-radius-base` in v4
 //** Default `.form-control` border radius
+// This has no effect on `<select>`s in some browsers, due to the limited stylability of `<select>`s in CSS.
 @input-border-radius:            @border-radius-base;
 //** Large `.form-control` border radius
 @input-border-radius-large:      @border-radius-large;
@@ -205,6 +206,9 @@
 @input-height-large:             (ceil(@font-size-large * @line-height-large) + (@padding-large-vertical * 2) + 2);
 //** Small `.form-control` height
 @input-height-small:             (floor(@font-size-small * @line-height-small) + (@padding-small-vertical * 2) + 2);
+
+//** `.form-group` margin
+@form-group-margin-bottom:       15px;
 
 @legend-color:                   @text-color;
 @legend-border-color:            darken(@gray-darker, 5%);
@@ -236,7 +240,7 @@
 //** Hover color for dropdown links.
 @dropdown-link-hover-color:      #fff;
 //** Hover background for dropdown links.
-@dropdown-link-hover-bg:         @dropdown-link-active-bg;
+@dropdown-link-hover-bg:         @gray-darker;
 
 //** Active dropdown menu item text color.
 @dropdown-link-active-color:     #fff;
@@ -244,10 +248,10 @@
 @dropdown-link-active-bg:        @gray-darker;
 
 //** Disabled dropdown menu item background color.
-@dropdown-link-disabled-color:   @text-muted;
+@dropdown-link-disabled-color:   @gray-light;
 
 //** Text color for headers within dropdown menus.
-@dropdown-header-color:          @text-muted;
+@dropdown-header-color:          @gray-light;
 
 //** Deprecated `@dropdown-caret-color` as of v3.1.0
 @dropdown-caret-color:           #000;
@@ -265,7 +269,8 @@
 @zindex-popover:           1060;
 @zindex-tooltip:           1070;
 @zindex-navbar-fixed:      1030;
-@zindex-modal:             1040;
+@zindex-modal-background:  1040;
+@zindex-modal:             1050;
 
 
 //== Media queries breakpoints
@@ -511,7 +516,7 @@
 //** Tooltip text color
 @tooltip-color:               #fff;
 //** Tooltip background color
-@tooltip-bg:                  rgba(0,0,0,.9);
+@tooltip-bg:                  #000;
 @tooltip-opacity:             .9;
 
 //** Tooltip arrow width
@@ -699,11 +704,11 @@
 
 //** Border color for elements within panels
 @panel-inner-border:          rgba(0, 0, 0, 0.6);
-@panel-footer-bg:             @panel-default-heading-bg;
+@panel-footer-bg:             lighten(@body-bg, 10%);
 
 @panel-default-text:          @text-color;
 @panel-default-border:        rgba(0, 0, 0, 0.6);
-@panel-default-heading-bg:    lighten(@body-bg, 10%);
+@panel-default-heading-bg:    @panel-footer-bg;
 
 @panel-primary-text:          #fff;
 @panel-primary-border:        @panel-default-border;
@@ -733,9 +738,9 @@
 //** Padding around the thumbnail image
 @thumbnail-padding:           4px;
 //** Thumbnail background color
-@thumbnail-bg:                @well-bg;
+@thumbnail-bg:                darken(@body-bg, 5%);
 //** Thumbnail border color
-@thumbnail-border:            @well-border;
+@thumbnail-border:            darken(@thumbnail-bg, 7%);
 //** Thumbnail border radius
 @thumbnail-border-radius:     @border-radius-base;
 
@@ -749,8 +754,8 @@
 //
 //##
 
-@well-bg:                     darken(@body-bg, 5%);
-@well-border:                 darken(@well-bg, 7%);
+@well-bg:                     @thumbnail-bg;
+@well-border:                 @thumbnail-border;
 
 
 //== Badges

@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Bootswatch: Free themes for Bootstrap</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="./flatly/bootstrap.css" media="screen">
     <link rel="stylesheet" href="./bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="./assets/css/bootswatch.min.css">
@@ -28,11 +29,11 @@
 
     </script>
   </head>
-  <body>
-    <div class="navbar navbar-default navbar-fixed-top">
+  <body id="home">
+    <div class="navbar navbar-default navbar-fixed-top navbar-transparent">
       <div class="container">
         <div class="navbar-header">
-          <a href="./" class="navbar-brand">Bootswatch</a>
+          <a href="./" class="navbar-brand"><img src="assets/img/logo-nav.png">Bootswatch</a>
           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -86,12 +87,12 @@
 
         <div class="row">
           <div class="col-lg-12">
-            <div><img class="logo" src="assets/img/logo.png"></div>
+            <!-- <div><img class="logo" src="assets/img/logo.png"></div> -->
             <h1>Free themes for Bootstrap</h1>
             <div id="social">
               <span>
-                <iframe id="gh-fork" src="http://ghbtns.com/github-btn.html?user=thomaspark&repo=bootswatch&type=fork" allowtransparency="true" frameborder="0" scrolling="0" width="53" height="20"></iframe>
-                <iframe id="gh-star" src="http://ghbtns.com/github-btn.html?user=thomaspark&repo=bootswatch&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+                <iframe id="gh-fork" src="//ghbtns.com/github-btn.html?user=thomaspark&repo=bootswatch&type=fork" allowtransparency="true" frameborder="0" scrolling="0" width="53" height="20"></iframe>
+                <iframe id="gh-star" src="//ghbtns.com/github-btn.html?user=thomaspark&repo=bootswatch&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
               </span>
               <span>
                 <a href="https://twitter.com/bootswatch" class="twitter-follow-button" data-show-count="false" data-show-screen-name="true">Follow @bootswatch</a>
@@ -124,12 +125,12 @@
             <p>Bootstrap themes are released under the MIT License and maintained by the community on <a target="_blank" href="https://github.com/thomaspark/bootswatch">GitHub</a>.</p>
           </div>
           <div class="col-lg-4 col-sm-6">
-            <h3><i class="fa fa-wrench"></i> Tuned for 3.3.0</h3>
-            <p>Themes are built for the latest version of Bootstrap. <a href="2/">Version 2.3.2</a> and <a target="_blank" href="https://github.com/thomaspark/bootswatch/tags">others</a> are also available to download.</p>
+            <h3><i class="fa fa-wrench"></i> Tuned for 3.3.4</h3>
+            <p>Themes are built for the latest version of Bootstrap. <a href="2/">Version 2</a> and <a target="_blank" href="https://github.com/thomaspark/bootswatch/tags">others</a> are also available to download.</p>
           </div>
           <div class="col-lg-4 col-sm-6">
             <h3><i class="fa fa-cogs"></i> Modular</h3>
-             <p>Changes are contained in just two LESS files, enabling modification and ensuring forward compatibility.</p>
+             <p>Changes are contained in just two LESS or SASS files, enabling modification and ensuring forward compatibility.</p>
           </div>
           <div class="col-lg-4 col-sm-6">
             <h3><i class="fa fa-cloud"></i> Get Plugged In</h3>
@@ -168,6 +169,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="cerulean/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cerulean', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="cerulean/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cerulean', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="cerulean/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cerulean', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="cerulean/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cerulean', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -194,6 +198,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="cosmo/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cosmo', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="cosmo/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cosmo', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="cosmo/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cosmo', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="cosmo/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cosmo', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -221,6 +228,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="cyborg/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cyborg', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="cyborg/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cyborg', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="cyborg/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cyborg', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="cyborg/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'cyborg', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -248,6 +258,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="darkly/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'darkly', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="darkly/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'darkly', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="darkly/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'darkly', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="darkly/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'darkly', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -275,6 +288,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="flatly/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'flatly', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="flatly/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'flatly', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="flatly/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'flatly', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="flatly/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'flatly', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -302,6 +318,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="journal/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'journal', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="journal/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'journal', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="journal/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'journal', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="journal/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'journal', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -328,6 +347,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="lumen/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'lumen', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="lumen/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'lumen', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="lumen/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'lumen', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="lumen/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'lumen', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -355,6 +377,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="paper/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'paper', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="paper/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'paper', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="paper/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'paper', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="paper/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'paper', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -382,6 +407,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="readable/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'readable', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="readable/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'readable', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="readable/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'readable', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="readable/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'readable', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -408,10 +436,11 @@
                     <li><a target="_blank" href="sandstone/bootstrap.css"
                       onClick="_gaq.push(['_trackEvent', 'bootswatch', 'sandstone', 'bootstrap.css']);">bootstrap.css</a></li>
                     <li class="divider"></li>
-                    <li><a target="_blank" href="sandstone/variables.less"
-                      onClick="_gaq.push(['_trackEvent', 'bootswatch', 'sandstone', 'variables.less']);">variables.less</a></li>
-                    <li><a target="_blank" href="sandstone/bootswatch.less"
-                      onClick="_gaq.push(['_trackEvent', 'bootswatch', 'sandstone', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li><a target="_blank" href="sandstone/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'sandstone', 'variables.less']);">variables.less</a></li>
+                    <li><a target="_blank" href="sandstone/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'sandstone', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="sandstone/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'sandstone', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="sandstone/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'sandstone', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -439,6 +468,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="simplex/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'simplex', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="simplex/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'simplex', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="simplex/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'simplex', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="simplex/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'simplex', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -466,6 +498,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="slate/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'slate', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="slate/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'slate', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="slate/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'slate', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="slate/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'slate', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
 
@@ -493,6 +528,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="spacelab/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'spacelab', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="spacelab/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'spacelab', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="spacelab/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'spacelab', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="spacelab/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'spacelab', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -520,6 +558,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="superhero/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'superhero', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="superhero/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'superhero', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="superhero/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'superhero', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="superhero/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'superhero', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -547,6 +588,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="united/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'united', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="united/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'united', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="united/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'united', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="united/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'united', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -574,6 +618,9 @@
                     <li class="divider"></li>
                     <li><a target="_blank" href="yeti/variables.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'yeti', 'variables.less']);">variables.less</a></li>
                     <li><a target="_blank" href="yeti/bootswatch.less" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'yeti', 'bootswatch.less']);">bootswatch.less</a></li>
+                    <li class="divider"></li>
+                    <li><a target="_blank" href="yeti/_variables.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'yeti', '_variables.scss']);">_variables.scss</a></li>
+                    <li><a target="_blank" href="yeti/_bootswatch.scss" onClick="_gaq.push(['_trackEvent', 'bootswatch', 'yeti', '_bootswatch.scss']);">_bootswatch.scss</a></li>
                   </ul>
                 </div>
               </div>
@@ -658,7 +705,7 @@
                 <h3>HTML &amp; CSS</h3>
                 <p>Jon Duckett</p>
                 <div>
-                  <img src="http://www.assoc-amazon.com/e/ir?t=bootswatch-20&amp;l=as2&amp;o=1&amp;a=1118008189" width="1" height="1" alt="" style="border:none !important; margin:0px !important; height: 1px;" />
+                  <img src="//www.assoc-amazon.com/e/ir?t=bootswatch-20&amp;l=as2&amp;o=1&amp;a=1118008189" width="1" height="1" alt="" style="border:none !important; margin:0px !important; height: 1px;" />
                   <div class="btn-group"><a class="btn btn-info" onClick="_gaq.push(['_trackEvent', 'refs', 'amazon', 'htmlandcss']);" href="http://www.amazon.com/gp/product/1118008189/ref=as_li_tf_tl?ie=UTF8&amp;tag=bootswatch-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1118008189" target="_blank">Amazon</a></div>
                 </div>
               </div>
@@ -676,7 +723,7 @@
                 <h3>Eloquent JavaScript</h3>
                 <p>Marijn Haverbeke</p>
                 <div>
-                  <img src="http://www.assoc-amazon.com/e/ir?t=bootswatch-20&amp;l=as2&amp;o=1&amp;a=1593272820" width="1" height="1" alt="" style="border:none !important; margin:0px !important; height: 1px;" />
+                  <img src="//www.assoc-amazon.com/e/ir?t=bootswatch-20&amp;l=as2&amp;o=1&amp;a=1593272820" width="1" height="1" alt="" style="border:none !important; margin:0px !important; height: 1px;" />
                   <div class="btn-group"><a class="btn btn-info" onClick="_gaq.push(['_trackEvent', 'refs', 'amazon', 'lesscss']);" href="http://www.amazon.com/gp/product/1593272820/ref=as_li_tf_tl?ie=UTF8&amp;tag=bootswatch-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1593272820" target="_blank">Amazon</a></div>
                 </div>
               </div>
@@ -694,7 +741,7 @@
                 <h3>Beautiful Web Design</h3>
                 <p>Jason Beaird</p>
                 <div>
-                  <img src="http://www.assoc-amazon.com/e/ir?t=bootswatch-20&amp;l=as2&amp;o=1&amp;a=098057689X" width="1" height="1" alt="" style="border:none !important; margin:0px !important; height: 1px;" />
+                  <img src="//www.assoc-amazon.com/e/ir?t=bootswatch-20&amp;l=as2&amp;o=1&amp;a=098057689X" width="1" height="1" alt="" style="border:none !important; margin:0px !important; height: 1px;" />
                   <div class="btn-group"><a class="btn btn-info" onClick="_gaq.push(['_trackEvent', 'refs', 'amazon', 'beautifulwebdesign']);" href="http://www.amazon.com/gp/product/098057689X/ref=as_li_tf_tl?ie=UTF8&amp;tag=bootswatch-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=098057689X" target="_blank">Amazon</a></div>
                 </div>
               </div>
@@ -721,7 +768,7 @@
               <li><a href="./help/#api">API</a></li>
               <li><a href="./help/#support">Support</a></li>
             </ul>
-            <p>Made by <a href="http://thomaspark.me" rel="nofollow">Thomas Park</a>. Contact him at <a href="mailto:thomas@bootswatch.com">thomas@bootswatch.com</a>.</p>
+            <p>Made by <a href="http://thomaspark.co" rel="nofollow">Thomas Park</a>. Contact him at <a href="mailto:thomas@bootswatch.com">thomas@bootswatch.com</a>.</p>
             <p>Code released under the <a href="https://github.com/thomaspark/bootswatch/blob/gh-pages/LICENSE">MIT License</a>.</p>
             <p>Based on <a href="http://getbootstrap.com" rel="nofollow">Bootstrap</a>. Icons from <a href="http://fortawesome.github.io/Font-Awesome/" rel="nofollow">Font Awesome</a>. Web fonts from <a href="http://www.google.com/webfonts" rel="nofollow">Google</a>.</p>
 

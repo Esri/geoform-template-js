@@ -1,4 +1,4 @@
-// Readable 3.3.0
+// Readable 3.3.4
 // Variables
 // --------------------------------------------------
 
@@ -8,11 +8,11 @@
 //## Gray and brand colors for use across Bootstrap.
 
 @gray-base:              #000;
-@gray-darker:            lighten(#000, 13.5%); // #222
-@gray-dark:              lighten(#000, 20%);   // #333
-@gray:                   lighten(#000, 33.5%); // #555
-@gray-light:             lighten(#000, 70%);   // #999
-@gray-lighter:           lighten(#000, 93.5%); // #eee
+@gray-darker:            lighten(@gray-base, 13.5%); // #222
+@gray-dark:              lighten(@gray-base, 20%);   // #333
+@gray:                   lighten(@gray-base, 33.5%); // #555
+@gray-light:             lighten(@gray-base, 70%);   // #999
+@gray-lighter:           lighten(@gray-base, 93.5%); // #eee
 
 @brand-primary:         #4582EC;
 @brand-success:         #3FAD46;
@@ -99,7 +99,7 @@
 @padding-xs-vertical:       1px;
 @padding-xs-horizontal:     5px;
 
-@line-height-large:         1.33;
+@line-height-large:         1.3333333; // extra decimals for Win 8.1 Chrome
 @line-height-small:         1.5;
 
 @border-radius-base:        4px;
@@ -187,6 +187,7 @@
 
 // TODO: Rename `@input-border-radius` to `@input-border-radius-base` in v4
 //** Default `.form-control` border radius
+// This has no effect on `<select>`s in some browsers, due to the limited stylability of `<select>`s in CSS.
 @input-border-radius:            @border-radius-base;
 //** Large `.form-control` border radius
 @input-border-radius-large:      @border-radius-large;
@@ -205,6 +206,9 @@
 @input-height-large:             (ceil(@font-size-large * @line-height-large) + (@padding-large-vertical * 2) + 2);
 //** Small `.form-control` height
 @input-height-small:             (floor(@font-size-small * @line-height-small) + (@padding-small-vertical * 2) + 2);
+
+//** `.form-group` margin
+@form-group-margin-bottom:       15px;
 
 @legend-color:                   @text-color;
 @legend-border-color:            #e5e5e5;
@@ -236,7 +240,7 @@
 //** Hover color for dropdown links.
 @dropdown-link-hover-color:      #fff;
 //** Hover background for dropdown links.
-@dropdown-link-hover-bg:         @dropdown-link-active-bg;
+@dropdown-link-hover-bg:         @component-active-bg;
 
 //** Active dropdown menu item text color.
 @dropdown-link-active-color:     #fff;
@@ -244,10 +248,10 @@
 @dropdown-link-active-bg:        @component-active-bg;
 
 //** Disabled dropdown menu item background color.
-@dropdown-link-disabled-color:   @text-muted;
+@dropdown-link-disabled-color:   @gray-light;
 
 //** Text color for headers within dropdown menus.
-@dropdown-header-color:          @text-muted;
+@dropdown-header-color:          @gray-light;
 
 //** Deprecated `@dropdown-caret-color` as of v3.1.0
 @dropdown-caret-color:           #000;
@@ -265,7 +269,8 @@
 @zindex-popover:           1060;
 @zindex-tooltip:           1070;
 @zindex-navbar-fixed:      1030;
-@zindex-modal:             1040;
+@zindex-modal-background:  1040;
+@zindex-modal:             1050;
 
 
 //== Media queries breakpoints
@@ -511,7 +516,7 @@
 //** Tooltip text color
 @tooltip-color:               #fff;
 //** Tooltip background color
-@tooltip-bg:                  rgba(0,0,0,.9);
+@tooltip-bg:                  #000;
 @tooltip-opacity:             .9;
 
 //** Tooltip arrow width
@@ -706,23 +711,23 @@
 @panel-default-heading-bg:    #f5f5f5;
 
 @panel-primary-text:          #fff;
-@panel-primary-border:        transparent;
+@panel-primary-border:        @brand-primary;
 @panel-primary-heading-bg:    @brand-primary;
 
-@panel-success-text:          @state-success-text;
-@panel-success-border:        transparent;
+@panel-success-text:          #fff;
+@panel-success-border:        @state-success-border;
 @panel-success-heading-bg:    @state-success-border;
 
-@panel-info-text:             @state-info-text;
-@panel-info-border:           transparent;
+@panel-info-text:             #fff;
+@panel-info-border:           @state-info-border;
 @panel-info-heading-bg:       @state-info-border;
 
-@panel-warning-text:          @state-warning-text;
-@panel-warning-border:        transparent;
+@panel-warning-text:          #fff;
+@panel-warning-border:        @state-warning-border;
 @panel-warning-heading-bg:    @state-warning-border;
 
-@panel-danger-text:           @state-danger-text;
-@panel-danger-border:         transparent;
+@panel-danger-text:           #fff;
+@panel-danger-border:         @state-danger-border;
 @panel-danger-heading-bg:     @state-danger-border;
 
 
