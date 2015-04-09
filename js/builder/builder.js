@@ -108,7 +108,7 @@ define([
         _loadCSS: function () {
             var cssStyle;
             cssStyle = dom.byId("rtlCSS");
-            cssStyle.href = "js/vendor/bootstrap-3.3.0-dist/css/bootstrap.rtl.css";
+            cssStyle.href = "js/vendor/bootstrap/css/bootstrap.rtl.css";
         },
 
         _swapContents:function(){
