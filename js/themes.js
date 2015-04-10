@@ -1,7 +1,13 @@
 define(
     [{
+        "id": "basic",
+        "name": "Basic Bootstrap (Default)",
+        "url": "",
+        "thumbnail": "images/themes/default.png",
+        "refUrl": "http://bootswatch.com/default/"
+    },{
         "id": "bootstrap",
-        "name": "Bootstrap (Default)",
+        "name": "Bootstrap",
         "url": "js/vendor/bootstrap/css/bootstrap-theme.min.css",
         "thumbnail": "images/themes/default.png",
         "refUrl": "http://bootswatch.com/default/"

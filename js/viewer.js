@@ -1,4 +1,4 @@
-﻿/*global $,define,document*/
+/*global $,define,document*/
 /*jslint sloppy:true,nomen:true */
 define([
         "dojo/_base/declare",
@@ -281,7 +281,7 @@ define([
             parser.parse(testTemplate);
             if (!this.config.theme) {
                 // lets use bootstrap theme!
-                this.config.theme = "bootstrap";
+                this.config.theme = "basic";
             }
             // set theme
             this._switchStyle(this.config.theme);
@@ -295,7 +295,7 @@ define([
         //Function to set the theme for application
         _switchStyle: function (themeName) {
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
-                if (themeName == currentTheme.id) {
+                if (themeName == currentTheme.id && currentTheme.url) {
                     var themeNode = domConstruct.create("link", {
                         rel: "stylesheet",
                         type: "text/css",

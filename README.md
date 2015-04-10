@@ -145,7 +145,7 @@ If you don't want them to appear, set both the application and webmap values to 
 
 Change the way this app looks by changing its theme. See the [themes.js](js/themes.js) file for all of the available options. These free themes for Bootstrap can be previewed on the [Bootswatch](http://bootswatch.com/) website.
 
-    "theme": "bootstrap",
+    "theme": "basic",
 
 #### Reset Map Extent
 

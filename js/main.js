@@ -130,7 +130,7 @@ define([
             // no theme set
             if (!this.config.theme) {
                 // lets use bootstrap theme!
-                this.config.theme = "bootstrap";
+                this.config.theme = "basic";
             }
             // set theme
             this._switchStyle(this.config.theme);
@@ -157,7 +157,7 @@ define([
             }
             // set theme to selected
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
-                if (this.config.theme == currentTheme.id) {
+                if (this.config.theme == currentTheme.id && currentTheme.url) {
                     cssStyle = domConstruct.create('link', {
                         rel: 'stylesheet',
                         type: 'text/css',
@@ -451,7 +451,7 @@ define([
         //function to set the theme for application
         _switchStyle: function (themeName) {
             array.forEach(this.themes, lang.hitch(this, function (currentTheme) {
-                if (themeName == currentTheme.id) {
+                if (themeName == currentTheme.id && currentTheme.url) {
                     var themeNode = domConstruct.create("link", {
                         rel: "stylesheet",
                         type: "text/css",
