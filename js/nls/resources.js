@@ -121,8 +121,7 @@ define({
       exceededFileCountError: "Exceeded maximum no. of attachments allowed",
       selectFileTitle: "Select a file",
       btnSelectFileText: "Select File",
-      btnViewSubmissions: "View Submissions",
-      dateFormat: "MM/DD/YYYY h:mm a"
+      btnViewSubmissions: "View Submissions"
     },
     builder: {
       invalidUser: "Sorry, you don't have permission to view this item",

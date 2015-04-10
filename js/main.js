@@ -85,7 +85,7 @@ define([
         sortedFields: [],
         isHumanEntry: null,
         currentLocation:null,
-
+        dateFormat: "LLL",
         
         startup: function () {
             var config = arguments[0];
@@ -914,12 +914,12 @@ define([
                         var inputRangeDateGroupContainer = this._addNotationIcon(formContent, "glyphicon-calendar");
                         inputContent = this._createDateField(inputRangeDateGroupContainer, true, fieldname, currentField);
                         if (currentField.defaultValue) {
-                            var rangeDefaultDate = moment(currentField.defaultValue).format(nls.user.dateFormat);
+                            var rangeDefaultDate = moment(currentField.defaultValue).format(this.dateFormat);
                             $(inputRangeDateGroupContainer).data("DateTimePicker").setDate(rangeDefaultDate);
                         }
                         rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
-                            minValue: moment(currentField.domain.minValue).format(nls.user.dateFormat),
-                            maxValue: moment(currentField.domain.maxValue).format(nls.user.dateFormat),
+                            minValue: moment(currentField.domain.minValue).format(this.dateFormat),
+                            maxValue: moment(currentField.domain.maxValue).format(this.dateFormat),
                             openStrong: "<strong>",
                             closeStrong: "</strong>"
                         });
@@ -1028,7 +1028,7 @@ define([
                 //If present fetch default values
                 if (currentField.defaultValue) {
                     if (currentField.type == "esriFieldTypeDate") {
-                        var defaultDate = moment(currentField.defaultValue).format(nls.user.dateFormat);
+                        var defaultDate = moment(currentField.defaultValue).format(this.dateFormat);
                         $(inputDateGroupContainer).data("DateTimePicker").setDate(defaultDate);
                     } else {
                         if (currentField.type == "esriFieldTypeString" && lang.trim(currentField.defaultValue) !== "") {
@@ -2867,7 +2867,7 @@ define([
             $(parentNode).datetimepicker({
                 useStrict: false,
                 locale: kernel.locale,
-                format: nls.user.dateFormat,
+                format: this.dateFormat,
                 useCurrent: isDefaultDate
             }).on('dp.show', function (evt) {
                 var picker = $(this).data('DateTimePicker');
@@ -2895,8 +2895,8 @@ define([
                 domClass.remove(query(evt.target).parents(".geoFormQuestionare")[0], "has-error");
             });
             if (isRangeField) {
-                $(parentNode).data("DateTimePicker").setMaxDate(moment(currentField.domain.maxValue).format(nls.user.dateFormat));
-                $(parentNode).data("DateTimePicker").setMinDate(moment(currentField.domain.minValue).format(nls.user.dateFormat));
+                $(parentNode).data("DateTimePicker").setMaxDate(moment(currentField.domain.maxValue).format(this.dateFormat));
+                $(parentNode).data("DateTimePicker").setMinDate(moment(currentField.domain.minValue).format(this.dateFormat));
             }
             return dateInputField;
         },
