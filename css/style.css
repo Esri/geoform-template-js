@@ -267,6 +267,10 @@ body.modal-open,
 .geoform-darkly .bootstrap-datetimepicker-widget {
     color: #333;
 }
+#geoform .select2-container{
+  color:#000;
+}
+
 /* fix for ie9 banner */
 
 #appLogo {
