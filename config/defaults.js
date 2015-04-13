@@ -67,6 +67,6 @@ define({
             "url": null
         }]
     },
-    "bitlyLogin": "esri",
-    "bitlyKey": "R_65fd9891cd882e2a96b99d4bda1be00e"
+    "bitlyLogin": "arcgis",
+    "bitlyKey": "R_b8a169f3a8b978b9697f64613bf1db6d"
 });

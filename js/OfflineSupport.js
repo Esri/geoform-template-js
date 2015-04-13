@@ -24,6 +24,7 @@ define([
             this.defaults = options;
             // create offline manager
             this.offlineFeaturesManager = O.esri.Edit.OfflineFeaturesManager();
+            this.offlineFeaturesManager.proxyPath = this.defaults.proxy;
             // enable offline attachments
             this.offlineFeaturesManager.initAttachments();
             // once layer is loaded
@@ -69,8 +70,8 @@ define([
             // edit store
             var es = new O.esri.Edit.EditStore(Graphic);
             // if we have edits
-            if (es.hasPendingEdits()) {
-                var edits = es.retrieveEditsQueue();
+            if (this.defaults.layer.pendingEditsCount()) {
+                var edits = this.defaults.layer.getAllEditsArray();
                 var total = edits.length;
                 if (total) {
                     var html = '';
@@ -103,7 +104,11 @@ define([
 
         // setup editing
         initEditor: function () {
-
+            // OPTIONAL - you can change the name of the database
+            this.offlineFeaturesManager.DBNAME = "geoform_" + this.defaults.layer.id;
+            // OPTIONAL - you can change the name of the unique identifier used by the feature service. Default is "objectid".
+            this.offlineFeaturesManager.UID = this.defaults.layer.objectIdField;
+          
             // status for pending edits
             this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, lang.hitch(this, function () {
                 this.updateStatus();
@@ -136,7 +141,7 @@ define([
             });
 
             /* extend layer with offline detection functionality */
-            this.offlineFeaturesManager.extend(this.defaults.layer);
+            this.offlineFeaturesManager.extend(this.defaults.layer, function(){});
 
             // update indicator and check status
             this.updateConnectivityIndicator();

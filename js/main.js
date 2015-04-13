@@ -1569,6 +1569,7 @@ define([
                             // support basic offline editing
                             this._offlineSupport = new OfflineSupport({
                                 map: this.map,
+                                proxy: this.config.proxyurl,
                                 layer: this._formLayer
                             });
                         }));
