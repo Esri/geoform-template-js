@@ -789,7 +789,7 @@ define([
                                         domAttr.set(selectOptions, "selected", true);
                                         domClass.add(inputContent.parentNode, "has-success");
                                         if(domClass.contains(inputContent,"filterSelect")){
-                                            $(inputContent).select2("val", currentOption.code);
+                                            $(inputContent).val(currentOption.code).trigger("change");
                                         }
                                     }
                                 }));
@@ -915,7 +915,7 @@ define([
                         inputContent = this._createDateField(inputRangeDateGroupContainer, true, fieldname, currentField);
                         if (currentField.defaultValue) {
                             var rangeDefaultDate = moment(currentField.defaultValue).format(this.dateFormat);
-                            $(inputRangeDateGroupContainer).data("DateTimePicker").setDate(rangeDefaultDate);
+                            $(inputRangeDateGroupContainer).data("DateTimePicker").date(rangeDefaultDate);
                         }
                         rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
                             minValue: moment(currentField.domain.minValue).format(this.dateFormat),
@@ -1029,7 +1029,7 @@ define([
                 if (currentField.defaultValue) {
                     if (currentField.type == "esriFieldTypeDate") {
                         var defaultDate = moment(currentField.defaultValue).format(this.dateFormat);
-                        $(inputDateGroupContainer).data("DateTimePicker").setDate(defaultDate);
+                        $(inputDateGroupContainer).data("DateTimePicker").date(defaultDate);
                     } else {
                         if (currentField.type == "esriFieldTypeString" && lang.trim(currentField.defaultValue) !== "") {
                             domAttr.set(inputContent, "value", currentField.defaultValue);
@@ -1381,8 +1381,8 @@ define([
             //For Filter Select
             array.forEach(query(".filterSelect"), lang.hitch(this, function (currentInput) {
                 if (currentInput.value) {
-                    $("#" + currentInput.id).select2("val", "");
-                    domClass.remove(currentInput.parentElement, "has-success");
+                    $("#" + currentInput.id).val("").trigger("change");
+                    domClass.remove(currentInput, "has-success");
                 }
             }));
             // each form field
@@ -2667,7 +2667,8 @@ define([
             // if we have a layer
             if (this._formLayer) {
                 // if fields not set or empty
-                if (!this.config.fields || (this.config.fields && this.config.fields.length === 0)) {
+                var isFieldsEmpty = this._isFieldsEmpty(this.config.fields);
+                if (!this.config.fields || (this.config.fields && isFieldsEmpty)) {
                     array.some(this.config.itemInfo.itemData.operationalLayers, lang.hitch(this, function (operationalLayer, index) {
                         //condition to catch the right layer from webmap
                         if (operationalLayer.id === this._formLayer.id) {
@@ -2711,6 +2712,14 @@ define([
                     this.reportError(error);
                     return;
                 }
+            }
+        },
+        _isFieldsEmpty: function (object) {
+            for (var key in object) {
+                if (object[key]) {
+                    return false;
+                }
+                return true;
             }
         },
         // set defaults for app settings
@@ -2896,8 +2905,8 @@ define([
                 domClass.remove(query(evt.target).parents(".geoFormQuestionare")[0], "has-error");
             });
             if (isRangeField) {
-                $(parentNode).data("DateTimePicker").setMaxDate(moment(currentField.domain.maxValue).format(this.dateFormat));
-                $(parentNode).data("DateTimePicker").setMinDate(moment(currentField.domain.minValue).format(this.dateFormat));
+                $(parentNode).datetimepicker('setEndDate', moment(currentField.domain.maxValue).format(this.dateFormat));
+                $(parentNode).datetimepicker('setStartDate', moment(currentField.domain.minValue).format(this.dateFormat));
             }
             return dateInputField;
         },
