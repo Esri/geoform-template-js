@@ -62,10 +62,6 @@ define([
                 },
                 {
                     "type": "css",
-                    "path": this.themes[0].url
-                },
-                {
-                    "type": "css",
                     "path": "js/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css"
                 }
          ];

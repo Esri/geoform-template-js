@@ -3,7 +3,7 @@ define(
         "id": "basic",
         "name": "Basic Bootstrap (Default)",
         "url": "",
-        "thumbnail": "images/themes/default.png",
+        "thumbnail": "images/themes/basic.png",
         "refUrl": "http://bootswatch.com/default/"
     },{
         "id": "bootstrap",
