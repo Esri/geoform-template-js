@@ -86,7 +86,7 @@ define([
         isHumanEntry: null,
         currentLocation:null,
         dateFormat: "LLL",
-        
+
         startup: function () {
             var config = arguments[0];
             var isPreview = arguments[2];
@@ -1280,7 +1280,7 @@ define([
             var inputType, inputValue, displayType = null,
                 node, typeCastedInputValue, decimal = /^[-+]?[0-9]+$/,
                 float = /^[-+]?[0-9]+\.[0-9]+$/,
-                email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
                 url = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/,
                 error;
             //To remove extra spaces
@@ -1537,7 +1537,7 @@ define([
                                 this._createForm(fields);
                                 this._resizeMap();
                             }));
-                        } 
+                        }
 			else {
                             var error = new Error(nls.user.invalidLayerMessage);
                             this.reportError(error);
@@ -2121,11 +2121,11 @@ define([
                 evt.preventDefault();
             }));
         },
-        
+
       _templateSearchOptions: function(w){
         var sources = [];
         var searchLayers;
-        //setup geocoders defined in common config 
+        //setup geocoders defined in common config
         if (this.config.helperServices.geocode) {
           var geocoders = lang.clone(this.config.helperServices.geocode);
           array.forEach(geocoders, lang.hitch(this, function(geocoder) {
@@ -2135,13 +2135,13 @@ define([
               geocoder.hasEsri = true;
               sources.push(geocoder);
             } else if (esriLang.isDefined(geocoder.singleLineFieldName)) {
-              //Add geocoders with a singleLineFieldName defined 
+              //Add geocoders with a singleLineFieldName defined
               geocoder.locator = new Locator(geocoder.url);
               sources.push(geocoder);
             }
           }));
         }
-        //Add search layers defined on the web map item 
+        //Add search layers defined on the web map item
         if (this.config.itemInfo.itemData && this.config.itemInfo.itemData.applicationProperties && this.config.itemInfo.itemData.applicationProperties.viewing && this.config.itemInfo.itemData.applicationProperties.viewing.search) {
           var searchOptions = this.config.itemInfo.itemData.applicationProperties.viewing.search;
           array.forEach(searchOptions.layers, lang.hitch(this, function(searchLayer) {
@@ -2175,7 +2175,7 @@ define([
             }
           }));
         }
-        //set the first non esri layer as active if search layers are defined. 
+        //set the first non esri layer as active if search layers are defined.
         var activeIndex = 0;
         if (searchLayers) {
           array.some(sources, function(s, index) {
@@ -2191,7 +2191,7 @@ define([
           activeSourceIndex: activeIndex
         };
       },
-      
+
         // geocoder with bootstrap
         _createGeocoderButton: function () {
             // create options
