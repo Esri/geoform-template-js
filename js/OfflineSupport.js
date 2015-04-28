@@ -103,12 +103,7 @@ define([
         },
 
         // setup editing
-        initEditor: function () {
-            // OPTIONAL - you can change the name of the database
-            this.offlineFeaturesManager.DBNAME = "geoform_" + this.defaults.layer.id;
-            // OPTIONAL - you can change the name of the unique identifier used by the feature service. Default is "objectid".
-            this.offlineFeaturesManager.UID = this.defaults.layer.objectIdField;
-          
+        initEditor: function () {          
             // status for pending edits
             this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, lang.hitch(this, function () {
                 this.updateStatus();
