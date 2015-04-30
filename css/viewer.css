@@ -385,11 +385,6 @@ a.appTitle
     overflow: hidden;
 }
 
-.pull-left
-{
-    float:none !important;
-}
-
 .mobile-locate-box-hidden
 {
     display: none;

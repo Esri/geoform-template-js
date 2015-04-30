@@ -1,4 +1,4 @@
-﻿<div>
+<div>
     <div data-dojo-type="dijit/layout/BorderContainer" id="mainContainer"
         class="mainContainer" data-dojo-props="design:'headline', gutters:false">
         <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" class="headerPanel">
@@ -7,7 +7,7 @@
                     <div class="container-fluid">
                         <div class="navbar-right">
                             <ul class="nav navbar-nav">
-                                <li class="navbar-brand hidden-xs">
+                                <li class="navbar-form hidden-xs">
                                     <div id="geocoderSearch" class="form-group"></div>
                                 </li>
                                 <li class="hidden-xs"><a href="#" id="shareDialog"><i class="fa fa-share-alt fa-lg"></i></a></li>
@@ -28,7 +28,7 @@
                         <div class="navbar-collapse" id="mobileGeocoder">
                             <div id="mobileSearch" class="mobile-locate-box-hidden">
                                 <div class="navbar navbar-inverse mobile-search-container">
-                                    <div id="geocoderMobile"></div>
+                                    <div class="pull-left"><div id="geocoderMobile"></div></div>
                                     <a id="btnCloseGeocoder" data-toggle="collapse" data-target=".navbar-responsive-collapse" class="navbar-brand close-geocoder-button">${viewer.geocoderCancelText}</a>
                                     <div class="clearfix"></div>
                                 </div>
