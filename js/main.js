@@ -400,14 +400,14 @@ define([
         },
         _questionDisplayControl: function(){
           var _affirmativeFormFields = [],
-          _neggativeFormFields = [],
+          _negativeFormFields = [],
           app = this,
           _compileCascadeFields = function(){
             $.each(app._formLayer.fields, function(i, v){
               if (v.cascade === 'affirmative'){
                 _affirmativeFormFields.push(v.name)  
-              }else if (v.cascade === 'neggative'){
-                _neggativeFormFields.push(v.name)  
+              }else if (v.cascade === 'negative'){
+                _negativeFormFields.push(v.name)  
               } 
             }); 
           };
@@ -423,8 +423,8 @@ define([
            });
          },
           //Hide all questions below the current question if response is 'no'
-          _neggativeHideQuestionsBelow = function(){
-            $.each(_neggativeFormFields, function(n, id){
+          _negativeHideQuestionsBelow = function(){
+            $.each(_negativeFormFields, function(n, id){
               if($('#' + id + 'No').is(':checked')) { 
                 $( ".geoFormQuestionare" ).has( '[id^="' + id + '"]' ).nextAll().addClass( "hide" )
               } else if($('#' + id + 'Yes').is(':checked')) { 
@@ -438,7 +438,7 @@ define([
                 _compileCascadeFields();
                 $('body').on('click', function(){
                   _affirmativeHideQuestionsBelow();
-                  _neggativeHideQuestionsBelow(); 
+                  _negativeHideQuestionsBelow(); 
                 }) 
                 clearInterval(intervalCheck);
               }
