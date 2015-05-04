@@ -64,14 +64,14 @@ html, body
 
 .legendPanelBody
 {
-    padding: 5px;
+    padding: 10px;
     display: none;
     overflow: auto;
 }
 
 .aboutusPanelBody
 {
-    padding: 5px;
+    padding: 10px;
     display: none;
     overflow: auto;
 }

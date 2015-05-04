@@ -101,7 +101,7 @@ define({
       geoformTitleText: "GeoForm",
       domainDefaultText: "Select&hellip;",
       applyEditsFailedMessage: "Sorry your entry cannot be submitted. Please try again.",
-      requiredFields: "There are some errors. Please correct them below.",
+      requiredFields: "The following field is required. Please provide a valid entry.",
       requiredField: "(required)",
       error: "Error",
       textRangeHintMessage: "${openStrong}Hint:${closeStrong} Minimum value ${minValue} and Maximum value ${maxValue}",
