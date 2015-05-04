@@ -115,7 +115,7 @@ define([
             // options object
             var options = {
                 map: this.map,
-                autoComplete: "hasEsri"
+                autoComplete: hasEsri
             };
             //If there is a valid search id and field defined add the feature layer to the geocoder array
             var searchLayers = [];
