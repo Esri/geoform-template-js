@@ -234,6 +234,9 @@ define([
                 // remove class
                 domClass.remove(dom.byId('jumbotronNode'), "jumbotron");
             }
+            //DJACOSTA EDITS
+            this._questionDisplayControl();
+            this._validateForm();
         },
         _initPreview: function (node) {
             var cssStyle;
@@ -362,6 +365,90 @@ define([
                 }
             }
         },
+          /*/////////////////
+         //DJACOSTA EDITS///
+        /////////////////*/
+        
+        /*Check if visible questions are mandatory*/
+        _validateForm: function(){
+          var app = this,
+          validationArray = [],
+          _fieldValidationArray = function(){
+            $.each(app._formLayer.fields, function(i, v){
+              if (v.mandatory === true){
+                validationArray.push(v.name)
+              }
+            });
+            return validationArray;
+          },
+          _generateValidationString = function(){
+            var string = '';
+            $.each(_fieldValidationArray(), function(n,id){
+              if (!$('[id^="' + id + '"]').parent().hasClass('hide')){
+                if (n == 0){
+                  string += '#' + id 
+                } else {
+                  string += ', #' + id
+                }
+              } 
+            });
+            return string; 
+          };
+          $('body').on('click', function(){
+            $(_generateValidationString()).parent().addClass("mandatory");
+          })
+        },
+        _questionDisplayControl: function(){
+          var _affirmativeFormFields = [],
+          _negativeFormFields = [],
+          app = this,
+          _compileCascadeFields = function(){
+            $.each(app._formLayer.fields, function(i, v){
+              if (v.cascade === 'affirmative'){
+                _affirmativeFormFields.push(v.name)  
+              }else if (v.cascade === 'negative'){
+                _negativeFormFields.push(v.name)  
+              } 
+            }); 
+          };
+          //Hide all questions below the current question if response is 'yes'
+          _affirmativeHideQuestionsBelow = function(){
+           $.each(_affirmativeFormFields, function(n, id){
+             if($('#' + id + 'Yes, [id="' + id +'Yes"]').is(':checked')) { 
+                console.log(id);
+               $( ".geoFormQuestionare" ).has( '[id^="' + id + '"]' ).nextAll().addClass( "hide" )
+             } else if($('#' + id + 'No').is(':checked')) { 
+               $( ".geoFormQuestionare" ).has( '[id^="' + id + '"]' ).nextAll().removeClass( "hide" )
+             }
+           });
+         },
+          //Hide all questions below the current question if response is 'no'
+          _negativeHideQuestionsBelow = function(){
+            $.each(_negativeFormFields, function(n, id){
+              if($('#' + id + 'No').is(':checked')) { 
+                $( ".geoFormQuestionare" ).has( '[id^="' + id + '"]' ).nextAll().addClass( "hide" )
+              } else if($('#' + id + 'Yes').is(':checked')) { 
+                $( ".geoFormQuestionare" ).has( '[id^="' + id + '"]' ).nextAll().removeClass( "hide" )
+              }
+            });
+          },
+          _init = (function(){
+            var intervalCheck = setInterval(function(){
+              if (app._formLayer !== undefined){
+                _compileCascadeFields();
+                $('body').on('click', function(){
+                  _affirmativeHideQuestionsBelow();
+                  _negativeHideQuestionsBelow(); 
+                }) 
+                clearInterval(intervalCheck);
+              }
+            }, 1000); 
+          })();
+        },
+
+          /*///////////////////////
+         ////END DJACOSTA EDITS//
+        //////////////////////*/
         reportError: function (error) {
             // remove loading class from body
             domClass.remove(document.body, "app-loading");
@@ -1578,7 +1665,7 @@ define([
                 this._createGeoformSections();
                 this.map = response.map;
                 // Disable scroll zoom handler
-		var toggle = new basemapToggle({
+        var toggle = new basemapToggle({
                     map: this.map,
                     basemap: this.config.defaultBasemap,
                     defaultBasemap: this.config.nextBasemap
@@ -1627,7 +1714,7 @@ define([
                                 this._resizeMap();
                             }));
                         } 
-			else {
+            else {
                             var error = new Error(nls.user.invalidLayerMessage);
                             this.reportError(error);
                         }
@@ -1848,7 +1935,10 @@ define([
                 var submitButtonNode = dom.byId('submitButton');
                 if (submitButtonNode) {
                     on(submitButtonNode, "click", lang.hitch(this, function () {
-                        this._submitForm();
+                        
+            
+                          this._submitForm();
+                    
                     }));
                 }
                 // set location options
@@ -2894,6 +2984,8 @@ define([
                 domConstruct.destroy(dom.byId(currentInput.name).parentNode);
             }
         },
+
+
 
         _createDateField: function (parentNode, isRangeField, fieldname, currentField) {
             domClass.add(parentNode, "date");
