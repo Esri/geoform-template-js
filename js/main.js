@@ -638,7 +638,6 @@ define([
         },
         //function to validate and create the form
         _createForm: function (fields) {
-            this._questionDisplayControl();
             domConstruct.empty(dom.byId('userForm'));
             this.sortedFields = [];
             var formContent, labelContent, matchingField, newAddedFields = [], userFormNode;
