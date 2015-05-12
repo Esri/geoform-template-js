@@ -131,7 +131,7 @@ define({
       invalidWebmapSelectionAlert2: "For More Information please refer to ${openLink}What is Feature Service?${closeLink}",
       selectFieldsText: "Select Form Fields",
       selectThemeText: "Select Form Theme",
-      setViewerText: "Set Viewer Options",
+      setViewerText: "Configure Viewer",
       webmapText: "Webmap",
       layerText: "Layer",
       detailsText: "Details",

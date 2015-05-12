@@ -388,3 +388,8 @@ body.modal-open,
 .arcgisSearch .searchGroup .searchInput {
   color: #666;
 }
+
+th .checkbox{
+  margin-top: 0;
+  margin-bottom: 0;
+}
