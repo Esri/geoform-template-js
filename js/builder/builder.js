@@ -701,6 +701,9 @@ define([
                     }
                     this._getFieldCheckboxState();
                 }));
+              
+                /*
+                // todo
                 tdFieldRadioButton = domConstruct.create("td", {}, fieldRow);
                 if (currentField.type === "esriFieldTypeString") {
                     fieldRadioButtonInput = domConstruct.create("input", {
@@ -725,6 +728,7 @@ define([
                         this.currentConfig.selectedTitleField[layerName] = evt.currentTarget.value;
                     }));
                 }
+              */
 
                 fieldName = domConstruct.create("td", {
                     className: "fieldName layerFieldsName",

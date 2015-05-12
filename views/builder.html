@@ -21,6 +21,7 @@
                 <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a>
                 </li>
                 <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a>
+                <li><a href="#viewer" class="navigationTabs" tab="viewer" data-toggle="tab">${builder.viewerText}</a>
                 </li>
                 <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a>
                 </li>
@@ -55,6 +56,7 @@
                 <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a>
                 </li>
                 <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a>
+                  <li><a href="#viewer" class="navigationTabs" tab="viewer" data-toggle="tab">${builder.viewerText}</a>
                 </li>
                 <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a>
                 </li>
@@ -130,6 +132,13 @@
                             <input type="url" class="form-control" id="detailLogoInput" placeholder="http://www.mysite.com/myimage.png">
                         </div>
                     </div>
+                  <div class="form-group">
+                       <div class="checkbox">
+                          <label for="disableLogo">
+                                <input id="disableLogo" type="checkbox" value="disableLogo" />${builder.disableLogo}</label>
+                        </div>
+                       <div class="help-block">${builder.disableLogoDescription}</div>
+                   </div>
                     <div class="form-group">
                         <label for="detailDescriptionInput">${builder.descriptionLabelText}</label>
                         <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
@@ -160,10 +169,9 @@
                                             <label><input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b></label>
                                         </div>
                                     </th>
-                                    <th class="tableDimension2">${builder.displayFieldText}<a id="displayFieldInfo" tabindex="0" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right"></a>
-                                    </th>
+
                                     <th>${builder.fieldTabFieldHeaderText}</th>
-                                    <th class="tableDimension">${builder.fieldTabLabelHeaderText}<a id="LabelInfo" tabindex="0" data-toggle="popover" class="glyphicon glyphicon-info-sign pull-right pointer"></a></th>
+                                    <th class="tableDimension">${builder.fieldTabLabelHeaderText} <a id="LabelInfo" tabindex="0" data-toggle="popover" class="glyphicon glyphicon-info-sign pointer"></a></th>
                                   <th>${builder.configure}</th>
                                 </tr>
                             </thead>
@@ -174,9 +182,38 @@
                     <div class="form-group">
                         <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
                         <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="viewer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
                     </div>
                 </div>
+              
+              
+              <div id="viewer" class="tab-pane">
+                <h2>${builder.setViewerText}</h2>
+                    <p>${builder.viewerTabText}</p>
+                <div class="form-group">
+                        <div class="checkbox">
+                           <label for="disableViewer">
+                                <input id="disableViewer" type="checkbox" value="disableViewer" />${builder.disableViewer}</label>
+                        </div>
+                        <div class="help-block">${builder.disableViewerDescription}</div>
+                    </div>
+                
+                
+                <div class="form-group">
+                <label>${builder.displayFieldText}</label> <a id="displayFieldInfo" tabindex="0" data-toggle="popover" class="glyphicon glyphicon-info-sign"></a>
+                  <select>
+                  // todo
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+                        <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="fields">${builder.previewText}</a>
+                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+                    </div>
+              </div>
+              
+              
                 <div id="style" class="tab-pane">
                     <h2>${builder.selectThemeText}</h2>
                     <p>${builder.styleTabText}</p>
@@ -224,13 +261,7 @@
                         </div>
                         <div class="help-block">${builder.defaultMapExtentDescription}</div>
                     </div>
-                     <div class="form-group">
-                       <div class="checkbox">
-                          <label for="disableLogo">
-                                <input id="disableLogo" type="checkbox" value="disableLogo" />${builder.disableLogo}</label>
-                        </div>
-                       <div class="help-block">${builder.disableLogoDescription}</div>
-                   </div>
+                     
                       <div class="form-group">
                        <div class="checkbox">
                           <label for="locateOnLoad">
@@ -245,13 +276,7 @@
                         </div>
                         <div class="help-block">${builder.enableBasemapToggleDescription}</div>
                     </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                           <label for="disableViewer">
-                                <input id="disableViewer" type="checkbox" value="disableViewer" />${builder.disableViewer}</label>
-                        </div>
-                        <div class="help-block">${builder.disableViewerDescription}</div>
-                    </div>
+            
                     <div class="form-group">
                         <label for="pushpinInput">${builder.pushpinText}</label>
                         <div class="form-inline">
