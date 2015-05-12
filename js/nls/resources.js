@@ -124,6 +124,8 @@ define({
       btnViewSubmissions: "View Submissions"
     },
     builder: {
+      configure: "Configure",
+      configureField: "Configure Field '${fieldName}'",
       invalidUser: "Sorry, you don't have permission to view this item",
       invalidWebmapSelectionAlert: "The selected webmap does not contain a valid layer to use. Please add an editable FeatureLayer into your webmap to continue.",
       invalidWebmapSelectionAlert2: "For More Information please refer to ${openLink}What is Feature Service?${closeLink}",

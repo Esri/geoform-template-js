@@ -103,9 +103,14 @@ define([
                 alert(nls.viewer.unavailableConfigMessage);
             }
             // modal i18n
-            modalTemplate = string.substitute(modalTemplate, nls);
+            var modalTemplateSub = string.substitute(modalTemplate, {
+              id: "myModal",
+              labelId: "myModalLabel",
+              title: "",
+              close: nls.user.close
+            });
             // place modal code
-            domConstruct.place(modalTemplate, document.body, 'last');
+            domConstruct.place(modalTemplateSub, document.body, 'last');
             on(dom.byId("shareDialog"), "click", lang.hitch(this, function () {
                 this._openShareModal();
             }));

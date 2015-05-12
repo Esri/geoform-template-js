@@ -104,9 +104,14 @@ define([
                 // create localstorage helper
                 this.localStorageSupport = new localStorageHelper();
                 // modal i18n
-                modalTemplate = string.substitute(modalTemplate, nls);
+                var modalTemplateSub = string.substitute(modalTemplate, {
+                  id: "myModal",
+                  title: "",
+                  labelId: "myModalLabel",
+                  close: nls.user.close
+                });
                 // place modal code
-                domConstruct.place(modalTemplate, document.body, 'last');
+                domConstruct.place(modalTemplateSub, document.body, 'last');
                 //supply either the webmap id or, if available, the item info
                 if (isPreview) {
                     this._initPreview(node);
@@ -179,7 +184,10 @@ define([
             // on iframe load
             node.onload = function () {
                 var frame = document.getElementById("iframeContainer").contentWindow.document;
-                domConstruct.place(cssStyle, frame.getElementsByTagName('head')[0], "last");
+                var h = frame.getElementsByTagName('head')[0];
+                if(h && cssStyle){
+                  domConstruct.place(cssStyle, h, "last");
+                }
             };
         },
         _submitForm: function () {
@@ -2855,6 +2863,13 @@ define([
 
         _createDateField: function (parentNode, isRangeField, fieldname, currentField) {
             domClass.add(parentNode, "date");
+            var minDate, maxDate;
+            if(currentField && currentField.preventPast){
+              minDate = new Date();
+            }
+            if(currentField && currentField.preventFuture){
+              maxDate = new Date();
+            }
             var isDefaultDate = true;
             if (isRangeField){
                 isDefaultDate = false;
@@ -2877,6 +2892,8 @@ define([
             $(parentNode).datetimepicker({
                 useStrict: false,
                 locale: kernel.locale,
+                minDate: minDate,
+                maxDate: maxDate,
                 format: this.dateFormat,
                 useCurrent: isDefaultDate
             }).on('dp.show', function (evt) {

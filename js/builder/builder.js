@@ -129,9 +129,14 @@ define([
             this.buttonConflict = $.fn.button.noConflict();
             var $tabs = $('.tab-links li');
             domClass.add($('.navigationTabs')[0], "activeTab");
-            modalTemplate = string.substitute(modalTemplate, nls);
+            var modalTemplateSub = string.substitute(modalTemplate, {
+              id: "myModal",
+              title: "",
+              labelId: "myModalLabel",
+              close: nls.user.close
+            });
             // place modal code
-            domConstruct.place(modalTemplate, document.body, 'last');
+            domConstruct.place(modalTemplateSub, document.body, 'last');
             $('.prevtab').on('click', lang.hitch(this, function () {
                 $tabs.filter('.active').prev('li').find('a[data-toggle="tab"]').tab('show');
             }));
@@ -591,7 +596,7 @@ define([
 
         //function will populate all editable fields with validations
         _populateFields: function (layerName) {
-            var fieldRow, fieldName, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
+            var fieldRow, fieldName, fieldModal, fieldModalContent, fieldConfigure, fieldConfigureButton, fieldConfigureIcon, fieldLabel, fieldLabelInput, fieldDescription, fieldDescriptionInput, fieldCheckBox,
                 fieldCheckBoxInput, layerIndex, fieldDNDIndicatorTD, fieldDNDIndicatorIcon, matchingField = false,
                 newAddedFields = [],
                 sortedFields = [],
@@ -601,30 +606,8 @@ define([
             helpTextPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="text-danger">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             placeholderPopupContent = '<div class="form-group"><label>' + nls.builder.labelHelpMessage + '</label><input type="text" class="form-control hintBackgroundColor" data-input-type="String" placeholder="' + nls.builder.placeHolderHintMessage + '" data-display-type="text"><p class="help-block">' + nls.builder.placeHolderHelpMessage + '</p></div>';
             displayFieldInfoContent = nls.builder.displayFieldHintText;
-            $('#LabelInfo').popover({ placement: 'bottom', content: labelPopupContent, html: true, trigger: 'click' });
-            $('#helpTextInfo').popover({ placement: 'bottom', content: helpTextPopupContent, html: true, trigger: 'click' });
-            $('#hintTextInfo').popover({ placement: 'bottom', content: placeholderPopupContent, html: true, trigger: 'click' });
-            $('#displayFieldInfo').popover({ placement: 'bottom', content: displayFieldInfoContent, html: true, trigger: 'click' });
-            on($('#LabelInfo'), 'click', lang.hitch(this, function () {
-                $("#helpTextInfo").popover('hide');
-                $("#hintTextInfo").popover('hide');
-                $("#displayFieldInfo").popover('hide');
-            }));
-            on($('#helpTextInfo'), 'click', lang.hitch(this, function () {
-                $("#LabelInfo").popover('hide');
-                $("#hintTextInfo").popover('hide');
-                $("#displayFieldInfo").popover('hide');
-            }));
-            on($('#hintTextInfo'), 'click', lang.hitch(this, function () {
-                $("#LabelInfo").popover('hide');
-                $("#helpTextInfo").popover('hide');
-                $("#displayFieldInfo").popover('hide');
-            }));
-            on($("#displayFieldInfo"), 'click', lang.hitch(this, function () {
-                $("#LabelInfo").popover('hide');
-                $("#helpTextInfo").popover('hide');
-                $("#hintTextInfo").popover('hide');
-            }));
+            $('#LabelInfo').popover({ placement: 'bottom', content: labelPopupContent, html: true, trigger: 'focus' });
+            $('#displayFieldInfo').popover({ placement: 'bottom', content: displayFieldInfoContent, html: true, trigger: 'focus' });
             if (formFieldsNode) {
                 domConstruct.empty(formFieldsNode);
             }
@@ -635,7 +618,9 @@ define([
             $(document).ready(function () {
                 var tbody = $('#geoFormFieldsTable');
                 if (tbody) {
-                    tbody.sortable();
+                    tbody.sortable({
+                      handle: ".drag-cursor"
+                    });
                 }
             });
 
@@ -747,41 +732,107 @@ define([
                     index: currentIndex
                 }, fieldRow);
                 fieldLabel = domConstruct.create("td", {}, fieldRow);
-                fieldLabelInput = domConstruct.create("input", {
+              
+              fieldLabelInput = domConstruct.create("input", {
                     className: "form-control fieldLabel",
                     index: currentIndex,
                     value: currentField.alias
                 }, fieldLabel);
-                fieldDescription = domConstruct.create("td", {}, fieldRow);
+              
+                
+              
+                fieldConfigure = domConstruct.create("td", {}, fieldRow);
+              
+                fieldConfigureButton = domConstruct.create("span", {
+                    className: "btn btn-default"
+                }, fieldConfigure);
+              
+                fieldConfigureIcon = domConstruct.create("span", {
+                    className: "glyphicon glyphicon-cog"
+                }, fieldConfigureButton);
+              
+                on(fieldConfigureButton, "click", function(){
+                  $("#configure_modal_" + currentIndex).modal("show");
+                });
+              
+              
+              
+              
+              fieldModal = domConstruct.create("div", {
+                innerHTML: string.substitute(modalTemplate, {
+                  id: "configure_modal_" + currentIndex,
+                  labelId: "configure_modal_label_" + currentIndex,
+                  title: string.substitute(nls.builder.configureField, { fieldName: currentField.name}),
+                  close: nls.user.close
+                })
+              }, fieldConfigure);
+              
+              fieldModalContent = dom.byId("configure_modal_" + currentIndex + "_modal_body");
+              
+                var descriptionControl = domConstruct.create("div", {
+                   className: "form-group"
+                }, fieldModalContent);
+              
+                 domConstruct.create("label", {
+                   innerHTML: nls.builder.fieldDescriptionLabelText
+                }, descriptionControl);
+              
+                domConstruct.create("span", {
+                   innerHTML: " <a tabindex=\"0\" data-toggle=\"popover\" class=\"helpTextInfo glyphicon glyphicon-info-sign\"></a>"
+                }, descriptionControl);
+                
+ 
                 fieldDescriptionInput = domConstruct.create("input", {
                     className: "form-control fieldDescription",
-                    value: ""
-                }, fieldDescription);
-                fieldPlaceholder = domConstruct.create("td", {}, fieldRow);
-
+                    value: currentField.fieldDescription || ""
+                }, descriptionControl);
+              
+              
+  
                 if (!currentField.domain) {
+                  
+                  var hintControl = domConstruct.create("div", {
+                   className: "form-group"
+                }, fieldModalContent);
+                  
+                  domConstruct.create("label", {
+                   innerHTML: nls.builder.fieldTabPlaceHolderHeaderText
+                }, hintControl);
+                  
+                  domConstruct.create("span", {
+                   innerHTML: " <a tabindex=\"0\" data-toggle=\"popover\" class=\"hintTextInfo glyphicon glyphicon-info-sign\"></a>"
+                }, hintControl);
+                  
                     fieldPlaceholderInput = domConstruct.create("input", {
                         className: "form-control fieldPlaceholder",
                         index: currentIndex
-                    }, fieldPlaceholder);
+                    }, hintControl);
                     if (currentField.tooltip) {
                         fieldPlaceholderInput.value = currentField.tooltip;
                     }
                 }
-                fieldType = domConstruct.create("td", {}, fieldRow);
+              
+              var displayAsControl = domConstruct.create("div", {
+                   className: "form-group"
+                }, fieldModalContent);
+                
+                domConstruct.create("label", {
+                   innerHTML: nls.builder.fieldTabDisplayTypeHeaderText
+                }, displayAsControl);
+              
                 if (currentField.type === "esriFieldTypeDate") {
                     domConstruct.create("input", {
                         "class": "form-control",
                         "value": nls.builder.selectDateOption,
                         "disabled": "disabled"
-                    }, fieldType);
+                    }, displayAsControl);
                     return;
                 }
                 if ((currentField.domain && currentField.domain.codedValues) || (currentField.name === this.fieldInfo[layerName].typeIdField)) {
                     if ((currentField.domain && currentField.domain.codedValues && currentField.domain.codedValues.length <= 4) || (currentField.name === this.fieldInfo[layerName].typeIdField && this.fieldInfo[layerName].types && this.fieldInfo[layerName].types.length <= 4)) {
                         typeSelect = domConstruct.create("select", {
                             "class": "form-control displayType"
-                        }, fieldType);
+                        }, displayAsControl);
                         domConstruct.create("option", {
                             innerHTML: nls.builder.selectMenuOption,
                             value: "dropdown"
@@ -794,7 +845,7 @@ define([
                     else {
                         typeSelect = domConstruct.create("select", {
                             "class": "form-control displayType"
-                        }, fieldType);
+                        }, displayAsControl);
                         domConstruct.create("option", {
                             innerHTML: nls.builder.selectMenuOption,
                             value: "dropdown"
@@ -809,7 +860,7 @@ define([
                         if (currentField.type == "esriFieldTypeSmallInteger" || currentField.type == "esriFieldTypeInteger" || currentField.type == "esriFieldTypeSingle" || currentField.type == "esriFieldTypeDouble") {
                             typeSelect = domConstruct.create("select", {
                                 "class": "form-control displayType"
-                            }, fieldType);
+                            }, displayAsControl);
                             domConstruct.create("option", {
                                 innerHTML: nls.builder.selectTextOption,
                                 value: "textbox"
@@ -832,7 +883,7 @@ define([
                             if (currentField.type == "esriFieldTypeString" && currentField.length >= 20) {
                                 typeSelect = domConstruct.create("select", {
                                     "class": "form-control displayType"
-                                }, fieldType);
+                                }, displayAsControl);
                                 domConstruct.create("option", {
                                     innerHTML: nls.builder.selectTextOption,
                                     value: "text"
@@ -855,7 +906,7 @@ define([
                                     "class": "form-control",
                                     "value": nls.builder.selectTextOption,
                                     "disabled": "disabled"
-                                }, fieldType);
+                                }, displayAsControl);
                             }
                         }
                     }
@@ -864,7 +915,7 @@ define([
                             "class": "form-control",
                             "value": nls.builder.selectRangeOption,
                             "disabled": "disabled"
-                        }, fieldType);
+                        }, displayAsControl);
 
                     }
                 }
@@ -881,9 +932,11 @@ define([
                     });
                 }
                 domAttr.set(fieldLabelInput, "value", currentField.alias);
+              
                 if (currentField.fieldDescription) {
                     domAttr.set(fieldDescriptionInput, "value", currentField.fieldDescription);
                 }
+              
             }));
             if (query(".fieldCheckbox:checked").length == query(".fieldCheckbox").length) {
                 dom.byId('selectAll').checked = true;
@@ -899,15 +952,17 @@ define([
                     this.currentConfig.attachmentInfo[layerName].attachmentLabel = "";
                     this.currentConfig.attachmentInfo[layerName].attachmentHelpText = "";
                 }
-                this.currentConfig.attachmentInfo[layerName].enableAttachments ? this.currentConfig.attachmentInfo[layerName].enableAttachments : true;
-                this.currentConfig.attachmentInfo[layerName].attachmentIsRequired ? this.currentConfig.attachmentInfo[layerName].attachmentIsRequired : false;
-                this.currentConfig.attachmentInfo[layerName].attachmentLabel ? this.currentConfig.attachmentInfo[layerName].attachmentLabel : "";
-                this.currentConfig.attachmentInfo[layerName].attachmentHelpText ? this.currentConfig.attachmentInfo[layerName].attachmentHelpText : "";
+                this.currentConfig.attachmentInfo[layerName].enableAttachments = this.currentConfig.attachmentInfo[layerName].enableAttachments ? this.currentConfig.attachmentInfo[layerName].enableAttachments : true;
+                this.currentConfig.attachmentInfo[layerName].attachmentIsRequired = this.currentConfig.attachmentInfo[layerName].attachmentIsRequired ? this.currentConfig.attachmentInfo[layerName].attachmentIsRequired : false;
+                this.currentConfig.attachmentInfo[layerName].attachmentLabel = this.currentConfig.attachmentInfo[layerName].attachmentLabel ? this.currentConfig.attachmentInfo[layerName].attachmentLabel : "";
+                this.currentConfig.attachmentInfo[layerName].attachmentHelpText = this.currentConfig.attachmentInfo[layerName].attachmentHelpText ? this.currentConfig.attachmentInfo[layerName].attachmentHelpText : "";
                 this._createAttachmentInput(this.fieldInfo[layerName].layerUrl, this.currentConfig.attachmentInfo[layerName], this.fieldInfo[layerName].hasAttachments);
             }
             var currentLayer = [];
             currentLayer[layerName] = lang.clone(formFieldsNode);
             this.currentSelectedLayer = currentLayer[layerName];
+          $('.helpTextInfo').popover({content: helpTextPopupContent, html: true, trigger: 'focus' });
+            $('.hintTextInfo').popover({ content: placeholderPopupContent, html: true, trigger: 'focus' });
         },
 
         //To make the configured type as selected
@@ -1307,6 +1362,12 @@ define([
             }
             domAttr.set(currentTab, "data-toggle", "");
         },
+      
+      _currentFieldVisible: function(currentField){
+        if (!currentField.visible) {
+            return true;
+        }
+      },
 
         _getFieldCheckboxState: function () {
             array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
@@ -1314,12 +1375,10 @@ define([
                     if (this.config.form_layer.id == nls.builder.allLayerSelectOptionText) {
                       var isFieldEmpty = false;
                         for (var layerId in this.config.fields) {
-                            array.some(this.config.fields[layerId], lang.hitch(this, function (currentField) {
-                                if (!currentField.visible) {
-                                    isFieldEmpty = true;
-                                    return true;
-                                }
-                            }));
+                            var val = array.some(this.config.fields[layerId], lang.hitch(this, this._currentFieldVisible));
+                          if(val){
+                            isFieldEmpty = true; 
+                          }
                         }
                         if (isFieldEmpty) {
                             this._disableTab(currentTab);
