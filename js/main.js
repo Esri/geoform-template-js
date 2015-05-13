@@ -2458,8 +2458,8 @@ define([
 
             for (var i = 0; i < fileList.length; i++) {
                 fileUploadStatusMsgLi = domConstruct.create("li", { "class": "message alert alert-info fileInputUI" }, fileUploadStatusMsgUl);
-                fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right file-upload-status-badge glyphicon glyphicon-upload", "innerHTML": nls.user.uploadingBadge, "id": "badge" + i }, fileUploadStatusMsgLi);
-                fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "right hide attachment-error-message", "innerHTML": nls.user.errorBadge }, fileUploadStatusMsgLi);
+                fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "pull-right file-upload-status-badge glyphicon glyphicon-upload", "innerHTML": nls.user.uploadingBadge, "id": "badge" + i }, fileUploadStatusMsgLi);
+                fileUploadStatusMsgBadge = domConstruct.create("span", { "class": "pull-right hide attachment-error-message", "innerHTML": nls.user.errorBadge }, fileUploadStatusMsgLi);
                 fileUploadStatusMsgLi.innerHTML += fileList[i].value.split('\\').pop();
                 domAttr.set(dom.byId("badge" + i), "data-badge", fileList[i].id);
             }
