@@ -269,7 +269,7 @@ define([
             }
             on(dom.byId("selectLayer"), "change", lang.hitch(this, function (evt) {
                 //support for all layers in webmap
-                if (evt.currentTarget.value === nls.builder.allLayerSelectOptionText) {
+                if (evt.currentTarget.value === "all") {
                     domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
                     array.forEach(dom.byId("layerSelect").options, lang.hitch(this, function (opt) {
                         this._populateFields(opt.value);
@@ -277,7 +277,7 @@ define([
                         this.previousValue = opt.value;
                     }));
                     dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
-                    this.currentConfig.form_layer.id = nls.builder.allLayerSelectOptionText;
+                    this.currentConfig.form_layer.id = "all";
                     $("#ShowHideLayerOption")[0].checked = false;
                     $("#ShowHideLayerOption")[0].disabled = true;
                 } else if (evt.currentTarget.value !== "") {
@@ -440,7 +440,7 @@ define([
                         domAttr.set(dom.byId("selectLayer"), "disabled", false);
                         domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
                         dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
-                        this.currentConfig.form_layer.id = nls.builder.allLayerSelectOptionText;
+                        this.currentConfig.form_layer.id = "all";
                     } else {
                         this.previousValue = this.currentConfig.form_layer.id;
 
@@ -552,7 +552,7 @@ define([
 
         _populateShowLayerOption: function (showlayeropt) {
             array.some(dom.byId("selectLayer").options, function (currentElement) {
-                if (currentElement.value === nls.builder.allLayerSelectOptionText && currentElement.selected) {
+                if (currentElement.value === "all" && currentElement.selected) {
                         $("#ShowHideLayerOption")[0].checked = false;
                         $("#ShowHideLayerOption")[0].disabled = true;
                         return true;
@@ -996,33 +996,30 @@ define([
         },
 
         _checkForLayers: function () {
-            var filteredLayer = document.createElement("option");
-            if (dom.byId("selectLayer").options.length > 2) {
-                var fLayer = document.createElement("option");
-                filteredLayer.text = fLayer.text = nls.builder.allLayerSelectOptionText;
-                filteredLayer.value = fLayer.value = nls.builder.allLayerSelectOptionText;
-                dom.byId("selectLayer").appendChild(filteredLayer);
+            if (!this.currentConfig.form_layer.id) {
+              this.currentConfig.form_layer.id = "all";
             }
-            if (this.currentConfig.form_layer.id == nls.builder.allLayerSelectOptionText) {
+            var filteredLayer = document.createElement("option");
+            filteredLayer.text = nls.builder.allLayerSelectOptionText;
+            filteredLayer.value = "all";
+            domConstruct.place(filteredLayer, dom.byId("selectLayer"), "first");
+            array.some(dom.byId("selectLayer").options, lang.hitch(this, function (currentOption) {
+                if (currentOption.value == this.currentConfig.form_layer.id) {
+                    currentOption.selected = true;
+                    return true;
+                }
+            }));
+            if (this.currentConfig.form_layer.id == "all") {
                 domStyle.set(dom.byId("layerSelectPane"), "display", "block");
-                filteredLayer.selected = true;
                 for (var key in this.fieldInfo) {
                     this._populateFields(key);
                 }
-            } else {
-                if (this.currentConfig.form_layer.id !== "") {
-                    array.some(dom.byId("selectLayer").options, lang.hitch(this, function (currentOption) {
-                        if (currentOption.value == this.currentConfig.form_layer.id) {
-                            currentOption.selected = true;
-                            return true;
-                        }
-
-
-                    }));
-                    this._populateFields(this.currentConfig.form_layer.id);
-                    domStyle.set(dom.byId("layerSelectPane"), "display", "none");
-                }
             }
+            else{
+              this._populateFields(this.currentConfig.form_layer.id);
+              domStyle.set(dom.byId("layerSelectPane"), "display", "none");
+            }
+          
         },
 
         //function to filter editable layers from all the layers in webmap
@@ -1151,7 +1148,7 @@ define([
                 this.currentConfig.details.Description = $('#detailDescriptionInput').code();
                 break;
             case "fields":
-                    if (layerObj !== nls.builder.allLayerSelectOptionText) {
+                    if (layerObj !== "all") {
                     var innerObj = [];
                     var fieldName, fieldLabel, fieldDescription, visible;
                     this.currentSelectedLayer[layerObj] = dom.byId('geoFormFieldsTable');
@@ -1374,7 +1371,7 @@ define([
         _getFieldCheckboxState: function () {
             array.forEach(query(".navigationTabs"), lang.hitch(this, function (currentTab) {
                 if ((domAttr.get(currentTab, "tab") === "preview" || domAttr.get(currentTab, "tab") === "publish") && (query(".fieldCheckbox:checked").length === 0)) {
-                    if (this.config.form_layer.id == nls.builder.allLayerSelectOptionText) {
+                    if (this.config.form_layer.id == "all") {
                       var isFieldEmpty = false;
                         for (var layerId in this.config.fields) {
                             var val = array.some(this.config.fields[layerId], lang.hitch(this, this._currentFieldVisible));

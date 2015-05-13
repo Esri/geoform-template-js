@@ -620,7 +620,7 @@ define([
                     this._reportError(error);
                 }
             }
-            if (this.config.form_layer.id === nls.user.selectedLayerText) {
+            if (this.config.form_layer.id === "all") {
                 var deferredListArray = [];
                 domAttr.set(dom.byId("layerSelectBox"), 'display', 'block');
                 this.layerCollection = {};

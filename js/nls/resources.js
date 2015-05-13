@@ -236,7 +236,7 @@ define({
       locateOnLoadText: "Locate On Load",
       locateOnLoadDescription: "You can configure the GeoForm to use the current location on page load",
       selectLayerFieldTabText: "Select Layer",
-      allLayerSelectOptionText: "All",
+      allLayerSelectOptionText: "All Layers",
       disableViewer: "Disable Viewer",
       disableViewerDescription: "You can configure the GeoForm to disable/enable the viewer",
       displayFieldHintText: "Selected display field will be shown in the viewer as a title"

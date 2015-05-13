@@ -1525,7 +1525,7 @@ define([
                 if (this.config.details && this.config.details.Title) {
                     window.document.title = this.config.details.Title;
                 }
-                if (this.config.form_layer.id == nls.user.selectedLayerText) {
+                if (this.config.form_layer.id == "all") {
                     var webmapLayers, deferredListArray = [];
                     this.layerCollection = {};
                     webmapLayers = domConstruct.create("select", { "class": "form-control selectDomain allLayerList" }, dom.byId("multipleLayers"));
@@ -1866,7 +1866,7 @@ define([
         },
         _createGeoformSections: function () {
             array.forEach(query(".geoformSection"), lang.hitch(this, function (currentSection, index) {
-                if (this.config.form_layer.id === nls.user.selectedLayerText) {
+                if (this.config.form_layer.id === "all") {
                     currentSection.innerHTML = string.substitute(currentSection.innerHTML, { formSection: ++index + "." });
                 } else {
                     if (index !== 0) {
@@ -2715,7 +2715,7 @@ define([
                     this.config.fields[this._formLayer.id] = fieldsArray;
                 }
             } else {
-                if (this.config.form_layer.id !== nls.user.selectedLayerText) {
+                if (this.config.form_layer.id !== "all") {
                     error = new Error(nls.user.invalidLayerMessage);
                     this.reportError(error);
                     return;
