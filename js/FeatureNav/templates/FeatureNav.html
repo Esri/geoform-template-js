@@ -1,0 +1,35 @@
+<div class="${theme}">
+  <div class="${css.panel} ${css.panelDefault}">
+    <div class="${css.panelBody}">
+      <div class="${css.form}">
+        <div class="${css.formGroup}" data-dojo-attach-point="_layerArea">
+          <label for="${id}_select_layer">${_i18n.layer}</label>
+          <select id="${id}_select_layer" class="${css.formControl}" data-dojo-attach-point="_layerNode"></select>
+          </span>
+        </div>
+        <div class="${css.formGroup}">
+          <label for="${id}_search">${_i18n.search}</label>
+          <div class="${css.inputGroup}">
+            <input data-dojo-attach-point="_searchInputNode" id="${id}_search" value="${searchTerm}" type="text" class="${css.formControl}" placeholder="${_i18n.searchPlaceholder}">
+            <span class="${css.inputGroupBtn}">
+              <span data-dojo-attach-point="_searchBtnNode" class="${css.btn} ${css.btnDefault}"><span class="${css.glyphIcon} ${css.search}"></span></span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="${css.formInline}">
+        <div class="${css.formGroup}">
+          <span data-dojo-attach-point="_sortFieldArea">
+          <label for="${id}_sort_label">${_i18n.sort}</label>
+          <select id="${id}_sort_label" class="${css.formControl}" data-dojo-attach-point="_sortNode"></select></span>
+        </div>
+        <div class="${css.formGroup}">
+          <label for="${id}_sort_order">${_i18n.order}</label>
+          <span tabindex="0" id="${id}_sort_order" class="${css.btn} ${css.btnDefault}" data-dojo-attach-point="_orderNode"><span class="${css.glyphIcon}" data-dojo-attach-point="_orderIconNode"></span> <span data-dojo-attach-point="_orderTextNode"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div data-dojo-attach-point="_resultsNode"></div>
+  <div data-dojo-attach-point="_paginationNode"></div>
+</div>
