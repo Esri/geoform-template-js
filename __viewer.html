@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="Keywords" content="GeoForm, GeoForm Template, Template, Map, Esri">
+  <meta name="description" content="GeoForm is a configurable template for form based data editing of a Feature Service. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the Web Map and editable Feature Services.">
+  <meta name="author" content="esri">
+  <!-- Facebook -->
+  <meta property="og:title" content="GeoForm">
+  <meta property="og:image" content="images/item.png">
+  <meta property="og:site_name" content="esri">
+  <!-- Chrome for Android -->
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <title>GeoForm</title>
+  <!-- Bootstrap core CSS -->
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+  <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.14/esri/css/esri.css">
+  <link rel="stylesheet" type="text/css" href="//jsdev.arcgis.com/3.14/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" type="text/css" href="js/vendor/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/__viewer.css">
+  <link id="rtlCSS" rel="stylesheet" />
+  <link href="js/vendor/select2/select2.min.css" rel="stylesheet" />
+  <link href="js/vendor/touch-spinner/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css" />
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+    <script src="js/vendor/html5shiv.min.js"></script>
+    <script src="js/vendor/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body id="geoform" class="claro app-loading">
+  <a id="top">
+    <!-- Top of page -->
+  </a>
+  <div class="loading-indicator">
+    <div class="icon-loading fa fa-spinner fa-spin"></div>
+    <div class="loading-error">
+      <div class="alert alert-danger"><span class="icon-frown"></span> <span id="loading_message"></span>
+      </div>
+    </div>
+  </div>
+  <div id="fullscreen_container" class="fullscreen-container"></div>
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">GeoForm</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">Share</a>
+          </li>
+        </ul>
+        <div class="navbar-form navbar-right">
+          <div class="btn btn-primary">Submit a report</div>
+        </div>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+  </nav>
+
+
+  <div class="container-fluid">
+
+    <div class="row">
+
+      <div class="col-sm-12 col-md-8">
+        <div class="map panel panel-default">
+          <div id="mapDiv" class="map">
+
+
+          </div>
+        </div>
+
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div id="popup_title"></div>
+          </div>
+          <div class="panel-body">
+
+            <div id="popup_content"></div>
+          </div>
+          <div class="panel-footer hidden" id="feature_pagination">
+
+            <span class="btn-group" role="group">
+          <span id="previous" class="btn btn-default"><span data-page="disabled" aria-hidden="true" class="glyphicon glyphicon-menu-left"></span></span><span class="btn btn-default" id="next"><span data-page="disabled" aria-hidden="true" class="glyphicon glyphicon-menu-right"></span></span>
+            </span>
+
+            <span id="feature_count"></span>
+
+
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-sm-12 col-md-4">
+        <div class="tabbable">
+          <div style="margin:0 0 10px 0;">
+            <ul class="nav nav-pills">
+              <li role="presentation" class="active"><a data-toggle="tab" href="#reports"><span class="glyphicon glyphicon-map-marker"></span> Reports</a>
+              </li>
+              <li role="presentation"><a data-toggle="tab" href="#legend"><span class="glyphicon glyphicon-list "></span> Legend</a>
+              </li>
+              <li role="presentation"><a data-toggle="tab" href="#about"><span class="glyphicon glyphicon-info-sign"></span> About</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="reports">
+              <div id="featureNav"></div>
+            </div>
+            <div class="tab-pane" id="legend">
+
+            </div>
+            <div class="tab-pane" id="about">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+    var dojoConfig = {
+      // The locationPath logic below may look confusing but all its doing is
+      // enabling us to load the api from a CDN and load local modules from the correct location.
+      packages: [{
+        name: "application",
+        location: package_path + '/js'
+            }, {
+        name: "config",
+        location: package_path + '/config'
+            }, {
+        name: "arcgis_templates",
+        location: package_path + '/..'
+            }, {
+        name: "vendor",
+        location: package_path + '/js/vendor'
+            }, {
+        name: "views",
+        location: package_path + '/views'
+            }]
+    };
+  </script>
+  <script type="text/javascript" src="//jsdev.arcgis.com/3.14"></script>
+  <script type="text/javascript" src="js/vendor/offline/offline.min.js"></script>
+  <script type="text/javascript" src="js/offlineOptions.js"></script>
+  <script type="text/javascript" src="js/vendor/IndexedDBShim.min.js"></script>
+  <script type="text/javascript">
+    require(["config/templateConfig", "application/template", "application/__viewer"], function (templateOptions, Template, Viewer) {
+      // start template
+      var myTemplate = new Template(templateOptions);
+      // create my main application. Start placing your logic in the main.js file.
+      var myApp = new Viewer();
+      // create my main application. Start placing your logic in the main.js file.
+      myTemplate.startup().then(function (config) {
+        //The config object contains the following properties: helper services, (optionally)
+        //i18n, appid, webmap and any custom values defined by the application.
+        //In this example we have one called theme.
+        var appResponse = config.appResponse;
+        if (config.appResponse) {
+          delete config.appResponse;
+        }
+        if (config.edit && config.appid) {
+          // get the app builder code
+          require(["application/builder/builder"], function (builderMode) {
+            // create configuration app builder
+            var builder = new builderMode(config, appResponse);
+            // start it
+            builder.startup().otherwise(function (error) {
+              // something went wrong. Let's report it.
+              myApp.reportError(error);
+            });
+          });
+        } else {
+          // lets go!
+          myApp.startup(config, appResponse);
+        }
+      }, function (error) {
+        // something went wrong. Let's report it.
+        myApp.reportError(error);
+      });
+    });
+  </script>
+  <!-- Google Analytics -->
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-215788-4']);
+    //_gaq.push(['_setDomainName', 'esri.com']);
+    _gaq.push(['_trackPageview']);
+    _gaq.push(['_trackPageLoadTime']);
+    (function () {
+      var ga = document.createElement('script');
+      ga.type = 'text/javascript';
+      ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</body>
+</html>
