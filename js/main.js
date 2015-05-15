@@ -1770,12 +1770,9 @@ define([
                 }
                 //disable viewSubmissionsButton
                 if (this.config.disableViewer) {
-                    domAttr.set(dom.byId("viewSubmissionsButton"), 'disabled', 'disabled');
+                    domClass.add(dom.byId("viewSubmissionsButton"), 'hidden');
                 }
-                //Open Viewer Mode
-                on(dom.byId("viewSubmissionsButton"), "click", lang.hitch(this, function () {
-                    this._viewSubmissions();
-                }));
+                domAttr.set(dom.byId("viewSubmissionsButton"), "href", this._viewSubmissions());
                 // set location options
                 this._populateLocationsOptions();
                 // resize map
@@ -1802,11 +1799,14 @@ define([
 
         //this function opens viewer page
         _viewSubmissions: function(){
-                var urlString = "viewer.html";
-                if (this.config.appid) {
-                    urlString += "?appid=" + this.config.appid;
-                }
-                window.location.assign(urlString);
+          var urlString = "viewer.html";
+          if (this.config.appid) {
+            urlString += "?appid=" + this.config.appid;
+          }
+          else if(this.config.webmap){
+            urlString += "?webmap=" + this.config.webmap;
+          }
+          return urlString;
         },
 
         //this function ensures that the layer is either loaded or throws an error in console naming the layer that did not load successfully
@@ -2429,9 +2429,7 @@ define([
             this._ShareModal.startup();
             // show modal
             $("#myModal").modal('show');
-            on(dom.byId("viewSubmissionsOption"), "click", lang.hitch(this, function () {
-                this._viewSubmissions();
-            }));
+            domAttr.set(dom.byId("viewSubmissionsOption"), "href", this._viewSubmissions());
         },
         // error modal content
         _openErrorModal: function () {
@@ -2532,13 +2530,14 @@ define([
                 className: "form-control",
                 id: "shareMapUrlText"
             }, group);
-            domConstruct.create("button", {
+            domConstruct.create("a", {
                 className: "btn btn-default pull-left",
+                href: "#",
                 id: "viewSubmissionsOption",
                 innerHTML: nls.user.btnViewSubmissions
             }, query(".modal-footer")[0]);
             if (this.config.disableViewer) {
-                domAttr.set(dom.byId("viewSubmissionsOption"), 'disabled', 'disabled');
+                domClass.add(dom.byId("viewSubmissionsOption"), "hidden");
             }
         },
         // display error message
