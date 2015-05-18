@@ -306,6 +306,7 @@ define([
                         }
                     }));
                 }
+              this._viewerSettings();
             }));
 
             on(dom.byId("layerSelect"), "change", lang.hitch(this, function (evt) {
@@ -346,6 +347,67 @@ define([
             if (this.config && this.config.i18n && this.config.i18n.direction == "rtl") {
                 this._swapContents();
             }
+        },
+      
+        _viewerFields: function(layerInfo, layer){
+          var layerName = layerInfo.id;
+          var fields = layer.fields;
+            var container = domConstruct.create("div", {
+              className: "form-group"
+            });
+            var label = domConstruct.create("label", {
+              textContent: layer.name +  " " + nls.builder.displayFieldText
+            }, container);
+            var select = domConstruct.create("select", {
+              className: "form-control"
+            }, container);
+            for(var j = 0; j < fields.length; j++){
+              var field = fields[j];
+              var opt = domConstruct.create("option", {
+                value: field.name,
+                textContent: field.alias || field.name
+              }, select);
+              var selectedField = this.currentConfig.selectedTitleField[layerName];
+              if(!selectedField){
+                selectedField = layer.displayField; 
+              }
+              this.currentConfig.selectedTitleField[layerName] = selectedField;
+              if (selectedField) {
+                  if (field.name === selectedField) {
+                    domAttr.set(opt, "selected", true);
+                  }
+              }
+            }
+            on(select, "change", lang.hitch(this, function(evt){
+              this.currentConfig.selectedTitleField[layerName] = evt.currentTarget.value;
+            }));
+            var help = domConstruct.create("div", {
+              className: "help-block",
+              textContent: nls.builder.displayFieldHintText
+            }, container);
+          return container;
+        },
+      
+        _viewerSettings: function(){
+          var layers = this._validLayers;
+          var responseLayers = this._validLayersResponse;
+          var selectLayer = dom.byId("selectLayer");
+          var displayFieldArea = dom.byId("displayFieldArea");
+          displayFieldArea.innerHTML = "";
+          for(var i = 0; i < layers.length; i++){
+            var layer = layers[i];
+            var layerObject = responseLayers[i];
+            var node;
+            if(this.currentConfig.form_layer.id === "all"){
+              node = this._viewerFields(layer, layerObject);
+              domConstruct.place(node, displayFieldArea);
+            }
+            else if(this.currentConfig.form_layer.id === layer.id){
+              node = this._viewerFields(layer, layerObject);
+              domConstruct.place(node, displayFieldArea);
+              break;
+            }
+          }
         },
 
         _enableDisableLogo: function () {
@@ -400,15 +462,16 @@ define([
 
         //function will validate and add operational layers in dropdown
         _addOperationalLayers: function (isLoadRequired) {
-            var layerListArray = [],
+            var layerListArray = [], validLayers = [],
                 attribute;
             this._clearLayerOptions();
             array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers, lang.hitch(this, function (currentLayer) {
                 if (currentLayer.layerType && currentLayer.layerType === "ArcGISFeatureLayer") {
                     layerListArray.push(this._queryLayer(currentLayer.url, currentLayer.id));
+                    validLayers.push(currentLayer);
                 }
             }));
-            all(layerListArray).then(lang.hitch(this, function () {
+            all(layerListArray).then(lang.hitch(this, function (response) {
                 this._checkForLayers();
                 if (dom.byId("selectLayer").options.length <= 1) {
                     domAttr.set(dom.byId("selectLayer"), "disabled", true);
@@ -457,6 +520,11 @@ define([
                     }));
                 }
                 this._populateShowLayerOption(this.currentConfig.showLayer);
+              
+                this._validLayers = validLayers;
+                this._validLayersResponse = response;
+              
+                this._viewerSettings();
             }));
         },
 
@@ -700,34 +768,6 @@ define([
                     this._getFieldCheckboxState();
                 }));
               
-                /*
-                // todo
-                tdFieldRadioButton = domConstruct.create("td", {}, fieldRow);
-                if (currentField.type === "esriFieldTypeString") {
-                    fieldRadioButtonInput = domConstruct.create("input", {
-                        className: "fieldRadiobutton",
-                        type: "radio",
-                        name: 'optionsRadios',
-                        index: currentIndex
-                    }, tdFieldRadioButton);
-                    if (this.currentConfig.selectedTitleField[layerName]) {
-                        if (currentField.name === this.currentConfig.selectedTitleField[layerName]) {
-                            fieldRadioButtonInput.checked = true;
-                        }
-                    }
-                    else {
-                        if (this.fieldInfo[layerName].displayField && currentField.name === this.fieldInfo[layerName].displayField) {
-                            fieldRadioButtonInput.checked = true;
-                            this.currentConfig.selectedTitleField[layerName] = this.fieldInfo[layerName].displayField;
-                        }
-                    }
-                    domAttr.set(fieldRadioButtonInput, "value", currentField.name);
-                    on(fieldRadioButtonInput, "change", lang.hitch(this, function (evt) {
-                        this.currentConfig.selectedTitleField[layerName] = evt.currentTarget.value;
-                    }));
-                }
-              */
-
                 fieldName = domConstruct.create("td", {
                     className: "fieldName layerFieldsName",
                     innerHTML: currentField.name,
@@ -740,8 +780,6 @@ define([
                     index: currentIndex,
                     value: currentField.alias
                 }, fieldLabel);
-              
-                
               
                 fieldConfigure = domConstruct.create("td", {}, fieldRow);
               
@@ -986,10 +1024,10 @@ define([
                 on(layer, "load", lang.hitch(this, function () {
                     capabilities = layer.getEditCapabilities();
                     this._validateFeatureServer(layer, capabilities.canCreate, layerId);
-                    layerDeferred.resolve(true);
+                    layerDeferred.resolve(layer);
                 }));
                 on(layer, "error", function () {
-                    layerDeferred.resolve(true);
+                    layerDeferred.resolve();
                 });
                 return layerDeferred.promise;
             }
