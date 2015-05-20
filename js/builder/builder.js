@@ -866,6 +866,58 @@ define([
                         "value": nls.builder.selectDateOption,
                         "disabled": "disabled"
                     }, displayAsControl);
+                    // hdiden date field
+                    var hiddenCheck = domConstruct.create("div", {
+                      className: "checkbox"
+                    }, fieldModalContent);
+                    var hiddenLabel = domConstruct.create("label", {
+                      textContent: nls.builder.hiddenDateField
+                    }, hiddenCheck);
+                    var hiddenInput = domConstruct.create("input", {
+                      "className": "hiddenDate",
+                      "type": "checkbox",
+                      "checked": currentField.hiddenDate || false
+                    });
+                    domConstruct.place(hiddenInput, hiddenLabel, "first");
+                    // prevent past date
+                    var preventPastCheck = domConstruct.create("div", {
+                      className: "checkbox"
+                    }, fieldModalContent);
+                    var preventPastLabel = domConstruct.create("label", {
+                      textContent: nls.builder.preventPastDates
+                    }, preventPastCheck);
+                    var preventPastInput = domConstruct.create("input", {
+                      "className": "preventPast",
+                      "type": "checkbox",
+                      "checked": currentField.preventPast || false
+                    });
+                    domConstruct.place(preventPastInput, preventPastLabel, "first");
+                    // prevent future date
+                    var preventFutureCheck = domConstruct.create("div", {
+                      className: "checkbox"
+                    }, fieldModalContent);
+                    var preventFutureLabel = domConstruct.create("label", {
+                      textContent: nls.builder.preventFutureDates
+                    }, preventFutureCheck);
+                    var preventFutureInput = domConstruct.create("input", {
+                      "className": "preventFuture",
+                      "type": "checkbox",
+                      "checked": currentField.preventFuture || false
+                    });
+                    domConstruct.place(preventFutureInput, preventFutureLabel, "first");
+                    // set with current date
+                    var setCurrentDateCheck = domConstruct.create("div", {
+                      className: "checkbox"
+                    }, fieldModalContent);
+                    var setCurrentDateLabel = domConstruct.create("label", {
+                      textContent: nls.builder.useCurrentDate
+                    }, setCurrentDateCheck);
+                    var setCurrentDateInput = domConstruct.create("input", {
+                      "className": "setCurrentDate",
+                      "type": "checkbox",
+                      "checked": currentField.setCurrentDate || false
+                    });
+                    domConstruct.place(setCurrentDateInput, setCurrentDateLabel, "first");
                     return;
                 }
                 if ((currentField.domain && currentField.domain.codedValues) || (currentField.name === this.fieldInfo[layerName].typeIdField)) {
@@ -1188,7 +1240,7 @@ define([
             case "fields":
                     if (layerObj !== "all") {
                     var innerObj = [];
-                    var fieldName, fieldLabel, fieldDescription, visible;
+                    var fieldName, fieldLabel, fieldDescription, visible, preventPast, preventFuture, setCurrentDate, hiddenDate;
                     this.currentSelectedLayer[layerObj] = dom.byId('geoFormFieldsTable');
                     array.forEach(this.currentSelectedLayer[layerObj].children, lang.hitch(this, function (currentRow, currentFieldIndex) {
                     if (currentRow.getAttribute("rowIndex")) {
@@ -1201,6 +1253,26 @@ define([
                             layerFields.alias = fieldLabel;
                             layerFields.fieldDescription = fieldDescription;
                             layerFields.visible = visible;
+                      var pastNodes = query(".preventPast", currentRow);
+                        if(pastNodes && pastNodes.length){
+                          preventPast = pastNodes[0].checked;
+                          layerFields.preventPast = preventPast;
+                        }
+                        var futureNodes = query(".preventFuture", currentRow);
+                        if(futureNodes && futureNodes.length){
+                          preventFuture = futureNodes[0].checked;
+                          layerFields.preventFuture = preventFuture;
+                        }
+                        var setDateNodes = query(".setCurrentDate", currentRow);
+                        if(setDateNodes && setDateNodes.length){
+                          setCurrentDate = setDateNodes[0].checked;  
+                          layerFields.setCurrentDate = setCurrentDate;
+                        }
+                        var hiddenNodes = query(".hiddenDate", currentRow);
+                        if(hiddenNodes && hiddenNodes.length){
+                          hiddenDate = hiddenNodes[0].checked;
+                          layerFields.hiddenDate = hiddenDate;
+                        }
                             innerObj.push(layerFields);
                             this.currentConfig.fields[layerObj] = innerObj;
                             if (query(".fieldPlaceholder", currentRow)[0] && query(".fieldPlaceholder", currentRow)[0].value) {

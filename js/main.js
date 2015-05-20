@@ -444,7 +444,7 @@ define([
             }
             // set description
             if (appConfigurations.Description) {
-                $("#appDescription").html(appConfigurations.Description);
+                appDescNode.innerHTML = appConfigurations.Description;
             } else {
                 domClass.add(appDescNode, "hide");
             }
@@ -985,7 +985,6 @@ define([
                     inputLabel.innerHTML += fieldLabelText;
                     checkBoxCounter++;
                     break;
-
                 case "esriFieldTypeSmallInteger":
                     inputContent = domConstruct.create("input", {
                         type: "text",
@@ -1023,7 +1022,10 @@ define([
                     break;
                 case "esriFieldTypeDate":
                     var inputDateGroupContainer = this._addNotationIcon(formContent, "glyphicon-calendar");
-                    inputContent = this._createDateField(inputDateGroupContainer, false, fieldname);
+                    if(currentField.hiddenDate){
+                      domClass.add(formContent, "hidden");
+                    }
+                    inputContent = this._createDateField(inputDateGroupContainer, false, fieldname, currentField);
                     break;
                 }
                 //Add Placeholder if present
@@ -1527,7 +1529,9 @@ define([
                     this.layerCollection = {};
                     webmapLayers = domConstruct.create("select", { "class": "form-control selectDomain allLayerList" }, dom.byId("multipleLayers"));
                     for (var key in this.config.fields) {
+                      if(this.config.fields.hasOwnProperty(key) && key !== "length"){
                         deferredListArray.push(this._loadNewLayer(webmapLayers, key));
+                      }
                     }
                     //run this block after all the layers are loaded and are correspondingly pushed in the layer-select-box
                     all(deferredListArray).then(lang.hitch(this, function () {
@@ -2789,18 +2793,16 @@ define([
 
         _createDateField: function (parentNode, isRangeField, fieldname, currentField) {
             domClass.add(parentNode, "date");
-            var minDate, maxDate;
+            var minDate, maxDate, defaultDate;
             if(currentField && currentField.preventPast){
               minDate = new Date();
             }
             if(currentField && currentField.preventFuture){
               maxDate = new Date();
             }
-            var isDefaultDate = true;
-            if (isRangeField){
-                isDefaultDate = false;
-                }
-
+            if(currentField && currentField.setCurrentDate){
+              defaultDate = new Date(); 
+            }
             var dateInputField = domConstruct.create("input", {
                 type: "text",
                 value: "",
@@ -2814,15 +2816,20 @@ define([
             on(dateInputField, "blur", function () {
                 $(this.parentElement).data("DateTimePicker").hide();
             });
-
-            $(parentNode).datetimepicker({
+            var dpOptions = {
                 useStrict: false,
                 locale: kernel.locale,
                 minDate: minDate,
                 maxDate: maxDate,
                 format: this.dateFormat,
-                useCurrent: isDefaultDate
-            }).on('dp.show', function (evt) {
+                defaultDate: defaultDate,
+                useCurrent: true
+            };
+            if (isRangeField) {
+                dpOptions.minDate = moment(currentField.domain.minValue);
+                dpOptions.maxDate = moment(currentField.domain.maxValue);
+            }
+            $(parentNode).datetimepicker(dpOptions).on('dp.show', function (evt) {
                 var picker = $(this).data('DateTimePicker');
                 var selectedDate = picker.date();
                 if (selectedDate === null) {
@@ -2847,10 +2854,6 @@ define([
                 domClass.add(query(evt.target).parents(".geoFormQuestionare")[0], "has-success");
                 domClass.remove(query(evt.target).parents(".geoFormQuestionare")[0], "has-error");
             });
-            if (isRangeField) {
-                $(parentNode).datetimepicker('setEndDate', moment(currentField.domain.maxValue).format(this.dateFormat));
-                $(parentNode).datetimepicker('setStartDate', moment(currentField.domain.minValue).format(this.dateFormat));
-            }
             return dateInputField;
         },
         _verifyHumanEntry: function () {

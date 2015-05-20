@@ -124,6 +124,10 @@ define({
       btnViewSubmissions: "View Submissions"
     },
     builder: {
+      hiddenDateField: "Hide this date field",
+      preventPastDates: "Prevent past dates",
+      preventFutureDates: "Prevent future dates",
+      useCurrentDate: "Set this field with the current date and time",
       configure: "Configure",
       configureField: "Configure Field '${fieldName}'",
       invalidUser: "Sorry, you don't have permission to view this item",

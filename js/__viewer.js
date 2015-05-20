@@ -45,10 +45,6 @@ define([
       // any url parameters and any application specific configuration information.
       if (config) {
         this.config = config;
-
-
-        console.log(config);
-
         //supply either the webmap id or, if available, the item info
         var itemInfo = this.config.itemInfo || this.config.webmap;
         this._createWebMap(itemInfo);
@@ -164,7 +160,7 @@ define([
         visible: true,
         searchTerm: "",
         sources: [{
-          template: "${Email} rated it a ${Rating}/5 on ${CreationDate}",
+          //template: "${Email} rated it a ${Rating}/5 on ${CreationDate}",
           featureLayer: layer
         }],
       }, "featureNav");
