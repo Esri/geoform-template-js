@@ -1,392 +1,407 @@
-<nav class="visible-xs navbar navbar-default" role="navigation">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">${builder.toggleNavigationText}</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="tab-links nav navbar-nav navbar-right">
-                <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${builder.webmapText}</a>
-                </li>
-                <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${builder.layerText}</a>
-                </li>
-                <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${builder.detailsText}</a>
-                </li>
-                <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a>
-                </li>
-                <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a>
-                <li><a href="#viewer" class="navigationTabs" tab="viewer" data-toggle="tab">${builder.viewerText}</a>
-                </li>
-                <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a>
-                </li>
-                <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${builder.previewText}</a>
-                </li>
-                <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${builder.publishText}</a>
-                </li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
+<nav class="navbar navbar-inverse" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle visible-xs" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">${builder.toggleNavigationText}</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="navbar-brand">${user.geoformTitleText} <small class="text-uppercase">${builder.titleText} <span class="glyphicon glyphicon-wrench"></span></small>
+      </div>
     </div>
-    <!-- /.container-fluid -->
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="tab-links nav navbar-nav navbar-right visible-xs">
+        <li class="active"><a href="#intro" class="navigationTabs" tab="intro" data-toggle="tab">${builder.introText}</a>
+        </li>
+        <li><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${builder.webmapText}</a>
+        </li>
+        <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${builder.layerText}</a>
+        </li>
+        <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${builder.detailsText}</a>
+        </li>
+        <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a>
+        </li>
+        <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a>
+          <li><a href="#viewer" class="navigationTabs" tab="viewer" data-toggle="tab">${builder.viewerText}</a>
+          </li>
+          <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a>
+          </li>
+          <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${builder.previewText}</a>
+          </li>
+          <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${builder.publishText}</a>
+          </li>
+      </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+  </div>
+  <!-- /.container-fluid -->
 </nav>
 <div class="container">
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="page-header">
-                <h2>${user.geoformTitleText} <small class="text-uppercase">${builder.titleText} <span class="glyphicon glyphicon-wrench"></span></small></h2>
-                <p class="lead" id="builder_description"></p>
-            </div>
-        </div>
+  <div class="row">
+    <div class="hidden-xs col-sm-3">
+      <ul class="tab-links nav nav-pills nav-stacked">
+        <li class="active"><a href="#intro" class="navigationTabs" tab="intro" data-toggle="tab">${builder.introText}</a>
+        </li>
+        <li><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${builder.webmapText}</a>
+        </li>
+        <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${builder.layerText}</a>
+        </li>
+        <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${builder.detailsText}</a>
+        </li>
+        <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a>
+        </li>
+        <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a>
+          <li><a href="#viewer" class="navigationTabs" tab="viewer" data-toggle="tab">${builder.viewerText}</a>
+          </li>
+          <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a>
+          </li>
+          <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${builder.previewText}</a>
+          </li>
+          <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${builder.publishText}</a>
+          </li>
+      </ul>
     </div>
-    <div class="row">
-        <div class="hidden-xs col-sm-2">
-            <ul class="tab-links nav nav-pills nav-stacked">
-                <li class="active"><a href="#webmap" class="navigationTabs" tab="webmap" data-toggle="tab">${builder.webmapText}</a>
-                </li>
-                <li><a href="#layer" class="navigationTabs" tab="layer" data-toggle="tab">${builder.layerText}</a>
-                </li>
-                <li><a href="#details" class="navigationTabs" tab="details" data-toggle="tab">${builder.detailsText}</a>
-                </li>
-                <li><a href="#fields" class="navigationTabs" tab="fields" data-toggle="tab">${builder.fieldsText}</a>
-                </li>
-                <li><a href="#style" class="navigationTabs" tab="style" data-toggle="tab">${builder.styleText}</a>
-                  <li><a href="#viewer" class="navigationTabs" tab="viewer" data-toggle="tab">${builder.viewerText}</a>
-                </li>
-                <li><a href="#options" class="navigationTabs" tab="options" data-toggle="tab">${builder.optionText}</a>
-                </li>
-                <li><a href="#preview" class="navigationTabs" tab="preview" data-toggle="tab">${builder.previewText}</a>
-                </li>
-                <li><a href="#save" class="navigationTabs" tab="publish" data-toggle="tab">${builder.publishText}</a>
-                </li>
-            </ul>
+    <div class="col-xs-12 col-sm-9">
+      <div class="tab-content">
+        <div id="intro" class="tab-pane active">
+          <h2>${builder.gettingStarted}</h2>
+          <p class="lead" id="builder_description"></p>
+          <div class="form-group">
+            <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
+            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="webmap">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+          </div>
         </div>
-        <div class="col-xs-12 col-sm-10">
-            <div class="tab-content">
-                <div id="webmap" class="tab-pane active">
-                    <h2>${builder.webmapTabTitleText}</h2>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <a title="${builder.viewWebmap}" id="webmapLink" class="webmap-thumb" target="_blank">
-                                    <img alt="${builder.viewWebmap}" class="img-responsive img-thumbnail" />
-                                </a>
-                            </div>
-                            <div class="col-lg-9">
-                                <p class="lead" id="webmapDetailText">
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" id="selectWebmapBtn" class="btn btn-default" data-loading-text="${builder.btnSelectWebmapTextLoading}"><span class="glyphicon glyphicon-pencil"></span> ${builder.btnSelectWebmapText}</button>
-                    </div>
-                    <div class="form-group"><a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
-                    </div>
-                </div>
-                <div id="layer" class="tab-pane">
-                    <h2>${builder.layerTabTitleText}</h2>
-                    <p>${builder.layerTabText}</p>
-                    <div class="form-group">
-                        <div id="builderMessageDiv"></div>
-                        <label for="selectLayer">${builder.selectLayerLabelText}</label>
-                        <select id="selectLayer" class="form-control"></select>
-                    </div>
-                    <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="webmap"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
-                        <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="details">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
-                    </div>
-                </div>
-                <div id="details" class="tab-pane">
-                    <h2>${builder.detailsTabTitleText}</h2>
-                    <p>${builder.detailsTabText}</p>
-                    <div class="form-group">
-                        <label for="detailTitleInput">
-                            ${builder.headerSizeLabel}
-                        </label>
-                        <div class="radio">
-                            <label for="jumbotronDisableOption">
-                                <input id="jumbotronDisableOption" name="headerSize" type="radio" value="Use Small Header" />${builder.smallHeader}</label><br />
-                            <label for="jumbotronEnableOption">
-                                <input id="jumbotronEnableOption" name="headerSize" type="radio" value="Use Big Header" />${builder.bigHeader}</label>
-                        </div>
-                        <div class="help-block">
-                            ${builder.jumbotronDescription}</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="detailTitleInput">${builder.detailTitleLabelText}</label>
-                        <input type="text" class="form-control" id="detailTitleInput" placeholder="${builder.formPlaceholderText}" />
-                    </div>
-                    <div class="form-group">
-                        <label for="detailLogoInput">${builder.detailLogoLabelText}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-picture"></span></span>
-                            <input type="url" class="form-control" id="detailLogoInput" placeholder="http://www.mysite.com/myimage.png">
-                        </div>
-                    </div>
-                  <div class="form-group">
-                       <div class="checkbox">
-                          <label for="disableLogo">
-                                <input id="disableLogo" type="checkbox" value="disableLogo" />${builder.disableLogo}</label>
-                        </div>
-                       <div class="help-block">${builder.disableLogoDescription}</div>
-                   </div>
-                    <div class="form-group">
-                        <label for="detailDescriptionInput">${builder.descriptionLabelText}</label>
-                        <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="layer"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
-                        <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="fields">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
-                    </div>
-                </div>
-                <div id="fields" class="tab-pane">
-                    <div id="layerSelectPane">
-                        <h2>
-                            ${builder.selectLayerFieldTabText}</h2>
-                            <select id="layerSelect" class="form-control">
-                                    </select></div>
-                    <h2>
-                        ${builder.selectFieldsText}</h2>
-                    <p>
-                        ${builder.fieldsTabText}</p>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped tableDND">
-                            <thead>
-                                <tr>
-                                    <th>${builder.fieldTabOrderColumnText}</th>
-                                    <th>
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b></label>
-                                        </div>
-                                    </th>
-
-                                    <th>${builder.fieldTabFieldHeaderText}</th>
-                                    <th class="tableDimension">${builder.fieldTabLabelHeaderText} <a id="LabelInfo" tabindex="0" data-toggle="popover" class="glyphicon glyphicon-info-sign pointer"></a></th>
-                                  <th>${builder.configure}</th>
-                                </tr>
-                            </thead>
-                            <tbody id="geoFormFieldsTable"></tbody>
-                        </table>
-                    </div>
-                    <div id="attachmentDetails"></div>
-                    <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
-                        <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="viewer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
-                    </div>
-                </div>
-              
-              
-              <div id="viewer" class="tab-pane">
-                <h2>${builder.setViewerText}</h2>
-                    <p>${builder.viewerTabText}</p>
-                <div class="form-group">
-                        <div class="checkbox">
-                           <label for="disableViewer">
-                                <input id="disableViewer" type="checkbox" value="disableViewer" />${builder.disableViewer}</label>
-                        </div>
-                        <div class="help-block">${builder.disableViewerDescription}</div>
-                    </div>
-                
-                <div id="displayFieldArea"></div>
-                
-                <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
-                        <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="fields">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
-                    </div>
+        <div id="webmap" class="tab-pane">
+          <h2>${builder.webmapTabTitleText}</h2>
+          <div class="form-group">
+            <div class="row">
+              <div class="col-lg-3">
+                <a title="${builder.viewWebmap}" id="webmapLink" class="webmap-thumb" target="_blank">
+                  <img alt="${builder.viewWebmap}" class="img-responsive img-thumbnail" />
+                </a>
               </div>
-              
-              
-                <div id="style" class="tab-pane">
-                    <h2>${builder.selectThemeText}</h2>
-                    <p>${builder.styleTabText}</p>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="form-group">
-                                <div id="stylesList">
-                                    <select id="themeSelector" class="form-control"></select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="form-group">
-                                <div id="thumbnailContainer"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
-                        <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="options">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
-                    </div>
-                </div>
-                <div id="options" class="tab-pane">
-                    <h2>${builder.optionsApplicationText}</h2>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label for="ShowHideLayerOption">
-                                <input id="ShowHideLayerOption" type="checkbox" value="share" />${builder.showHideLayerText}</label>
-                        </div>
-                        <div class="help-block">${builder.showHideLayerHelpText}</div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label for="shareOption">
-                                <input id="shareOption" type="checkbox" value="share" />${builder.shareGeoformText}</label>
-                        </div>
-                        <div class="help-block">${builder.shareDescription}</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label for="defaultExtent">
-                                <input id="defaultExtent" type="checkbox" value="share" />${builder.defaultMapExtent}</label>
-                        </div>
-                        <div class="help-block">${builder.defaultMapExtentDescription}</div>
-                    </div>
-                     
-                      <div class="form-group">
-                       <div class="checkbox">
-                          <label for="locateOnLoad">
-                                <input id="locateOnLoad" type="checkbox" value="locateOnLoad" />${builder.locateOnLoadText}</label>
-                        </div>
-                       <div class="help-block">${builder.locateOnLoadDescription}</div>
-                   </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label for="enableBasemapToggle">
-                                <input id="enableBasemapToggle" type="checkbox" value="enableBasemapToggle" />${builder.enableBasemapToggle}</label>
-                        </div>
-                        <div class="help-block">${builder.enableBasemapToggleDescription}</div>
-                    </div>
-            
-                    <div class="form-group">
-                        <label for="pushpinInput">${builder.pushpinText}</label>
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <select id="pushpinInput" class="form-control"></select>
-                            </div>
-                            <div class="form-group">
-                                <div id="pushpinSymbol"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="help-block">${builder.pushpinOptionsDescription}</div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>${builder.selectLocationText}</label>
-                        <div id="location_options">
-                            <div class="checkbox">
-                                <label for="myLocation">
-                                    <input id="myLocation" type="checkbox" value="myLocation" />${builder.myLocationText}
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="search">
-                                    <input id="search" type="checkbox" value="searchLocation" />${builder.searchText}
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="coordinates">
-                                    <input id="coordinates" type="checkbox" value="coordinates" />${builder.coordinatesText}
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="USNG">
-                                    <input id="USNG" type="checkbox" value="USNG" />${builder.usng}
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="MGRS">
-                                    <input id="MGRS" type="checkbox" value="MGRS" />${builder.mgrs}
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="UTM">
-                                    <input id="UTM" type="checkbox" value="UTM" />${builder.utm}
-                                </label>
-                            </div>
-                        </div>
-                        <div class="help-block">${builder.selectLocationSDescription}</div>
-                    </div>
-                    <div id="basemapContainer">
-                    <div class="form-group">
-                        <label for="defaultBasemap">
-                            ${builder.defaultBasemap}</label>
-                        <div class="form-inline">
-                             <div class="form-group">
-                                <select id="defaultBasemap" class="form-control">
-                                </select>
-                            </div>
-                            <div class="form-group thumbnailContainer">
-                                <div class="form-group" id="defaultBasemapThumbnail">
-                                </div>
-                                <div id="defaultBasemapLabel">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="secondaryBasemap">
-                            ${builder.secondaryBasemap}</label>
-                        <div class="form-inline">
-                             <div class="form-group">
-                                <select id="secondaryBasemap" class="form-control">
-                                </select>
-                            </div>
-                            <div class="form-group thumbnailContainer">
-                                <div id="secondaryBasemapThumbnail">
-                                </div>
-                                <div id="secondaryBasemapLabel">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="style"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
-                        <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
-                    </div>
-                </div>
-                <div id="preview" class="tab-pane">
-                    <h2>${builder.previewApplicationText}</h2>
-                    <div class="panel panel-default">
-                        <iframe frameborder="0" scrolling="yes" class="preview-frame" id="iframeContainer"></iframe>
-                    </div>
-                    <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="options"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
-                        <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
-                    </div>
-                </div>
-                <div id="save" class="tab-pane">
-                    <h2>${builder.saveApplicationText}</h2>
-                    <p>${builder.publishTabText}</p>
-                    <div class="form-group">
-                        <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
-                        <button id="done" type="button" class="btn btn-default"><span class="glyphicon glyphicon-new-window"></span> ${builder.doneButtonText}</button>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton"><span class="glyphicon glyphicon-floppy-disk"></span> ${builder.saveText}</button>
-                    </div>
-                </div>
+              <div class="col-lg-9">
+                <p class="lead" id="webmapDetailText">
+                </p>
+              </div>
             </div>
+          </div>
+          <div class="form-group">
+            <button type="button" id="selectWebmapBtn" class="btn btn-default" data-loading-text="${builder.btnSelectWebmapTextLoading}"><span class="glyphicon glyphicon-pencil"></span> ${builder.btnSelectWebmapText}</button>
+          </div>
+          <div class="form-group">
+            <a href="#" class="btn btn-default prevtab navigationTabs" tab="intro"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+            <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
+            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="layer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+          </div>
         </div>
+        <div id="layer" class="tab-pane">
+          <h2>${builder.layerTabTitleText}</h2>
+          <p>${builder.layerTabText}</p>
+          <div class="form-group">
+            <div id="builderMessageDiv"></div>
+            <label for="selectLayer">${builder.selectLayerLabelText}</label>
+            <select id="selectLayer" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <a href="#" class="btn btn-default prevtab navigationTabs" tab="webmap"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+            <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
+            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="details">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+          </div>
+        </div>
+        <div id="details" class="tab-pane">
+          <h2>${builder.detailsTabTitleText}</h2>
+          <p>${builder.detailsTabText}</p>
+          <div class="form-group">
+            <label for="detailTitleInput">
+              ${builder.headerSizeLabel}
+            </label>
+            <div class="radio">
+              <label for="jumbotronDisableOption">
+                <input id="jumbotronDisableOption" name="headerSize" type="radio" value="Use Small Header" />${builder.smallHeader}</label>
+              <br />
+              <label for="jumbotronEnableOption">
+                <input id="jumbotronEnableOption" name="headerSize" type="radio" value="Use Big Header" />${builder.bigHeader}</label>
+            </div>
+            <div class="help-block">
+              ${builder.jumbotronDescription}</div>
+          </div>
+          <div class="form-group">
+            <label for="detailTitleInput">${builder.detailTitleLabelText}</label>
+            <input type="text" class="form-control" id="detailTitleInput" placeholder="${builder.formPlaceholderText}" />
+          </div>
+          <div class="form-group">
+            <label for="detailLogoInput">${builder.detailLogoLabelText}</label>
+            <div class="input-group">
+              <span class="input-group-addon"><span class="glyphicon glyphicon-picture"></span></span>
+              <input type="url" class="form-control" id="detailLogoInput" placeholder="http://www.mysite.com/myimage.png">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox">
+              <label for="disableLogo">
+                <input id="disableLogo" type="checkbox" value="disableLogo" />${builder.disableLogo}</label>
+            </div>
+            <div class="help-block">${builder.disableLogoDescription}</div>
+          </div>
+          <div class="form-group">
+            <label for="detailDescriptionInput">${builder.descriptionLabelText}</label>
+            <textarea class="form-control" id="detailDescriptionInput" rows="6"></textarea>
+          </div>
+          <div class="form-group">
+            <a href="#" class="btn btn-default prevtab navigationTabs" tab="layer"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+            <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
+            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="fields">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+          </div>
+        </div>
+        <div id="fields" class="tab-pane">
+          <div id="layerSelectPane">
+            <h2>
+                            ${builder.selectLayerFieldTabText}</h2>
+            <select id="layerSelect" class="form-control">
+            </select>
+          </div>
+          <h2>
+                        ${builder.selectFieldsText}</h2>
+          <p>
+            ${builder.fieldsTabText}</p>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped tableDND">
+              <thead>
+                <tr>
+                  <th>${builder.fieldTabOrderColumnText}</th>
+                  <th>
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" id="selectAll" class="selectAllCheckbox" /><b>${builder.fieldTabVisibleColumnText}</b>
+                      </label>
+                    </div>
+                  </th>
+
+                  <th>${builder.fieldTabFieldHeaderText}</th>
+                  <th class="tableDimension">${builder.fieldTabLabelHeaderText}
+                    <a id="LabelInfo" tabindex="0" data-toggle="popover" class="glyphicon glyphicon-info-sign pointer"></a>
+                  </th>
+                  <th>${builder.configure}</th>
+                </tr>
+              </thead>
+              <tbody id="geoFormFieldsTable"></tbody>
+            </table>
+          </div>
+          <div id="attachmentDetails"></div>
+          <div class="form-group">
+            <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+            <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
+            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="viewer">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+          </div>
+        </div>
+
+
+        <div id="viewer" class="tab-pane">
+          <h2>${builder.setViewerText}</h2>
+          <p>${builder.viewerTabText}</p>
+          <div class="form-group">
+            <div class="checkbox">
+              <label for="disableViewer">
+                <input id="disableViewer" type="checkbox" value="disableViewer" />${builder.disableViewer}</label>
+            </div>
+            <div class="help-block">${builder.disableViewerDescription}</div>
+          </div>
+
+          <div id="displayFieldArea"></div>
+
+          <div class="form-group">
+            <a href="#" class="btn btn-default prevtab navigationTabs" tab="details"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+            <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="fields">${builder.previewText}</a>
+            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="style">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+          </div>
+        </div>
+
+
+        <div id="style" class="tab-pane">
+          <h2>${builder.selectThemeText}</h2>
+          <p>${builder.styleTabText}</p>
+          <div class="row">
+            <div class="col-xs-12 col-sm-6">
+              <div class="form-group">
+                <div id="stylesList">
+                  <select id="themeSelector" class="form-control"></select>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+              <div class="form-group">
+                <div id="thumbnailContainer"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <a href="#" class="btn btn-default prevtab navigationTabs" tab="fields"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+            <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
+            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="options">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+          </div>
+        </div>
+        <div id="options" class="tab-pane">
+          <h2>${builder.optionsApplicationText}</h2>
+          <div class="form-group">
+            <div class="checkbox">
+              <label for="ShowHideLayerOption">
+                <input id="ShowHideLayerOption" type="checkbox" value="share" />${builder.showHideLayerText}</label>
+            </div>
+            <div class="help-block">${builder.showHideLayerHelpText}</div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox">
+              <label for="shareOption">
+                <input id="shareOption" type="checkbox" value="share" />${builder.shareGeoformText}</label>
+            </div>
+            <div class="help-block">${builder.shareDescription}</div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox">
+              <label for="defaultExtent">
+                <input id="defaultExtent" type="checkbox" value="share" />${builder.defaultMapExtent}</label>
+            </div>
+            <div class="help-block">${builder.defaultMapExtentDescription}</div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox">
+              <label for="locateOnLoad">
+                <input id="locateOnLoad" type="checkbox" value="locateOnLoad" />${builder.locateOnLoadText}</label>
+            </div>
+            <div class="help-block">${builder.locateOnLoadDescription}</div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox">
+              <label for="enableBasemapToggle">
+                <input id="enableBasemapToggle" type="checkbox" value="enableBasemapToggle" />${builder.enableBasemapToggle}</label>
+            </div>
+            <div class="help-block">${builder.enableBasemapToggleDescription}</div>
+          </div>
+
+          <div class="form-group">
+            <label for="pushpinInput">${builder.pushpinText}</label>
+            <div class="form-inline">
+              <div class="form-group">
+                <select id="pushpinInput" class="form-control"></select>
+              </div>
+              <div class="form-group">
+                <div id="pushpinSymbol"></div>
+              </div>
+            </div>
+            <div>
+              <div class="help-block">${builder.pushpinOptionsDescription}</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>${builder.selectLocationText}</label>
+            <div id="location_options">
+              <div class="checkbox">
+                <label for="myLocation">
+                  <input id="myLocation" type="checkbox" value="myLocation" />${builder.myLocationText}
+                </label>
+              </div>
+              <div class="checkbox">
+                <label for="search">
+                  <input id="search" type="checkbox" value="searchLocation" />${builder.searchText}
+                </label>
+              </div>
+              <div class="checkbox">
+                <label for="coordinates">
+                  <input id="coordinates" type="checkbox" value="coordinates" />${builder.coordinatesText}
+                </label>
+              </div>
+              <div class="checkbox">
+                <label for="USNG">
+                  <input id="USNG" type="checkbox" value="USNG" />${builder.usng}
+                </label>
+              </div>
+              <div class="checkbox">
+                <label for="MGRS">
+                  <input id="MGRS" type="checkbox" value="MGRS" />${builder.mgrs}
+                </label>
+              </div>
+              <div class="checkbox">
+                <label for="UTM">
+                  <input id="UTM" type="checkbox" value="UTM" />${builder.utm}
+                </label>
+              </div>
+            </div>
+            <div class="help-block">${builder.selectLocationSDescription}</div>
+          </div>
+          <div id="basemapContainer">
+            <div class="form-group">
+              <label for="defaultBasemap">
+                ${builder.defaultBasemap}</label>
+              <div class="form-inline">
+                <div class="form-group">
+                  <select id="defaultBasemap" class="form-control">
+                  </select>
+                </div>
+                <div class="form-group thumbnailContainer">
+                  <div class="form-group" id="defaultBasemapThumbnail">
+                  </div>
+                  <div id="defaultBasemapLabel">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="secondaryBasemap">
+                ${builder.secondaryBasemap}</label>
+              <div class="form-inline">
+                <div class="form-group">
+                  <select id="secondaryBasemap" class="form-control">
+                  </select>
+                </div>
+                <div class="form-group thumbnailContainer">
+                  <div id="secondaryBasemapThumbnail">
+                  </div>
+                  <div id="secondaryBasemapLabel">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <a href="#" class="btn btn-default prevtab navigationTabs" tab="style"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+            <a href="#preview" class="btn btn-default navigationTabs previewButton" tab="preview">${builder.previewText}</a>
+            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="preview">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+          </div>
+        </div>
+        <div id="preview" class="tab-pane">
+          <h2>${builder.previewApplicationText}</h2>
+          <div class="panel panel-default">
+            <iframe frameborder="0" scrolling="yes" class="preview-frame" id="iframeContainer"></iframe>
+          </div>
+          <div class="form-group">
+            <a href="#" class="btn btn-default prevtab navigationTabs" tab="options"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+            <a href="#" class="btn btn-primary nexttab navigationTabs" tab="publish">${builder.btnNextText} <span class="glyphicon glyphicon-arrow-right invertedArrows"></span></a>
+          </div>
+        </div>
+        <div id="save" class="tab-pane">
+          <h2>${builder.saveApplicationText}</h2>
+          <p>${builder.publishTabText}</p>
+          <div class="form-group">
+            <a href="#" class="btn btn-default prevtab navigationTabs" tab="preview"><span class="glyphicon glyphicon-arrow-left invertedArrows"></span> ${builder.btnPreviousText}</a>
+            <button id="done" type="button" class="btn btn-default"><span class="glyphicon glyphicon-new-window"></span> ${builder.doneButtonText}</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" id="saveButton"><span class="glyphicon glyphicon-floppy-disk"></span> ${builder.saveText}</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- col for tabs -->
-    <hr />
-    <footer>
-        <div class="panel-body text-center"><a href="#top">${user.backToTop}</a>
-        </div>
-    </footer>
+  </div>
+  <!-- col for tabs -->
+  <hr />
+  <footer>
+    <div class="panel-body text-center"><a href="#top">${user.backToTop}</a>
+    </div>
+  </footer>
 </div>
 <!-- row for tabs -->
 <!-- /container -->

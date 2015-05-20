@@ -124,6 +124,8 @@ define({
       btnViewSubmissions: "View Submissions"
     },
     builder: {
+      gettingStarted: "Getting Started",
+      dateSettings: "Date Settings",
       hiddenDateField: "Hide this date field",
       preventPastDates: "Prevent past dates",
       preventFutureDates: "Prevent future dates",
@@ -136,6 +138,7 @@ define({
       selectFieldsText: "Select Form Fields",
       selectThemeText: "Select Form Theme",
       setViewerText: "Configure Viewer",
+      introText: "Start",
       webmapText: "Webmap",
       layerText: "Layer",
       detailsText: "Details",
@@ -167,6 +170,8 @@ define({
       detailLogoLabelText: "Logo Image",
       descriptionLabelText: "Form Instructions & Details",
       fieldDescriptionLabelText: "Help Text (optional)",
+      fieldDescriptionHelpText: "Provide a short description or instructions for this field.",
+      fieldHintHelpText: "Placeholder text for the field.",
       fieldTabFieldHeaderText: "Field",
       fieldTabLabelHeaderText: "Label",
       fieldTabDisplayTypeHeaderText: "Display As",
