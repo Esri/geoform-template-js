@@ -68,6 +68,7 @@ define([
     },
 
     startup: function () {
+      domClass.add(document.body, "bodyPaddingTop");
       var def = new Deferred();
       var signIn = new signInHelper(),
         userInfo = {};

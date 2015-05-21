@@ -412,3 +412,7 @@ th .checkbox {
   margin-top: 0;
   margin-bottom: 0;
 }
+
+.bodyPaddingTop{
+  padding-top: 70px;
+}
