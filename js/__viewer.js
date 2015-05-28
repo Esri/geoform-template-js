@@ -25,6 +25,8 @@ define([
 
   "esri/arcgis/utils",
   "esri/InfoTemplate",
+  
+  "dojo/i18n!application/nls/resources",
 
   "application/FeatureNav",
   "application/wrapper/main-jquery-deps",
@@ -35,6 +37,7 @@ define([
   on,
   dom, domClass,
   arcgisUtils, InfoTemplate,
+  nls,
   FeatureNav
 ) {
   return declare(null, {
@@ -45,6 +48,10 @@ define([
       // any url parameters and any application specific configuration information.
       if (config) {
         this.config = config;
+        
+        if (this.config.disableViewer) {
+            this._reportError(nls.viewer.appLoadingFailedMessage);
+        }
         //supply either the webmap id or, if available, the item info
         var itemInfo = this.config.itemInfo || this.config.webmap;
         this._createWebMap(itemInfo);
@@ -98,9 +105,61 @@ define([
       }
 
     },
+    
+    _setStrings: function(){
+      
+      
+      
+      var node;
+      node = dom.byId("toggleNavText");
+      if(node){
+        node.innerHTML = nls.viewer.toggleNavigationText;
+      }
+      
+      node = dom.byId("appTitle");
+      var title = this.itemInfo.item.title ? this.itemInfo.item.title : this.config.details.Title;
+      if(node){
+        node.innerHTML = title;
+      }
+      window.document.title = title;
+      
+      
+      node = dom.byId("shareText");
+      if(node){
+        node.innerHTML = nls.viewer.share;
+      }
+      
+      node = dom.byId("submitReport");
+      if(node){
+        node.innerHTML = nls.viewer.btnSubmitReportText;
+      }
+      
+      node = dom.byId("reportsText");
+      if(node){
+        node.innerHTML = nls.viewer.viewReportsTabText;
+      }
+      
+      node = dom.byId("legendText");
+      if(node){
+        node.innerHTML = nls.viewer.viewLegendTabText;
+      }
+      
+      node = dom.byId("aboutText");
+      if(node){
+        node.innerHTML = nls.viewer.viewAboutusTabText;
+      }
+      
+    },
 
     // Sample function
     _viewer: function () {
+      
+      
+      domClass.remove(dom.byId("navbarTop"), "hidden");
+      
+      this._setStrings();
+      
+      
       this.map.infoWindow.set("popupWindow", false);
 
 
@@ -160,7 +219,7 @@ define([
         visible: true,
         searchTerm: "",
         sources: [{
-          //template: "${Email} rated it a ${Rating}/5 on ${CreationDate}",
+          template: "${OBJECTID}",
           featureLayer: layer
         }],
       }, "featureNav");
@@ -191,6 +250,7 @@ define([
         // Here' we'll use it to update the application to match the specified color theme.
         // console.log(this.config);
         this.map = response.map;
+        this.itemInfo = response.itemInfo;
         // remove loading class from body
         domClass.remove(document.body, "app-loading");
         // Start writing my code

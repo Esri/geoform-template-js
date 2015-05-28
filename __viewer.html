@@ -47,28 +47,29 @@
   </div>
   <div id="fullscreen_container" class="fullscreen-container"></div>
 
-  <nav class="navbar navbar-inverse navbar-fixed-top">
+  <nav id="navbarTop" class="navbar navbar-inverse navbar-fixed-top hidden">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span>
+          <span id="toggleNavText" class="sr-only"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">GeoForm</a>
+        <a id="appTitle" class="navbar-brand" href="#"></a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#">Share</a>
+          <li>
+            <a href="#"><span class="fa fa-share-alt"></span> <span id="shareText"></span></a>
           </li>
         </ul>
         <div class="navbar-form navbar-right">
-          <div class="btn btn-primary">Submit a report</div>
+          <a href="#" class="btn btn-primary"><span class="glyphicon glyphicon-map-marker"></span> <span id="submitReport"></span></a>
         </div>
       </div>
       <!-- /.navbar-collapse -->
@@ -81,13 +82,15 @@
     <div class="row">
 
       <div class="col-sm-12 col-md-8">
+        <div class="margin-bottom">
         <div class="map panel panel-default">
+          
           <div id="mapDiv" class="map">
 
 
           </div>
         </div>
-
+</div>
 
 
         <div class="panel panel-default">
@@ -115,13 +118,13 @@
 
       <div class="col-sm-12 col-md-4">
         <div class="tabbable">
-          <div style="margin:0 0 10px 0;">
+          <div class="margin-bottom">
             <ul class="nav nav-pills">
-              <li role="presentation" class="active"><a data-toggle="tab" href="#reports"><span class="glyphicon glyphicon-map-marker"></span> Reports</a>
+              <li role="presentation" class="active"><a data-toggle="tab" href="#reports"><span class="glyphicon glyphicon-map-marker"></span> <span id="reportsText"></span></a>
               </li>
-              <li role="presentation"><a data-toggle="tab" href="#legend"><span class="glyphicon glyphicon-list "></span> Legend</a>
+              <li role="presentation"><a data-toggle="tab" href="#legend"><span class="glyphicon glyphicon-list "></span> <span id="legendText"></span></a>
               </li>
-              <li role="presentation"><a data-toggle="tab" href="#about"><span class="glyphicon glyphicon-info-sign"></span> About</a>
+              <li role="presentation"><a data-toggle="tab" href="#about"><span class="glyphicon glyphicon-info-sign"></span> <span id="aboutText"></span></a>
               </li>
             </ul>
           </div>
@@ -221,4 +224,5 @@
     })();
   </script>
 </body>
+
 </html>
