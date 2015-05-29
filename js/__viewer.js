@@ -26,6 +26,8 @@ define([
   "esri/arcgis/utils",
   "esri/InfoTemplate",
   
+  "esri/dijit/Legend",
+  
   "dojo/i18n!application/nls/resources",
 
   "application/FeatureNav",
@@ -37,6 +39,7 @@ define([
   on,
   dom, domClass,
   arcgisUtils, InfoTemplate,
+  Legend,
   nls,
   FeatureNav
 ) {
@@ -117,7 +120,7 @@ define([
       }
       
       node = dom.byId("appTitle");
-      var title = this.itemInfo.item.title ? this.itemInfo.item.title : this.config.details.Title;
+      var title = this.config.details.Title || this.itemInfo.item.title || "";
       if(node){
         node.innerHTML = title;
       }
@@ -149,6 +152,21 @@ define([
         node.innerHTML = nls.viewer.viewAboutusTabText;
       }
       
+      var desc = this.config.details.Description || this.itemInfo.item.description || "";
+      node = dom.byId("aboutTextBody");
+      if(node){
+        node.innerHTML = desc;
+      }
+      
+      
+    },
+    
+    _legend: function(){
+      this._mapLegend = new Legend({
+          map: this.map,
+          layerInfos: this.layerInfos
+      }, dom.byId("mapLegend"));
+      this._mapLegend.startup();
     },
 
     // Sample function
@@ -162,7 +180,7 @@ define([
       
       this.map.infoWindow.set("popupWindow", false);
 
-
+      this._legend();
 
       var popup = this.map.infoWindow;
 
@@ -251,6 +269,7 @@ define([
         // console.log(this.config);
         this.map = response.map;
         this.itemInfo = response.itemInfo;
+        this.layerInfos = arcgisUtils.getLegendLayers(response);
         // remove loading class from body
         domClass.remove(document.body, "app-loading");
         // Start writing my code
