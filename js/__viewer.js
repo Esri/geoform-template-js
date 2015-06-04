@@ -25,9 +25,9 @@ define([
 
   "esri/arcgis/utils",
   "esri/InfoTemplate",
-  
+
   "esri/dijit/Legend",
-  
+
   "dojo/i18n!application/nls/resources",
 
   "application/FeatureNav",
@@ -51,9 +51,9 @@ define([
       // any url parameters and any application specific configuration information.
       if (config) {
         this.config = config;
-        
+
         if (this.config.disableViewer) {
-            this._reportError(nls.viewer.appLoadingFailedMessage);
+          this._reportError(nls.viewer.appLoadingFailedMessage);
         }
         //supply either the webmap id or, if available, the item info
         var itemInfo = this.config.itemInfo || this.config.webmap;
@@ -108,76 +108,76 @@ define([
       }
 
     },
-    
-    _setStrings: function(){
-      
-      
-      
+
+    _setStrings: function () {
+
+
+
       var node;
       node = dom.byId("toggleNavText");
-      if(node){
+      if (node) {
         node.innerHTML = nls.viewer.toggleNavigationText;
       }
-      
+
       node = dom.byId("appTitle");
       var title = this.config.details.Title || this.itemInfo.item.title || "";
-      if(node){
+      if (node) {
         node.innerHTML = title;
       }
       window.document.title = title;
-      
-      
+
+
       node = dom.byId("shareText");
-      if(node){
+      if (node) {
         node.innerHTML = nls.viewer.share;
       }
-      
+
       node = dom.byId("submitReport");
-      if(node){
+      if (node) {
         node.innerHTML = nls.viewer.btnSubmitReportText;
       }
-      
+
       node = dom.byId("reportsText");
-      if(node){
+      if (node) {
         node.innerHTML = nls.viewer.viewReportsTabText;
       }
-      
+
       node = dom.byId("legendText");
-      if(node){
+      if (node) {
         node.innerHTML = nls.viewer.viewLegendTabText;
       }
-      
+
       node = dom.byId("aboutText");
-      if(node){
+      if (node) {
         node.innerHTML = nls.viewer.viewAboutusTabText;
       }
-      
+
       var desc = this.config.details.Description || this.itemInfo.item.description || "";
       node = dom.byId("aboutTextBody");
-      if(node){
+      if (node) {
         node.innerHTML = desc;
       }
-      
-      
+
+
     },
-    
-    _legend: function(){
+
+    _legend: function () {
       this._mapLegend = new Legend({
-          map: this.map,
-          layerInfos: this.layerInfos
+        map: this.map,
+        layerInfos: this.layerInfos
       }, dom.byId("mapLegend"));
       this._mapLegend.startup();
     },
 
     // Sample function
     _viewer: function () {
-      
-      
+
+
       domClass.remove(dom.byId("navbarTop"), "hidden");
-      
+
       this._setStrings();
-      
-      
+
+
       this.map.infoWindow.set("popupWindow", false);
 
       this._legend();

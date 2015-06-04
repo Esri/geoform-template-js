@@ -638,27 +638,26 @@ define([
       },
       _featureLayerLoaded: function (layer) {
         var def = new Deferred();
-        if(layer){
-        if (layer.loaded) {
-          // nothing to do
-          def.resolve();
-        } else if (layer.loadError) {
-          def.reject(new Error(this._dijitName + " Layer failed to load."));
-        } else {
-          var loadedEvent, errorEvent;
-          // once layer is loaded
-          loadedEvent = on.once(layer, "load", lang.hitch(this, function () {
-            errorEvent.remove();
+        if (layer) {
+          if (layer.loaded) {
+            // nothing to do
             def.resolve();
-          }));
-          // error occurred loading layer
-          errorEvent = on.once(layer, "error", lang.hitch(this, function () {
-            loadedEvent.remove();
-            def.reject(new Error(this._dijitName + " Layer could not be loaded."));
-          }));
-        }
-        }
-        else{
+          } else if (layer.loadError) {
+            def.reject(new Error(this._dijitName + " Layer failed to load."));
+          } else {
+            var loadedEvent, errorEvent;
+            // once layer is loaded
+            loadedEvent = on.once(layer, "load", lang.hitch(this, function () {
+              errorEvent.remove();
+              def.resolve();
+            }));
+            // error occurred loading layer
+            errorEvent = on.once(layer, "error", lang.hitch(this, function () {
+              loadedEvent.remove();
+              def.reject(new Error(this._dijitName + " Layer could not be loaded."));
+            }));
+          }
+        } else {
           def.reject();
         }
         return def.promise;
