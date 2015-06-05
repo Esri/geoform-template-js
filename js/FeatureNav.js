@@ -17,7 +17,7 @@ define([
     // load template
     "dojo/text!./FeatureNav/templates/FeatureNav.html",
     // localization
-    "dojo/i18n!./FeatureNav/nls/FeatureNav",
+    "dojo/i18n!./nls/FeatureNav",
     "esri/tasks/query",
     "dojo/string",
     "dojo/query",

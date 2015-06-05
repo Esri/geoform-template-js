@@ -4,7 +4,7 @@ define([
   "dojo/Evented",
   "dojo/dom-attr",
   "dojo/dom-class",
-  "dojo/i18n!./Pagination/nls/Pagination",
+  "dojo/i18n!./nls/Pagination",
   "dojo/on",
   "dojo/query",
   "dojo/text!./Pagination/templates/Pagination.html",
