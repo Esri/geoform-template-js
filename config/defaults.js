@@ -51,6 +51,13 @@ define({
         "enableMGRS": false,
         "enableUTM": false
     },
+    "locationSearch": true,
+    //When searchExtent is true the locator will prioritize results within the current map extent.
+    "searchExtent": false,
+    "searchLayers":[{
+        "id": "",
+        "fields": []
+    }],
     "attachmentInfo":{
     },
     "helperServices": {
