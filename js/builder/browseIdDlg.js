@@ -69,6 +69,9 @@ define([
       if (this.galleryType === "webmap") {
         query.q += ' type:"Web Map" -type:"Web Mapping Application"';
       }
+      if (this.userInfo.token){
+        query.token = this.userInfo.token;  
+      }
       this._grid = new Grid({
         "portal": this.userInfo.portal,
         "query": query,
