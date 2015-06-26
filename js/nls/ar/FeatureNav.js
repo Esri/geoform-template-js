@@ -1,15 +1,15 @@
 ﻿define(
    ({
-    layer: "بيت_Layer___لاحقة",
-    sort: "بيت_Sort by___لاحقة",
-    order: "بيت_Order___لاحقة",
-    desc: "بيت_Desc__لاحقة",
-    asc: "بيت_Asc__لاحقة",
-    loading: "بيت_loading&hellip;______لاحقة",
-    search: "بيت_Search___لاحقة",
-    searchPlaceholder: "بيت_Find reports_____لاحقة",
-    noResults: "بيت_No results____لاحقة",
-    ascending: "بيت_Ascending____لاحقة",
-    descending: "بيت_Descending____لاحقة"
+    layer: "الطبقة",
+    sort: "الفرز حسب",
+    order: "ترتيب",
+    desc: "تنازلي",
+    asc: "تصاعدي",
+    loading: "تحميل&hellip;",
+    search: "بحث",
+    searchPlaceholder: "إيجاد التقارير",
+    noResults: "بدون نتائج",
+    ascending: "تصاعدي",
+    descending: "تنازليًا"
   })
 );

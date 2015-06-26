@@ -1,15 +1,15 @@
 ﻿define(
    ({
-    layer: "試_Layer___驗",
-    sort: "試_Sort by___驗",
-    order: "試_Order___驗",
-    desc: "試_Desc__驗",
-    asc: "試_Asc__驗",
-    loading: "試_loading&hellip;______驗",
-    search: "試_Search___驗",
-    searchPlaceholder: "試_Find reports_____驗",
-    noResults: "試_No results____驗",
-    ascending: "試_Ascending____驗",
-    descending: "試_Descending____驗"
+    layer: "圖層(L)",
+    sort: "排序方式",
+    order: "順序(O)",
+    desc: "降冪",
+    asc: "昇冪",
+    loading: "載入&hellip；",
+    search: "搜尋",
+    searchPlaceholder: "尋找報告",
+    noResults: "無結果",
+    ascending: "昇冪(C)",
+    descending: "降冪(C)"
   })
 );

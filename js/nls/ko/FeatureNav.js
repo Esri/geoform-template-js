@@ -1,15 +1,15 @@
 ﻿define(
    ({
-    layer: "한_Layer___빠",
-    sort: "한_Sort by___빠",
-    order: "한_Order___빠",
-    desc: "한_Desc__빠",
-    asc: "한_Asc__빠",
-    loading: "한_loading&hellip;______빠",
-    search: "한_Search___빠",
-    searchPlaceholder: "한_Find reports_____빠",
-    noResults: "한_No results____빠",
-    ascending: "한_Ascending____빠",
-    descending: "한_Descending____빠"
+    layer: "레이어",
+    sort: "정렬 기준",
+    order: "순서",
+    desc: "내림차순",
+    asc: "오름차순",
+    loading: "불러오는 중&hellip;",
+    search: "검색",
+    searchPlaceholder: "보고서 찾기",
+    noResults: "결과 없음",
+    ascending: "오름차순",
+    descending: "내림차순"
   })
 );

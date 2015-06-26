@@ -1,12 +1,12 @@
 ﻿define(
    ({
     "pagination": {
-      "page": "ø_Page__å",
-      "previousTitle": "ø_Previous___å",
-      "nextTitle": "ø_Next__å",
-      "firstTitle": "ø_First___å",
-      "lastTitle": "ø_Last__å",
-      "helip": "ø_&hellip;___å"
+      "page": "Side",
+      "previousTitle": "Forrige",
+      "nextTitle": "Næste",
+      "firstTitle": "Første",
+      "lastTitle": "Sidste",
+      "helip": "&hellip;"
     }
   })
 );

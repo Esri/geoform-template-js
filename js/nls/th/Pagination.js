@@ -1,12 +1,12 @@
 ﻿define(
    ({
     "pagination": {
-      "page": "ก้_Page__ษฺ",
-      "previousTitle": "ก้_Previous___ษฺ",
-      "nextTitle": "ก้_Next__ษฺ",
-      "firstTitle": "ก้_First___ษฺ",
-      "lastTitle": "ก้_Last__ษฺ",
-      "helip": "ก้_&hellip;___ษฺ"
+      "page": "หน้า",
+      "previousTitle": "ก่อนหน้า",
+      "nextTitle": "ถัดไป",
+      "firstTitle": "หน้าแรก",
+      "lastTitle": "หน้าสุดท้าย",
+      "helip": "&hellip;"
     }
   })
 );
