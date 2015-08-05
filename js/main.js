@@ -1400,57 +1400,7 @@ define([
     },
     // reset form fields
     _clearFormFields: function () {
-      //For Filter Select
-      array.forEach(query(".filterSelect"), lang.hitch(this, function (currentInput) {
-        if (currentInput.value) {
-          $("#" + currentInput.id).val("").trigger("change");
-          domClass.remove(currentInput, "has-success");
-        }
-      }));
-      // each form field
-      array.forEach(query(".form-control"), function (currentInput) {
-        var node = currentInput.parentElement;
-        if (!domClass.contains(currentInput, "selectDomain")) {
-          domAttr.set(currentInput, "value", "");
-          domClass.remove(node, "has-error");
-          domClass.remove(node, "has-success");
-        } else {
-          if (!domClass.contains(currentInput, "allLayerList")) {
-            currentInput.options[0].selected = true;
-            domClass.remove(node, "has-success");
-          }
-        }
-      });
-      array.forEach(query(".geoFormQuestionare .input-group"), function (currentInput) {
-        domClass.remove(currentInput.parentElement, "has-error");
-        domClass.remove(currentInput.parentElement, "has-success");
-      });
-      // each radio
-      array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
-        domClass.remove(currentField.parentNode, "has-success");
-        array.forEach(query("input", currentField), function () {
-          var index = arguments[1];
-          domAttr.set(query("input", currentField)[index], "checked", false);
-        });
-      });
-      // each checkbox
-      array.forEach(query(".checkboxInput:checked"), function (currentField) {
-        domAttr.set(currentField, "checked", false);
-        domClass.remove(query(".checkboxContainer")[domAttr.get(currentField, "data-checkbox-index")].parentNode, "has-success");
-      });
-      // clear attachment
-      var attachNode = dom.byId("geoFormAttachment");
-      if (attachNode && attachNode.value) {
-        //We are adding attachNode.value= "" again to clear the attachment text in Firefox
-        domAttr.set(attachNode, "value", "");
-        //Below line works in all the browsers except Firefox
-        //Since attachNode.value= "" was not working in IE8, we added this code to clear the attachment text
-        //This is just work around and we are searching for single solution which will work in all the browsers
-        $(dom.byId("geoFormAttachment")).replaceWith($(dom.byId("geoFormAttachment")).clone(true));
-      }
-      query('.alert-dismissable').forEach(function (node) {
-        domConstruct.destroy(node);
-      });
+      this._createForm(this._savedFields);
     },
     // validate form input
     _validateUserInput: function (error, node, inputValue, iskeyPress) {
@@ -1556,11 +1506,12 @@ define([
             if (webmapLayers.options[0]) {
               webmapLayers.options[0].selected = true;
               this._formLayer = this.layerCollection[webmapLayers.options[0].value];
-              this._createForm(this.config.fields[webmapLayers.options[0].value]);
+              this._savedFields = this.config.fields[webmapLayers.options[0].value]
+              this._createForm(this._savedFields);
               on(webmapLayers, "change", lang.hitch(this, function (evt) {
-                var fields = this.config.fields[evt.currentTarget.value];
+                this._savedFields = this.config.fields[evt.currentTarget.value];
                 this._formLayer = this.layerCollection[evt.currentTarget.value];
-                this._createForm(fields);
+                this._createForm(this._savedFields);
                 this._resizeMap();
               }));
             } else {
@@ -1570,8 +1521,9 @@ define([
           }));
         } else {
           if (this._formLayer) {
+            this._savedFields = this.config.fields[this._formLayer.id]
             // create form fields
-            this._createForm(this.config.fields[this._formLayer.id]);
+            this._createForm(this._savedFields);
           }
         }
         // create locate button
