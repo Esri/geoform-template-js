@@ -4,7 +4,7 @@
       error: "לא ניתן ליצור מפה"
     },
     onlineStatus: {
-      offline: "אתה עובד כעת במצב לא מקוון. הגשות טפסים יישמרו באופן מקומי עד ליצירת חיבור לשרת.",
+      offline: "אתה עובד כעת במצב לא מקוון. טפסים יישמרו באופן מקומי עד ליצירת חיבור לשרת.",
       reconnecting: "מתחבר מחדש&hellip;",
       pending: "${total} שינויי עריכה ממתינים יישלחו כשייווצר שוב חיבור לרשת."
     },
@@ -51,7 +51,7 @@
       selectLayerTabText: "${formSection} בחר טופס",
       geoFormGeneralTabText: "${formSection} הזן מידע",
       locationInformationText: "${formSection} בחר מיקום",
-      submitInformationText: "${formSection} מלא את הטופס",
+      submitInformationText: "${formSection} השלם מילוי הטופס",
       submitInstructions: "הוסף מידע זה למפה.",
       myLocationText: "מיקום נוכחי",
       locationDescriptionForMoreThanOneOption: "ציין את המיקום של ערך זה על-ידי לחיצה/הקשה על המפה או באמצעות אחת האפשרויות הבאות.",
@@ -61,14 +61,14 @@
       geographic: "רוחב/אורך",
       locationTabText: "מיקום",
       locationPopupTitle: "מיקום",
-      submitButtonText: "הגש ערך",
+      submitButtonText: "שלח דיווח",
       submitButtonTextLoading: "מגיש&hellip;",
       formValidationMessageAlertText: "השדות הבאים נדרשים:",
-      selectLocation: "בחר מיקום להגשה.",
+      selectLocation: "בחר מיקום לדיווח.",
       emptylatitudeAlertMessage: "הזן קואורדינטת ${openLink}רוחב${closeLink}.",
       emptylongitudeAlertMessage: "הזן קואורדינטת ${openLink}אורך${closeLink}.",
       shareUserTitleMessage: "תודה על תרומתך!",
-      entrySubmitted: "הערך שלך הוגש למפה.",
+      entrySubmitted: "הנתונים שלך נשלחו למפה.",
       shareThisForm: "שתף טופס זה",
       shareUserTextMessage: "הצע לאחרים לתרום באמצעות האפשרויות הבאות.",
       addAttachmentFailedMessage: "לא ניתן להוסיף קובץ לשכבה",
@@ -81,7 +81,7 @@
       findMyLocation: "אתר אותי",
       finding: "מאתר&hellip;",
       backToTop: "חזור להתחלה",
-      addressSearchText: "ההגשה שלך תופיע כאן. אתה יכול לגרור את הסיכה כדי לתקן את המיקום.",
+      addressSearchText: "הדיווח שלך יופיע כאן. אתה יכול לגרור את הסיכה כדי לתקן את המיקום.",
       shareModalFormText: "קישור לטופס",
       close: "סגור",
       locationNotFound: "לא ניתן למצוא מיקום.",
@@ -121,7 +121,7 @@
       exceededFileCountError: "חריגה מהמספר המרבי המותר של קישורי קבצים",
       selectFileTitle: "בחר קובץ",
       btnSelectFileText: "בחר קובץ",
-      btnViewSubmissions: "הצג הגשות"
+      btnViewSubmissions: "הצג דיווחים"
     },
     builder: {
       gettingStarted: "תחילת העבודה",
@@ -223,8 +223,8 @@
       shareGeoformText: "לחצנים לשיתוף במדיה חברתית",
       shareDescription: "לחצני מדיה חברתית מאפשרים לקהל שלך לשתף בקלות את ה-GeoForm שלך מרגע ששלחו פריט",
       defaultMapExtent: "תיחום ברירת המחדל של המפה",
-      defaultMapExtentDescription: "המפה תתאפס לתיחום ברירת המחדל ב-web map שלך לאחר ההגשה - ניתן להשבית אפשרות זו בכל עת.",
-      pushpinOptionsDescription: "בחר צבע מתוך מגוון צבעים עבור הנעץ במפה, הוא צריך להיות שונה מהסימבולוגיה של המפה כדי לעזור למשתמש להציב את ההגשה שלו על המפה",
+      defaultMapExtentDescription: "המפה תתאפס לתיחום ברירת המחדל ב-web map שלך לאחר הביצוע - ניתן להשבית אפשרות זו בכל עת.",
+      pushpinOptionsDescription: "בחר צבע מתוך מגוון צבעים עבור הנעץ במפה, הוא צריך להיות שונה מהסימבולוגיה של המפה כדי לעזור למשתמש להציב את המיקום שלו על המפה",
       selectLocationText: "בחר מיקום לפי",
       myLocationText: "המיקום שלי",
       searchText: "חפש",
@@ -256,7 +256,7 @@
       sortHeaderText: "מיין לפי:",
       geocoderPlaceholderText: "מיקוד, עיר וכו\'",
       noSearchResult: "לא נמצאה תוצאה",
-      recordsTabTooltip: "הצג הגשות",
+      recordsTabTooltip: "הצג דיווחים",
       legendTabTooltip: "מקרא",
       aboutUsTabTooltip: "אודותינו",
       mapTabTooltip: "מפה",
@@ -271,7 +271,7 @@
       viewReportsTabText: "דוחות",
       viewLegendTabText: "מקרא",
       viewAboutusTabText: "אודות",
-      btnSubmitReportText: "הגש דוח",
+      btnSubmitReportText: "שלח דוח",
       appLoadingFailedMessage: "אירעה שגיאה בטעינת חלון התצוגה"
     }
   })

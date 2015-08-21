@@ -51,7 +51,7 @@
       selectLayerTabText: "${formSection} Formulier selecteren",
       geoFormGeneralTabText: "${formSection} Informatie invoeren",
       locationInformationText: "${formSection} Locatie selecteren",
-      submitInformationText: "${formSection} Formulier invullen",
+      submitInformationText: "${formSection} Formulier verzenden",
       submitInstructions: "Deze informatie toevoegen aan de kaart.",
       myLocationText: "Huidige locatie",
       locationDescriptionForMoreThanOneOption: "Geef de locatie op voor deze melding door op de kaart te klikken/tikken of door een van de volgende opties te gebruiken.",
