@@ -229,7 +229,15 @@ grunt.registerTask('build_scss', 'build a regular theme from scss', function(the
                 .replace(/spin\(/g, 'adjust-hue(')
                 // 10. replace bower and imports in build.scss
                 .replace(/bootstrap\/less\//g, 'bootstrap-sass-official/assets/stylesheets/')
-                .replace(/\.less/g, '');
+                .replace(/\.less/g, '')
+                // 11. replace icon-font-path value with conditional for asset helpers
+                .replace(/(\$icon-font-path:).*;/g, '$1 if($bootstrap-sass-asset-helper, "bootstrap/", "../fonts/bootstrap/");');
+                if (/\/variables.less$/.test(lessFile)) {
+                // 12. set default value of $bootstrap-sass-asset-helper to false
+                  out = "$bootstrap-sass-asset-helper: false;\n" + out;
+                // 13. only assign variables if they haven't been previously set e.g. $var: #f00; > $var: #f00 !default;
+                  out = out.replace(/^(\$.*);/gm, '$1 !default;');
+                }
 
         var baseDirRegex = new RegExp("^" + convertBaseDir, "g");
         var sassFile = lessFile.replace(baseDirRegex, '').replace(/\.less$/, '.scss').replace(/(bootswatch|variables)/, '_$1');
