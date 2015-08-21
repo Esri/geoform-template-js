@@ -1086,6 +1086,10 @@ define([
         inputContent.setAttribute("aria-required", true);
         inputContent.setAttribute("required", "");
       }
+      if(currentField.defaultValue){
+        // store default value
+        domAttr.set(inputContent, "data-default-value", currentField.defaultValue);
+      }
       var helpHTML;
       if (currentField.isNewField) {
         // make sure popup info and fields are defined
@@ -1246,6 +1250,7 @@ define([
             if (fieldAttribute.toLowerCase() === field.name.toLowerCase()) {
               defaultValue = selectedType.templates[0].prototype.attributes[fieldAttribute];
               field.defaultValue = defaultValue;
+              domAttr.set(currentTarget, "data-default-value", defaultValue);
               break;
             }
           }
@@ -1504,7 +1509,7 @@ define([
             if (webmapLayers.options[0]) {
               webmapLayers.options[0].selected = true;
               this._formLayer = this.layerCollection[webmapLayers.options[0].value];
-              this._savedFields = this.config.fields[webmapLayers.options[0].value]
+              this._savedFields = this.config.fields[webmapLayers.options[0].value];
               this._createForm(this._savedFields);
               on(webmapLayers, "change", lang.hitch(this, function (evt) {
                 this._savedFields = this.config.fields[evt.currentTarget.value];
@@ -1519,7 +1524,7 @@ define([
           }));
         } else {
           if (this._formLayer) {
-            this._savedFields = this.config.fields[this._formLayer.id]
+            this._savedFields = this.config.fields[this._formLayer.id];
             // create form fields
             this._createForm(this._savedFields);
           }
@@ -2142,15 +2147,15 @@ define([
 
     // submit form with applyedits
     _addFeatureToLayer: function () {
-      var userFormNode, featureData, key, value;
+      var userFormNode, featureData, key, value, defaultValue;
       userFormNode = dom.byId('userForm');
       //To populate data for apply edits
       featureData = new Graphic();
       featureData.attributes = {};
       //condition to filter out radio inputs
       array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
+        key = domAttr.get(currentField, "id");
         if (currentField.value !== "") {
-          key = domAttr.get(currentField, "id");
           if (domClass.contains(currentField, "hasDatetimepicker")) {
             var picker = $(currentField.parentNode).data('DateTimePicker');
             var d = picker.date();
@@ -2161,18 +2166,28 @@ define([
           }
           featureData.attributes[key] = value;
         }
+        else if(domAttr.has(currentField, "data-default-value")){
+          defaultValue = domAttr.get(currentField, "data-default-value");
+          value = defaultValue;
+          featureData.attributes[key] = value;
+        }
       });
       array.forEach(query(".filterSelect"), function (currentField) {
+        key = domAttr.get(currentField, "id");
         if (currentField.value) {
-          key = domAttr.get(currentField, "id");
           value = lang.trim(currentField.value);
+          featureData.attributes[key] = value;
+        }
+        else if(domAttr.has(currentField, "data-default-value")){
+          defaultValue = domAttr.get(currentField, "data-default-value");
+          value = defaultValue;
           featureData.attributes[key] = value;
         }
       });
       // each radio button
       array.forEach(query(".geoFormQuestionare .radioContainer"), function (currentField) {
+        key = query(".radioInput:checked", currentField)[0].name;
         if (query(".radioInput:checked", currentField).length !== 0) {
-          key = query(".radioInput:checked", currentField)[0].name;
           value = lang.trim(query(".radioInput:checked", currentField)[0].value);
           featureData.attributes[key] = value;
         }
@@ -2813,6 +2828,7 @@ define([
         locale: kernel.locale,
         minDate: minDate,
         maxDate: maxDate,
+        extraFormats: ["M/D/YYYY", "M-D-YYYY", "M.D.YYYY", "M D YYYY"],
         format: this.dateFormat,
         defaultDate: defaultDate,
         useCurrent: true

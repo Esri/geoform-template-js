@@ -475,10 +475,19 @@ define([
       on(dom.byId("prevFeature"), "click", lang.hitch(this, function () {
         this._resetPaginationArrows(dom.byId("prevFeature"), false);
       }));
-      on(dom.byId("submitForm"), "click", lang.hitch(this, function () {
+      on(dom.byId("submitForm"), "click", lang.hitch(this, function (e) {
         var urlString = "index.html";
         urlString = this.config.appid ? urlString + "?appid=" + this.config.appid : urlString;
         window.location.assign(urlString);
+        e.stopPropagation();
+        e.preventDefault();
+      }));
+      on(dom.byId("appTitle"), "click", lang.hitch(this, function (e) {
+        var urlString = "index.html";
+        urlString = this.config.appid ? urlString + "?appid=" + this.config.appid : urlString;
+        window.location.assign(urlString);
+        e.stopPropagation();
+        e.preventDefault();
       }));
     },
 
