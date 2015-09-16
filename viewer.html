@@ -65,6 +65,10 @@
                 location: package_path + '/views'
             }]
         };
+        var urlLocale = location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : null;
+        if(urlLocale){
+          dojoConfig.locale = urlLocale;
+        }
     </script>
     <link href="css/viewer.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="//jsdev.arcgis.com/3.15"></script>

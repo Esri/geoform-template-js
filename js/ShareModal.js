@@ -118,6 +118,7 @@ define([
               newParams = lang.clone(urlParams);
             delete newParams.edit; //Remove edit parameter
             delete newParams.folderid; //Remove folderid parameter
+            delete newParams.locale;
             currentUrl = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
           }
           // not already shortened
@@ -179,6 +180,7 @@ define([
             newParams = lang.clone(urlParams);
           delete newParams.edit; //Remove edit parameter
           delete newParams.folderid; //Remove folderid parameter
+          delete newParams.locale;
           url = queryUrl.substring(0, queryUrl.indexOf("?") + 1) + ioQuery.objectToQuery(newParams);
         }
         // update url
