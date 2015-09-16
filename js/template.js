@@ -191,22 +191,25 @@ define([
       return deferred.promise;
     },
     _getUrlParamValues: function (items) {
-      // retreives only the items specified from the URL object.
-      var urlObject = this.urlObject,
-        obj = {},
-        i;
+      // retrieves only the items specified from the URL object.
+      var urlObject = this.urlObject;
+      var obj = {};
       if (urlObject && urlObject.query && items && items.length) {
-        for (i = 0; i < items.length; i++) {
-          if (urlObject.query[items[i]]) {
-            var item = urlObject.query[items[i]];
-            switch (item.toLowerCase()) {
-            case "true":
-              obj[items[i]] = true;
-              break;
-            case "false":
-              obj[items[i]] = false;
-              break;
-            default:
+        for (var i = 0; i < items.length; i++) {
+          var item = urlObject.query[items[i]];
+          if (item) {
+            if (typeof item === "string") {
+              switch (item.toLowerCase()) {
+              case "true":
+                obj[items[i]] = true;
+                break;
+              case "false":
+                obj[items[i]] = false;
+                break;
+              default:
+                obj[items[i]] = item;
+              }
+            } else {
               obj[items[i]] = item;
             }
           }
@@ -299,7 +302,7 @@ define([
           }));
           // add a dir attribute to the html tag. Then you can add special css classes for rtl languages
           dirNode = document.getElementsByTagName("html")[0];
-          classes = dirNode.className;
+          classes = dirNode.className + " ";
           if (cfg.i18n.direction === "rtl") {
             // need to add support for dj_rtl.
             // if the dir node is set when the app loads dojo will handle.
@@ -473,7 +476,7 @@ define([
                 }
               };
             });
-            this.appConfig.layerMixins = layerMixins;
+            cfg.layerMixins = layerMixins;
           }
           this.appConfig = cfg;
           deferred.resolve(cfg);
@@ -503,6 +506,18 @@ define([
           },
           callbackParamName: "callback"
         }).then(lang.hitch(this, function (response) {
+          if (this.templateConfig.webTierSecurity) {
+            // Iterate over the list of authorizedCrossOriginDomains
+            // and add each as a javascript obj to the corsEnabledServers
+            if (response.authorizedCrossOriginDomains && response.authorizedCrossOriginDomains.length) {
+              for (var i = 0; i < response.authorizedCrossOriginDomains.length; i++) {
+                esriConfig.defaults.io.corsEnabledServers.push({
+                  host: response.authorizedCrossOriginDomains[i],
+                  withCredentials: true
+                });
+              }
+            }
+          }
           var cfg = {};
           // save organization information
           cfg.orgInfo = response;
