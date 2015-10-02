@@ -71,15 +71,14 @@
 }
 
 .icon-loading {
-  width: 40px;
-  height: 40px;
+  background: url(../images/loading.gif) no-repeat center center;
+  width: 58px;
+  height: 74px;
   position: absolute;
   top: 50%;
   left: 50%;
   overflow: hidden;
-  margin: -20px 0 0 -20px;
-  font-size: 40px;
-  line-height: 40px;
+  margin: -37px 0 0 -29px;
 }
 
 .app-error .icon-loading {
