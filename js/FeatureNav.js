@@ -152,7 +152,7 @@ define([
         this.own(on(this._layerNode, "change", lang.hitch(this, this._layerChange)));
         this.own(on(this._sortNode, "change", lang.hitch(this, this._sortChange)));
         this.own(on(this._orderNode, a11yclick, lang.hitch(this, this._orderClick)));
-        this.own(on(this._resultsNode, "li:click", function () {
+        this.own(on(this._resultsNode, on.selector("li", a11yclick), function () {
           _self._resultClick(this);
         }));
         this.own(on(this._searchBtnNode, a11yclick, lang.hitch(this, this._searchClick)));
@@ -170,8 +170,8 @@ define([
             if (layer && source && layer === source.featureLayer) {
               if (graphic) {
                 var id = graphic.attributes[layer.objectIdField];
+                this._resultHighlight(id);
               }
-              this._resultHighlight(id);
             }
           }
         })));

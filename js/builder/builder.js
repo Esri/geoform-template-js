@@ -27,9 +27,10 @@ define([
     "esri/layers/FeatureLayer",
     "dojo/Deferred",
     "esri/basemaps",
+    "dijit/a11yclick",
     "application/wrapper/builder-jquery-deps",
     "dojo/domReady!"
-], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer, Deferred, esriBasemaps) {
+], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer, Deferred, esriBasemaps, a11yclick) {
   return declare([], {
     nls: nls,
     currentState: "webmap",
@@ -138,15 +139,15 @@ define([
       });
       // place modal code
       domConstruct.place(modalTemplateSub, document.body, 'last');
-      $('.prevtab').on('click', lang.hitch(this, function () {
+      $('.prevtab').on(a11yclick, lang.hitch(this, function () {
         $tabs.filter('.active').prev('li').find('a[data-toggle="tab"]').tab('show');
       }));
 
-      $('.nexttab').on('click', lang.hitch(this, function () {
+      $('.nexttab').on(a11yclick, lang.hitch(this, function () {
         $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
       }));
 
-      $('.navigationTabs').on('click', lang.hitch(this, function (evt) {
+      $('.navigationTabs').on(a11yclick, lang.hitch(this, function (evt) {
         if (domClass.contains(evt.currentTarget, "previewButton")) {
           query('.tab-links li').forEach(function (node) {
             domClass.remove(node, "active");
@@ -160,33 +161,33 @@ define([
         this._getPrevTabDetails(evt);
       }));
 
-      $('#saveButton').on('click', lang.hitch(this, function () {
+      $('#saveButton').on(a11yclick, lang.hitch(this, function () {
         this._updateItem(false);
       }));
 
-      $('#done').on('click', lang.hitch(this, function () {
+      $('#done').on(a11yclick, lang.hitch(this, function () {
         this._updateItem(true);
       }));
 
-      $('#jumbotronDisableOption').on('click', lang.hitch(this, function () {
+      $('#jumbotronDisableOption').on(a11yclick, lang.hitch(this, function () {
         this.currentConfig.useSmallHeader = true;
       }));
-      $('#jumbotronEnableOption').on('click', lang.hitch(this, function () {
+      $('#jumbotronEnableOption').on(a11yclick, lang.hitch(this, function () {
         this.currentConfig.useSmallHeader = false;
       }));
-      $('#shareOption').on('click', lang.hitch(this, function () {
+      $('#shareOption').on(a11yclick, lang.hitch(this, function () {
         this.currentConfig.enableSharing = $('#shareOption')[0].checked;
       }));
-      $('#defaultExtent').on('click', lang.hitch(this, function () {
+      $('#defaultExtent').on(a11yclick, lang.hitch(this, function () {
         this.currentConfig.defaultMapExtent = $('#defaultExtent')[0].checked;
       }));
-      $('#ShowHideLayerOption').on('click', lang.hitch(this, function () {
+      $('#ShowHideLayerOption').on(a11yclick, lang.hitch(this, function () {
         this.currentConfig.showLayer = $('#ShowHideLayerOption')[0].checked;
       }));
-      $('#disableLogo').on('click', lang.hitch(this, function () {
+      $('#disableLogo').on(a11yclick, lang.hitch(this, function () {
         this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
       }));
-      $('#enableBasemapToggle').on('click', lang.hitch(this, function () {
+      $('#enableBasemapToggle').on(a11yclick, lang.hitch(this, function () {
         this.currentConfig.enableBasemapToggle = $('#enableBasemapToggle')[0].checked;
         if (this.currentConfig.enableBasemapToggle) {
           $('#basemapContainer').show();
@@ -194,10 +195,10 @@ define([
           $('#basemapContainer').hide();
         }
       }));
-      $('#locateOnLoad').on('click', lang.hitch(this, function () {
+      $('#locateOnLoad').on(a11yclick, lang.hitch(this, function () {
         this.currentConfig.locate = !this.currentConfig.locate;
       }));
-      $('#disableViewer').on('click', lang.hitch(this, function () {
+      $('#disableViewer').on(a11yclick, lang.hitch(this, function () {
         this.currentConfig.disableViewer = !this.currentConfig.disableViewer;
       }));
       this._loadResources();
@@ -791,7 +792,7 @@ define([
           className: "glyphicon glyphicon-cog"
         }, fieldConfigureButton);
 
-        on(fieldConfigureButton, "click", function () {
+        on(fieldConfigureButton, a11yclick, function () {
           $("#configure_modal_" + currentIndex).modal("show");
         });
 
@@ -1201,7 +1202,7 @@ define([
         }
       }));
 
-      on(dom.byId("selectWebmapBtn"), "click", lang.hitch(this, function () {
+      on(dom.byId("selectWebmapBtn"), a11yclick, lang.hitch(this, function () {
         this.browseDlg.show();
       }));
 

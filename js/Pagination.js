@@ -11,9 +11,10 @@ define([
   "dojo/number",
   "dojo/string",
   "dijit/_TemplatedMixin",
-  "dijit/_WidgetBase"
+  "dijit/_WidgetBase",
+  "dijit/a11yclick"
 ],
-  function (declare, lang, Evented, domAttr, domClass, i18n, on, query, template, number, string, _TemplatedMixin, _WidgetBase) {
+  function (declare, lang, Evented, domAttr, domClass, i18n, on, query, template, number, string, _TemplatedMixin, _WidgetBase, a11yclick) {
     var Pagination = declare([_WidgetBase, _TemplatedMixin, Evented], {
       // dijit HTML
       templateString: template,
@@ -74,7 +75,7 @@ define([
 
       postCreate: function () {
         // setup connections
-        this.own(on(this.listNode, "[" + this._dataAttr + "]:click", lang.hitch(this, function (evt) {
+        this.own(on(this.listNode, on.selector("[" + this._dataAttr + "]", a11yclick), lang.hitch(this, function (evt) {
           if (!this.disabled) {
             var target = evt.target;
             var pg = domAttr.get(target, this._dataAttr);

@@ -30,6 +30,8 @@ define([
 
   "dojo/i18n!application/nls/resources",
 
+  "dijit/a11yclick",
+  
   "application/FeatureNav",
   "application/wrapper/main-jquery-deps",
 
@@ -41,6 +43,7 @@ define([
   arcgisUtils, InfoTemplate,
   Legend,
   nls,
+  a11yclick,
   FeatureNav
 ) {
   return declare(null, {
@@ -203,8 +206,8 @@ define([
           domClass.add(dom.byId("feature_pagination"), "hidden");
         });
 
-        on(dom.byId("previous"), "click", lang.hitch(this, this.map.infoWindow.selectPrevious));
-        on(dom.byId("next"), "click", lang.hitch(this, this.map.infoWindow.selectNext));
+        on(dom.byId("previous"), a11yclick, lang.hitch(this, this.map.infoWindow.selectPrevious));
+        on(dom.byId("next"), a11yclick, lang.hitch(this, this.map.infoWindow.selectNext));
 
         //When features are associated with the  map's info window update the sidebar with the new content. 
         on(popup, "set-features", lang.hitch(this, function () {

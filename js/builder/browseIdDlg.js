@@ -16,11 +16,12 @@ define([
   "dijit/_WidgetsInTemplateMixin",
   "dojo/text!views/BrowseIdDlg.html",
   "esri/request",
+  "dijit/a11yclick",
   "dijit/Dialog",
   "dijit/form/Select",
   "dijit/form/Button",
   "dijit/form/TextBox"
-], function (Evented, declare, lang, dojoEvent, keys, registry, on, query, domStyle, domClass, Grid, i18n, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, template, esriRequest) {
+], function (Evented, declare, lang, dojoEvent, keys, registry, on, query, domStyle, domClass, Grid, i18n, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, template, esriRequest, a11yclick) {
   return declare([Evented, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
     templateString: template,
     constructor: function (args, userInfo) {
@@ -89,7 +90,7 @@ define([
           this.selectedWebmap.thumbnailUrl = row.data.thumbnailUrl;
         }
       }));
-      on(this.searchButton, "click", lang.hitch(this, function (evt) {
+      on(this.searchButton, a11yclick, lang.hitch(this, function (evt) {
         this._onSearchClick(evt);
       }));
     },

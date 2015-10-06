@@ -39,6 +39,7 @@ define([
     "application/pushpins",
     "application/SearchSources",
     "vendor/usng",
+    "dijit/a11yclick",
     "dojo/NodeList-traverse",
     "application/wrapper/main-jquery-deps",
     "dojo/domReady!"
@@ -64,7 +65,7 @@ define([
   Search,
   modalTemplate,
   userTemplate,
-  nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, SearchSources, usng) {
+  nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, SearchSources, usng, a11yclick) {
   return declare([], {
     arrPendingAttachments: [],
     objFailedAttachments: {},
@@ -659,7 +660,7 @@ define([
       alertHtml = domConstruct.place(alertHtml, dom.byId("divColumn2"), "last");
       domConstruct.place(fileInput.parentNode, alertHtml, "last");
       //binding event to perform activities on removal of a selected file from the file list
-      on(query(".close", alertHtml)[0], "click", function () {
+      on(query(".close", alertHtml)[0], a11yclick, function () {
         if (query(".alert-dismissable").length === 1) {
           domClass.remove(formContent, ".has-success");
         }
@@ -872,7 +873,7 @@ define([
                 // add text after input
                 inputLabel.innerHTML += currentOption.name;
                 //code to assign has-success class on click of a radio button
-                on(dom.byId(fieldname + currentOption.code), "click", function (evt) {
+                on(dom.byId(fieldname + currentOption.code), a11yclick, function (evt) {
                   if (evt.target.checked) {
                     if (query(".errorMessage", formContent).length !== 0) {
                       domConstruct.destroy(query(".errorMessage", formContent)[0]);
@@ -907,7 +908,7 @@ define([
                 }
                 // add text after input
                 inputLabel.innerHTML += currentOption.name;
-                on(dom.byId(fieldname + currentOption.id), "click", lang.hitch(this, function (evt) {
+                on(dom.byId(fieldname + currentOption.id), a11yclick, lang.hitch(this, function (evt) {
                   //function call to take appropriate actions on selection of a subtypes
                   if (currentField.typeField) {
                     this._validateTypeFields(evt.currentTarget, currentField);
@@ -1651,11 +1652,11 @@ define([
         on(lngNode, "change", lang.hitch(this, function () {
           this._checkLatLng();
         }));
-        on(dom.byId('cordsSubmit'), "click", lang.hitch(this, function (evt) {
+        on(dom.byId('cordsSubmit'), a11yclick, lang.hitch(this, function (evt) {
           this._evaluateCoordinates(evt);
         }));
         // USNG
-        on(dom.byId('usng_submit'), "click", lang.hitch(this, function () {
+        on(dom.byId('usng_submit'), a11yclick, lang.hitch(this, function () {
           this._convertUSNG();
         }));
         var usngInput = dom.byId('usng_coord');
@@ -1670,7 +1671,7 @@ define([
           this._checkUSNG();
         }));
         // MGRS
-        on(dom.byId('mgrs_submit'), "click", lang.hitch(this, function () {
+        on(dom.byId('mgrs_submit'), a11yclick, lang.hitch(this, function () {
           this._convertMGRS();
         }));
         var mgrsInput = dom.byId('mgrs_coord');
@@ -1688,7 +1689,7 @@ define([
         var northNode = dom.byId('utm_northing');
         var eastNode = dom.byId('utm_easting');
         var zoneNode = dom.byId('utm_zone_number');
-        on(dom.byId('utm_submit'), "click", lang.hitch(this, function () {
+        on(dom.byId('utm_submit'), a11yclick, lang.hitch(this, function () {
           this._convertUTM();
         }));
         on(northNode, "keypress", lang.hitch(this, function (evt) {
@@ -1723,6 +1724,7 @@ define([
         }));
         // fullscreen
         var fsButton = domConstruct.create("div", {
+          tabindex: "0",
           "class": "fullScreenButtonContainer"
         }, mapDiv);
         domConstruct.create("span", {
@@ -1731,7 +1733,7 @@ define([
           "class": "glyphicon glyphicon-fullscreen fullScreenImage"
         }, fsButton);
         if (fsButton) {
-          on(fsButton, "click", lang.hitch(this, function () {
+          on(fsButton, a11yclick, lang.hitch(this, function () {
             this._toggleFullscreen();
           }));
         }
@@ -1745,7 +1747,7 @@ define([
         // finished button
         var submitButtonNode = dom.byId('submitButton');
         if (submitButtonNode) {
-          on(submitButtonNode, "click", lang.hitch(this, function () {
+          on(submitButtonNode, a11yclick, lang.hitch(this, function () {
             this._submitForm();
           }));
         }
@@ -2097,7 +2099,7 @@ define([
         $('#geolocate_button').button('reset');
       }));
       // event for clicking node
-      on(dom.byId('geolocate_button'), 'click', lang.hitch(this, function (evt) {
+      on(dom.byId('geolocate_button'), a11yclick, lang.hitch(this, function (evt) {
         // remove graphic
         this._clearSubmissionGraphic();
         // set loading button
@@ -2292,7 +2294,7 @@ define([
           domStyle.set(currentBadge, "cursor", "pointer");
           //This click event will work on retry button in case of failure in attachment
           //and process to re-upload the file will start
-          on.once(currentBadge, "click", lang.hitch(this, function (evt) {
+          on.once(currentBadge, a11yclick, lang.hitch(this, function (evt) {
             //adding/removing attributes to keep the user updated on current state of file attachment
             domClass.replace(currentBadge.parentNode, "alert-info", "alert-warning");
             domClass.add(query(".attachment-error-message", currentBadge.parentNode)[0], "hide");
@@ -2732,7 +2734,7 @@ define([
             domStyle.set(locationTabs[count], 'display', 'none');
           } else {
             //resize the map to set the correct info-window anchor
-            on(locationTabs[count], 'click', lang.hitch(this, this._resizeMap));
+            on(locationTabs[count], a11yclick, lang.hitch(this, this._resizeMap));
             total++;
           }
           count++;

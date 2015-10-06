@@ -16,10 +16,12 @@ define([
   "dojo/store/Cache",
   "application/builder/PortalItemStore",
   "dojo/store/Observable",
+  "dojo/on",
+  "dijit/a11yclick",
   "put-selector/put",
   "dgrid/util/mouse"],
   function (declare, Evented, dojoString, lang, array, WidgetBase, TemplatedMixin, WidgetsInTemplateMixin, Grid, RefreshMixin,
-    Selection, Pagination, query, Memory, Cache, PortalItemStore, Observable, put, mouseUtil) {
+    Selection, Pagination, query, Memory, Cache, PortalItemStore, Observable, on, a11yclick, put, mouseUtil) {
     return declare([WidgetBase, Evented], {
       postMixInProperties: function () {
         this.inherited(arguments);
@@ -71,7 +73,7 @@ define([
           this._grid.on(mouseUtil.enterRow, lang.hitch(this, "_showSnippet", true)),
           this._grid.on(mouseUtil.leaveRow, lang.hitch(this, "_showSnippet", false)),
           this._grid.on("refresh", lang.hitch(this, "_onGridRefresh")),
-          this._grid.on(".dgrid-row:click", lang.hitch(this, "_onRowClick"))
+          this._grid.on(on.selector(".dgrid-row", a11yclick), lang.hitch(this, "_onRowClick"))
         );
       },
       _formatTitle: function (title) {

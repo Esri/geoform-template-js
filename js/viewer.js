@@ -40,6 +40,7 @@ define([
         "esri/Color",
         "dijit/registry",
         "dojo/parser",
+        "dijit/a11yclick",
         "application/wrapper/main-jquery-deps",
         "dojo/domReady!"
 ], function (
@@ -61,7 +62,7 @@ define([
   Point,
   GraphicsLayer,
   Graphic, BorderContainer, ContentPane, ShareModal, modalTemplate, ViewerTemplate, nls, Legend, FeatureLayer,
-  Locator, Query, QueryTask, BasemapToggle, esriLang, Search, bootstrapmap, Extent, SimpleMarkerSymbol, SimpleLineSymbol, Color, registry, parser) {
+  Locator, Query, QueryTask, BasemapToggle, esriLang, Search, bootstrapmap, Extent, SimpleMarkerSymbol, SimpleLineSymbol, Color, registry, parser, a11yclick) {
   return declare([], {
     layerClickHandle: null,
     nls: nls,
@@ -110,31 +111,31 @@ define([
       });
       // place modal code
       domConstruct.place(modalTemplateSub, document.body, 'last');
-      on(dom.byId("shareDialog"), "click", lang.hitch(this, function () {
+      on(dom.byId("shareDialog"), a11yclick, lang.hitch(this, function () {
         this._openShareModal();
       }));
-      on(dom.byId("shareDialogMobileView"), "click", lang.hitch(this, function () {
+      on(dom.byId("shareDialogMobileView"), a11yclick, lang.hitch(this, function () {
         this._openShareModal();
       }));
-      on(dom.byId("btnSortByOrder"), "click", lang.hitch(this, function () {
+      on(dom.byId("btnSortByOrder"), a11yclick, lang.hitch(this, function () {
         this.activeElementId = null;
         domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
         this.selectedGraphics.clear();
         this._sortByOrder();
       }));
-      on(dom.byId("search"), "click", lang.hitch(this, function (evt) {
+      on(dom.byId("search"), a11yclick, lang.hitch(this, function (evt) {
         this._navigatePanel(evt.currentTarget);
       }));
-      on(dom.byId("aboutus"), "click", lang.hitch(this, function (evt) {
+      on(dom.byId("aboutus"), a11yclick, lang.hitch(this, function (evt) {
         this._navigatePanel(evt.currentTarget);
       }));
-      on(dom.byId("mapOption"), "click", lang.hitch(this, function (evt) {
+      on(dom.byId("mapOption"), a11yclick, lang.hitch(this, function (evt) {
         this._navigatePanel(evt.currentTarget);
       }));
-      on(dom.byId("legend"), "click", lang.hitch(this, function (evt) {
+      on(dom.byId("legend"), a11yclick, lang.hitch(this, function (evt) {
         this._navigatePanel(evt.currentTarget);
       }));
-      on(dom.byId("closeButton"), "click", function () {
+      on(dom.byId("closeButton"), a11yclick, function () {
         domStyle.set(dom.byId("featureDetailsContainer"), 'display', 'none');
       });
       this.iconPathSVG = "M 1784,238 1805,238 1805,259 1784,259 1784,238 M 1777,248 1784,248 M 1794,231 1794,238 M 1812,248 1805,248 M 1794,266 1794,259";
@@ -469,20 +470,20 @@ define([
           this.map.infoWindow.hide();
         }
       }));
-      on(dom.byId("nextFeature"), "click", lang.hitch(this, function () {
+      on(dom.byId("nextFeature"), a11yclick, lang.hitch(this, function () {
         this._resetPaginationArrows(dom.byId("nextFeature"), true);
       }));
-      on(dom.byId("prevFeature"), "click", lang.hitch(this, function () {
+      on(dom.byId("prevFeature"), a11yclick, lang.hitch(this, function () {
         this._resetPaginationArrows(dom.byId("prevFeature"), false);
       }));
-      on(dom.byId("submitForm"), "click", lang.hitch(this, function (e) {
+      on(dom.byId("submitForm"), a11yclick, lang.hitch(this, function (e) {
         var urlString = "index.html";
         urlString = this.config.appid ? urlString + "?appid=" + this.config.appid : urlString;
         window.location.assign(urlString);
         e.stopPropagation();
         e.preventDefault();
       }));
-      on(dom.byId("appTitle"), "click", lang.hitch(this, function (e) {
+      on(dom.byId("appTitle"), a11yclick, lang.hitch(this, function (e) {
         var urlString = "index.html";
         urlString = this.config.appid ? urlString + "?appid=" + this.config.appid : urlString;
         window.location.assign(urlString);
@@ -828,7 +829,7 @@ define([
           }
           domAttr.set(listItem, "fieldValue", currentKey.attributes[_formLayer.objectIdField]);
           this._fetchListTitle(_formLayer, listTitle, titleField, true, listItem);
-          on(listItem, 'click', lang.hitch(this, function (evt) {
+          on(listItem, a11yclick, lang.hitch(this, function (evt) {
             this.activeElementId = domAttr.get(evt.currentTarget, "fieldValue");
             var activeListElement = query(".active", listElement),
               HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
@@ -870,7 +871,7 @@ define([
             "innerHTML": nls.viewer.btnLoadMoreText,
             "id": "loadMoreButton"
           }, listItem);
-          on(loadMoreButton, "click", lang.hitch(this, function () {
+          on(loadMoreButton, a11yclick, lang.hitch(this, function () {
             this.pageIndex++;
             this._queryLayer(this._formLayer);
             this._formLayer.redraw();
@@ -1345,7 +1346,7 @@ define([
       this._mobileSearchNode = dom.byId("mobileSearch");
       // mobile geocoder toggle
       if (this._mobileGeocoderIconNode) {
-        on(this._mobileGeocoderIconNode, "click", lang.hitch(this, function () {
+        on(this._mobileGeocoderIconNode, a11yclick, lang.hitch(this, function () {
           if (domStyle.get(this._mobileSearchNode, "display") === "none") {
             this._showMobileGeocoder();
           } else {
@@ -1356,7 +1357,7 @@ define([
       closeMobileGeocoderNode = dom.byId("btnCloseGeocoder");
       if (closeMobileGeocoderNode) {
         // cancel mobile geocoder
-        on(closeMobileGeocoderNode, "click", lang.hitch(this, function () {
+        on(closeMobileGeocoderNode, a11yclick, lang.hitch(this, function () {
           this._hideMobileGeocoder();
         }));
       }

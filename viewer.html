@@ -65,9 +65,9 @@
                 location: package_path + '/views'
             }]
         };
-        var urlLocale = location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : null;
-        if(urlLocale){
-          dojoConfig.locale = urlLocale;
+        // Have to handle a locale parameter before dojo is loaded
+        if (location.search.match(/locale=([\w-]+)/)) {
+          dojoConfig.locale = RegExp.$1;
         }
     </script>
     <link href="css/viewer.css" rel="stylesheet" type="text/css" />
