@@ -262,7 +262,7 @@ define({
       mapTabTooltip: "Map",
       btnDescendingText: "Desc",
       btnAscendingText: "Asc",
-      geometryUnavailableErrorMessage: "Erorr finding the geometry of the feature",
+      geometryUnavailableErrorMessage: "Error finding the geometry of the feature",
       infoPopupOffErrorMessage: "No information to display",
       btnLoadMoreText: "Load More",
       unavailableTitleText: "Untitled",
