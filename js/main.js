@@ -468,6 +468,21 @@ define([
     },
     //function to validate and create the form
     _createForm: function (fields) {
+      // editable layer
+      if (this._formLayer) {
+        // if indexedDB is supported
+        if (window.indexedDB) {
+          // get offline support
+          require(["application/OfflineSupport"], lang.hitch(this, function (OfflineSupport) {
+            // support basic offline editing
+            this._offlineSupport = new OfflineSupport({
+              map: this.map,
+              proxy: this.config.proxyurl,
+              layer: this._formLayer
+            });
+          }));
+        }
+      }
       domConstruct.empty(dom.byId('userForm'));
       this.sortedFields = [];
       var formContent, labelContent, matchingField, newAddedFields = [],
@@ -873,7 +888,7 @@ define([
                 // add text after input
                 inputLabel.innerHTML += currentOption.name;
                 //code to assign has-success class on click of a radio button
-                on(dom.byId(fieldname + currentOption.code), a11yclick, function (evt) {
+                on(inputContent, a11yclick, function (evt) {
                   if (evt.target.checked) {
                     if (query(".errorMessage", formContent).length !== 0) {
                       domConstruct.destroy(query(".errorMessage", formContent)[0]);
@@ -1541,21 +1556,6 @@ define([
         domClass.add(this.map.root, 'panel');
         // remove loading class from body
         domClass.remove(document.body, "app-loading");
-        // editable layer
-        if (this._formLayer) {
-          // if indexedDB is supported
-          if (window.indexedDB) {
-            // get offline support
-            require(["application/OfflineSupport"], lang.hitch(this, function (OfflineSupport) {
-              // support basic offline editing
-              this._offlineSupport = new OfflineSupport({
-                map: this.map,
-                proxy: this.config.proxyurl,
-                layer: this._formLayer
-              });
-            }));
-          }
-        }
         // drag point edit toolbar
         this.editToolbar = new editToolbar(this.map);
         // start moving
