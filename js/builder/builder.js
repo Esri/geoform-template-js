@@ -139,15 +139,15 @@ define([
       });
       // place modal code
       domConstruct.place(modalTemplateSub, document.body, 'last');
-      $('.prevtab').on(a11yclick, lang.hitch(this, function () {
+      on(query(".prevtab"),a11yclick, lang.hitch(this, function () {
         $tabs.filter('.active').prev('li').find('a[data-toggle="tab"]').tab('show');
       }));
 
-      $('.nexttab').on(a11yclick, lang.hitch(this, function () {
+      on(query(".nexttab"), a11yclick, lang.hitch(this, function () {
         $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
       }));
 
-      $('.navigationTabs').on(a11yclick, lang.hitch(this, function (evt) {
+      on(query(".navigationTabs"), a11yclick, lang.hitch(this, function (evt) {
         if (domClass.contains(evt.currentTarget, "previewButton")) {
           query('.tab-links li').forEach(function (node) {
             domClass.remove(node, "active");
@@ -161,33 +161,36 @@ define([
         this._getPrevTabDetails(evt);
       }));
 
-      $('#saveButton').on(a11yclick, lang.hitch(this, function () {
+      on(dom.byId("saveButton"),a11yclick, lang.hitch(this, function () {
         this._updateItem(false);
       }));
 
-      $('#done').on(a11yclick, lang.hitch(this, function () {
+      on(dom.byId("done"), a11yclick, lang.hitch(this, function () {
         this._updateItem(true);
       }));
-
-      $('#jumbotronDisableOption').on(a11yclick, lang.hitch(this, function () {
+      
+      on(dom.byId("jumbotronDisableOption"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.useSmallHeader = true;
       }));
-      $('#jumbotronEnableOption').on(a11yclick, lang.hitch(this, function () {
+      
+      on(dom.byId("jumbotronEnableOption"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.useSmallHeader = false;
       }));
-      $('#shareOption').on(a11yclick, lang.hitch(this, function () {
+      on(dom.byId("shareOption"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.enableSharing = $('#shareOption')[0].checked;
       }));
-      $('#defaultExtent').on(a11yclick, lang.hitch(this, function () {
+      on(dom.byId("defaultExtent"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.defaultMapExtent = $('#defaultExtent')[0].checked;
       }));
-      $('#ShowHideLayerOption').on(a11yclick, lang.hitch(this, function () {
+      
+      on(dom.byId("ShowHideLayerOption"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.showLayer = $('#ShowHideLayerOption')[0].checked;
       }));
-      $('#disableLogo').on(a11yclick, lang.hitch(this, function () {
+      on(dom.byId("disableLogo"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
       }));
-      $('#enableBasemapToggle').on(a11yclick, lang.hitch(this, function () {
+      
+      on(dom.byId("enableBasemapToggle"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.enableBasemapToggle = $('#enableBasemapToggle')[0].checked;
         if (this.currentConfig.enableBasemapToggle) {
           $('#basemapContainer').show();
@@ -195,10 +198,12 @@ define([
           $('#basemapContainer').hide();
         }
       }));
-      $('#locateOnLoad').on(a11yclick, lang.hitch(this, function () {
+      
+      on(dom.byId("locateOnLoad"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.locate = !this.currentConfig.locate;
       }));
-      $('#disableViewer').on(a11yclick, lang.hitch(this, function () {
+      
+      on(dom.byId("disableViewer"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.disableViewer = !this.currentConfig.disableViewer;
       }));
       this._loadResources();
