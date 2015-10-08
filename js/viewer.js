@@ -350,19 +350,23 @@ define([
           innerHTML: nls.user.shareUserTextMessage
         }, iconContainer);
         domConstruct.create("a", {
+          "tabindex": "0",
           className: "fa fa-facebook-square iconClass text-primary",
           id: "facebookIcon"
         }, iconContainer);
         domConstruct.create("a", {
+          "tabindex": "0",
           className: "fa fa-twitter-square iconClass text-primary",
           id: "twitterIcon"
         }, iconContainer);
         domConstruct.create("a", {
+          "tabindex": "0",
           className: "fa fa-google-plus-square iconClass text-primary",
           id: "google-plusIcon"
         }, iconContainer);
       }
       domConstruct.create("a", {
+        "tabindex": "0",
         className: "fa fa-envelope iconClass text-primary",
         id: "mailIcon"
       }, iconContainer);
@@ -819,6 +823,7 @@ define([
         array.forEach(graphicAttribute, lang.hitch(this, function (currentKey, index) {
           listItem = domConstruct.create("li", {
             "class": "list-group-item",
+            "tabindex": 0,
             "id": index
           }, listElement);
           titleField = this.config.selectedTitleField[this.config.form_layer.id];
