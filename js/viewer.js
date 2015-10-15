@@ -910,8 +910,8 @@ define([
                 domAttr.set(listItem, "innerHTML", listTitle ? listTitle : nls.viewer.unavailableTitleText);
               }
             } else {
-              if (listTitle && lang.trim(listTitle)) {
-                listTitle = lang.trim(listTitle);
+              if (listTitle && string.trim(listTitle)) {
+                listTitle = string.trim(listTitle);
               } else {
                 listTitle = nls.viewer.unavailableTitleText;
               }
