@@ -1187,7 +1187,12 @@ define([
       array.forEach(fields, lang.hitch(this, function (currentfield) {
         array.some(this._formLayer.fields, function (layerField) {
           if (layerField.name == key && layerField.type === "esriFieldTypeDate") {
-            attributeValue = new Date(graphics.attributes[key]).toLocaleString();
+            if(graphics.attributes[key]){
+              attributeValue = new Date(graphics.attributes[key]).toLocaleString();
+            }
+            else{
+              attributeValue = "";
+            }
             return true;
           }
         });
