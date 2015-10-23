@@ -104,6 +104,8 @@ define([
 
     // setup editing
     initEditor: function () {
+      // use layer's object id
+      this.offlineFeaturesManager.DB_UID = this.defaults.layer.objectId || "objectid";
       // status for pending edits
       this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, lang.hitch(this, function () {
         this.updateStatus();
