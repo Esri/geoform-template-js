@@ -262,7 +262,7 @@
       mapTabTooltip: "Kort",
       btnDescendingText: "Faldende",
       btnAscendingText: "Stigende",
-      geometryUnavailableErrorMessage: "Kan ikke finde objektets geometri",
+      geometryUnavailableErrorMessage: "Fejl under søgning efter objektets geometri",
       infoPopupOffErrorMessage: "Ingen oplysninger at vise",
       btnLoadMoreText: "Indlæse flere",
       unavailableTitleText: "Uden titel",

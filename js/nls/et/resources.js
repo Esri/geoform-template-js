@@ -262,7 +262,7 @@
       mapTabTooltip: "Kaart",
       btnDescendingText: "Laskuvas järjestuses",
       btnAscendingText: "Tõusvas järjestuses",
-      geometryUnavailableErrorMessage: "Objekti geomeetriat ei leitud.",
+      geometryUnavailableErrorMessage: "Objekti geomeetriat ei leitud",
       infoPopupOffErrorMessage: "Pole andmeid, mida kuvada!",
       btnLoadMoreText: "Laadi rohkem",
       unavailableTitleText: "Pealkirjata",

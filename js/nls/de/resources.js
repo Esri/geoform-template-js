@@ -90,8 +90,8 @@
       attachment: "Anlage",
       toggleDropdown: "Dropdown ein-/ausschalten",
       invalidString: "Geben Sie einen gültigen Wert ein.",
-      invalidSmallNumber: "Geben Sie einen gültigen ${openStrong}Ganzzahl${closeStrong}wert zwischen -32768 und 32767 ein.",
-      invalidNumber: "Geben Sie einen gültigen ${openStrong}Ganzzahl${closeStrong}wert zwischen -2147483648 und 2147483647 ein.",
+      invalidSmallNumber: "Geben Sie einen gültigen ${openStrong}ganzzahligen${closeStrong} Wert zwischen -32768 und 32767 ein.",
+      invalidNumber: "Geben Sie einen gültigen ${openStrong}ganzzahligen${closeStrong} Wert zwischen -2147483648 und 2147483647 ein.",
       invalidFloat: "Geben Sie einen gültigen ${openStrong}Gleitkomma${closeStrong}wert ein.",
       invalidDouble: "Geben Sie einen gültigen ${openStrong}Double${closeStrong}-Wert ein.",
       invalidLatLong: "Geben Sie gültige Breitengrad- und Längengradkoordinaten ein.",
@@ -224,7 +224,7 @@
       shareDescription: "Mit Schaltflächen für Social Media kann Ihre Zielgruppe Ihr GeoForm nach dem Senden der Daten problemlos freigeben",
       defaultMapExtent: "Standardmäßige Kartenausdehnung",
       defaultMapExtentDescription: "Die Karte wird nach der Übermittlung in Ihrer Webkarte auf die Standardausdehnung zurückgesetzt - diese Option kann jederzeit deaktiviert werden.",
-      pushpinOptionsDescription: "Treffen Sie eine Auswahl aus einer Vielzahl von Farben für den Karten-Push-Pin, der sich von der Kartensymbologie unterscheiden sollte, um dem Benutzer die Positionierung der Übermittlung auf der Karte zu erleichtern",
+      pushpinOptionsDescription: "Treffen Sie eine Auswahl aus einer Vielzahl von Farben für den Karten-Push-Pin, der sich von der Kartensymbolisierung unterscheiden sollte, um dem Benutzer die Positionierung der Übermittlung auf der Karte zu erleichtern",
       selectLocationText: "Position auswählen nach",
       myLocationText: "Eigener Standort",
       searchText: "Suchen",
@@ -270,7 +270,7 @@
       share: "Freigeben",
       viewReportsTabText: "Berichte",
       viewLegendTabText: "Legende",
-      viewAboutusTabText: "Info zu",
+      viewAboutusTabText: "Info",
       btnSubmitReportText: "Bericht senden",
       appLoadingFailedMessage: "Beim Laden des Viewers ist ein Fehler aufgetreten"
     }

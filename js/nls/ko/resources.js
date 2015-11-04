@@ -262,7 +262,7 @@
       mapTabTooltip: "맵",
       btnDescendingText: "내림차순",
       btnAscendingText: "오름차순",
-      geometryUnavailableErrorMessage: "피처의 지오메트리를 찾는 중 오류가 발생했습니다.",
+      geometryUnavailableErrorMessage: "피처의 지오메트리를 찾는 중 오류 발생",
       infoPopupOffErrorMessage: "보여줄 정보 없음",
       btnLoadMoreText: "추가로 불러오기",
       unavailableTitleText: "제목 없음",

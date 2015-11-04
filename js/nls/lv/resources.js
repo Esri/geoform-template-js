@@ -262,7 +262,7 @@
       mapTabTooltip: "Karte",
       btnDescendingText: "Dilst.",
       btnAscendingText: "Aug.",
-      geometryUnavailableErrorMessage: "Kļūda atrodot funkcijas ģeometriju",
+      geometryUnavailableErrorMessage: "Meklējot elementa ģeometriju, radās kļūda",
       infoPopupOffErrorMessage: "Nav informācijas ko parādīt",
       btnLoadMoreText: "Ielādēt vēl",
       unavailableTitleText: "Bez virsraksta",
