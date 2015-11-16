@@ -124,8 +124,8 @@ define([
       var builderHTML = string.substitute(builderTemplate, nls);
       dom.byId("parentContainter").innerHTML = builderHTML;
       dom.byId('builder_description').innerHTML = string.substitute(nls.builder.descriptionText, {
-        link1: "<a target=\"_blank\" href=\"http://resources.arcgis.com/en/help/main/10.1/index.html#//0154000002w8000000\">",
-        link2: "<a target=\"_blank\" href=\"http://resources.arcgis.com/en/help/main/10.1/index.html#//00sp0000001z000000\">",
+        link1: "<a target=\"_blank\" href=\"http://server.arcgis.com/en/server/latest/publish-services/windows/what-is-a-feature-service-.htm\">",
+        link2: "<a target=\"_blank\" href=\"http://doc.arcgis.com/en/arcgis-online/reference/what-is-web-map.htm\">",
         closeLink: "</a>"
       });
       this.buttonConflict = $.fn.button.noConflict();
