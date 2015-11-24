@@ -5,7 +5,6 @@ define([
     "dojo/string",
     "dojo/on",
     "dojo/dom",
-    "esri/graphic",
     "dojo/i18n!application/nls/resources",
     "vendor/offline/offline-edit-min"
 ], function (
@@ -14,7 +13,6 @@ define([
   string,
   on,
   dom,
-  Graphic,
   i18n
 ) {
   return declare(null, {
@@ -22,24 +20,12 @@ define([
     constructor: function (options) {
       // save defaults
       this.defaults = options;
-      // create offline manager
-      this.offlineFeaturesManager = O.esri.Edit.OfflineFeaturesManager();
-      this.offlineFeaturesManager.proxyPath = this.defaults.proxy;
-      // enable offline attachments
-      this.offlineFeaturesManager.initAttachments();
       // once layer is loaded
       if (this.defaults.layer.loaded) {
         this.initEditor();
       } else {
         on.once(this.defaults.layer, 'load', lang.hitch(this, this.initEditor));
       }
-      Offline.check();
-      Offline.on('up', lang.hitch(this, function () {
-        this.goOnline();
-      }));
-      Offline.on('down', lang.hitch(this, function () {
-        this.goOffline();
-      }));
     },
 
     // update online status
@@ -67,11 +53,7 @@ define([
       var node = dom.byId('pending_edits');
       // clear html
       node.innerHTML = '';
-      // edit store
-      var es = new O.esri.Edit.EditStore(Graphic);
-      // if we have edits
-      if (this.defaults.layer.pendingEditsCount()) {
-        var edits = this.defaults.layer.getAllEditsArray();
+      this.defaults.layer.getAllEditsArray(function (edits) {
         var total = edits.length;
         if (total) {
           var html = '';
@@ -83,7 +65,7 @@ define([
           html += '</div>';
           node.innerHTML = html;
         }
-      }
+      });
     },
 
     // now online
@@ -92,7 +74,6 @@ define([
       this.offlineFeaturesManager.goOnline(lang.hitch(this, function () {
         this.updateConnectivityIndicator();
       }));
-      this.updateConnectivityIndicator();
     },
 
     // now offline
@@ -104,44 +85,44 @@ define([
 
     // setup editing
     initEditor: function () {
-      // use layer's object id
-      this.offlineFeaturesManager.DB_UID = this.defaults.layer.objectIdField || "OBJECTID";
-      // status for pending edits
-      this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, lang.hitch(this, function () {
-        this.updateStatus();
-      }));
-      this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_SENT, lang.hitch(this, function () {
-        this.updateStatus();
-      }));
-      this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.ALL_EDITS_SENT, lang.hitch(this, function () {
-        this.updateStatus();
-      }));
-
-
-      /* handle errors that happen while storing offline edits */
-      this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, function (results) {
-        var errors = Array.prototype.concat(
-          results.addResults.filter(function (r) {
-            return !r.success;
-          }),
-          results.updateResults.filter(function (r) {
-            return !r.success;
-          }),
-          results.deleteResults.filter(function (r) {
-            return !r.success;
-          })
-        );
-        // log errors  
-        if (errors.length) {
-          console.log(errors);
-        }
-      });
-
-      /* extend layer with offline detection functionality */
-      this.offlineFeaturesManager.extend(this.defaults.layer, function () {});
-
-      // update indicator and check status
-      this.updateConnectivityIndicator();
+      if (!this.defaults.layer._offlineExtended) {
+        // create offline manager
+        this.offlineFeaturesManager = O.esri.Edit.OfflineFeaturesManager();
+        this.offlineFeaturesManager.proxyPath = this.defaults.proxy;
+        // use layer's object id
+        this.offlineFeaturesManager.DB_UID = this.defaults.layer.objectIdField || "OBJECTID";
+        // enable offline attachments
+        this.offlineFeaturesManager.initAttachments(lang.hitch(this, function (attachSuccess, attachError) {
+          if (attachSuccess) {
+            /* extend layer with offline detection functionality */
+            this.offlineFeaturesManager.extend(this.defaults.layer, lang.hitch(this, function (success, error) {
+              if (success) {
+                this.defaults.layer._offlineExtended = true;
+                Offline.check();
+                Offline.on('up', lang.hitch(this, function () {
+                  this.goOnline();
+                }));
+                Offline.on('down', lang.hitch(this, function () {
+                  this.goOffline();
+                }));
+                // update indicator and check status
+                this.updateConnectivityIndicator();
+                this.updateStatus();
+                // status for pending edits
+                this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_ENQUEUED, lang.hitch(this, function () {
+                  this.updateStatus();
+                }));
+                this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.EDITS_SENT, lang.hitch(this, function () {
+                  this.updateStatus();
+                }));
+                this.offlineFeaturesManager.on(this.offlineFeaturesManager.events.ALL_EDITS_SENT, lang.hitch(this, function () {
+                  this.updateStatus();
+                }));
+              }
+            }));
+          }
+        }));
+      }
     }
   });
 });
