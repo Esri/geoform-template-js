@@ -247,8 +247,15 @@
           <h2>${builder.optionsApplicationText}</h2>
           <div class="form-group">
             <div class="checkbox">
+              <label for="EnableOfflineSupport">
+                <input id="EnableOfflineSupport" type="checkbox" />${builder.enableOfflineSupport}</label>
+            </div>
+            <div class="help-block">${builder.enableOfflineSupportHelpText}</div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox">
               <label for="ShowHideLayerOption">
-                <input id="ShowHideLayerOption" type="checkbox" value="share" />${builder.showHideLayerText}</label>
+                <input id="ShowHideLayerOption" type="checkbox" />${builder.showHideLayerText}</label>
             </div>
             <div class="help-block">${builder.showHideLayerHelpText}</div>
           </div>
@@ -256,14 +263,14 @@
           <div class="form-group">
             <div class="checkbox">
               <label for="shareOption">
-                <input id="shareOption" type="checkbox" value="share" />${builder.shareGeoformText}</label>
+                <input id="shareOption" type="checkbox" />${builder.shareGeoformText}</label>
             </div>
             <div class="help-block">${builder.shareDescription}</div>
           </div>
           <div class="form-group">
             <div class="checkbox">
               <label for="defaultExtent">
-                <input id="defaultExtent" type="checkbox" value="share" />${builder.defaultMapExtent}</label>
+                <input id="defaultExtent" type="checkbox" />${builder.defaultMapExtent}</label>
             </div>
             <div class="help-block">${builder.defaultMapExtentDescription}</div>
           </div>
@@ -271,14 +278,14 @@
           <div class="form-group">
             <div class="checkbox">
               <label for="locateOnLoad">
-                <input id="locateOnLoad" type="checkbox" value="locateOnLoad" />${builder.locateOnLoadText}</label>
+                <input id="locateOnLoad" type="checkbox" />${builder.locateOnLoadText}</label>
             </div>
             <div class="help-block">${builder.locateOnLoadDescription}</div>
           </div>
           <div class="form-group">
             <div class="checkbox">
               <label for="enableBasemapToggle">
-                <input id="enableBasemapToggle" type="checkbox" value="enableBasemapToggle" />${builder.enableBasemapToggle}</label>
+                <input id="enableBasemapToggle" type="checkbox" />${builder.enableBasemapToggle}</label>
             </div>
             <div class="help-block">${builder.enableBasemapToggleDescription}</div>
           </div>

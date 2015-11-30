@@ -236,6 +236,8 @@ define({
       dragTooltipText: "Drag the field where you want it to appear",
       showHideLayerText: "Show Layer",
       showHideLayerHelpText: "You can configure the GeoForm to Show/Hide Layer. This option only applies to a single layer setup.",
+      enableOfflineSupport: "Enable offline support",
+      enableOfflineSupportHelpText: "Store submissions when there is no network connection and submit them when a connection is restored.",
       labelHelpMessage: "Label",
       placeHolderHintMessage: "Hint Text",
       placeHolderHelpMessage: "Help Text",

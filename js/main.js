@@ -471,7 +471,7 @@ define([
       // editable layer
       if (this._formLayer) {
         // if indexedDB is supported
-        if (window.indexedDB) {
+        if (window.indexedDB && this.config.enableOfflineSupport) {
           // get offline support
           require(["application/OfflineSupport"], lang.hitch(this, function (OfflineSupport) {
             // support basic offline editing

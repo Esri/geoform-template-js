@@ -42,6 +42,7 @@ define({
     "showLayer": true,
     "disableLogo": false,
     "enableBasemapToggle": false,
+    "enableOfflineSupport": true,
     "locate":false,
     "locationSearchOptions": {
         "enableMyLocation": true,
