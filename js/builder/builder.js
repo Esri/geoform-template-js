@@ -176,9 +176,6 @@ define([
       on(dom.byId("jumbotronEnableOption"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.useSmallHeader = false;
       }));
-      on(dom.byId("EnableOfflineSupport"), a11yclick, lang.hitch(this, function () {
-        this.currentConfig.enableOfflineSupport = $('#EnableOfflineSupport')[0].checked;
-      }));
       on(dom.byId("shareOption"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.enableSharing = $('#shareOption')[0].checked;
       }));
@@ -224,7 +221,6 @@ define([
       this._populateDetails();
       this._populateJumbotronOption(this.currentConfig.useSmallHeader);
       this._populateShareOption(this.currentConfig.enableSharing);
-      this._populateEnableOfflineSupport(this.currentConfig.enableOfflineSupport);
       this._populateDefaultExtentOption(this.currentConfig.defaultMapExtent);
       this._populateThemes();
       this._populatePushpins();
@@ -640,11 +636,6 @@ define([
       $("#jumbotronDisableOption")[0].checked = jumbotronOption;
       $("#jumbotronEnableOption")[0].checked = !jumbotronOption;
     },
-    
-    _populateEnableOfflineSupport: function(enableOfflineSupport){
-      $("#EnableOfflineSupport")[0].checked = enableOfflineSupport;
-    },
-    
     _populateShareOption: function (shareOption) {
       $("#shareOption")[0].checked = shareOption;
     },
@@ -1344,7 +1335,6 @@ define([
       this.appSettings = {
         "attachmentInfo": this.currentConfig.attachmentInfo,
         "enableAttachments": this.currentConfig.enableAttachments,
-        "enableOfflineSupport": this.currentConfig.enableOfflineSupport,
         "attachmentIsRequired": this.currentConfig.attachmentIsRequired,
         "attachmentHelpText": this.currentConfig.attachmentHelpText,
         "attachmentLabel": this.currentConfig.attachmentLabel,
@@ -1384,7 +1374,7 @@ define([
       this._addProgressBar();
       $("#myModal").modal('show');
       arcgisUtils.getItem(this.currentConfig.appid).then(lang.hitch(this, function (response) {
-        var updateURL = this.userInfo.portal.url + "/sharing/content/users/" + this.userInfo.username + (response.item.ownerFolder ? ("/" + response.item.ownerFolder) : "") + "/items/" + this.currentConfig.appid + "/update";
+        var updateURL = this.userInfo.portal.url + "/sharing/rest/content/users/" + this.userInfo.username + (response.item.ownerFolder ? ("/" + response.item.ownerFolder) : "") + "/items/" + this.currentConfig.appid + "/update";
         esriRequest({
           url: updateURL,
           content: rqData,
