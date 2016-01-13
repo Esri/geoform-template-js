@@ -110,7 +110,7 @@ define({
       mapFullScreen: "Full Screen",
       mapRestore: "Restore",
       filterSelectEmptyText: "Select",
-      invalidLayerMessage: "Form layer does not exist. Please configure the application and set the layer.",
+      invalidLayerMessage: "A valid layer to create the GeoForm was not found. If the GeoForm has been configured with a layer, the layer may no longer be available, or authorization failed.",
       selectedLayerText: "All",
       fileUploadStatus: "File Upload Status",
       uploadingBadge: "&nbsp;Uploading&hellip;",
