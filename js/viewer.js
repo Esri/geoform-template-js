@@ -827,7 +827,15 @@ define([
             "id": index
           }, listElement);
           titleField = this.config.selectedTitleField[this.config.form_layer.id];
-          if (currentKey.attributes[titleField]) {
+          if(_formLayer.typeIdField && titleField === _formLayer.typeIdField){
+            var types = _formLayer.types;
+            array.forEach(types, lang.hitch(this, function (currentOption) {
+              if(currentOption.id.toString() === currentKey.attributes[titleField].toString()){
+                listTitle = currentOption.name;
+              }
+            }));
+          } 
+          else if (currentKey.attributes[titleField]) {
             listTitle = currentKey.attributes[titleField].toString();
           } else {
             listTitle = currentKey.attributes[titleField];
@@ -910,8 +918,16 @@ define([
                 domAttr.set(listItem, "innerHTML", listTitle ? listTitle : nls.viewer.unavailableTitleText);
               }
             } else {
+              if(_formLayer.typeIdField && currentField.name === _formLayer.typeIdField){
+                var types = _formLayer.types;
+                array.forEach(types, lang.hitch(this, function (currentOption) {
+                  if(currentOption.id.toString() === listTitle.toString()){
+                    listTitle = currentOption.name;
+                  }
+                }));
+              }
               // title and string
-              if (listTitle && typeof listTitle === "string" && lang.trim(listTitle)) {
+              else if (listTitle && typeof listTitle === "string" && lang.trim(listTitle)) {
                 listTitle = lang.trim(listTitle);
               }
               // no title and not a number
@@ -1185,17 +1201,27 @@ define([
       var fields, fieldRow, fieldKeyTD, fieldAttrTD;
       fields = this._formLayer.infoTemplate.info.fieldInfos;
       array.forEach(fields, lang.hitch(this, function (currentfield) {
-        array.some(this._formLayer.fields, function (layerField) {
-          if (layerField.name == key && layerField.type === "esriFieldTypeDate") {
-            if(graphics.attributes[key]){
-              attributeValue = new Date(graphics.attributes[key]).toLocaleString();
+        array.some(this._formLayer.fields, lang.hitch(this, function (layerField) {
+          if (layerField.name == key) {
+            if(layerField.type === "esriFieldTypeDate"){
+              if(graphics.attributes[key]){
+                attributeValue = new Date(graphics.attributes[key]).toLocaleString();
+              }
+              else{
+                attributeValue = "";
+              }
             }
-            else{
-              attributeValue = "";
-            }
+            else if(this._formLayer.typeIdField && layerField.name === this._formLayer.typeIdField){
+              var types = this._formLayer.types;
+              array.forEach(types, lang.hitch(this, function (currentOption) {
+                if(currentOption.id.toString() === attributeValue){
+                  attributeValue = currentOption.name;
+                }
+              }));
+            } 
             return true;
           }
-        });
+        }));
         if (key === currentfield.fieldName && currentfield.visible) {
           fieldRow = domConstruct.create("tr", {}, dom.byId("featureDetailsBody"));
           fieldKeyTD = domConstruct.create("td", {
