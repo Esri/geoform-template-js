@@ -405,6 +405,7 @@ define([
         this.map = response.map;
         domAttr.set(dom.byId('appTitle'), "innerHTML", response.itemInfo.item.title ? response.itemInfo.item.title : this.config.details.Title);
         domAttr.set(dom.byId('aboutusPanelBody'), "innerHTML", response.itemInfo.item.description ? response.itemInfo.item.description : "");
+        domAttr.set(dom.byId('submitForm'), "innerHTML", this.config.submitButtonText ? this.config.submitButtonText : nls.user.submitButtonText);
         this._initLegend();
         this.defaultExtent = this.map.extent;
         // make graphics layer

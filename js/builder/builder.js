@@ -535,6 +535,8 @@ define([
       dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
       dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
       dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
+      dom.byId("submitButtonText").value = this.currentConfig.submitButtonText;
+      dom.byId("viewSubmissionsText").value = this.currentConfig.viewSubmissionsText;   
       $(document).ready(function () {
         $('#detailDescriptionInput').summernote({
           height: 200,
@@ -1265,6 +1267,8 @@ define([
         this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
         this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
         this.currentConfig.details.Description = $('#detailDescriptionInput').code();
+        this.currentConfig.submitButtonText = dom.byId("submitButtonText").value;
+        this.currentConfig.viewSubmissionsText = dom.byId("viewSubmissionsText").value;
         break;
       case "fields":
         if (layerObj !== "all") {
@@ -1340,6 +1344,8 @@ define([
         "attachmentLabel": this.currentConfig.attachmentLabel,
         "defaultMapExtent": this.currentConfig.defaultMapExtent,
         "details": this.currentConfig.details,
+        "submitButtonText": this.currentConfig.submitButtonText,
+        "viewSubmissionsText": this.currentConfig.viewSubmissionsText,
         "showLayer": this.currentConfig.showLayer,
         "enableSharing": this.currentConfig.enableSharing,
         "fields": this.currentConfig.fields,

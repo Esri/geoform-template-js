@@ -149,6 +149,10 @@ define({
       previewText: "Preview",
       publishText: "Publish",
       optionsApplicationText: "Options",
+      submitButtonText: "Submit Button Text (Optional)",
+      submitButtonDesc: "Optionally label the button to submit a new entry. This text will not be translated.",
+      viewSubmissionsText: "View Submissions Text (Optional)",
+      viewSubmissionsDesc: "Optionally label the button to view existing entries. This text will not be translated.",
       titleText: "Builder",
       descriptionText: "GeoForm is a configurable template for form-based data editing of a ${link1}Feature Service${closeLink}. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the ${link2}Web Map${closeLink} and editable Feature Services. Use the following steps to customize and deploy your GeoForm.",
       btnPreviousText: "Previous",
@@ -258,7 +262,6 @@ define({
       sortHeaderText: "Sort By:",
       geocoderPlaceholderText: "Zip Code, city, etc.",
       noSearchResult: "No result found",
-      recordsTabTooltip: "View Submissions",
       legendTabTooltip: "Legend",
       aboutUsTabTooltip: "About Us",
       mapTabTooltip: "Map",
@@ -273,7 +276,6 @@ define({
       viewReportsTabText: "Reports",
       viewLegendTabText: "Legend",
       viewAboutusTabText: "About",
-      btnSubmitReportText: "Submit a Report",
       appLoadingFailedMessage: "There was an error loading the viewer"
     }
   }),

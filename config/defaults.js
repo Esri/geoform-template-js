@@ -61,6 +61,8 @@ define({
     }],
     "attachmentInfo":{
     },
+    "submitButtonText": "",
+    "viewSubmissionsText": "",
     "helperServices": {
         "geometry": {
             "url": null

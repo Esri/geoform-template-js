@@ -1504,6 +1504,8 @@ define([
         this._setLayerDefaults();
         // set configuration
         this._setAppConfigurations(this.config.details);
+        domAttr.set(dom.byId('submitButton'), "innerHTML", this.config.submitButtonText ? this.config.submitButtonText : nls.user.submitButtonText);
+        domAttr.set(dom.byId('viewSubmissionsButton'), "innerHTML", this.config.viewSubmissionsText ? this.config.viewSubmissionsText : nls.user.btnViewSubmissions);
         // window title
         if (this.config.details && this.config.details.Title) {
           window.document.title = this.config.details.Title;
@@ -2554,7 +2556,7 @@ define([
         className: "btn btn-default pull-left",
         href: "#",
         id: "viewSubmissionsOption",
-        innerHTML: nls.user.btnViewSubmissions
+        innerHTML: this.config.viewSubmissionsText ? this.config.viewSubmissionsText : nls.user.btnViewSubmissions
       }, query(".modal-footer")[0]);
       if (this.config.disableViewer) {
         domClass.add(dom.byId("viewSubmissionsOption"), "hidden");
