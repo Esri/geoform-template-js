@@ -945,18 +945,13 @@ define([
           //if field type is date
           if (currentField.type == "esriFieldTypeDate") {
             var inputRangeDateGroupContainer = this._addNotationIcon(formContent, "glyphicon-calendar");
-            inputContent = this._createDateField(inputRangeDateGroupContainer, true, fieldname, currentField);
-            if (currentField.defaultValue) {
-              var rangeDefaultDate = moment(currentField.defaultValue).format(this.dateFormat);
-              $(inputRangeDateGroupContainer).data("DateTimePicker").date(rangeDefaultDate);
-            }
+            inputContent = this._createDateField(inputRangeDateGroupContainer, true, fieldname, currentField, currentField.defaultValue);
             rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
               minValue: moment(currentField.domain.minValue).format(this.dateFormat),
               maxValue: moment(currentField.domain.maxValue).format(this.dateFormat),
               openStrong: "<strong>",
               closeStrong: "</strong>"
             });
-
           } else {
             //if field type is integer
             rangeHelpText = this._setRangeForm(currentField, formContent, fieldname);
@@ -1053,7 +1048,7 @@ define([
           if (currentField.hiddenDate) {
             domClass.add(formContent, "hidden");
           }
-          inputContent = this._createDateField(inputDateGroupContainer, false, fieldname, currentField);
+          inputContent = this._createDateField(inputDateGroupContainer, false, fieldname, currentField, currentField.defaultValue);
           break;
         }
         //Add Placeholder if present
@@ -1062,14 +1057,9 @@ define([
         }
         //If present fetch default values
         if (currentField.defaultValue) {
-          if (currentField.type == "esriFieldTypeDate") {
-            var defaultDate = moment(currentField.defaultValue).format(this.dateFormat);
-            $(inputDateGroupContainer).data("DateTimePicker").date(defaultDate);
-          } else {
-            if (currentField.type == "esriFieldTypeString" && lang.trim(currentField.defaultValue) !== "") {
-              domAttr.set(inputContent, "value", currentField.defaultValue);
-              domClass.add(formContent, "has-success");
-            }
+          if (currentField.type == "esriFieldTypeString" && lang.trim(currentField.defaultValue) !== "") {
+            domAttr.set(inputContent, "value", currentField.defaultValue);
+            domClass.add(formContent, "has-success");
           }
         }
         //Add specific display type if present
@@ -2808,7 +2798,7 @@ define([
       return formElement;
     },
 
-    _createDateField: function (parentNode, isRangeField, fieldname, currentField) {
+    _createDateField: function (parentNode, isRangeField, fieldname, currentField, defaultValue) {
       domClass.add(parentNode, "date");
       var minDate, maxDate, defaultDate;
       if (currentField && currentField.preventPast) {
@@ -2819,6 +2809,9 @@ define([
       }
       if (currentField && currentField.setCurrentDate) {
         defaultDate = new Date();
+      }
+      else if (defaultValue) {
+        defaultDate = moment(defaultValue).format(this.dateFormat);
       }
       var dateInputField = domConstruct.create("input", {
         type: "text",
