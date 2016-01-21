@@ -282,7 +282,6 @@ define([
           }));
           dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
           this.currentConfig.form_layer.id = "all";
-          $("#ShowHideLayerOption")[0].checked = false;
           $("#ShowHideLayerOption")[0].disabled = true;
         } else if (evt.currentTarget.value !== "") {
           domStyle.set(dom.byId("layerSelectPane"), 'display', 'none');
@@ -625,7 +624,6 @@ define([
     _populateShowLayerOption: function (showlayeropt) {
       array.some(dom.byId("selectLayer").options, function (currentElement) {
         if (currentElement.value === "all" && currentElement.selected) {
-          $("#ShowHideLayerOption")[0].checked = false;
           $("#ShowHideLayerOption")[0].disabled = true;
           return true;
         } else {
