@@ -51,11 +51,13 @@ See the [ArcGIS Blog post](http://blogs.esri.com/esri/arcgis/2014/07/08/editing-
 ## Offline Editing
 This template supports editing offline using the Esri [Offline Editor JS](https://github.com/Esri/offline-editor-js). For more information on web offline editing see the github project linked above.
 
-This template supports basic offline editing by saving the edits locally until a connection can be reestablished. As long as the browser window remains open or is reopened then the edits will get synched once an internet connection is restored.
+This template supports basic offline editing by saving the edits locally (including attachments) until a connection can be reestablished. As long as the browser window remains open or is reopened then the edits will get synched once an internet connection is restored.  Support for offline with the Offline Editor JS is sufficient to handle workflows where connectivity is spotty. For a **full picture on offline capabilities in ArcGIS** we recommend you also research the following:
 
-Attachments are stored locally as well.
-
-***IMPORTANT: If you want a full, robust offline solution then you should be using our ArcGIS Runtime SDKs for .NET, WPF, Java, iOS, Android and Qt.***
+- Build cross-platform custom offline mapping native apps for your Desktop or Mobile device using AppStudio for ArcGIS
+- Build custom offline mapping native apps with our ArcGIS Runtime SDKs (.Net, WPF, Java, iOS, Android, Qt/QML)
+- Use out of the box mobile apps for data capture:
+  - [Survey123](http://survey123.esri.com/) for ArcGIS for form-centric workflows
+  - [Collector for ArcGIS](http://appstudio.arcgis.com/) for map-centric workflows
 
 ## Limitations
 
