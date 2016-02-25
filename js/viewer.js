@@ -278,7 +278,6 @@ define([
 
     _init: function () {
       var viewerHTML, testTemplate, itemInfo;
-      domClass.remove(document.body, "claro");
       viewerHTML = string.substitute(ViewerTemplate, nls);
       testTemplate = domConstruct.toDom(viewerHTML);
       parser.parse(testTemplate);
