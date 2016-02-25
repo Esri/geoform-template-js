@@ -628,9 +628,9 @@ define([
           return true;
         } else {
           $("#ShowHideLayerOption")[0].disabled = false;
-          $("#ShowHideLayerOption")[0].checked = showlayeropt;
         }
       });
+      $("#ShowHideLayerOption")[0].checked = showlayeropt;
     },
     _populateJumbotronOption: function (jumbotronOption) {
       $("#jumbotronDisableOption")[0].checked = jumbotronOption;
