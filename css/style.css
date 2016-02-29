@@ -287,11 +287,6 @@ body.modal-open,
 .fullscreen .app-content {
   display: none;
 }
-/* fix for darkly datepicker in dropdown */
-
-.geoform-darkly .bootstrap-datetimepicker-widget {
-  color: #333;
-}
 
 #geoform .select2-container {
   color: #000;

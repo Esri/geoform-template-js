@@ -282,7 +282,6 @@ define([
           }));
           dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
           this.currentConfig.form_layer.id = "all";
-          $("#ShowHideLayerOption")[0].checked = false;
           $("#ShowHideLayerOption")[0].disabled = true;
         } else if (evt.currentTarget.value !== "") {
           domStyle.set(dom.byId("layerSelectPane"), 'display', 'none');
@@ -535,6 +534,8 @@ define([
       dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
       dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
       dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
+      dom.byId("submitButtonText").value = this.currentConfig.submitButtonText;
+      dom.byId("viewSubmissionsText").value = this.currentConfig.viewSubmissionsText;   
       $(document).ready(function () {
         $('#detailDescriptionInput').summernote({
           height: 200,
@@ -623,14 +624,13 @@ define([
     _populateShowLayerOption: function (showlayeropt) {
       array.some(dom.byId("selectLayer").options, function (currentElement) {
         if (currentElement.value === "all" && currentElement.selected) {
-          $("#ShowHideLayerOption")[0].checked = false;
           $("#ShowHideLayerOption")[0].disabled = true;
           return true;
         } else {
           $("#ShowHideLayerOption")[0].disabled = false;
-          $("#ShowHideLayerOption")[0].checked = showlayeropt;
         }
       });
+      $("#ShowHideLayerOption")[0].checked = showlayeropt;
     },
     _populateJumbotronOption: function (jumbotronOption) {
       $("#jumbotronDisableOption")[0].checked = jumbotronOption;
@@ -1265,6 +1265,8 @@ define([
         this.currentConfig.details.Title = dom.byId("detailTitleInput").value;
         this.currentConfig.details.Logo = dom.byId("detailLogoInput").value;
         this.currentConfig.details.Description = $('#detailDescriptionInput').code();
+        this.currentConfig.submitButtonText = dom.byId("submitButtonText").value;
+        this.currentConfig.viewSubmissionsText = dom.byId("viewSubmissionsText").value;
         break;
       case "fields":
         if (layerObj !== "all") {
@@ -1340,6 +1342,8 @@ define([
         "attachmentLabel": this.currentConfig.attachmentLabel,
         "defaultMapExtent": this.currentConfig.defaultMapExtent,
         "details": this.currentConfig.details,
+        "submitButtonText": this.currentConfig.submitButtonText,
+        "viewSubmissionsText": this.currentConfig.viewSubmissionsText,
         "showLayer": this.currentConfig.showLayer,
         "enableSharing": this.currentConfig.enableSharing,
         "fields": this.currentConfig.fields,
