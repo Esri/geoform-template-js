@@ -1790,7 +1790,7 @@ define([
       def = new Deferred();
       layer = this.map.getLayer(key);
       //this block will be called if the layer is already loaded
-      if (layer.url) {
+      if (layer && layer.url) {
         if (layer.loaded) {
           if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
             this._pushToLayerDrpDwn(webmapLayers, key, layer);
