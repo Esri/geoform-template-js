@@ -114,7 +114,7 @@ Setting the layer ID like so:
 If you'd like to use all layers:
 
     "form_layer": {
-      "id": "All"
+      "id": "all"
     },
 
 #### Configuring Fields
