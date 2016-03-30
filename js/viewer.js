@@ -1226,7 +1226,7 @@ define([
           fieldRow = domConstruct.create("tr", {}, dom.byId("featureDetailsBody"));
           fieldKeyTD = domConstruct.create("td", {
             className: "drag-cursor",
-            innerHTML: key
+            innerHTML: currentfield.label || currentfield.fieldName
           }, fieldRow);
           fieldAttrTD = domConstruct.create("td", {
             className: "drag-cursor",
