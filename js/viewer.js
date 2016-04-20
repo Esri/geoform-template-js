@@ -912,8 +912,8 @@ define([
       array.forEach(_formLayer.fields, function (currentField) {
         if (titleField) {
           if (currentField.name.toLowerCase() === titleField.toLowerCase()) {
-            if (currentField.type === "esriFieldTypeDate") {
-              listTitle = new Date(listTitle).toLocaleString();
+            if (currentField.type === "esriFieldTypeDate") {              
+              listTitle = new Date(parseInt(listTitle, 10)).toLocaleString();
               if (listItem) {
                 domAttr.set(listItem, "innerHTML", listTitle ? listTitle : nls.viewer.unavailableTitleText);
               }
