@@ -2,6 +2,7 @@
 /*jslint sloppy:true,nomen:true */
 define([
         "dojo/_base/declare",
+        "dojo/_base/kernel",
         "dojo/dom",
         "dojo/string",
         "dojo/_base/lang",
@@ -44,7 +45,7 @@ define([
         "application/wrapper/main-jquery-deps",
         "dojo/domReady!"
 ], function (
-  declare,
+  declare, kernel,
   dom,
   string,
   lang,
@@ -89,6 +90,9 @@ define([
     },
 
     startup: function () {
+      
+      document.documentElement.lang = kernel.locale;
+      
       var config = arguments[0];
       // config will contain application and user defined info for the template such as i18n strings, the web map id
       // and application id
