@@ -2,6 +2,7 @@
 /*jslint sloppy:true,nomen:true */
 define([
         "dojo/_base/declare",
+        "dojo/_base/kernel",
         "dojo/dom",
         "dojo/string",
         "dojo/_base/lang",
@@ -44,7 +45,7 @@ define([
         "application/wrapper/main-jquery-deps",
         "dojo/domReady!"
 ], function (
-  declare,
+  declare, kernel,
   dom,
   string,
   lang,
@@ -89,6 +90,9 @@ define([
     },
 
     startup: function () {
+      
+      document.documentElement.lang = kernel.locale;
+      
       var config = arguments[0];
       // config will contain application and user defined info for the template such as i18n strings, the web map id
       // and application id
@@ -912,8 +916,8 @@ define([
       array.forEach(_formLayer.fields, function (currentField) {
         if (titleField) {
           if (currentField.name.toLowerCase() === titleField.toLowerCase()) {
-            if (currentField.type === "esriFieldTypeDate") {
-              listTitle = new Date(listTitle).toLocaleString();
+            if (currentField.type === "esriFieldTypeDate") {              
+              listTitle = new Date(parseInt(listTitle, 10)).toLocaleString();
               if (listItem) {
                 domAttr.set(listItem, "innerHTML", listTitle ? listTitle : nls.viewer.unavailableTitleText);
               }
@@ -1226,7 +1230,7 @@ define([
           fieldRow = domConstruct.create("tr", {}, dom.byId("featureDetailsBody"));
           fieldKeyTD = domConstruct.create("td", {
             className: "drag-cursor",
-            innerHTML: key
+            innerHTML: currentfield.label || currentfield.fieldName
           }, fieldRow);
           fieldAttrTD = domConstruct.create("td", {
             className: "drag-cursor",

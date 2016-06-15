@@ -85,10 +85,11 @@ define([
     currentLocation: null,
     dateFormat: "LLL",
 
-    startup: function () {
-      var config = arguments[0];
-      var isPreview = arguments[2];
-      var node = arguments[3];
+    startup: function (config, appResponse, isPreview, node) {
+      
+      document.documentElement.lang = kernel.locale;
+      
+      this._appResponse = appResponse;
       var localStorageSupport = new localStorageHelper();
       if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
         config = JSON.parse(localStorage.getItem("geoform_config"));
@@ -125,7 +126,7 @@ define([
     _loadCSS: function () {
       var cssStyle;
       cssStyle = dom.byId("rtlCSS");
-      cssStyle.href = "js/vendor/bootstrap/css/bootstrap.rtl.css";
+      cssStyle.href = "js/vendor/bootstrap-rtl.min.css";
     },
 
     _init: function () {
@@ -836,13 +837,22 @@ define([
                 }, inputContent);
                 domClass.add(inputContent, "form-control");
               }
-              array.forEach(currentField.subTypes, lang.hitch(this, function (currentOption) {
-                selectOptions = domConstruct.create("option", {}, inputContent);
-                selectOptions.text = currentOption.name;
-                selectOptions.value = currentOption.id;
-                //default values for subtypes(if any) has to be handled here
-              }));
-
+              if(currentField.domain){
+                array.forEach(currentField.domain.codedValues, lang.hitch(this, function (currentOption) {
+                  selectOptions = domConstruct.create("option", {}, inputContent);
+                  selectOptions.text = currentOption.name;
+                  selectOptions.value = currentOption.code;
+                  //default values for subtypes(if any) has to be handled here
+                }));
+              }
+              else if(currentField.subTypes){
+                array.forEach(currentField.subTypes, lang.hitch(this, function (currentOption) {
+                  selectOptions = domConstruct.create("option", {}, inputContent);
+                  selectOptions.text = currentOption.name;
+                  selectOptions.value = currentOption.id;
+                  //default values for subtypes(if any) has to be handled here
+                }));
+              }
             }
             on($("#" + fieldname), "change", lang.hitch(this, function (evt) {
               //function call to take appropriate actions on selection of a subtypes
@@ -1790,7 +1800,7 @@ define([
       def = new Deferred();
       layer = this.map.getLayer(key);
       //this block will be called if the layer is already loaded
-      if (layer.url) {
+      if (layer && layer.url) {
         if (layer.loaded) {
           if (layer.isEditable() && layer.geometryType === 'esriGeometryPoint') {
             this._pushToLayerDrpDwn(webmapLayers, key, layer);
@@ -2072,35 +2082,40 @@ define([
         theme: "btn btn-default"
       }, domConstruct.create('div'));
       this.currentLocation.startup();
-      // on current location submit
-      on(this.currentLocation, "locate", lang.hitch(this, function (evt) {
-        // remove error
-        var errorMessageNode = dom.byId('errorMessageDiv');
-        domConstruct.empty(errorMessageNode);
-        // if error
-        if (evt.error) {
-          alert(nls.user.locationNotFound);
-        } else {
-          this.addressGeometry = evt.graphic.geometry;
-          this._setSymbol(evt.graphic.geometry);
-          this._resizeMap();
-          //If the location is found we will remove the location-error message if it exists
-          this._removeErrorNode(dom.byId("select_location").nextSibling);
-        }
-        // reset button
-        $('#geolocate_button').button('reset');
-      }));
-      // event for clicking node
-      on(dom.byId('geolocate_button'), a11yclick, lang.hitch(this, function (evt) {
-        // remove graphic
-        this._clearSubmissionGraphic();
-        // set loading button
-        $('#geolocate_button').button('loading');
-        // widget locate
-        this.currentLocation.locate();
-        evt.stopPropagation();
-        evt.preventDefault();
-      }));
+      if(this.currentLocation.visible){
+        // on current location submit
+        on(this.currentLocation, "locate", lang.hitch(this, function (evt) {
+          // remove error
+          var errorMessageNode = dom.byId('errorMessageDiv');
+          domConstruct.empty(errorMessageNode);
+          // if error
+          if (evt.error) {
+            alert(nls.user.locationNotFound);
+          } else {
+            this.addressGeometry = evt.graphic.geometry;
+            this._setSymbol(evt.graphic.geometry);
+            this._resizeMap();
+            //If the location is found we will remove the location-error message if it exists
+            this._removeErrorNode(dom.byId("select_location").nextSibling);
+          }
+          // reset button
+          $('#geolocate_button').button('reset');
+        }));
+        // event for clicking node
+        on(dom.byId('geolocate_button'), a11yclick, lang.hitch(this, function (evt) {
+          // remove graphic
+          this._clearSubmissionGraphic();
+          // set loading button
+          $('#geolocate_button').button('loading');
+          // widget locate
+          this.currentLocation.locate();
+          evt.stopPropagation();
+          evt.preventDefault();
+        }));
+      }
+      else{
+        $('#geolocate_button').addClass('hidden');
+      }
     },
 
     // geocoder with bootstrap
@@ -2111,6 +2126,8 @@ define([
         itemData: this.config.itemInfo.itemData
       };
       if (this.config.searchConfig) {
+        searchOptions.enableSearchingAll = this.config.searchConfig.enableSearchingAll;
+        searchOptions.activeSourceIndex = this.config.searchConfig.activeSourceIndex;
         searchOptions.applicationConfiguredSources = this.config.searchConfig.sources || [];
       } else {
         var configuredSearchLayers = (this.config.searchLayers instanceof Array) ? this.config.searchLayers : JSON.parse(this.config.searchLayers);
@@ -2146,6 +2163,10 @@ define([
       //To populate data for apply edits
       featureData = new Graphic();
       featureData.attributes = {};
+      // start with layer defaults
+      if (this._formLayer.templates[0] && this._formLayer.templates[0].prototype.attributes) {
+        featureData.attributes = this._formLayer.templates[0].prototype.attributes;
+      }
       //condition to filter out radio inputs
       array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
         key = domAttr.get(currentField, "id");
@@ -2677,6 +2698,10 @@ define([
       }
       // if no app title
       if (!this.config.details.Title) {
+        if (this._appResponse && this._appResponse.item) {
+          // use app title
+          this.config.details.Title = this._appResponse.item.title;
+        }
         // if item
         if (this.config.itemInfo && this.config.itemInfo.item) {
           // use webmap title

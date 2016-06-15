@@ -106,7 +106,7 @@ define([
     _loadCSS: function () {
       var cssStyle;
       cssStyle = dom.byId("rtlCSS");
-      cssStyle.href = "js/vendor/bootstrap/css/bootstrap.rtl.css";
+      cssStyle.href = "js/vendor/bootstrap-rtl.min.css";
     },
 
     _swapContents: function () {
@@ -531,6 +531,13 @@ define([
 
     //function to set the title, logo-path and description from config
     _populateDetails: function () {
+      // use app title if current title is not set
+      if (!this.currentConfig.details.Title) {
+        if (this.response && this.response.item) {
+          // use app title
+          this.config.details.Title = this.response.item.title;
+        }
+      }
       dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
       dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
       dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
