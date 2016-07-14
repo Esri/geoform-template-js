@@ -2751,16 +2751,15 @@ define([
       }
       for (var key in this.config.locationSearchOptions) {
         if (this.config.locationSearchOptions.hasOwnProperty(key) && key !== "enableMyLocation") {
-          if (!this.config.locationSearchOptions[key] && key !== "enableSearch") {
-            domStyle.set(locationTabs[count], 'display', 'none');
-          } else if (key === "enableSearch" && !this.config.locationSearchOptions[key] && !this.config.locationSearchOptions.enableMyLocation) {
-            domStyle.set(locationTabs[count], 'display', 'none');
-          } else {
-            //resize the map to set the correct info-window anchor
-            on(locationTabs[count], a11yclick, lang.hitch(this, this._resizeMap));
+          for(var i = 0; i < locationTabs.length; i++){
+            var tab = locationTabs[i];
+            var tabId = domAttr.get(tab, "data-tab-id");
+            if(tabId === key){
+              domStyle.set(tab, 'display', this.config.locationSearchOptions[key] ? "block" : "none");
+            }
+            on(tab, a11yclick, lang.hitch(this, this._resizeMap));
             total++;
           }
-          count++;
         }
       }
       if (!this.config.locationSearchOptions.enableMyLocation) {
