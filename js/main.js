@@ -502,7 +502,8 @@ define([
         }));
         return;
       }
-      array.forEach(this._formLayer.fields, lang.hitch(this, function (layerField) {
+      array.forEach(this._formLayer.fields, lang.hitch(this, function (field) {
+        var layerField = lang.clone(field);
         matchingField = false;
         array.forEach(fields, lang.hitch(this, function (currentField) {
           if (layerField.name == currentField.name && currentField.visible) {
@@ -550,7 +551,8 @@ define([
       array.forEach(this.sortedFields, lang.hitch(this, function (currentField, index) {
         //code to set true/false value to property 'isTypeDependent' of the field.
         currentField.isTypeDependent = false;
-        array.forEach(this._formLayer.types, function (currentType) {
+        array.forEach(this._formLayer.types, function (type) {
+          var currentType = lang.clone(type);
           var hasDomainValue = null,
             hasDefaultValue = null;
           hasDomainValue = currentType.domains[currentField.name];
@@ -742,7 +744,8 @@ define([
       this._addToFileList(query(".hideFileInputUI")[0], fileBtnSpan, formContent, evt.currentTarget);
     },
     //function to create elements of form.
-    _createFormElements: function (currentField, index, referenceNode) {
+    _createFormElements: function (field, index, referenceNode) {
+      var currentField = lang.clone(field);
       var radioContainer, fieldname, radioContent, inputContent, labelContent, fieldLabelText, selectOptions, inputLabel, radioInput, formContent, requireField, userFormNode,
         checkboxContainer, checkboxContent, checkBoxCounter = 0,
         helpBlock, rangeHelpText, inputGroupContainer;
@@ -1255,8 +1258,9 @@ define([
           return true;
         }
         array.some(this._formLayer.fields, function (layerField) {
-          if (layerField.name === currentInput.name) {
-            field = lang.clone(lang.mixin(layerField, currentInput));
+          var lyrField = lang.clone(layerField);
+          if (lyrField.name === currentInput.name) {
+            field = lang.clone(lang.mixin(lyrField, currentInput));
             return true;
           }
         });
@@ -2165,7 +2169,7 @@ define([
       featureData.attributes = {};
       // start with layer defaults
       if (this._formLayer.templates[0] && this._formLayer.templates[0].prototype.attributes) {
-        featureData.attributes = this._formLayer.templates[0].prototype.attributes;
+        featureData.attributes = lang.clone(this._formLayer.templates[0].prototype.attributes);
       }
       //condition to filter out radio inputs
       array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {

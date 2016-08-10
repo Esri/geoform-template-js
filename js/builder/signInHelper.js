@@ -43,19 +43,8 @@ define([
         return this._portal;
       },
 
-      getPortalUser: function () {
-        var esriCookie = cookie('esri_auth');
-        if (!esriCookie)
-          return;
-        esriCookie = JSON.parse(esriCookie.replace('"ssl":undefined', '"ssl":""'));
-        // Cookie has to be set on the same organization
-        if (esriCookie.urlKey && esriCookie.customBaseUrl && (esriCookie.urlKey + '.' + esriCookie.customBaseUrl).toLowerCase() != document.location.hostname.toLowerCase())
-          return;
-        return esriCookie ? esriCookie : null;
-      },
-
       userIsAppOwner: function (itemData, userInfo) {
-        return (userInfo && itemData.item.owner == userInfo.username);
+        return (userInfo && (itemData.item.owner == userInfo.username || userInfo.role === "org_admin"));
       },
 
       reportError: function (error) {
