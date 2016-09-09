@@ -30,7 +30,7 @@ define([
 
         this._galleryTemplate = this._galleryTemplate ||
           "<div class='itemGrid'>" +
-          "<img alt='' src='${thumbnailUrl:_formatThumbnail}'>" +
+          "<img alt='' src='${thumbnailUrl:_formatThumbnail}${token}'>" +
           "<div class='truncate itemTitle'>${title:_formatTitle}</div>" +
           "<span class='itemOwner'>${owner}</span>" +
           "<p class='itemText snippet gridVisibility'>${snippet}</p>" +
@@ -38,7 +38,7 @@ define([
 
         this._detailsTemplate = this._detailsTemplate ||
           "<div class='itemDetail'>" +
-          "<img alt='' src='${thumbnailUrl:_formatThumbnail}'>" +
+          "<img alt='' src='${thumbnailUrl:_formatThumbnail}${token}'>" +
           "<p class='truncate itemTitle'>${title}</p>" +
           "<span class='itemOwner'>${owner}</span>" +
           "</p>" +
@@ -47,6 +47,7 @@ define([
 
         this._renderers = lang.mixin(this._renderers || {}, {
           gallery: lang.hitch(this, function (obj) {
+            obj.token = obj.thumbnailUrl && obj.thumbnailUrl.indexOf("?token") === -1 && this.query && this.query.token ? "?token=" + this.query.token : "";
             obj.snippet = obj.snippet || "";
             var div = put("div"),
               node = new(declare([WidgetBase, TemplatedMixin, WidgetsInTemplateMixin], {
@@ -56,6 +57,7 @@ define([
             return div;
           }),
           details: lang.hitch(this, function (obj) {
+            obj.token = obj.thumbnailUrl && obj.thumbnailUrl.indexOf("?token") === -1 && this.query && this.query.token ? "?token=" + this.query.token : "";
             obj.snippet = obj.snippet || "";
             var div = put("div"),
               node = new(declare([WidgetBase, TemplatedMixin, WidgetsInTemplateMixin], {

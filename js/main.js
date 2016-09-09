@@ -393,9 +393,19 @@ define([
           var utmResults = [];
           usng.LLtoUTM(lat, lng, utmResults);
           if (utmResults && utmResults.length === 3) {
-            dom.byId('utm_easting').value = parseInt(utmResults[0]);
-            dom.byId('utm_northing').value = parseInt(utmResults[1]);
-            dom.byId('utm_zone_number').value = utmResults[2];
+            var northing = parseFloat(utmResults[1]);
+            var easting = parseFloat(utmResults[0]);
+            var zone = parseInt(utmResults[2], 10);
+            if(northing < 0){
+              zone += "S";
+              northing = Math.abs(northing);
+            }
+            else{
+              zone += "N";
+            }
+            dom.byId('utm_easting').value = easting;
+            dom.byId('utm_northing').value = northing;
+            dom.byId('utm_zone_number').value = zone;
           }
         } catch (e) {
           console.log(e);
@@ -502,7 +512,8 @@ define([
         }));
         return;
       }
-      array.forEach(this._formLayer.fields, lang.hitch(this, function (layerField) {
+      array.forEach(this._formLayer.fields, lang.hitch(this, function (field) {
+        var layerField = lang.clone(field);
         matchingField = false;
         array.forEach(fields, lang.hitch(this, function (currentField) {
           if (layerField.name == currentField.name && currentField.visible) {
@@ -550,7 +561,8 @@ define([
       array.forEach(this.sortedFields, lang.hitch(this, function (currentField, index) {
         //code to set true/false value to property 'isTypeDependent' of the field.
         currentField.isTypeDependent = false;
-        array.forEach(this._formLayer.types, function (currentType) {
+        array.forEach(this._formLayer.types, function (type) {
+          var currentType = lang.clone(type);
           var hasDomainValue = null,
             hasDefaultValue = null;
           hasDomainValue = currentType.domains[currentField.name];
@@ -742,7 +754,8 @@ define([
       this._addToFileList(query(".hideFileInputUI")[0], fileBtnSpan, formContent, evt.currentTarget);
     },
     //function to create elements of form.
-    _createFormElements: function (currentField, index, referenceNode) {
+    _createFormElements: function (field, index, referenceNode) {
+      var currentField = lang.clone(field);
       var radioContainer, fieldname, radioContent, inputContent, labelContent, fieldLabelText, selectOptions, inputLabel, radioInput, formContent, requireField, userFormNode,
         checkboxContainer, checkboxContent, checkBoxCounter = 0,
         helpBlock, rangeHelpText, inputGroupContainer;
@@ -1255,8 +1268,9 @@ define([
           return true;
         }
         array.some(this._formLayer.fields, function (layerField) {
-          if (layerField.name === currentInput.name) {
-            field = lang.clone(lang.mixin(layerField, currentInput));
+          var lyrField = lang.clone(layerField);
+          if (lyrField.name === currentInput.name) {
+            field = lang.clone(lang.mixin(lyrField, currentInput));
             return true;
           }
         });
@@ -1968,7 +1982,23 @@ define([
       this._clearSubmissionGraphic();
       var northing = parseFloat(dom.byId('utm_northing').value);
       var easting = parseFloat(dom.byId('utm_easting').value);
-      var zone = parseInt(dom.byId('utm_zone_number').value, 10);
+      
+      var zoneNode = dom.byId('utm_zone_number');
+      var zoneString = zoneNode.value;
+      
+      var zoneLastChar = zoneString.substr(zoneString.length-1);
+      
+      var zone = parseInt(zoneString, 10);
+      
+      if(isNaN(zoneLastChar)){
+        if(zoneLastChar.toLowerCase() === "s"){
+          northing = -Math.abs(northing);
+        }
+      }
+      else{
+        northing = Math.abs(northing);
+      }
+      
       var converted = {};
       try {
         usng.UTMtoLL(northing, easting, zone, converted);
@@ -2165,7 +2195,7 @@ define([
       featureData.attributes = {};
       // start with layer defaults
       if (this._formLayer.templates[0] && this._formLayer.templates[0].prototype.attributes) {
-        featureData.attributes = this._formLayer.templates[0].prototype.attributes;
+        featureData.attributes = lang.clone(this._formLayer.templates[0].prototype.attributes);
       }
       //condition to filter out radio inputs
       array.forEach(query(".geoFormQuestionare .form-control"), function (currentField) {
@@ -2751,16 +2781,15 @@ define([
       }
       for (var key in this.config.locationSearchOptions) {
         if (this.config.locationSearchOptions.hasOwnProperty(key) && key !== "enableMyLocation") {
-          if (!this.config.locationSearchOptions[key] && key !== "enableSearch") {
-            domStyle.set(locationTabs[count], 'display', 'none');
-          } else if (key === "enableSearch" && !this.config.locationSearchOptions[key] && !this.config.locationSearchOptions.enableMyLocation) {
-            domStyle.set(locationTabs[count], 'display', 'none');
-          } else {
-            //resize the map to set the correct info-window anchor
-            on(locationTabs[count], a11yclick, lang.hitch(this, this._resizeMap));
+          for(var i = 0; i < locationTabs.length; i++){
+            var tab = locationTabs[i];
+            var tabId = domAttr.get(tab, "data-tab-id");
+            if(tabId === key){
+              domStyle.set(tab, 'display', this.config.locationSearchOptions[key] ? "block" : "none");
+            }
+            on(tab, a11yclick, lang.hitch(this, this._resizeMap));
             total++;
           }
-          count++;
         }
       }
       if (!this.config.locationSearchOptions.enableMyLocation) {
