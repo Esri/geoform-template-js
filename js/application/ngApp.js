@@ -1,6 +1,6 @@
-/* globals angular, $ */
+/* globals angular */
 
-var ngApp = angular.module("GeoForm", ["esri.map", "schemaForm"]);
+var ngApp = angular.module("Geo4m", ["esri.map", "schemaForm"]);
 
 /* ArcGIS Custom Field Template */
 ngApp.run(function ($templateCache) {
@@ -90,32 +90,43 @@ ngApp.factory("Boilerplate", function (esriLoader, $q) {
 });
 
 ngApp.controller("DetailsController", function ($scope, Boilerplate) {
-  Boilerplate.promise.then(function () {
-    $scope.config = Boilerplate.config;
+  Boilerplate.promise.then(function (response) {
+    $scope.config = response.boilerplate.config;
     $scope.i18n = Boilerplate.i18n;
   });
 });
 
 ngApp.controller("FooterController", function ($scope, Boilerplate) {
-  Boilerplate.promise.then(function () {
-    $scope.config = Boilerplate.config;
+  Boilerplate.promise.then(function (response) {
+    $scope.config = response.boilerplate.config;
     $scope.i18n = Boilerplate.i18n;
   });
 });
 
 ngApp.controller("FormController", function ($scope, Boilerplate) {
+  Boilerplate.promise.then(function (response) {
 
-  $scope.resetForm = function () {
-    var formNode = $("#geoform_form");
-    if (formNode[0]) {
-      formNode[0].reset();
-    }
-  };
+    console.log(response);
 
-  Boilerplate.promise.then(function () {
+    $scope.resetForm = function () {
+      $scope.model = {};
+      $scope.$broadcast("schemaFormRedraw");
+    };
+
+    $scope.onSubmit = function (form) {
+      // First we broadcast an event so all fields validate themselves
+      $scope.$broadcast("schemaFormValidate");
+      // Then we check if the form is valid
+      if (form.$valid) {
+        // ... do whatever you need to do with your data.
+      }
+      else {
+
+      }
+    };
+
     $scope.schema = Boilerplate.schema;
     $scope.form = Boilerplate.form;
     $scope.model = {};
   });
-
 });

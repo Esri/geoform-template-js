@@ -17,7 +17,7 @@
           "type": "string"
         },
         "URL": {
-          "title": "GeoForm Link",
+          "title": "Geo4m Link",
           "required": false,
           "maxLength": 250,
           "type": "string"
