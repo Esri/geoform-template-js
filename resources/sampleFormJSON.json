@@ -1,0 +1,88 @@
+{
+  "GeoForm_Survey_v11_live_8620": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "UseCase": {
+          "title": "Audience",
+          "required": true,
+          "maxLength": 50,
+          "enum": ["1", "2", "3"],
+          "type": "string"
+        },
+        "Email": {
+          "title": "Email",
+          "required": false,
+          "maxLength": 150,
+          "type": "string"
+        },
+        "URL": {
+          "title": "GeoForm Link",
+          "required": false,
+          "maxLength": 250,
+          "type": "string"
+        },
+        "Rating": {
+          "title": "Rating",
+          "required": true,
+          "maxLength": 50,
+          "enum": ["1", "2", "3", "4", "5"],
+          "type": "string"
+        },
+        "Comments": {
+          "title": "Comments",
+          "required": false,
+          "maxLength": 250,
+          "type": "string"
+        }
+      }
+    },
+    "form": [{
+      "key": "Rating",
+      "title": "Rating",
+      "titleMap": [{
+        "value": "1",
+        "name": "1 star - this does not help me"
+      }, {
+        "value": "2",
+        "name": "2 stars"
+      }, {
+        "value": "3",
+        "name": "3 stars"
+      }, {
+        "value": "4",
+        "name": "4 stars"
+      }, {
+        "value": "5",
+        "name": "5 stars - exactly what I need"
+      }],
+      "description": "How would you rate the usability of this app?"
+    }, {
+      "key": "UseCase",
+      "title": "Who are you collecting information from?",
+      "titleMap": [{
+        "value": "1",
+        "name": "Public"
+      }, {
+        "value": "2",
+        "name": "Organization"
+      }, {
+        "value": "3",
+        "name": "Both"
+      }],
+      "description": "Who are you collecting data from?"
+    }, {
+      "key": "Email",
+      "title": "Email (optional)",
+      "description": "Your email (optional)"
+    }, {
+      "key": "URL",
+      "title": "Link to your GeoForm (optional)",
+      "description": "Provide a link to your GeoForm if you would like to share."
+    }, {
+      "key": "Comments",
+      "title": "Any additional comments? (optional)",
+      "description": "Please provide us with some feedback on what you like / don't like about this app."
+    }]
+  }
+}

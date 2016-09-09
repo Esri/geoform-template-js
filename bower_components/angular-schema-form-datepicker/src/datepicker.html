@@ -1,0 +1,25 @@
+<div class="form-group {{form.htmlClass}}" ng-class="{'has-error': hasError()}">
+  <label class="control-label {{form.labelHtmlClass}}" ng-show="showTitle()">{{form.title}}</label>
+  <div ng-class="{'input-group': (form.fieldAddonLeft || form.fieldAddonRight)}">
+    <span ng-if="form.fieldAddonLeft"
+          class="input-group-addon"
+          ng-bind-html="form.fieldAddonLeft"></span>
+    <input ng-show="form.key"
+           type="text"
+           class="form-control {{form.fieldHtmlClass}}"
+           schema-validate="form"
+           ng-model="$$value$$"
+           ng-disabled="form.readonly"
+           pick-a-date="form.pickadate"
+           min-date="form.minDate"
+           max-date="form.maxDate"
+           select-years="form.selectYears"
+           select-months="form.selectMonths"
+           name="{{form.key.slice(-1)[0]}}"
+           format="form.format" />
+    <span ng-if="form.fieldAddonRight"
+          class="input-group-addon"
+          ng-bind-html="form.fieldAddonRight"></span>
+  </div>
+  <span class="help-block">{{ (hasError() && errorMessage(schemaError())) || form.description}}</span>
+</div>

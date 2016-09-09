@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html ng-app="GeoForm">
+
+<head>
+  <meta charset="utf-8">
+  <!-- Define the versions of IE that will be used to render the page. See Microsoft documentation for details. Optional. -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <!-- End Responsive -->
+  <!-- Use protocol relative urls that way if the browser is viewing the page via HTTPS the js/css file will be requested using the HTTPS protocol -->
+  <link rel="stylesheet" href="//jsdev.arcgis.com/4.1/esri/css/main.css">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+  <!-- date styles -->
+  <link rel="stylesheet" href="bower_components/pickadate/lib/themes/classic.css">
+  <link rel="stylesheet" href="bower_components/pickadate/lib/themes/default.date.css">
+  <link rel="stylesheet" href="bower_components/pickadate/lib/themes/default.time.css">
+  <!-- Load any application specific styles -->
+  <link rel="stylesheet" href="css/boilerplate.css">
+</head>
+
+<body class="boilerplate--loading">
+  <!-- Loading spinner -->
+  <div class="boilerplate-loading-indicator">
+    <div class="boilerplate-loading-message" id="loading_message"></div>
+  </div>
+  <!-- App details -->
+  <div id="jumbotronNode" class="jumbotron" ng-controller="DetailsController">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-lg-10 col-lg-offset-1">
+          <img alt="" ng-src="{{config.logo}}" class="img-responsive center-block" />
+          <div class="clearfix"></div>
+          <h1>{{config.title}}</h1>
+          <div ng-bind-html="config.description"></div>
+          <div class="clearfix"></div>
+          <div>
+            <a class="btn btn-default" href="#" role="button">{{i18n.viewSubmissions}}</a>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <div class="clearfix"></div>
+  <!-- Form area -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-lg-10 col-lg-offset-1">
+        <div ng-controller="FormController">
+          <form id="geoform_form" sf-schema="schema" sf-form="form" sf-model="model"></form>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <!-- Divider -->
+    <hr />
+    <!-- Footer -->
+    <footer ng-controller="FooterController">
+      <div class="panel-body text-center"><a href="#top">{{i18n.scrollToTop}}</a>
+      </div>
+    </footer>
+  </div>
+  <!-- jquery -->
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+  <!-- date plugin -->
+  <script type="text/javascript" src="bower_components/pickadate/lib/picker.js"></script>
+  <script type="text/javascript" src="bower_components/pickadate/lib/picker.date.js"></script>
+  <script type="text/javascript" src="bower_components/pickadate/lib/picker.time.js"></script>
+  <!-- angular -->
+  <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+  <script type="text/javascript" src="bower_components/tv4/tv4.js"></script>
+  <script type="text/javascript" src="bower_components/objectpath/lib/ObjectPath.js"></script>
+  <script type="text/javascript" src="bower_components/angular-schema-form/dist/schema-form.min.js"></script>
+  <script type="text/javascript" src="bower_components/angular-schema-form/dist/bootstrap-decorator.min.js"></script>
+  <script type="text/javascript" src="bower_components/angular-schema-form-datepicker/bootstrap-datepicker.min.js"></script>
+  <!-- ArcGIS -->
+  <script type="text/javascript" src="js/dojoConfig.js"></script>
+  <script type="text/javascript" src="//jsdev.arcgis.com/4.1/"></script>
+  <!-- Angular Esri -->
+  <script type="text/javascript" src="bower_components/angular-esri-map/dist/angular-esri-map.min.js"></script>
+  <!-- Angular App -->
+  <script type="text/javascript" src="js/application/ngApp.js"></script>
+</body>
+
+</html>
