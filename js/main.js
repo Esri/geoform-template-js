@@ -393,9 +393,19 @@ define([
           var utmResults = [];
           usng.LLtoUTM(lat, lng, utmResults);
           if (utmResults && utmResults.length === 3) {
-            dom.byId('utm_easting').value = parseInt(utmResults[0]);
-            dom.byId('utm_northing').value = parseInt(utmResults[1]);
-            dom.byId('utm_zone_number').value = utmResults[2];
+            var northing = parseFloat(utmResults[1]);
+            var easting = parseFloat(utmResults[0]);
+            var zone = parseInt(utmResults[2], 10);
+            if(northing < 0){
+              zone += "S";
+              northing = Math.abs(northing);
+            }
+            else{
+              zone += "N";
+            }
+            dom.byId('utm_easting').value = easting;
+            dom.byId('utm_northing').value = northing;
+            dom.byId('utm_zone_number').value = zone;
           }
         } catch (e) {
           console.log(e);
@@ -1972,7 +1982,23 @@ define([
       this._clearSubmissionGraphic();
       var northing = parseFloat(dom.byId('utm_northing').value);
       var easting = parseFloat(dom.byId('utm_easting').value);
-      var zone = parseInt(dom.byId('utm_zone_number').value, 10);
+      
+      var zoneNode = dom.byId('utm_zone_number');
+      var zoneString = zoneNode.value;
+      
+      var zoneLastChar = zoneString.substr(zoneString.length-1);
+      
+      var zone = parseInt(zoneString, 10);
+      
+      if(isNaN(zoneLastChar)){
+        if(zoneLastChar.toLowerCase() === "s"){
+          northing = -Math.abs(northing);
+        }
+      }
+      else{
+        northing = Math.abs(northing);
+      }
+      
       var converted = {};
       try {
         usng.UTMtoLL(northing, easting, zone, converted);

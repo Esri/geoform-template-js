@@ -50,6 +50,7 @@ define([
     locationSearchOption: null,
 
     constructor: function (config, response) {
+      this._layerIds = [];
       this.config = config;
       this.response = response;
       this.onDemandResources = [
@@ -275,12 +276,13 @@ define([
         //support for all layers in webmap
         if (evt.currentTarget.value === "all") {
           domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
-          array.forEach(dom.byId("layerSelect").options, lang.hitch(this, function (opt) {
-            this._populateFields(opt.value);
-            this._updateAppConfiguration("fields", opt.value);
-            this.previousValue = opt.value;
+          array.forEach(dom.byId("layerSelect").options, lang.hitch(this, function (opt, i) {
+            if(i === 0){
+              this._populateFields(opt.value);
+              this._updateAppConfiguration("fields", opt.value);
+              this.previousValue = opt.value;
+            }
           }));
-          dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
           this.currentConfig.form_layer.id = "all";
           $("#ShowHideLayerOption")[0].disabled = true;
         } else if (evt.currentTarget.value !== "") {
@@ -312,9 +314,11 @@ define([
       }));
 
       on(dom.byId("layerSelect"), "change", lang.hitch(this, function (evt) {
-        this._updateAppConfiguration("fields", this.previousValue);
-        this._populateFields(evt.currentTarget.value);
-        this.previousValue = evt.currentTarget.value;
+        var value = evt.target.value;
+        this._updateAppConfiguration("fields", this._layerSelectValue);
+        this._populateFields(value);
+        this._layerSelectValue = value;
+        this.previousValue = value;
       }));
       on(dom.byId('selectAll'), "change", lang.hitch(this, function (evt) {
         array.forEach(query(".fieldCheckbox"), lang.hitch(this, function (currentCheckBox) {
@@ -494,16 +498,17 @@ define([
         } else {
           if (isLoadRequired) {
             if (dom.byId("selectLayer").options.length > 2) {
-              array.forEach(dom.byId("layerSelect").options, lang.hitch(this, function (opt) {
-                this._populateFields(opt.value);
-                this._updateAppConfiguration("fields", opt.value);
-                this.previousValue = opt.value;
+              array.forEach(dom.byId("layerSelect").options, lang.hitch(this, function (opt, i) {
+                if(i === 0){
+                  this._populateFields(opt.value);
+                  this._updateAppConfiguration("fields", opt.value);
+                  this.previousValue = opt.value;
+                }
               }));
               dom.byId("selectLayer").options[dom.byId("selectLayer").length - 1].selected = true;
             }
             domAttr.set(dom.byId("selectLayer"), "disabled", false);
             domStyle.set(dom.byId("layerSelectPane"), 'display', 'block');
-            dom.byId("layerSelect")[dom.byId("layerSelect").options.length - 1].selected = true;
             this.currentConfig.form_layer.id = "all";
           } else {
             this.previousValue = this.currentConfig.form_layer.id;
@@ -1138,8 +1143,12 @@ define([
       }));
       if (this.currentConfig.form_layer.id == "all") {
         domStyle.set(dom.byId("layerSelectPane"), "display", "block");
+        var counter = 0;
         for (var key in this.fieldInfo) {
-          this._populateFields(key);
+          if( counter === 0){
+            this._populateFields(key);
+            counter++;
+          }
         }
       } else {
         this._populateFields(this.currentConfig.form_layer.id);
@@ -1152,14 +1161,23 @@ define([
     _validateFeatureServer: function (layer, canCreate, layerId) {
       if (canCreate && layer.geometryType === 'esriGeometryPoint') {
         var filteredLayer, fLayer;
-        filteredLayer = document.createElement("option");
-        fLayer = document.createElement("option");
-        filteredLayer.text = fLayer.text = layer.name;
-        filteredLayer.value = fLayer.value = layerId;
+        filteredLayer = domConstruct.create("option", {
+          textContent: layer.name,
+          value: layerId
+        });
+        fLayer = domConstruct.create("option", {
+          textContent: layer.name,
+          value: layerId
+        });
+        if(!this._layerSelectValue){
+          domAttr.set(filteredLayer, "selected", "selected");
+          domAttr.set(fLayer, "selected", "selected");
+          this._layerSelectValue = layerId;
+        }
+        this.previousValue = layerId;
         dom.byId("selectLayer").appendChild(filteredLayer);
         dom.byId("layerSelect").appendChild(fLayer);
-        fLayer.selected = true;
-        this.previousValue = layerId;
+        this._layerIds.push(layerId);
         this.fieldInfo[layerId] = {};
         this.fieldInfo[layerId].Fields = layer.fields;
         this.fieldInfo[layerId].layerUrl = layer.url;
@@ -1276,7 +1294,7 @@ define([
         this.currentConfig.viewSubmissionsText = dom.byId("viewSubmissionsText").value;
         break;
       case "fields":
-        if (layerObj !== "all") {
+        if(layerObj && layerObj !== "all") {
           var innerObj = [];
           var fieldName, fieldLabel, fieldDescription, visible, preventPast, preventFuture, setCurrentDate, hiddenDate;
           this.currentSelectedLayer[layerObj] = dom.byId('geoFormFieldsTable');
@@ -1385,7 +1403,7 @@ define([
       this._addProgressBar();
       $("#myModal").modal('show');
       arcgisUtils.getItem(this.currentConfig.appid).then(lang.hitch(this, function (response) {
-        var updateURL = this.userInfo.portal.url + "/sharing/rest/content/users/" + this.userInfo.username + (response.item.ownerFolder ? ("/" + response.item.ownerFolder) : "") + "/items/" + this.currentConfig.appid + "/update";
+        var updateURL = this.userInfo.portal.url + "/sharing/rest/content/users/" + response.item.owner + (response.item.ownerFolder ? ("/" + response.item.ownerFolder) : "") + "/items/" + this.currentConfig.appid + "/update";
         esriRequest({
           url: updateURL,
           content: rqData,
