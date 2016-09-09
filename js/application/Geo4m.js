@@ -229,6 +229,14 @@ define([
       return error;
     },
 
+    formErrors: function(form){
+      console.log(form);
+    },
+
+    submit: function(data){
+      console.log(data);
+    },
+
     //--------------------------------------------------------------------------
     //
     //  Private Methods

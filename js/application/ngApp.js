@@ -106,8 +106,6 @@ ngApp.controller("FooterController", function ($scope, Boilerplate) {
 ngApp.controller("FormController", function ($scope, Boilerplate) {
   Boilerplate.promise.then(function (response) {
 
-    console.log(response);
-
     $scope.resetForm = function () {
       $scope.model = {};
       $scope.$broadcast("schemaFormRedraw");
@@ -118,10 +116,10 @@ ngApp.controller("FormController", function ($scope, Boilerplate) {
       $scope.$broadcast("schemaFormValidate");
       // Then we check if the form is valid
       if (form.$valid) {
-        // ... do whatever you need to do with your data.
+        response.app.submit($scope.model);
       }
       else {
-
+        response.app.formErrors(form);
       }
     };
 
