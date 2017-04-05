@@ -40,10 +40,6 @@ The GeoForm template can be accessed via the ArcGIS template gallery or item det
 
 > **Note:** If your application edits features in a feature service, contains secure services or web maps that aren't shared publicly, or generate requests that exceed 200 characters, you may need to set up and use a proxy page. Common situations where you may exceed the URL length are using complex polygons as input to a task or specifying a spatial reference using well-known text (WKT). For details on installing and configuring a proxy page see [Using the proxy](https://developers.arcgis.com/javascript/jshelp/ags_proxy.html). If you do not have an Internet connection, you will need to access and deploy the ArcGIS API for JavaScript documentation from [developers.arcgis.com](https://developers.arcgis.com/).
 
-## Adding The Template To Your ArcGIS Online Organization
-
-See how you can [add this template to your organization](http://blogs.esri.com/esri/arcgis/2014/04/21/be-an-early-adopter/) as an early adopter.
-
 ## More Information
 
 See the [ArcGIS Blog post](http://blogs.esri.com/esri/arcgis/2014/07/08/editing-via-pop-ups-got-you-down/) for additional informationa bout this application.
@@ -274,7 +270,7 @@ Find a bug or want to request a new feature?  Please let us know by submitting a
 Anyone and everyone is welcome to contribute. :)
 
 ## Licensing
-Copyright 2012 Esri
+Copyright 2017 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -289,6 +285,3 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 A copy of the license is available in the repository's [license.txt](https://raw.github.com/esri/geoform-template-js/master/license.txt) file.
-
-[](Esri Tags: ArcGIS ArcGIS Online Web Application GeoForm Geo Form template Public)
-[](Esri Language: JavaScript)
