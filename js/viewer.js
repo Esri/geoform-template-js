@@ -324,8 +324,6 @@ define([
       this._createShareDlgContent();
       // create modal
       this._ShareModal = new ShareModal({
-        bitlyLogin: this.config.bitlyLogin,
-        bitlyKey: this.config.bitlyKey,
         image: this.config.sharinghost + '/sharing/rest/content/items/' + this.config.itemInfo.item.id + '/info/' + this.config.itemInfo.item.thumbnail,
         title: this.config.details.Title || nls.user.geoformTitleText || '',
         summary: this.config.itemInfo.item.snippet || '',

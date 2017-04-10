@@ -34,11 +34,15 @@ The GeoForm template can be accessed via the ArcGIS template gallery or item det
 3. Change the sharing host, found in defaults.js inside the config folder for the application, to the sharing URL for ArcGIS Online or Portal. For ArcGIS Online users, keep the default value of www.arcgis.com or specify the name of your organization.
   - ArcGIS Online Example:  `"sharinghost": location.protocol + "//" + “<your organization name>.maps.arcgis.com`
   - Portal Example where `arcgis` is the name of the Web Adaptor: `"sharinghost": location.protocol + "//" + "webadaptor.domain.com/arcgis"`
-4. If you are using Portal or a local install of the ArcGIS API for JavaScript, change all references to the ArcGIS API for JavaScript in index.html to refer to your local copy of the API. Search for the references containing `"//js.arcgis.com/3.18"` and replace this portion of the reference with the url to your local install.
+4. If you are using Portal or a local install of the ArcGIS API for JavaScript, change all references to the ArcGIS API for JavaScript in index.html to refer to your local copy of the API. Search for the references containing `"//js.arcgis.com/3.20"` and replace this portion of the reference with the url to your local install.
   - For example: `"//webadaptor.domain.com/arcgis/jsapi/jsapi"` where `arcgis` is the name of your Web Adaptor.
 5. Copy a map or group ID from Portal/ArcGIS Online and replace the default web map ID in the application’s defaults.js file. You can now run the application on your web server or customize the application further.
 
 > **Note:** If your application edits features in a feature service, contains secure services or web maps that aren't shared publicly, or generate requests that exceed 200 characters, you may need to set up and use a proxy page. Common situations where you may exceed the URL length are using complex polygons as input to a task or specifying a spatial reference using well-known text (WKT). For details on installing and configuring a proxy page see [Using the proxy](https://developers.arcgis.com/javascript/jshelp/ags_proxy.html). If you do not have an Internet connection, you will need to access and deploy the ArcGIS API for JavaScript documentation from [developers.arcgis.com](https://developers.arcgis.com/).
+
+## Adding The Template To Your ArcGIS Online Organization
+
+See how you can [add this template to your organization](http://blogs.esri.com/esri/arcgis/2014/04/21/be-an-early-adopter/) as an early adopter.
 
 ## More Information
 
@@ -59,7 +63,7 @@ This template supports basic offline editing by saving the edits locally (includ
 
 * Currently only supports point editable feature layers.
 * Offline editing only supports storing applyEdits and submitting upon reconnection.
-* Offline does not cache tiles or services. 
+* Offline does not cache tiles or services.
 
 ## Requirements
 
@@ -88,7 +92,7 @@ This topic will explain how to configure some of the more advanced settings in d
 Specify the webmap ID to use for this template.
 
     "webmap": "5fd247b0e5d844d99b7b9af36286a535",
-    
+
 #### Application ID
 
 If you've configured an application instead of using just a webmap, place the application ID here.
@@ -102,15 +106,15 @@ Set the "form_layer" property to specify whic layer to use for generating the fo
 For example, to use the layer from [this webmap](http://www.arcgis.com/home/item.html?id=0c5cb13c4fc54b28bb26a125221ed96f), I would inspect the [webmap response](http://www.arcgis.com/sharing/rest/content/items/0c5cb13c4fc54b28bb26a125221ed96f/data?f=pjson) to get the layer ID as so:
 
 Setting the layer ID like so:
-    
+
     "form_layer": {
         "id": "GeoFormTryItLive_v3_7854"
     },
-    
+
 If you'd like to use all layers:
 
     "form_layer": {
-      "id": "all"
+      "id": "All"
     },
 
 #### Configuring Fields
@@ -120,7 +124,7 @@ By default, the fields property is an empty array. When an empty array, all fiel
 Default Fields property
 
     "fields": {},
-    
+
 Modified fields property
 
     fields:{
@@ -189,19 +193,12 @@ This option will use smaller sized text for the GeoForm title and description in
 This option displays sharing links when a submission occurs. If you wouldn't like to display the sharing links when a user submits an entry, set this option to false.
 
     "enableSharing": true,
-    
+
 #### Symbol
 
 Set the symbol to use when a user selects a location. See the [pushpins.js](js/pushpins.js) file for all the available options. You can modify this file to add your own custom symbols.
 
     "pushpinColor": "grey",
-
-#### Bit.ly API
-
-In order to shorten the URL of the application, we use the bit.ly URL shortening service. Sign up for an account to get API credentials to enter here.
-
-    "bitlyLogin": "myAccount",
-    "bitlyKey": "myKey",
 
 #### Sharing Host
 
@@ -246,13 +243,13 @@ A language is loaded depending on what the browser's locale is set to and if the
 4. Remove all the strings with '"locale": 1' from the copied file.
 5. Modify the language file and translate the strings into the new language.
     ex: /js/nls/fr/resources.js - modified with strings changed
-    
+
 If you'd like your language to always be loaded no matter which browser locale the user is running you can modify the dojoConfig to add the locale you wish to load. This is located in the [/index.html](index.html) file near the top.
 
     var dojoConfig = {
         locale: "fr"
     };
-    
+
 See Dojo's [localization help](http://dojotoolkit.org/documentation/tutorials/1.10/i18n/) for more information.
 
 ## Resources
@@ -270,7 +267,7 @@ Find a bug or want to request a new feature?  Please let us know by submitting a
 Anyone and everyone is welcome to contribute. :)
 
 ## Licensing
-Copyright 2017 Esri
+Copyright 2012 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -285,3 +282,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 A copy of the license is available in the repository's [license.txt](https://raw.github.com/esri/geoform-template-js/master/license.txt) file.
+
+[](Esri Tags: ArcGIS ArcGIS Online Web Application GeoForm Geo Form template Public)
+[](Esri Language: JavaScript)

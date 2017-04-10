@@ -43,10 +43,6 @@ define([
         return this._portal;
       },
 
-      userIsAppOwner: function (itemData, userInfo) {
-        return (userInfo && (itemData.item.owner == userInfo.username || userInfo.role === "org_admin"));
-      },
-
       reportError: function (error) {
         // remove loading class from body
         domClass.remove(document.body, "app-loading");
@@ -64,21 +60,8 @@ define([
             node.innerHTML = "Unable to create map: " + error.message;
           }
         }
-      },
-
-      authenticateUser: function (isEditMode, data, userInfo) {
-        if (isEditMode) {
-          if (this.userIsAppOwner(data, userInfo)) {
-            return true;
-          } else {
-            this.reportError(new Error(nls.builder.invalidUser));
-
-            return false;
-          }
-        } else {
-          return true;
-        }
       }
+      
     });
     return Widget;
   });

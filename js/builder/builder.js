@@ -86,18 +86,13 @@ define([
         this._loadCSS();
       }
       signIn.createPortal().then(lang.hitch(this, function (loggedInUser) {
-        var isValidUser = signIn.authenticateUser(true, this.response, loggedInUser);
-        if (isValidUser) {
-          userInfo.username = loggedInUser.username;
-          userInfo.token = loggedInUser.credential.token;
-          userInfo.portal = signIn.getPortal();
-          this._initializeBuilder(this.config, userInfo, this.response);
-          this._setTabCaption();
-          domClass.remove(document.body, "app-loading");
-          def.resolve();
-        } else {
-          def.reject(new Error("Invalid User"));
-        }
+        userInfo.username = loggedInUser.username;
+        userInfo.token = loggedInUser.credential.token;
+        userInfo.portal = signIn.getPortal();
+        this._initializeBuilder(this.config, userInfo, this.response);
+        this._setTabCaption();
+        domClass.remove(document.body, "app-loading");
+        def.resolve();
       }), lang.hitch(this, function (error) {
         def.reject(error);
       }));
@@ -203,6 +198,10 @@ define([
       on(dom.byId("locateOnLoad"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.locate = !this.currentConfig.locate;
       }));
+
+      on(dom.byId("EnableOfflineSupport"), a11yclick, lang.hitch(this, function () {
+        this.currentConfig.enableOfflineSupport = !this.currentConfig.enableOfflineSupport;
+      }));
       
       on(dom.byId("disableViewer"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.disableViewer = !this.currentConfig.disableViewer;
@@ -228,6 +227,7 @@ define([
       this._enableDisableLogo();
       this._enableDisableBasemapToggle();
       this._locateCurrentLocation();
+      this._offlineSupportOption();
       this._enableDisableViewer();
       //Check if the object is messed up with other type.if yes replace it with default object
       if (!this.currentConfig.locationSearchOptions.length) {
@@ -429,6 +429,10 @@ define([
 
     _locateCurrentLocation: function () {
       dom.byId("locateOnLoad").checked = this.currentConfig.locate;
+    },
+
+    _offlineSupportOption: function () {
+      dom.byId("EnableOfflineSupport").checked = this.currentConfig.enableOfflineSupport;
     },
 
     _enableDisableViewer: function () {
@@ -1383,6 +1387,7 @@ define([
         "defaultBasemap": this.currentConfig.defaultBasemap,
         "nextBasemap": this.currentConfig.nextBasemap,
         "locate": this.currentConfig.locate,
+        "enableOfflineSupport": this.currentConfig.enableOfflineSupport,
         "disableViewer": this.currentConfig.disableViewer,
         "selectedTitleField": this.currentConfig.selectedTitleField
       };
@@ -1423,8 +1428,6 @@ define([
             }
             this._createShareDlgContent();
             this._ShareModal = new ShareModal({
-              bitlyLogin: this.currentConfig.bitlyLogin,
-              bitlyKey: this.currentConfig.bitlyKey,
               image: this.currentConfig.sharinghost + '/sharing/rest/content/items/' + this.currentConfig.itemInfo.item.id + '/info/' + this.currentConfig.itemInfo.item.thumbnail,
               title: this.currentConfig.details.Title || nls.builder.geoformTitleText || '',
               summary: this.currentConfig.itemInfo.item.snippet || '',

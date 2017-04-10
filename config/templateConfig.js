@@ -48,7 +48,8 @@ define({
     "edit",
     "locate",
     "search",
-    "latlon"
+    "latlon",
+    "sharinghost"
   ],
   // For esri hosted envoronments only. Will automatically create a sharingurl and proxyurl for the application.
   esriEnvironment: false

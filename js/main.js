@@ -66,6 +66,9 @@ define([
   modalTemplate,
   userTemplate,
   nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, SearchSources, usng, a11yclick) {
+
+  var NORTHING_OFFSET = 10000000.0; // (meters)
+
   return declare([], {
     arrPendingAttachments: [],
     objFailedAttachments: {},
@@ -86,9 +89,9 @@ define([
     dateFormat: "LLL",
 
     startup: function (config, appResponse, isPreview, node) {
-      
+
       document.documentElement.lang = kernel.locale;
-      
+
       this._appResponse = appResponse;
       var localStorageSupport = new localStorageHelper();
       if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
@@ -398,13 +401,13 @@ define([
             var zone = parseInt(utmResults[2], 10);
             if(northing < 0){
               zone += "S";
-              northing = Math.abs(northing);
+              northing = northing + NORTHING_OFFSET;
             }
             else{
               zone += "N";
             }
-            dom.byId('utm_easting').value = easting;
-            dom.byId('utm_northing').value = northing;
+            dom.byId('utm_easting').value = parseInt(easting, 10);
+            dom.byId('utm_northing').value = parseInt(northing, 10);
             dom.byId('utm_zone_number').value = zone;
           }
         } catch (e) {
@@ -969,12 +972,14 @@ define([
           if (currentField.type == "esriFieldTypeDate") {
             var inputRangeDateGroupContainer = this._addNotationIcon(formContent, "glyphicon-calendar");
             inputContent = this._createDateField(inputRangeDateGroupContainer, true, fieldname, currentField, currentField.defaultValue);
-            rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
-              minValue: moment(currentField.domain.minValue).format(this.dateFormat),
-              maxValue: moment(currentField.domain.maxValue).format(this.dateFormat),
-              openStrong: "<strong>",
-              closeStrong: "</strong>"
-            });
+            if(currentField.domain.minValue !== currentField.domain.maxValue && currentField.domain.minValue > -2147483648 && currentField.domain.maxValue > -2147483648){
+              rangeHelpText = string.substitute(nls.user.dateRangeHintMessage, {
+                minValue: moment(currentField.domain.minValue).format(this.dateFormat),
+                maxValue: moment(currentField.domain.maxValue).format(this.dateFormat),
+                openStrong: "<strong>",
+                closeStrong: "</strong>"
+              });
+            }
           } else {
             //if field type is integer
             rangeHelpText = this._setRangeForm(currentField, formContent, fieldname);
@@ -1982,23 +1987,23 @@ define([
       this._clearSubmissionGraphic();
       var northing = parseFloat(dom.byId('utm_northing').value);
       var easting = parseFloat(dom.byId('utm_easting').value);
-      
+
       var zoneNode = dom.byId('utm_zone_number');
       var zoneString = zoneNode.value;
-      
+
       var zoneLastChar = zoneString.substr(zoneString.length-1);
-      
+
       var zone = parseInt(zoneString, 10);
-      
+
       if(isNaN(zoneLastChar)){
         if(zoneLastChar.toLowerCase() === "s"){
-          northing = -Math.abs(northing);
+          northing = Math.abs(northing) - NORTHING_OFFSET;
         }
       }
       else{
         northing = Math.abs(northing);
       }
-      
+
       var converted = {};
       try {
         usng.UTMtoLL(northing, easting, zone, converted);
@@ -2267,17 +2272,24 @@ define([
         domConstruct.destroy(query(".errorMessage")[0]);
         // open error modal if unsuccessful
         if (!addResults[0].success || (!this.isHumanEntry && addResults[0].success)) {
-          this._openErrorModal();
+          var error;
+          if(!addResults[0].success){
+            error = addResults[0].error || new Error("");
+          }
+          else {
+            error = new Error(nls.user.applyEditsFailedRobot);
+          }
+          this._openErrorModal(error);
           this._verifyHumanEntry();
           return;
         }
-      }), lang.hitch(this, function () {
+      }), lang.hitch(this, function (error) {
         // no longer editable
         this._formLayer.setEditable(false);
         // remove error
         domConstruct.destroy(query(".errorMessage")[0]);
         // open error
-        this._openErrorModal();
+        this._openErrorModal(error);
         // log for development
         console.log(nls.user.addFeatureFailedMessage);
       }));
@@ -2464,8 +2476,6 @@ define([
       this._createShareDlgContent();
       // create modal
       this._ShareModal = new ShareModal({
-        bitlyLogin: this.config.bitlyLogin,
-        bitlyKey: this.config.bitlyKey,
         image: this.config.sharinghost + '/sharing/rest/content/items/' + this.config.itemInfo.item.id + '/info/' + this.config.itemInfo.item.thumbnail,
         title: this.config.details.Title || nls.user.geoformTitleText || '',
         summary: this.config.itemInfo.item.snippet || '',
@@ -2478,14 +2488,20 @@ define([
       domAttr.set(dom.byId("viewSubmissionsOption"), "href", this._viewSubmissions());
     },
     // error modal content
-    _openErrorModal: function () {
+    _openErrorModal: function (error) {
       var errorMsgContainer;
       domConstruct.empty(query(".modal-body")[0]);
       domAttr.set(dom.byId('myModalLabel'), "innerHTML", nls.user.error);
       errorMsgContainer = domConstruct.create("div", {}, query(".modal-body")[0]);
+      var errorMessage = (error && error.message) || nls.user.applyEditsFailedMessage;
+
+      if(error && error.code === "IdentityManagerBase.1"){
+        errorMessage = nls.user.applyEditsAuthError;
+      }
+
       domConstruct.create("div", {
         className: "alert alert-danger errorMessage",
-        innerHTML: nls.user.applyEditsFailedMessage
+        innerHTML: errorMessage
       }, errorMsgContainer);
       $("#myModal").modal('show');
       this._resetButton();
@@ -2885,12 +2901,14 @@ define([
         locale: kernel.locale,
         minDate: minDate,
         maxDate: maxDate,
-        extraFormats: ["M/D/YYYY", "M-D-YYYY", "M.D.YYYY", "M D YYYY"],
         format: this.dateFormat,
         defaultDate: defaultDate,
         useCurrent: true
       };
-      if (isRangeField) {
+      if (kernel.locale === "en" || kernel.locale === "en-us") {
+        dpOptions.extraFormats = ["M/D/YYYY", "M-D-YYYY", "M.D.YYYY", "M D YYYY"];
+      }
+      if (isRangeField && currentField.domain.minValue !== currentField.domain.maxValue && currentField.domain.minValue > -2147483648 && currentField.domain.maxValue > -2147483648) {
         dpOptions.minDate = moment(currentField.domain.minValue);
         dpOptions.maxDate = moment(currentField.domain.maxValue);
       }
