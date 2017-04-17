@@ -282,6 +282,3 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 A copy of the license is available in the repository's [license.txt](https://raw.github.com/esri/geoform-template-js/master/license.txt) file.
-
-[](Esri Tags: ArcGIS ArcGIS Online Web Application GeoForm Geo Form template Public)
-[](Esri Language: JavaScript)
