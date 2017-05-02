@@ -140,7 +140,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array", "dojo/_base
             source.searchFields = [searchLayer.field.name];
             source.displayField = searchLayer.field.name;
             source.outFields = ["*"];
-            source.placeholder = nls.user.find;
+            source.placeholder = searchOptions.hintText || nls.user.find;
             this.sources.push(source);
           }
         }));
