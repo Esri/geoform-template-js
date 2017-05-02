@@ -1,5 +1,5 @@
-define(["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array", "dojo/_base/json", "dojo/dom-construct", "esri/lang", "esri/tasks/locator", "esri/layers/FeatureLayer", "esri/dijit/Search"], function (
-  declare, lang, array, dojoJson, domConstruct, esriLang, Locator, FeatureLayer, Search) {
+define(["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array", "dojo/_base/json", "dojo/dom-construct", "esri/lang", "esri/tasks/locator", "esri/layers/FeatureLayer", "esri/dijit/Search", "dojo/i18n!application/nls/resources"], function (
+  declare, lang, array, dojoJson, domConstruct, esriLang, Locator, FeatureLayer, Search, nls) {
   return declare(null, {
 
     constructor: function (parameters) {
@@ -89,6 +89,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array", "dojo/_base
           if (this.useMapExtent) {
             esriSource.searchExtent = this.map.extent;
           }
+          esriSource.placeholder = nls.user.find;
           this.sources.push(esriSource);
           s.destroy();
         } else if (esriLang.isDefined(geocoder.singleLineFieldName)) {
@@ -139,7 +140,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array", "dojo/_base
             source.searchFields = [searchLayer.field.name];
             source.displayField = searchLayer.field.name;
             source.outFields = ["*"];
-            source.placeholder = searchOptions.hintText;
+            source.placeholder = searchOptions.hintText || nls.user.find;
             this.sources.push(source);
           }
         }));
@@ -166,6 +167,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array", "dojo/_base
         if (source.searchWithinMap) {
           source.searchExtent = this.map.extent;
         }
+        source.placeholder = nls.user.find;
         this.sources.push(source);
       }));
 
@@ -181,6 +183,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array", "dojo/_base
             source.searchFields = layer.fields;
             source.displayField = layer.fields[0];
             source.outFields = ["*"];
+            source.placeholder = nls.user.find;
             this.sources.push(source);
           }
         }
