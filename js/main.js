@@ -1094,6 +1094,7 @@ define([
         if (currentField.displayType && currentField.displayType !== "") {
           domAttr.set(inputContent, "data-display-type", currentField.displayType);
         }
+        var helpHTML = "";
         if (currentField.type !== "esriFieldTypeDate") {
           on(inputContent, "focusout", lang.hitch(this, function (evt) {
             this._validateField(evt, true);
@@ -1124,7 +1125,6 @@ define([
         // store default value
         domAttr.set(inputContent, "data-default-value", currentField.defaultValue);
       }
-      var helpHTML;
       if (currentField.isNewField) {
         // make sure popup info and fields are defined
         if (this._formLayer && this._formLayer.infoTemplate && this._formLayer.infoTemplate.info && this._formLayer.infoTemplate.info.fieldInfos) {
