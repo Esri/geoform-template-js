@@ -165,7 +165,7 @@ define([
         this.set("shortenUrl", null);
         var url = this.get("url");
         // create base url
-        url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        url = 'https://' + window.location.host + window.location.pathname;
         //Remove edit=true from the query parameters
         if (location.href.indexOf("?") > -1) {
           var queryUrl = location.href;

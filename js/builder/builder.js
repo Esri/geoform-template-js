@@ -775,7 +775,7 @@ define([
           type: "checkbox",
           index: currentIndex
         }, fieldCheckBox);
-        if (currentField.name == this.fieldInfo[layerName].typeIdField || !currentField.nullable) {
+        if (currentField.name == this.fieldInfo[layerName].typeIdField) {
           domAttr.set(fieldCheckBoxInput, "checked", true);
           domAttr.set(fieldCheckBoxInput, "disabled", true);
         } else {

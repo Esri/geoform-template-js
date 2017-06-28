@@ -173,7 +173,7 @@ define([
         }
       }));
       //Handle case where edit is first url parameter we'll use the same logic we used in ShareModal.js
-      var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+      var url = 'https://' + window.location.host + window.location.pathname;
       if (window.location.href.indexOf("?") > -1) {
         var queryUrl = window.location.href;
         var urlParams = ioQuery.queryToObject(window.location.search.substring(1)),
@@ -1487,6 +1487,7 @@ define([
         },
         editable: true,
         usePopupManager: false,
+        layerMixins: this.config.layerMixins || [],
         bingMapsKey: this.config.bingKey
       }).then(lang.hitch(this, function (response) {
         // Once the map is created we get access to the response which provides important info
