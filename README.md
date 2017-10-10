@@ -136,6 +136,14 @@ Modified fields property
         "typeField": false, // subtype field?
         "tooltip": "test@test.com", // placeholder text
         "displayType": "email" // text, checkbox, radio, textarea, url, email
+      }, {
+        "name": "URL",
+        "alias": "URL",
+        "fieldDescription": "Add a link.",
+        "visible": true,
+        "typeField": false,
+        "displayType": "text",
+        "defaultValue": "http://www.esri.com" // the default value
       }]
     }
 
