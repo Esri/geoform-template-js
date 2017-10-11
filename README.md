@@ -230,6 +230,11 @@ Use this template in an ArcGIS organization or portal application by changing th
 
     defaultBasemap: "topo",
 
+##### Basemap options
+
+  For more Basemap selections to choose from visit ESRI's list of basemap ID's.
+  https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap
+
 #### Automatically locate user on page load
 
     locate: false,
