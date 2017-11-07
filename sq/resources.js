@@ -1,5 +1,4 @@
-define({
-  root: ({
+define({  
     map: {
       error: "Krijimi i hartës i pamundur"
     },
