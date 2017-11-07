@@ -3,7 +3,7 @@ define({
       error: "Krijimi i hartës i pamundur"
     },
     onlineStatus: {
-      offline: "Për momentin nuk keni rrjet. Formularët do të ruhen derisa të ktheheni në rrjet.",
+      offline: "Për momentin nuk keni rrjet. Kërkesat do të ruhen derisa të ktheheni në rrjet.",
       reconnecting: "Duke u rikyqur&hellip;",
       pending: "${total} ndryshimet në pritje do të kryhen pas rikyqjes në rrjet."
     },
@@ -19,7 +19,7 @@ define({
         searchTitle: "Kërko",
         ok: "Në rregull",
         cancel: "Anulo",
-        placeholder: "Fut fjalën për kërkim"
+        placeholder: "Shkruaj fjalën për kërkim"
       },
       groupdlg: {
         items: {
@@ -32,7 +32,7 @@ define({
         searchTitle: "Kërko",
         ok: "Në rregull",
         cancel: "Anulo",
-        placeholder: "Fut fjalën për kërkim"
+        placeholder: "Shkruaj fjalën për kërkim"
       },
       sharedlg: {
         items: {},
@@ -49,10 +49,10 @@ define({
       utm_zone_number: "Numri i zonës",
       selectLayerTabText: "${formSection} Zgjedh Formularin",
       geoFormGeneralTabText: "${formSection} Fut Informacionin",
-      locationInformationText: "${formSection} Zgjedh Lokacionin",
+      locationInformationText: "${formSection} Zgjedh Vendndodhjen",
       submitInformationText: "${formSection} Kompleto Kërkesën",
       submitInstructions: "Shto këtë informatë në hartë.",
-      myLocationText: "Lokacioni i Tanishëm",
+      myLocationText: "Vendndodhja e tanishme",
       locationDescriptionForMoreThanOneOption: "Specifiko lokacionin për këtë shënim duke klikuar/prekur hartën ose duke përdorur njëren nga opcionet e mëposhtme.",
       locationDescriptionForOneOption: "Specifiko lokacionin për këtë shënim duke klikuar/prekur hartën ose duke përdorur opcionin e mëposhtëm.",
       locationDescriptionForNoOption: "Specifiko lokacionin për këtë shënim duke klikuar/prekur hartën.",
