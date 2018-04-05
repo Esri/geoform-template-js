@@ -18,8 +18,8 @@
     <!-- Bootstrap core CSS -->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/3.22/esri/css/esri.css">
-    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/3.22/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/3.24/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/3.24/dijit/themes/claro/claro.css">
     <link rel="stylesheet" type="text/css" href="js/vendor/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link id="rtlCSS" rel="stylesheet" />
@@ -48,6 +48,9 @@
         var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
         var dojoConfig = {
             async: true,
+            has: {
+                "esri-featurelayer-webgl": 1
+            },
             // The locationPath logic below may look confusing but all its doing is
             // enabling us to load the api from a CDN and load local modules from the correct location.
             packages: [{
@@ -73,7 +76,7 @@
         }
     </script>
     <link href="css/viewer.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="https://js.arcgis.com/3.22"></script>
+    <script type="text/javascript" src="https://js.arcgis.com/3.24"></script>
     <script type="text/javascript">
         require(["config/templateConfig", "application/template", "application/viewer"], function (templateOptions, Template, viewer) {
             // start template
@@ -96,22 +99,6 @@
                 myApp._reportError(error);
             });
         });
-    </script>
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-215788-4']);
-        //_gaq.push(['_setDomainName', 'esri.com']);
-        _gaq.push(['_trackPageview']);
-        _gaq.push(['_trackPageLoadTime']);
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
     </script>
 </body>
 </html>

@@ -764,6 +764,9 @@ define([
         helpBlock, rangeHelpText, inputGroupContainer;
       userFormNode = dom.byId('userForm');
       formContent = domConstruct.create("div", {}, userFormNode);
+      if (!!currentField.locked) {
+        domClass.add(formContent, "disabled");
+      }
       //code block to fade in the sub-types dependent fields
       if (referenceNode) {
         domConstruct.place(formContent, referenceNode, "after");
@@ -817,6 +820,7 @@ define([
           if (!radioInput) {
             inputContent = domConstruct.create("select", {
               className: "selectDomain",
+              disabled: !!currentField.locked,
               "id": fieldname
             }, formContent);
             if (currentField.domain && !currentField.typeField) {
@@ -901,6 +905,7 @@ define([
                 }, radioContent);
                 inputContent = domConstruct.create("input", {
                   "id": fieldname + currentOption.code,
+                  disabled: !!currentField.locked,
                   className: "radioInput",
                   type: "radio",
                   name: fieldname,
@@ -937,6 +942,7 @@ define([
                 }, radioContent);
                 inputContent = domConstruct.create("input", {
                   "id": fieldname + currentOption.id,
+                  disabled: !!currentField.locked,
                   className: "radioInput",
                   type: "radio",
                   name: fieldname,
@@ -994,6 +1000,7 @@ define([
         case "esriFieldTypeString":
           if (currentField.displayType && currentField.displayType === "textarea") {
             inputContent = domConstruct.create("textarea", {
+              disabled: !!currentField.locked,
               className: "form-control",
               "data-input-type": "String",
               "rows": 4,
@@ -1008,6 +1015,7 @@ define([
             }
             inputContent = domConstruct.create("input", {
               type: "text",
+              disabled: !!currentField.locked,
               className: "form-control",
               "data-input-type": "String",
               "maxLength": currentField.length,
@@ -1028,6 +1036,7 @@ define([
           }, checkboxContent);
           inputContent = domConstruct.create("input", {
             className: "checkboxInput",
+            disabled: !!currentField.locked,
             type: "checkbox",
             "data-input-type": "binaryInteger",
             "id": fieldname
@@ -1038,6 +1047,7 @@ define([
           break;
         case "esriFieldTypeSmallInteger":
           inputContent = domConstruct.create("input", {
+            disabled: !!currentField.locked,
             type: "text",
             className: "form-control",
             "data-input-type": "SmallInteger",
@@ -1047,6 +1057,7 @@ define([
           break;
         case "esriFieldTypeInteger":
           inputContent = domConstruct.create("input", {
+            disabled: !!currentField.locked,
             type: "text",
             className: "form-control",
             "data-input-type": "Integer",
@@ -1056,6 +1067,7 @@ define([
           break;
         case "esriFieldTypeSingle":
           inputContent = domConstruct.create("input", {
+            disabled: !!currentField.locked,
             type: "text",
             className: "form-control",
             "data-input-type": "Single",
@@ -1064,6 +1076,7 @@ define([
           break;
         case "esriFieldTypeDouble":
           inputContent = domConstruct.create("input", {
+            disabled: !!currentField.locked,
             type: "text",
             className: "form-control",
             "data-input-type": "Double",
@@ -1169,6 +1182,7 @@ define([
         decimalPoints = 0,
         inputcontentSpinner, rangeHelpText;
       inputContent = domConstruct.create("input", {
+        disabled: !!currentField.locked,
         id: fieldname,
         type: "text",
         className: "form-control",
@@ -2701,6 +2715,7 @@ define([
                     formLayerField.editable = popupField.isEditable;
                     formLayerField.visible = popupField.isEditable;
                     formLayerField.tooltip = popupField.tooltip;
+                    formLayerField.locked = popupField.locked;
                     this.config.fields[this._formLayer.id].push(formLayerField);
                     return true;
                   }
@@ -2885,6 +2900,7 @@ define([
         defaultDate = moment(defaultValue).format(this.dateFormat);
       }
       var dateInputField = domConstruct.create("input", {
+        disabled: !!currentField.locked,
         type: "text",
         value: "",
         className: "form-control hasDatetimepicker",

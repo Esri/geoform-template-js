@@ -147,7 +147,7 @@ define({
     "styleText": "Стиль",
     "viewerText": "Вьюер",
     "optionText": "Опции",
-    "previewText": "Предварительный просмотр",
+    "previewText": "Просмотр",
     "publishText": "Опубликовать",
     "optionsApplicationText": "Опции",
     "submitButtonText": "Текст кнопки Отправить (дополнительно)",
