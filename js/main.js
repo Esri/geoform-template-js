@@ -4,6 +4,7 @@ define([
     "dojo/_base/declare",
     "dojo/_base/kernel",
     "dojo/_base/lang",
+    "dojo/topic",
     "dojo/string",
     "esri/dijit/BasemapToggle",
     "esri/arcgis/utils",
@@ -47,6 +48,7 @@ define([
   declare,
   kernel,
   lang,
+  topic,
   string,
   basemapToggle,
   arcgisUtils,
@@ -65,7 +67,23 @@ define([
   Search,
   modalTemplate,
   userTemplate,
-  nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, SearchSources, usng, a11yclick) {
+  nls, 
+  ProjectParameters, 
+  webMercatorUtils, 
+  Point, 
+  GraphicsLayer, 
+  ShareModal, 
+  localStorageHelper, 
+  Graphic, 
+  PictureMarkerSymbol, 
+  editToolbar, 
+  InfoTemplate, 
+  Popup, 
+  theme, 
+  pushpins, 
+  SearchSources, 
+  usng, 
+  a11yclick) {
 
   var NORTHING_OFFSET = 10000000.0; // (meters)
 
@@ -87,7 +105,8 @@ define([
     isHumanEntry: null,
     currentLocation: null,
     dateFormat: "LLL",
-
+    subscriptions: [],
+      
     startup: function (config, appResponse, isPreview, node) {
 
       document.documentElement.lang = kernel.locale;
@@ -651,7 +670,125 @@ define([
           "id": "divColumn2"
         }, divRow);
       }
+      // randomblink : add in piece that creates the events and listeners
+      // make sure this is performed at end of all Form Element creation
+      this._createSubscribersList();
       this._verifyHumanEntry();
+    },
+    // BLINKS CODE: Create the list of Subscribers.
+    _createSubscribersList: function(){
+        this.subscriptions = array.map( this.subscriptions, lang.hitch( this, function( currSubscriber ){
+            var currPublishers = array.map( currSubscriber.subscription, lang.hitch( this, function( currPublisher ){
+                array.forEach( currPublisher.editorFields, lang.hitch( this, function( editorField ){
+                    this._createTopicPublisher( editorField );
+                }) );
+                return {
+                    "publication": currPublisher.publication,
+                    "editorFields": currPublisher.editorFields,
+                    "requiredFields": currPublisher.required
+                };
+            }));
+            this. _createTopicSubscriber( currSubscriber.name );
+            return { "subscriber": currSubscriber.name, "subscription": currPublishers };
+        }));
+    },  
+    // BLINKS CODE: Let's consume the publication as it's published.
+    _consumePublication: function( nameOfSubscriber ){
+        var targetSubscriber;
+        array.forEach( this.subscriptions, lang.hitch( this, function( currSubscriber ){
+            if( currSubscriber.subscriber === nameOfSubscriber ){
+                targetSubscriber = currSubscriber;
+            }
+        }) );
+        var targetSubscription;
+        if( array.some( targetSubscriber.subscription, lang.hitch( this, function( currSubscription )
+        {
+            var AllReqsMet = this._isRequirementsMet( currSubscription.requiredFields );
+            targetSubscription = currSubscription;
+            return AllReqsMet;
+        }))){
+            // If AllReqsMet returns TRUE then do this
+            var listOfFields = targetSubscription.editorFields;
+            var targetPublication = targetSubscription.publication;
+            listOfFields = array.map( listOfFields, lang.hitch( this, function( currField ){
+                var currTargetField = dom.byId( currField );
+                var currTargetFieldValue;
+                switch( currTargetField.nodeName )
+                {
+                    case "INPUT": currTargetFieldValue = currTargetField.value; break;
+                    case "SELECT": 
+                        if( currTargetField.selectedOptions[0].value !== "" ){
+                            currTargetFieldValue = currTargetField.selectedOptions[0].text;
+                        }else{
+                            currTargetFieldValue = currTargetField.selectedOptions[0].value;
+                        }
+                        break;
+                }
+                return { "value": currTargetFieldValue };
+            }) );
+            var testPublish = string.substitute( targetPublication, listOfFields );
+            dom.byId( nameOfSubscriber ).value = testPublish;
+        }
+    },
+    // BLINKS CODE: Let's check if the Requirements are met.
+    _isRequirementsMet: function( requirementsArray ){
+        if( requirementsArray.length === 0 ){
+            return true;
+        }
+        
+        if( array.every( requirementsArray, lang.hitch( this, function( requiredFieldName ){
+            var targetField = dom.byId( requiredFieldName ), valueToTest = "";
+            
+            switch( targetField.nodeName ){
+                case "INPUT": valueToTest = targetField.value; break;
+                case "SELECT": 
+                    if( targetField.selectedOptions[0].value !== "" ){
+                        valueToTest = targetField.selectedOptions[0].text;
+                    }else{
+                        valueToTest = targetField.selectedOptions[0].value;
+                    }
+                    break;
+                default: break;
+            }
+            return valueToTest !== "";
+            
+        }))){
+            return true;
+        }else{
+            return false;
+        }
+        
+    },
+    // BLINKS CODE: This takes the name of the field that is subscribing to the publication and sets up the Subscribe command
+    _createTopicSubscriber: function( subscriberName ){
+
+            topic.subscribe( "publishTopic", lang.hitch( this, function( ){
+            this._consumePublication( subscriberName, arguments[0].publisherName, arguments[0].publishedValue );
+        
+            } ) );
+    },
+    // BLINKS CODE: This takes the name of the field that will be publishing it's data and sets up the Publish command
+    _createTopicPublisher: function( publisherName ){
+        var newPublisherField = dom.byId( publisherName ), publisherFieldType = newPublisherField.nodeName, fieldEvent = "N/A", publisherValue;
+        switch( publisherFieldType )
+        {
+            case "INPUT": fieldEvent = "keyup"; publisherValue = newPublisherField.value; break;
+            case "SELECT": fieldEvent = "change"; publisherValue = newPublisherField.selectedOptions[0].text; break;
+        }
+        on( newPublisherField, fieldEvent, function(){
+            switch( publisherFieldType )
+            {
+                case "INPUT": publisherValue = newPublisherField.value; break;
+                case "SELECT": 
+                    if( newPublisherField.selectedOptions[0].value !== "" ){
+                        publisherValue = newPublisherField.selectedOptions[0].text;
+                    }else{
+                        publisherValue = newPublisherField.selectedOptions[0].value;
+                    }
+                    break;
+            }
+            topic.publish( "publishTopic", { "publisherName": publisherName, "publishedValue": publisherValue } );
+        });
     },
     _addToFileList: function (fileInput, fileBtnSpan, formContent, fileDetails) {
       var unit, fileSize = "",
@@ -764,7 +901,19 @@ define([
         helpBlock, rangeHelpText, inputGroupContainer;
       userFormNode = dom.byId('userForm');
       formContent = domConstruct.create("div", {}, userFormNode);
-      //code block to fade in the sub-types dependent fields
+      if (!!currentField.locked) {
+        domClass.add(formContent, "disabled");
+      }
+      
+      // randomblink : Beginning of code for concantenated field
+      if (!!currentField.subscription) 
+      {
+        domClass.add(formContent, "subscriber");
+        this.subscriptions.push(currentField);
+      }
+      // randomblink : End of code for concantenated field
+
+        //code block to fade in the sub-types dependent fields
       if (referenceNode) {
         domConstruct.place(formContent, referenceNode, "after");
         domClass.add(formContent, "fade");
@@ -817,6 +966,7 @@ define([
           if (!radioInput) {
             inputContent = domConstruct.create("select", {
               className: "selectDomain",
+              disabled: !!currentField.locked,
               "id": fieldname
             }, formContent);
             if (currentField.domain && !currentField.typeField) {
@@ -901,6 +1051,7 @@ define([
                 }, radioContent);
                 inputContent = domConstruct.create("input", {
                   "id": fieldname + currentOption.code,
+                  disabled: !!currentField.locked,
                   className: "radioInput",
                   type: "radio",
                   name: fieldname,
@@ -937,6 +1088,7 @@ define([
                 }, radioContent);
                 inputContent = domConstruct.create("input", {
                   "id": fieldname + currentOption.id,
+                  disabled: !!currentField.locked,
                   className: "radioInput",
                   type: "radio",
                   name: fieldname,
@@ -994,6 +1146,7 @@ define([
         case "esriFieldTypeString":
           if (currentField.displayType && currentField.displayType === "textarea") {
             inputContent = domConstruct.create("textarea", {
+              disabled: !!currentField.locked,
               className: "form-control",
               "data-input-type": "String",
               "rows": 4,
@@ -1008,6 +1161,7 @@ define([
             }
             inputContent = domConstruct.create("input", {
               type: "text",
+              disabled: !!currentField.locked,
               className: "form-control",
               "data-input-type": "String",
               "maxLength": currentField.length,
@@ -1028,6 +1182,7 @@ define([
           }, checkboxContent);
           inputContent = domConstruct.create("input", {
             className: "checkboxInput",
+            disabled: !!currentField.locked,
             type: "checkbox",
             "data-input-type": "binaryInteger",
             "id": fieldname
@@ -1038,6 +1193,7 @@ define([
           break;
         case "esriFieldTypeSmallInteger":
           inputContent = domConstruct.create("input", {
+            disabled: !!currentField.locked,
             type: "text",
             className: "form-control",
             "data-input-type": "SmallInteger",
@@ -1047,6 +1203,7 @@ define([
           break;
         case "esriFieldTypeInteger":
           inputContent = domConstruct.create("input", {
+            disabled: !!currentField.locked,
             type: "text",
             className: "form-control",
             "data-input-type": "Integer",
@@ -1056,6 +1213,7 @@ define([
           break;
         case "esriFieldTypeSingle":
           inputContent = domConstruct.create("input", {
+            disabled: !!currentField.locked,
             type: "text",
             className: "form-control",
             "data-input-type": "Single",
@@ -1064,6 +1222,7 @@ define([
           break;
         case "esriFieldTypeDouble":
           inputContent = domConstruct.create("input", {
+            disabled: !!currentField.locked,
             type: "text",
             className: "form-control",
             "data-input-type": "Double",
@@ -1169,6 +1328,7 @@ define([
         decimalPoints = 0,
         inputcontentSpinner, rangeHelpText;
       inputContent = domConstruct.create("input", {
+        disabled: !!currentField.locked,
         id: fieldname,
         type: "text",
         className: "form-control",
@@ -1236,7 +1396,6 @@ define([
         allowClear: true
       });
     },
-
     //function to validate the fields defined within subtypes
     _validateTypeFields: function (currentTarget, currentField) {
       var selectedType, defaultValue, switchDomainType, referenceNode;
@@ -2701,6 +2860,7 @@ define([
                     formLayerField.editable = popupField.isEditable;
                     formLayerField.visible = popupField.isEditable;
                     formLayerField.tooltip = popupField.tooltip;
+                    formLayerField.locked = popupField.locked;
                     this.config.fields[this._formLayer.id].push(formLayerField);
                     return true;
                   }
@@ -2868,7 +3028,6 @@ define([
       }
       return formElement;
     },
-
     _createDateField: function (parentNode, isRangeField, fieldname, currentField, defaultValue) {
       domClass.add(parentNode, "date");
       var minDate, maxDate, defaultDate;
@@ -2885,6 +3044,7 @@ define([
         defaultDate = moment(defaultValue).format(this.dateFormat);
       }
       var dateInputField = domConstruct.create("input", {
+        disabled: !!currentField.locked,
         type: "text",
         value: "",
         className: "form-control hasDatetimepicker",
