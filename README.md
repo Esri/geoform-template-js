@@ -190,6 +190,41 @@ Use this text option to tell users what kind of file to attach.
       }
     }
 
+#### Concatenation Options
+
+Use this option to combined field entries into another field. This option has a formatted output, fields to update from, and fields that are required entries to allow maximum control over output. The following example is for Address entries in the Local Government Data Model.
+
+`  "fields": {
+      "Address_1234": {
+              "name": "FULLADDR",
+              "alias": "Full Address",
+              "locked": true, // Make sure the user cannot change this entry since we are concantenating it
+              "subscription": [  
+                    {
+                        "publication": "${0.value} ${1.value} ${2.value} ${3.value} ${4.value}, ${5.value} ${6.value}", 
+                        "editorFields": [ "ADDRNUM", "PREADDRNUM", "STREETNAME", "STREETTYPE", "ADDRNUMSUF", "UNITTYPE", "UNITID" ],
+                        "required": [ "UNITID", "UNITTYPE" ]
+                    },
+                    {
+                        "publication": "${0.value} ${1.value} ${2.value} ${3.value} ${4.value}, ${5.value}", 
+                        "editorFields": [ "ADDRNUM", "PREADDRNUM", "STREETNAME", "STREETTYPE", "ADDRNUMSUF", "UNITID" ],
+                        "required": [ "UNITID" ]
+                    },
+                    {
+                        "publication": "${0.value} ${1.value} ${2.value} ${3.value} ${4.value}, ${5.value}", 
+                        "editorFields": [ "ADDRNUM", "PREADDRNUM", "STREETNAME", "STREETTYPE", "ADDRNUMSUF", "UNITTYPE" ],
+                        "required": [ "UNITTYPE" ]
+                    },
+                    {
+                        "publication": "${0.value} ${1.value} ${2.value} ${3.value} ${4.value}",
+                        "editorFields": [ "ADDRNUM", "PREADDRNUM", "STREETNAME", "STREETTYPE", "ADDRNUMSUF" ],
+                        "required": []
+                    }
+              ],
+            },...             
+`
+As you can see, the first publication that will be tested will be the one with UNITTYPE and UNITID in it, at the top (i.e., 1234 S SESAME ST AVE E, APARTMENT 3B). If the fields UNITTYPE and UNITID are both empty, then that publication will be skipped and the next one will be checked. The next one looks for JUST the UNITID (i.e., 1234 S SESAME ST AVE E, 3). If it is empty then it checks the next for JUST the UNITTYPE (i.e., 1234 S SESAME ST AVE E, PENTHOUSE). If all of those do not work, then the last one has NO required fields so it will be used. The publication with NO required fields is just your standard address... 1234 S SESAME ST AVE E
+
 #### Use Small Header
 
 This option will use smaller sized text for the GeoForm title and description instead of the larger [Bootstrap Jumbotron](http://getbootstrap.com/examples/jumbotron/)([2](http://getbootstrap.com/components/#jumbotron)).
