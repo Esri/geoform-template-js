@@ -192,7 +192,7 @@ Use this text option to tell users what kind of file to attach.
 
 #### Concatenation Options
 
-Use this option to combined field entries into another field. This option has a formatted output, fields to update from, and fields that are required entries to allow maximum control over output. The following example is for Address entries in the Local Government Data Model.
+Use this option to combine field entries into another field. This option has a formatted output, fields to update from, and fields that are required entries to allow maximum control over output. The following example is for Address entries in the Local Government Data Model.
 
     "fields": {
       "Address_1234": {
