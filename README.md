@@ -194,7 +194,7 @@ Use this text option to tell users what kind of file to attach.
 
 Use this option to combined field entries into another field. This option has a formatted output, fields to update from, and fields that are required entries to allow maximum control over output. The following example is for Address entries in the Local Government Data Model.
 
-`  "fields": {
+  "fields": {
       "Address_1234": {
               "name": "FULLADDR",
               "alias": "Full Address",
@@ -222,7 +222,7 @@ Use this option to combined field entries into another field. This option has a 
                     }
               ],
             },...             
-`
+
 As you can see, the first publication that will be tested will be the one with UNITTYPE and UNITID in it, at the top (i.e., 1234 S SESAME ST AVE E, APARTMENT 3B). If the fields UNITTYPE and UNITID are both empty, then that publication will be skipped and the next one will be checked. The next one looks for JUST the UNITID (i.e., 1234 S SESAME ST AVE E, 3). If it is empty then it checks the next for JUST the UNITTYPE (i.e., 1234 S SESAME ST AVE E, PENTHOUSE). If all of those do not work, then the last one has NO required fields so it will be used. The publication with NO required fields is just your standard address... 1234 S SESAME ST AVE E
 
 #### Use Small Header
