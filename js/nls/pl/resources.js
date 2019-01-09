@@ -1,6 +1,10 @@
 define({
   "map": {
-    "error": "Nie można utworzyć mapy"
+    "error": "Nie można utworzyć mapy",
+    "licenseError": {
+      "message": "Twoje konto nie jest licencjonowane do korzystania z aplikacji konfigurowalnych, które nie są publiczne. Poproś administratora instytucji o przypisanie typu użytkownika, który obejmuje licencję na kluczowe aplikacje lub licencję na kluczowe aplikacje dodatkowe.",
+      "title": "Nie licencjonowano"
+    }
   },
   "onlineStatus": {
     "offline": "Aktualnie pracujesz w trybie offline. Formularze zgłoszeniowe będą zapisywane lokalnie do momentu, gdy nawiązane zostanie połączenie z serwerem.",

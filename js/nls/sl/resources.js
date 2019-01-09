@@ -1,6 +1,10 @@
 define({
   "map": {
-    "error": "Karte ni mogoče ustvariti"
+    "error": "Karte ni mogoče ustvariti",
+    "licenseError": {
+      "message": "Vaš račun ni licenciran za uporabo konfigurabilnih aplikacij, ki niso javne. Prosite administratorja v vaši organizaciji, da vam dodeli tip uporabnika, ki vsebuje aplikacije Essential Apps ali licenco za dodatne aplikacije Essential Apps.",
+      "title": "Brez licence"
+    }
   },
   "onlineStatus": {
     "offline": "Trenutno delate brez povezave. Dokler ne bo mogoče vzpostaviti povezave s strežnikom, bo pošiljanje obrazca shranjeno lokalno.",

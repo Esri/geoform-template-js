@@ -1051,7 +1051,7 @@ define([
         if (currentField.displayType) {
           this._setSelectedDisplayText(currentField.displayType, typeSelect);
         }
-        if (this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo) {
+        if (typeof layerIndex === "number" && this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex] && this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo) {
           array.forEach(this.currentConfig.itemInfo.itemData.operationalLayers[layerIndex].popupInfo.fieldInfos, function (currentFieldPopupInfo) {
             if (currentFieldPopupInfo.fieldName == currentField.name) {
               if (currentFieldPopupInfo.tooltip) {
@@ -1209,6 +1209,9 @@ define([
             this.currentConfig.webmapThumbnailUrl = this.browseDlg.get("selectedWebmap").thumbnailUrl;
           } else {
             domAttr.set(query(".img-thumbnail")[0], "src", "./images/default.png");
+          }
+          if(this.currentConfig.webmap !== this.browseDlg.get("selectedWebmap").id){
+            this.fieldInfo = {};
           }
           this.currentConfig.webmap = this.browseDlg.get("selectedWebmap").id;
           dom.byId("webmapLink").href = this.userInfo.portal.url + "/home/webmap/viewer.html?webmap=" + this.currentConfig.webmap;
@@ -1484,11 +1487,6 @@ define([
           "tabindex": "0",
           className: "fa fa-twitter-square iconClass text-primary",
           id: "twitterIcon"
-        }, iconContainer);
-        domConstruct.create("a", {
-          "tabindex": "0",
-          className: "fa fa-google-plus-square iconClass text-primary",
-          id: "google-plusIcon"
         }, iconContainer);
       }
       domConstruct.create("a", {

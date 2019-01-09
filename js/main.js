@@ -2194,6 +2194,7 @@ define([
       this.geocodeAddress.startup();
       // on find
       on(this.geocodeAddress, "select-result", lang.hitch(this, function (evt) {
+        this._clearSubmissionGraphic();
         var coords = this._calculateLatLong(evt.result.feature.geometry);
         domAttr.set(dom.byId("coordinatesValue"), "innerHTML", coords);
         //this will remove the error message if it exists
@@ -2594,11 +2595,6 @@ define([
           "tabindex": "0",
           className: "fa fa-twitter-square iconClass text-primary",
           id: "twitterIcon"
-        }, iconContainer);
-        domConstruct.create("a", {
-          "tabindex": "0",
-          className: "fa fa-google-plus-square iconClass text-primary",
-          id: "google-plusIcon"
         }, iconContainer);
       }
       domConstruct.create("a", {

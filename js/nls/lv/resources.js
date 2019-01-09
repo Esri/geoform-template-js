@@ -1,6 +1,10 @@
 define({
   "map": {
-    "error": "Nevar izveidot karti"
+    "error": "Nevar izveidot karti",
+    "licenseError": {
+      "message": "Jūsu kontam nav licences, lai izmantotu konfigurējamās lietotnes, kas nav publiskas. Pieprasiet savas organizācijas administratoram piešķirt jums lietotāja veidu, kurā iekļauts lietotņu komplekts Essential Apps vai papildinājumlietotņu Essential Apps licence.",
+      "title": "Nav licences"
+    }
   },
   "onlineStatus": {
     "offline": "Jūs pašreiz strādājat bezsaistē. Iesniegtās formas tiks saglabātas lokāli, līdz būs iespējams izveidot savienojumu ar serveri.",
@@ -15,7 +19,7 @@ define({
         "contentLabel": "Mans saturs",
         "favoritesLabel": "Mani favorīti"
       },
-      "title": "Izvēlieties tīmekļa karti",
+      "title": "Izvēlēties tīmekļa karti",
       "searchTitle": "Meklēt",
       "ok": "Labi",
       "cancel": "Atcelt",

@@ -1,6 +1,10 @@
 define({
   "map": {
-    "error": "Không thể tạo bản đồ"
+    "error": "Không thể tạo bản đồ",
+    "licenseError": {
+      "message": "Tài khoản của bạn không được cấp phép để sử dụng ứng dụng có thể cấu hình mà không được công khai. Vui lòng yêu cầu quản trị viên của tổ chức bạn chỉ định cho bạn loại người dùng nào có bao gồm các ứng dụng thiết yếu hoặc có giấy phép sử dụng các ứng dụng thiết yếu bổ trợ.",
+      "title": "Không được cấp phép"
+    }
   },
   "onlineStatus": {
     "offline": "Bạn hiện đang làm việc ngoại tuyến. Biểu mẫu đã đệ trình sẽ được lưu cục bộ cho đến khi có kết nối tới máy chủ.",

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <meta name="fragment" content="!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Keywords" content="GeoForm, GeoForm Template, Template, Map, Esri">
     <meta name="description" content="GeoForm is a configurable template for form based data editing of a Feature Service. This application allows users to enter data through a form instead of a map’s pop-up while leveraging the power of the Web Map and editable Feature Services.">
@@ -18,8 +18,8 @@
     <!-- Bootstrap core CSS -->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/3.24/esri/css/esri.css">
-    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/3.24/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/3.27/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/3.27/dijit/themes/claro/claro.css">
     <link rel="stylesheet" type="text/css" href="js/vendor/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link id="rtlCSS" rel="stylesheet" />
@@ -32,6 +32,7 @@
     <script src="js/vendor/respond.min.js"></script>
     <![endif]-->
 </head>
+
 <body id="geoform" class="claro app-loading">
     <a id="top">
         <!-- Top of page -->
@@ -40,16 +41,18 @@
         <div class="icon-loading"></div>
         <div class="loading-error">
             <div class="alert alert-danger">
-                <span class="icon-frown"></span><span id="loading_message"></span>
+                <span class="icon-frown"></span>
+                <span id="loading_message"></span>
             </div>
         </div>
     </div>
     <script type="text/javascript">
+        var webgl = location.search.match(/webgl=([\w-]+)/) ? (RegExp.$1).toLowerCase() === "false" ? 0 : 1 : 1;
         var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
         var dojoConfig = {
             async: true,
             has: {
-                "esri-featurelayer-webgl": 1
+                "esri-featurelayer-webgl": webgl
             },
             // The locationPath logic below may look confusing but all its doing is
             // enabling us to load the api from a CDN and load local modules from the correct location.
@@ -72,11 +75,11 @@
         };
         // Have to handle a locale parameter before dojo is loaded
         if (location.search.match(/locale=([\w-]+)/)) {
-          dojoConfig.locale = RegExp.$1;
+            dojoConfig.locale = RegExp.$1;
         }
     </script>
     <link href="css/viewer.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="https://js.arcgis.com/3.24"></script>
+    <script type="text/javascript" src="https://js.arcgis.com/3.27"></script>
     <script type="text/javascript">
         require(["config/templateConfig", "application/template", "application/viewer"], function (templateOptions, Template, viewer) {
             // start template
@@ -101,4 +104,5 @@
         });
     </script>
 </body>
+
 </html>

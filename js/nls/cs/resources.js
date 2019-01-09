@@ -1,6 +1,10 @@
 define({
   "map": {
-    "error": "Nelze vytvořit mapu"
+    "error": "Nelze vytvořit mapu",
+    "licenseError": {
+      "message": "Váš účet nevlastní licenci k používání konfigurovatelných aplikací, které nejsou veřejné. Požádejte prosím správce své organizace, aby vám přidělil typ uživatele, jehož součástí jsou základní aplikace nebo doplňková licence základních aplikací.",
+      "title": "Chybí licence"
+    }
   },
   "onlineStatus": {
     "offline": "Právě pracujete v režimu offline. Odeslané formuláře se uloží lokálně, dokud nebude navázáno spojení se serverem.",
@@ -15,7 +19,7 @@ define({
         "contentLabel": "Můj obsah",
         "favoritesLabel": "Moje oblíbené"
       },
-      "title": "Výběr webové mapy",
+      "title": "Vybrat webovou mapu",
       "searchTitle": "Vyhledávání",
       "ok": "OK",
       "cancel": "Zrušit",
@@ -28,7 +32,7 @@ define({
         "contentLabel": "Můj obsah",
         "favoritesLabel": "Moje oblíbené"
       },
-      "title": "Výběr skupiny",
+      "title": "Vybrat skupinu",
       "searchTitle": "Vyhledávání",
       "ok": "OK",
       "cancel": "Zrušit",

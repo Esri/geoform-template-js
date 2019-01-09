@@ -1,6 +1,10 @@
 define({
   "map": {
-    "error": "Kaarti ei saa luua"
+    "error": "Kaarti ei saa luua",
+    "licenseError": {
+      "message": "Teie kontol puudub litsents konfigureeritavate rakenduste kasutamiseks, mis ei ole avalikud. Paluge oma organisatsiooni administraatoril määrata teile kasutajatüüp, mis sisaldab olulisi rakendusi või oluliste rakenduse lisalitsentsi.",
+      "title": "Litsents puudub"
+    }
   },
   "onlineStatus": {
     "offline": "Töötate praegu võrguühenduseta režiimis. Esitatud vormid salvestatakse kohalikult, kuni serveriga luuakse ühendus.",
@@ -28,7 +32,7 @@ define({
         "contentLabel": "Minu sisu",
         "favoritesLabel": "Minu lemmikud"
       },
-      "title": "Vali grupp",
+      "title": "Vali rühm",
       "searchTitle": "Otsi",
       "ok": "OK",
       "cancel": "Tühista",
@@ -53,9 +57,9 @@ define({
     "submitInformationText": "${formSection} Täitke vorm",
     "submitInstructions": "Lisage see teave kaardile.",
     "myLocationText": "Praegune asukoht",
-    "locationDescriptionForMoreThanOneOption": "Määrake selle kirje asukoht, klõpsates/puudutades kaarti või kasutades üht järgmist valikut.",
-    "locationDescriptionForOneOption": "Määrake selle kirje jaoks asukoht, klõpsates/puudutades kaarti või kasutades järgmist valikut.",
-    "locationDescriptionForNoOption": "Määrake selle kirje jaoks asukoht, klõpsates/puudutades kaarti.",
+    "locationDescriptionForMoreThanOneOption": "Määrake selle kirje asukoht, klõpsates/vajutades kaardil või kasutades üht järgmist valikut.",
+    "locationDescriptionForOneOption": "Määrake selle kirje jaoks asukoht, klõpsates/vajutades kaardil või kasutades järgmist valikut.",
+    "locationDescriptionForNoOption": "Määrake selle kirje jaoks asukoht, klõpsates/vajutades kaardil.",
     "addressText": "Otsi",
     "geographic": "Laius/pikkus",
     "locationTabText": "Asukoht",
@@ -101,7 +105,7 @@ define({
     "domainDefaultText": "Vali&hellip;",
     "applyEditsFailedMessage": "Ilmnes esitamistõrge.",
     "applyEditsFailedRobot": "Esitatud teave lükati tagasi, sest see ei läbinud robotituvastuse kontrolli.",
-    "applyEditsAuthError": "Teie kirjet ei saa kasutajataseme tüübi tõttu esitada. Täiendava abi saamiseks pöörduge oma ettevõtte administraatori poole.",
+    "applyEditsAuthError": "Teie kirjet ei saa kasutajataseme tüübi tõttu esitada. Täiendava abi saamiseks pöörduge oma organisatsiooni administraatori poole.",
     "requiredFields": "See väli on nõutud. Palun sisestage kehtivad sisendandmed.",
     "requiredField": "(nõutud)",
     "error": "Viga",
@@ -160,7 +164,7 @@ define({
     "btnNextText": "Järgmine",
     "webmapTabTitleText": "Vali veebikaart",
     "viewWebmap": "Vaata veebikaarti",
-    "webmapDetailsText": "Valitud veebikaart on ${webMapTitleLink}${webMapTitle}${closeLink}. Mõne muu veebikaardi valimiseks klõpsake nuppu „Vali veebikaart”",
+    "webmapDetailsText": "Valitud veebikaart on ${webMapTitleLink}${webMapTitle}${closeLink}. Mõne muu veebikaardi valimiseks klõpsake nuppu vali veebikaartv",
     "btnSelectWebmapText": "Veebikaardi valimine",
     "btnSelectWebmapTextLoading": "Laadimine&hellip;",
     "layerTabTitleText": "Vali muudetav kiht (muudetavad kihid)",
@@ -206,7 +210,7 @@ define({
     "geoformTitleText": "Geo Form",
     "layerTabText": "See (Need) on kihi (kihitide) nimi (nimed), mille põhjal luuakse GeoForm. Kihiks peab olema objektiteenus, mida on lubatud muuta ning mis sisaldab sihtrühmale vastavaid jagamisõigusi. Kui kõik kihid on valitud, võimaldab vorm kasutajal valida, millist vormikihti esitada.",
     "detailsTabText": "Pealkirja kohandamiseks ning oma logo ja GeoFormi sihtrühma jaoks mõeldud lühikese kirjelduse lisamiseks kasutage allolevaid vormi üksikasjade välju. Kirjelduses saate lisada linke muudele ressurssidele, kontaktinfot ja isegi suunata oma sihtrühma veebikaardistusrakenduse juurde, mis sisaldab kõiki GeoFormi kaudu kogutud andmeid.",
-    "fieldsTabText": "Siin saate valida, millised väljad on teie GeoFormi sihtrühma jaoks nähtavad, muuta sihtrühma jaoks kuvatavaid silte ning lisada lühikese kirjelduse andmete sisestamise hõlbustamiseks.",
+    "fieldsTabText": "Siin saate valida, millised väljad on Teie GeoFormi sihtrühma jaoks nähtavad, muuta sihtrühma jaoks kuvatavaid silte ning lisada lühikese kirjelduse andmete sisestamise hõlbustamiseks.",
     "styleTabText": "Saate allolevate teemade abil vastavalt oma eelistusele GeoFormi laadi muuta.",
     "viewerTabText": "Saate seadistada GeoFormi registreeritud vaatajate valikud.",
     "publishTabText": "Kui olete GeoFormi kohandamise lõpetanud, salvestage rakendus ja hakake seda oma sihtrühmaga jagama. Saate sellesse koostajasse igal ajal naasta ja tagasiside põhjal rakendust veelgi kohandada.",
@@ -220,13 +224,13 @@ define({
     "enableAttachmentLabelHint": "Siin saate lubada/keelata manuseid",
     "attachmentIsRequiredLabelText": "${openStrong}Manus on nõutav${closeStrong}",
     "attachmentIsRequiredLabelHint": "Vajadusel võidakse kasutajatelt nõuda manuse lisamist.",
-    "attachmentLabelText": "Nupu Manus märgis",
-    "attachmentLabelHint": "See tekst kuvatakse nupu Manus kõrval. Siin saate kirjeldada, mida soovite lasta sihtrühmal manusena lisada (foto, video, dokument jne), soovitud failivormingu (JPEG, PNG, DOCX, PDF jne) ja mis tahes muud täiendavad juhised.",
+    "attachmentLabelText": "Nupu manus märgis",
+    "attachmentLabelHint": "See tekst kuvatakse nupu manus kõrval. Siin saate kirjeldada, mida soovite lasta sihtrühmal manusena lisada (foto, video, dokument jne), soovitud failivormingu (JPEG, PNG, DOCX, PDF jne) ja mis tahes muud täiendavad juhised.",
     "attachmentDescription": "Manuse kirjeldus",
     "attachmentHint": "Vajadusel saate siin esitada täiendavad manuse juhised.",
     "jumbotronDescription": "Kasutage vormi jaoks väikest või suurt päist. Suurest päisest võib olla abi rakenduse eesmärgi määratlemisel, kuid see võtab ekraanil rohkem ruumi",
     "shareGeoformText": "Sotsiaalmeedia jagamise nupud.",
-    "shareDescription": "Sotsiaalmeedia nuppude abil on teie sihtrühmal teie GeoFormi jagamine lihtne, kui nad on registreeritud.",
+    "shareDescription": "Sotsiaalmeedia nuppude abil on Teie sihtrühmal Teie GeoFormi jagamine lihtne, kui nad on registreeritud.",
     "defaultMapExtent": "Vaikimisi kaardi ulatus",
     "defaultMapExtentDescription": "Kaart lähtestatakse edastuse järel veebikaardi vaikeulatusele – selle saab mis tahes ajal keelata.",
     "pushpinOptionsDescription": "Kaardi rõhknõela jaoks saate valida paljude värvide vahel, see peaks erinema kaardi sümboloogiast, et muuta edastuse kaardile asetamine kasutajale lihtsamaks",

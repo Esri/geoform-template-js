@@ -39,7 +39,6 @@ define([
         mailURL: 'mailto:%20?subject=${title}&body=%20${info}%20${url}%20${summary}',
         facebookURL: "https://www.facebook.com/sharer/sharer.php?u=${url}",
         twitterURL: "https://twitter.com/intent/tweet?url=${url}&text=${title}&hashtags=${hashtags}",
-        googlePlusURL: "https://plus.google.com/share?url=${url}",
         shortenAPI: "https://arcg.is/prod/shorten"
       },
       // lifecycle: 1
@@ -52,7 +51,6 @@ define([
         this.set("mailURL", defaults.mailURL);
         this.set("facebookURL", defaults.facebookURL);
         this.set("twitterURL", defaults.twitterURL);
-        this.set("googlePlusURL", defaults.googlePlusURL);
         this.set("shortenAPI", defaults.shortenAPI);
         this.set("image", defaults.image);
         this.set("title", defaults.title);
@@ -86,10 +84,6 @@ define([
           // twitter click
           this.own(on(dom.byId("twitterIcon"), a11yclick, lang.hitch(this, function () {
             this._configureShareLink(this.get("twitterURL"));
-          })));
-          // google plus click
-          this.own(on(dom.byId("google-plusIcon"), a11yclick, lang.hitch(this, function () {
-            this._configureShareLink(this.get("googlePlusURL"));
           })));
         }
         // email click

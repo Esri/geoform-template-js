@@ -360,11 +360,6 @@ define([
           className: "fa fa-twitter-square iconClass text-primary",
           id: "twitterIcon"
         }, iconContainer);
-        domConstruct.create("a", {
-          "tabindex": "0",
-          className: "fa fa-google-plus-square iconClass text-primary",
-          id: "google-plusIcon"
-        }, iconContainer);
       }
       domConstruct.create("a", {
         "tabindex": "0",

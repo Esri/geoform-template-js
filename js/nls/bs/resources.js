@@ -1,6 +1,10 @@
 define({
   "map": {
-    "error": "Nije moguće stvoriti kartu"
+    "error": "Nije moguće stvoriti kartu",
+    "licenseError": {
+      "message": "Vaš račun nije licenciran za upotrebu konfigurabilnih appova koji nisu javni. Obratite se administratoru svoje organizacije da vam dodijeli vrstu korisnika koja sadrži licencu za osnovne appove ili za dodatke za osnovne appove.",
+      "title": "Nema licence"
+    }
   },
   "onlineStatus": {
     "offline": "Trenutačno radite izvan mreže. Podneseni obrasci spremit će se lokalno dok se ne ostvari veza s poslužiteljem.",
@@ -28,7 +32,7 @@ define({
         "contentLabel": "Moj sadržaj",
         "favoritesLabel": "Moji favoriti"
       },
-      "title": "Odaberite grupu",
+      "title": "Odaberi grupu",
       "searchTitle": "Pretraži",
       "ok": "U redu",
       "cancel": "Odustani",

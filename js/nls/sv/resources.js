@@ -1,6 +1,10 @@
 define({
   "map": {
-    "error": "Det går inte att skapa kartan"
+    "error": "Det går inte att skapa kartan",
+    "licenseError": {
+      "message": "Ditt konto har ingen licens för att använda konfigurerbara appar som inte är tillgängliga för allmänheten. Be din organisations administratör att tilldela dig en användartyp som omfattar Essential Apps eller en tilläggslicens för Essential Apps.",
+      "title": "Inte licensierad"
+    }
   },
   "onlineStatus": {
     "offline": "Du arbetar just nu offline. Inskickade formulär sparas lokalt tills det går att ansluta till servern.",
