@@ -164,7 +164,7 @@ define({
     "btnNextText": "הבא",
     "webmapTabTitleText": "בחר Webmap",
     "viewWebmap": "הצג Webmap",
-    "webmapDetailsText": "webmap שנבחר הוא ${webMapTitleLink}${webMapTitle}${closeLink}. כדי לבחור webmap אחר, לחץ על לחצן \\'בחר Webmap\\'",
+    "webmapDetailsText": "webmap שנבחר הוא ${webMapTitleLink}${webMapTitle}${closeLink}. כדי לבחור webmap אחר, לחץ על לחצן 'בחר Webmap'",
     "btnSelectWebmapText": "בחר Webmap",
     "btnSelectWebmapTextLoading": "טוען&hellip;",
     "layerTabTitleText": "בחר שכבות ניתנות לעריכה",

@@ -763,6 +763,9 @@ define([
         checkboxContainer, checkboxContent, checkBoxCounter = 0,
         helpBlock, rangeHelpText, inputGroupContainer;
       userFormNode = dom.byId('userForm');
+      on(userFormNode, "submit", function(event) {
+        event.preventDefault();
+      });
       formContent = domConstruct.create("div", {}, userFormNode);
       if (!!currentField.locked) {
         domClass.add(formContent, "disabled");

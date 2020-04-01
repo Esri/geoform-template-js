@@ -50,7 +50,7 @@ define({
     "utm": "UTM",
     "utm_northing": "Northing",
     "utm_easting": "Easting",
-    "utm_zone_number": "영역(Zone) 번호",
+    "utm_zone_number": "구역 번호",
     "selectLayerTabText": "${formSection} 양식 선택",
     "geoFormGeneralTabText": "${formSection} 정보 입력",
     "locationInformationText": "${formSection} 위치 선택",

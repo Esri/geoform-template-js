@@ -93,7 +93,7 @@ define({
     "attachment": "Συνημμένο",
     "toggleDropdown": "Εναλλαγή πτυσσόμενης λίστας",
     "invalidString": "Εισαγάγετε μια έγκυρη τιμή.",
-    "invalidSmallNumber": "Εισαγάγετε μια έγκυρη τιμή μεταξύ ${openStrong}ακεραίου${closeStrong μεταξύ -32768 και 32767.",
+    "invalidSmallNumber": "Εισαγάγετε μια έγκυρη τιμή μεταξύ ${openStrong}ακεραίου${closeStrong} μεταξύ -32768 και 32767.",
     "invalidNumber": "Εισαγάγετε μια έγκυρη ${openStrong}ακέραιη${closeStrong} τιμή μεταξύ -2147483648 και 2147483647.",
     "invalidFloat": "Εισαγάγετε μια έγκυρη τιμή ${openStrong}κινητής υποδιαστολής${closeStrong}.",
     "invalidDouble": "Εισαγάγετε μια έγκυρη τιμή ${openStrong}κινητής υποδιαστολής διπλής ακρίβειας${closeStrong}.",

@@ -196,7 +196,7 @@ define({
     "selectMailOption": "Email",
     "selectUrlOption": "URL",
     "selectTextAreaOption": "Область текста",
-    "previewApplicationText": "Предварительный просмотр приложения",
+    "previewApplicationText": "Просмотр приложения",
     "saveApplicationText": "Сохранить приложение",
     "saveText": "Сохранить",
     "toggleNavigationText": "Переключить навигацию",

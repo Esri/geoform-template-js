@@ -9,7 +9,7 @@ define({
   "onlineStatus": {
     "offline": "Trenutno radite van mreže. Obrasci prosleđivanja će biti sačuvani samo lokalno dok veza sa serverom ne bude uspostavljena.",
     "reconnecting": "Ponovno povezivanje&hellip;",
-    "pending": "${Total} izmene na čekanju će biti prosleđene kada se veza sa mrežom ponovo uspostavi."
+    "pending": "${total} izmene na čekanju će biti prosleđene kada se veza sa mrežom ponovo uspostavi."
   },
   "configure": {
     "mapdlg": {
