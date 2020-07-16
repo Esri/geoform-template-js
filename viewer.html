@@ -33,12 +33,12 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://js.arcgis.com/3.32/esri/css/esri.css"
+      href="https://js.arcgis.com/3.33/esri/css/esri.css"
     />
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://js.arcgis.com/3.32/dijit/themes/claro/claro.css"
+      href="https://js.arcgis.com/3.33/dijit/themes/claro/claro.css"
     />
     <link
       rel="stylesheet"
@@ -83,32 +83,32 @@
       var dojoConfig = {
         async: true,
         has: {
-          "esri-featurelayer-webgl": webgl
+          "esri-featurelayer-webgl": webgl,
         },
         // The locationPath logic below may look confusing but all its doing is
         // enabling us to load the api from a CDN and load local modules from the correct location.
         packages: [
           {
             name: "application",
-            location: package_path + "/js"
+            location: package_path + "/js",
           },
           {
             name: "config",
-            location: package_path + "/config"
+            location: package_path + "/config",
           },
           {
             name: "arcgis_templates",
-            location: package_path + "/.."
+            location: package_path + "/..",
           },
           {
             name: "vendor",
-            location: package_path + "/js/vendor"
+            location: package_path + "/js/vendor",
           },
           {
             name: "views",
-            location: package_path + "/views"
-          }
-        ]
+            location: package_path + "/views",
+          },
+        ],
       };
       // Have to handle a locale parameter before dojo is loaded
       if (location.search.match(/locale=([\w-]+)/)) {
@@ -116,20 +116,20 @@
       }
     </script>
     <link href="css/viewer.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="https://js.arcgis.com/3.32"></script>
+    <script type="text/javascript" src="https://js.arcgis.com/3.33"></script>
     <script type="text/javascript">
       require([
         "config/templateConfig",
         "application/template",
-        "application/viewer"
-      ], function(templateOptions, Template, viewer) {
+        "application/viewer",
+      ], function (templateOptions, Template, viewer) {
         // start template
         var myTemplate = new Template(templateOptions);
         // create my main application. Start placing your logic in the main.js file.
         var myApp = new viewer();
         // create my main application. Start placing your logic in the main.js file.
         myTemplate.startup().then(
-          function(config) {
+          function (config) {
             //The config object contains the following properties: helper services, (optionally)
             //i18n, appid, webmap and any custom values defined by the application.
             //In this example we have one called theme.
@@ -140,7 +140,7 @@
             // lets go!
             myApp.startup(config, appResponse);
           },
-          function(error) {
+          function (error) {
             // something went wrong. Let's report it.
             myApp._reportError(error);
           }

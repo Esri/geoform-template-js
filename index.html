@@ -34,12 +34,12 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://js.arcgis.com/3.32/esri/css/esri.css"
+      href="https://js.arcgis.com/3.33/esri/css/esri.css"
     />
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://js.arcgis.com/3.32/dijit/themes/claro/claro.css"
+      href="https://js.arcgis.com/3.33/dijit/themes/claro/claro.css"
     />
     <link
       rel="stylesheet"
@@ -90,39 +90,39 @@
       var dojoConfig = {
         async: true,
         has: {
-          "esri-featurelayer-webgl": webgl
+          "esri-featurelayer-webgl": webgl,
         },
         // The locationPath logic below may look confusing but all its doing is
         // enabling us to load the api from a CDN and load local modules from the correct location.
         packages: [
           {
             name: "application",
-            location: package_path + "/js"
+            location: package_path + "/js",
           },
           {
             name: "config",
-            location: package_path + "/config"
+            location: package_path + "/config",
           },
           {
             name: "arcgis_templates",
-            location: package_path + "/.."
+            location: package_path + "/..",
           },
           {
             name: "vendor",
-            location: package_path + "/js/vendor"
+            location: package_path + "/js/vendor",
           },
           {
             name: "views",
-            location: package_path + "/views"
-          }
-        ]
+            location: package_path + "/views",
+          },
+        ],
       };
       // Have to handle a locale parameter before dojo is loaded
       if (location.search.match(/locale=([\w-]+)/)) {
         dojoConfig.locale = RegExp.$1;
       }
     </script>
-    <script type="text/javascript" src="https://js.arcgis.com/3.32"></script>
+    <script type="text/javascript" src="https://js.arcgis.com/3.33"></script>
     <script
       type="text/javascript"
       src="js/vendor/offline/offline.min.js"
@@ -135,15 +135,15 @@
       require([
         "config/templateConfig",
         "application/template",
-        "application/main"
-      ], function(templateOptions, Template, Main) {
+        "application/main",
+      ], function (templateOptions, Template, Main) {
         // start template
         var myTemplate = new Template(templateOptions);
         // create my main application. Start placing your logic in the main.js file.
         var myApp = new Main();
         // create my main application. Start placing your logic in the main.js file.
         myTemplate.startup().then(
-          function(config) {
+          function (config) {
             //The config object contains the following properties: helper services, (optionally)
             //i18n, appid, webmap and any custom values defined by the application.
             //In this example we have one called theme.
@@ -153,11 +153,11 @@
             }
             if (config.edit && config.appid) {
               // get the app builder code
-              require(["application/builder/builder"], function(builderMode) {
+              require(["application/builder/builder"], function (builderMode) {
                 // create configuration app builder
                 var builder = new builderMode(config, appResponse);
                 // start it
-                builder.startup().otherwise(function(error) {
+                builder.startup().otherwise(function (error) {
                   // something went wrong. Let's report it.
                   myApp.reportError(error);
                 });
@@ -167,7 +167,7 @@
               myApp.startup(config, appResponse);
             }
           },
-          function(error) {
+          function (error) {
             // something went wrong. Let's report it.
             myApp.reportError(error);
           }
