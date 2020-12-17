@@ -1,6 +1,8 @@
 /*global $,define,document,require */
 define([
-   "dojo/_base/declare",
+    "Sanitizer",
+    "application/sanitizerConfig",
+    "dojo/_base/declare",
     "dojo/on",
     "dojo/dom",
     "esri/request",
@@ -28,9 +30,9 @@ define([
     "dojo/Deferred",
     "esri/basemaps",
     "dijit/a11yclick",
-    "application/wrapper/builder-jquery-deps",
     "dojo/domReady!"
-], function (declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer, Deferred, esriBasemaps, a11yclick) {
+], function (Sanitizer, sanitizerConfig, declare, on, dom, esriRequest, array, domConstruct, domAttr, query, domClass, domStyle, lang, string, all, number, modalTemplate, builderTemplate, BrowseIdDlg, ShareModal, localStorageHelper, signInHelper, nls, arcgisUtils, theme, pushpins, FeatureLayer, Deferred, esriBasemaps, a11yclick) {
+  var sanitizer = new Sanitizer(sanitizerConfig, true);
   return declare([], {
     nls: nls,
     currentState: "webmap",
@@ -70,31 +72,33 @@ define([
     },
 
     startup: function () {
-      domClass.add(document.body, "bodyPaddingTop");
       var def = new Deferred();
-      var signIn = new signInHelper(),
-        userInfo = {};
-      this.locationSearchOption = {
-        "enableMyLocation": true,
-        "enableSearch": true,
-        "enableLatLng": true,
-        "enableUSNG": false,
-        "enableMGRS": false,
-        "enableUTM": false
-      };
-      if (this.config && this.config.i18n && this.config.i18n.direction == "rtl") {
-        this._loadCSS();
-      }
-      signIn.createPortal().then(lang.hitch(this, function (loggedInUser) {
-        userInfo.username = loggedInUser.username;
-        userInfo.token = loggedInUser.credential.token;
-        userInfo.portal = signIn.getPortal();
-        this._initializeBuilder(this.config, userInfo, this.response);
-        this._setTabCaption();
-        domClass.remove(document.body, "app-loading");
-        def.resolve();
-      }), lang.hitch(this, function (error) {
-        def.reject(error);
+      require(["application/wrapper/builder-jquery-deps"], lang.hitch(this, function() {
+        domClass.add(document.body, "bodyPaddingTop");
+        var signIn = new signInHelper(),
+          userInfo = {};
+        this.locationSearchOption = {
+          "enableMyLocation": true,
+          "enableSearch": true,
+          "enableLatLng": true,
+          "enableUSNG": false,
+          "enableMGRS": false,
+          "enableUTM": false
+        };
+        if (this.config && this.config.i18n && this.config.i18n.direction == "rtl") {
+          this._loadCSS();
+        }
+        signIn.createPortal().then(lang.hitch(this, function (loggedInUser) {
+          userInfo.username = loggedInUser.username;
+          userInfo.token = loggedInUser.credential.token;
+          userInfo.portal = signIn.getPortal();
+          this._initializeBuilder(this.config, userInfo, this.response);
+          this._setTabCaption();
+          domClass.remove(document.body, "app-loading");
+          def.resolve();
+        }), lang.hitch(this, function (error) {
+          def.reject(error);
+        }));
       }));
       return def.promise;
     },
@@ -164,11 +168,11 @@ define([
       on(dom.byId("done"), a11yclick, lang.hitch(this, function () {
         this._updateItem(true);
       }));
-      
+
       on(dom.byId("jumbotronDisableOption"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.useSmallHeader = true;
       }));
-      
+
       on(dom.byId("jumbotronEnableOption"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.useSmallHeader = false;
       }));
@@ -178,14 +182,14 @@ define([
       on(dom.byId("defaultExtent"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.defaultMapExtent = $('#defaultExtent')[0].checked;
       }));
-      
+
       on(dom.byId("ShowHideLayerOption"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.showLayer = $('#ShowHideLayerOption')[0].checked;
       }));
       on(dom.byId("disableLogo"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.disableLogo = !this.currentConfig.disableLogo;
       }));
-      
+
       on(dom.byId("enableBasemapToggle"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.enableBasemapToggle = $('#enableBasemapToggle')[0].checked;
         if (this.currentConfig.enableBasemapToggle) {
@@ -194,7 +198,7 @@ define([
           $('#basemapContainer').hide();
         }
       }));
-      
+
       on(dom.byId("locateOnLoad"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.locate = !this.currentConfig.locate;
       }));
@@ -202,7 +206,7 @@ define([
       on(dom.byId("EnableOfflineSupport"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.enableOfflineSupport = !this.currentConfig.enableOfflineSupport;
       }));
-      
+
       on(dom.byId("disableViewer"), a11yclick, lang.hitch(this, function () {
         this.currentConfig.disableViewer = !this.currentConfig.disableViewer;
       }));
@@ -547,11 +551,11 @@ define([
           this.config.details.Title = this.response.item.title;
         }
       }
-      dom.byId("detailTitleInput").value = this.currentConfig.details.Title;
-      dom.byId("detailLogoInput").value = this.currentConfig.details.Logo;
-      dom.byId("detailDescriptionInput").innerHTML = this.currentConfig.details.Description;
-      dom.byId("submitButtonText").value = this.currentConfig.submitButtonText;
-      dom.byId("viewSubmissionsText").value = this.currentConfig.viewSubmissionsText;   
+      dom.byId("detailTitleInput").value = sanitizer.sanitize(this.currentConfig.details.Title);
+      dom.byId("detailLogoInput").value = sanitizer.sanitize(this.currentConfig.details.Logo);
+      dom.byId("detailDescriptionInput").innerHTML = sanitizer.sanitize(this.currentConfig.details.Description);
+      dom.byId("submitButtonText").value = sanitizer.sanitize(this.currentConfig.submitButtonText);
+      dom.byId("viewSubmissionsText").value = sanitizer.sanitize(this.currentConfig.viewSubmissionsText);
       $(document).ready(function () {
         $('#detailDescriptionInput').summernote({
           height: 200,

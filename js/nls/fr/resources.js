@@ -44,7 +44,7 @@ define({
     }
   },
   "user": {
-    "all": "Tous",
+    "all": "Tout",
     "mgrs": "MGRS",
     "usng": "USNG",
     "utm": "UTM",

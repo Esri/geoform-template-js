@@ -1,4 +1,4 @@
-// Slate 3.3.5
+// Slate 3.4.1
 // Bootswatch
 // -----------------------------------------------------
 
@@ -8,7 +8,7 @@
 }
 
 @mixin btn-shadow-inverse($color){
-  @include gradient-vertical-three-colors(darken($color, 24%), darken($color, 18%), 40%, darken($color, 14%));
+  @include gradient-vertical-three-colors(darken($color, 24%), darken($color, 18%), 40%, darken($color, 16%));
   filter: none;
 }
 
@@ -20,21 +20,28 @@
   border: 1px solid rgba(0, 0, 0, 0.6);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 
-  &-inverse {
-    @include btn-shadow($navbar-inverse-bg);
-
-    .badge {
-      background-color: $navbar-inverse-link-active-bg;
-    }
-  }
-
-  &-nav > li > a {
+  .navbar-nav > li > a {
     border-right: 1px solid rgba(0, 0, 0, 0.2);
     border-left: 1px solid rgba(255, 255, 255, 0.1);
 
     &:hover {
       @include btn-shadow-inverse($navbar-default-bg);
       border-left-color: transparent;
+    }
+  }
+
+  &-inverse {
+    @include btn-shadow($navbar-inverse-bg);
+
+    .badge {
+      background-color: $navbar-inverse-link-active-bg;
+    }
+
+    .navbar-nav > li > a {
+
+      &:hover {
+        @include btn-shadow-inverse($navbar-inverse-bg);
+      }
     }
   }
 
@@ -201,8 +208,8 @@ textarea {
   }
 
   .input-group-addon {
-    background-color: $body-bg;
-    border: none;
+    background-color: $gray-dark;
+    border-color: $input-group-addon-border-color;
   }
 }
 
@@ -227,8 +234,8 @@ textarea {
   }
 
   .input-group-addon {
-    background-color: $body-bg;
-    border: none;
+    background-color: $gray-dark;
+    border-color: $input-group-addon-border-color;
   }
 }
 
@@ -253,8 +260,8 @@ textarea {
   }
 
   .input-group-addon {
-    background-color: $body-bg;
-    border: none;
+    background-color: $gray-dark;
+    border-color: $input-group-addon-border-color;
   }
 }
 
@@ -263,9 +270,9 @@ legend {
 }
 
 .input-group-addon {
-  border-color: rgba(0, 0, 0, 0.6);
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+  background-color: $gray-dark;
   @include btn-shadow($btn-default-bg);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   color: $btn-default-color;
 }
 

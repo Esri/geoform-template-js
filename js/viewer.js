@@ -1,6 +1,8 @@
 /*global $,define,document*/
 /*jslint sloppy:true,nomen:true */
 define([
+        "Sanitizer",
+        "application/sanitizerConfig",
         "dojo/_base/declare",
         "dojo/_base/kernel",
         "dojo/dom",
@@ -42,9 +44,10 @@ define([
         "dijit/registry",
         "dojo/parser",
         "dijit/a11yclick",
-        "application/wrapper/main-jquery-deps",
         "dojo/domReady!"
 ], function (
+  Sanitizer,
+  sanitizerConfig,
   declare, kernel,
   dom,
   string,
@@ -64,6 +67,9 @@ define([
   GraphicsLayer,
   Graphic, BorderContainer, ContentPane, ShareModal, modalTemplate, ViewerTemplate, nls, Legend, FeatureLayer,
   Locator, Query, QueryTask, BasemapToggle, esriLang, Search, bootstrapmap, Extent, SimpleMarkerSymbol, SimpleLineSymbol, Color, registry, parser, a11yclick) {
+
+  var sanitizer = new Sanitizer(sanitizerConfig, true);
+
   return declare([], {
     layerClickHandle: null,
     nls: nls,
@@ -89,94 +95,94 @@ define([
       };
     },
 
-    startup: function () {
-      
-      document.documentElement.lang = kernel.locale;
-      
-      var config = arguments[0];
-      // config will contain application and user defined info for the template such as i18n strings, the web map id
-      // and application id
-      // any url parameters and any application specific configuration information.
-      if (config) {
-        this.config = config;
-        if (this.config.disableViewer) {
-          this._reportError(nls.viewer.appLoadingFailedMessage);
-        }
-        this._init();
-      } else {
-        alert(nls.viewer.unavailableConfigMessage);
-      }
-      // modal i18n
-      var modalTemplateSub = string.substitute(modalTemplate, {
-        id: "myModal",
-        labelId: "myModalLabel",
-        title: "",
-        close: nls.user.close
-      });
-      // place modal code
-      domConstruct.place(modalTemplateSub, document.body, 'last');
-      on(dom.byId("shareDialog"), a11yclick, lang.hitch(this, function () {
-        this._openShareModal();
-      }));
-      on(dom.byId("shareDialogMobileView"), a11yclick, lang.hitch(this, function () {
-        this._openShareModal();
-      }));
-      on(dom.byId("btnSortByOrder"), a11yclick, lang.hitch(this, function () {
-        this.activeElementId = null;
-        domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
-        this.selectedGraphics.clear();
-        this._sortByOrder();
-      }));
-      on(dom.byId("search"), a11yclick, lang.hitch(this, function (evt) {
-        this._navigatePanel(evt.currentTarget);
-      }));
-      on(dom.byId("aboutus"), a11yclick, lang.hitch(this, function (evt) {
-        this._navigatePanel(evt.currentTarget);
-      }));
-      on(dom.byId("mapOption"), a11yclick, lang.hitch(this, function (evt) {
-        this._navigatePanel(evt.currentTarget);
-      }));
-      on(dom.byId("legend"), a11yclick, lang.hitch(this, function (evt) {
-        this._navigatePanel(evt.currentTarget);
-      }));
-      on(dom.byId("closeButton"), a11yclick, function () {
-        domStyle.set(dom.byId("featureDetailsContainer"), 'display', 'none');
-      });
-      this.iconPathSVG = "M 1784,238 1805,238 1805,259 1784,259 1784,238 M 1777,248 1784,248 M 1794,231 1794,238 M 1812,248 1805,248 M 1794,266 1794,259";
-      this.selectedGraphics = new GraphicsLayer({
-        id: "highlightedGraphic"
-      });
-      //Set Dynamic height of PanelBody in the left panel for large screen devices
-      on(window, "resize", lang.hitch(this, function () {
-        var HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
-        if ($(window).width() > 767) {
-          domClass.remove(dom.byId("panelHeader"), "navbar-fixed-bottom");
-          domClass.replace(dom.byId("panelHeader"), "navbar-default", "navbar-inverse");
-          //Set Dynamic height of PanelBody in the left panel for large screen devices
-          this._setLeftPanelDimension();
-          domConstruct.place(dom.byId("mapDiv"), dom.byId("mapLayoutContainer"), "first");
-          domConstruct.place(dom.byId("featureDetailsContainer"), dom.byId("mapLayoutContainer"), "last");
-          this._resizeMap();
-          //Making search tab active for large screen devices
-          if (HeaderNode[0]) {
-            array.some(HeaderNode[0].children, function (currentElement, index) {
-              if (index === 1) {
-                domClass.add(HeaderNode[0].children[index], "active");
-              } else {
-                setTimeout(function () {
-                  HeaderNode[0].children[index].blur();
-                }, 0);
-                domClass.remove(HeaderNode[0].children[index], "active");
-              }
-            });
+    startup: function (config) {
+      require(["application/wrapper/main-jquery-deps"], lang.hitch(this, function() {
+        document.documentElement.lang = kernel.locale;
+
+        // config will contain application and user defined info for the template such as i18n strings, the web map id
+        // and application id
+        // any url parameters and any application specific configuration information.
+        if (config) {
+          this.config = config;
+          if (this.config.disableViewer) {
+            this._reportError(nls.viewer.appLoadingFailedMessage);
           }
-          this._navigatePanel(dom.byId("search"));
+          this._init();
         } else {
-          domClass.replace(dom.byId("panelHeader"), "navbar-inverse", "navbar-default");
-          domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
-          this._moveMapContainer();
-          this._resizeSearchPanel();
+          alert(nls.viewer.unavailableConfigMessage);
         }
+        // modal i18n
+        var modalTemplateSub = string.substitute(modalTemplate, {
+          id: "myModal",
+          labelId: "myModalLabel",
+          title: "",
+          close: nls.user.close
+        });
+        // place modal code
+        domConstruct.place(modalTemplateSub, document.body, 'last');
+        on(dom.byId("shareDialog"), a11yclick, lang.hitch(this, function () {
+          this._openShareModal();
+        }));
+        on(dom.byId("shareDialogMobileView"), a11yclick, lang.hitch(this, function () {
+          this._openShareModal();
+        }));
+        on(dom.byId("btnSortByOrder"), a11yclick, lang.hitch(this, function () {
+          this.activeElementId = null;
+          domStyle.set(dom.byId("featureDetailsContainer"), "display", "none");
+          this.selectedGraphics.clear();
+          this._sortByOrder();
+        }));
+        on(dom.byId("search"), a11yclick, lang.hitch(this, function (evt) {
+          this._navigatePanel(evt.currentTarget);
+        }));
+        on(dom.byId("aboutus"), a11yclick, lang.hitch(this, function (evt) {
+          this._navigatePanel(evt.currentTarget);
+        }));
+        on(dom.byId("mapOption"), a11yclick, lang.hitch(this, function (evt) {
+          this._navigatePanel(evt.currentTarget);
+        }));
+        on(dom.byId("legend"), a11yclick, lang.hitch(this, function (evt) {
+          this._navigatePanel(evt.currentTarget);
+        }));
+        on(dom.byId("closeButton"), a11yclick, function () {
+          domStyle.set(dom.byId("featureDetailsContainer"), 'display', 'none');
+        });
+        this.iconPathSVG = "M 1784,238 1805,238 1805,259 1784,259 1784,238 M 1777,248 1784,248 M 1794,231 1794,238 M 1812,248 1805,248 M 1794,266 1794,259";
+        this.selectedGraphics = new GraphicsLayer({
+          id: "highlightedGraphic"
+        });
+        //Set Dynamic height of PanelBody in the left panel for large screen devices
+        on(window, "resize", lang.hitch(this, function () {
+          var HeaderNode = query('.navbar-nav', dom.byId("panelHeader"));
+          if ($(window).width() > 767) {
+            domClass.remove(dom.byId("panelHeader"), "navbar-fixed-bottom");
+            domClass.replace(dom.byId("panelHeader"), "navbar-default", "navbar-inverse");
+            //Set Dynamic height of PanelBody in the left panel for large screen devices
+            this._setLeftPanelDimension();
+            domConstruct.place(dom.byId("mapDiv"), dom.byId("mapLayoutContainer"), "first");
+            domConstruct.place(dom.byId("featureDetailsContainer"), dom.byId("mapLayoutContainer"), "last");
+            this._resizeMap();
+            //Making search tab active for large screen devices
+            if (HeaderNode[0]) {
+              array.some(HeaderNode[0].children, function (currentElement, index) {
+                if (index === 1) {
+                  domClass.add(HeaderNode[0].children[index], "active");
+                } else {
+                  setTimeout(function () {
+                    HeaderNode[0].children[index].blur();
+                  }, 0);
+                  domClass.remove(HeaderNode[0].children[index], "active");
+                }
+              });
+            }
+            this._navigatePanel(dom.byId("search"));
+          } else {
+            domClass.replace(dom.byId("panelHeader"), "navbar-inverse", "navbar-default");
+            domClass.add(dom.byId("panelHeader"), "navbar-fixed-bottom");
+            this._moveMapContainer();
+            this._resizeSearchPanel();
+          }
+        }));
       }));
     },
     //Function to show the panel body of current active tab
@@ -185,6 +191,10 @@ define([
       query(".panelBody").forEach(function (node) {
         domStyle.set(node, 'display', 'none');
       });
+      query("#viewer_pills li").forEach(function(node) {
+        domClass.remove(node, "active");
+      });
+      domClass.add(activeNode, "active");
       if (domAttr.get(activeNode, "id") === "mapOption") {
         domStyle.set(dom.byId('mapPanelBody'), 'display', 'block');
         domConstruct.place(dom.byId("mapDiv"), dom.byId("mapPanelBody"), "first");
@@ -399,9 +409,9 @@ define([
         }), 0);
         this.layerInfos = arcgisUtils.getLegendLayers(response);
         this.map = response.map;
-        domAttr.set(dom.byId('appTitle'), "innerHTML", response.itemInfo.item.title ? response.itemInfo.item.title : this.config.details.Title);
-        domAttr.set(dom.byId('aboutusPanelBody'), "innerHTML", response.itemInfo.item.description ? response.itemInfo.item.description : "");
-        domAttr.set(dom.byId('submitForm'), "innerHTML", this.config.submitButtonText ? this.config.submitButtonText : nls.user.submitButtonText);
+        domAttr.set(dom.byId('appTitle'), "innerHTML", response.itemInfo.item.title ? sanitizer.sanitize(response.itemInfo.item.title) : this.config.details.Title);
+        domAttr.set(dom.byId('aboutusPanelBody'), "innerHTML", response.itemInfo.item.description ? sanitizer.sanitize(response.itemInfo.item.description) : "");
+        domAttr.set(dom.byId('submitForm'), "innerHTML", this.config.submitButtonText ? sanitizer.sanitize(this.config.submitButtonText) : nls.user.submitButtonText);
         this._initLegend();
         this.defaultExtent = this.map.extent;
         // make graphics layer
@@ -789,7 +799,7 @@ define([
         if (currentfield.type === "esriFieldTypeDate" && this.config.selectedTitleField[this.config.form_layer.id] !== currentfield.name) {
           domConstruct.create("option", {
             "value": currentfield.name,
-            "innerHTML": currentfield.alias
+            "innerHTML": sanitizer.sanitize(currentfield.alias)
           }, dom.byId("sortbyInput"));
           this.displayFields += currentfield.name + ",";
         }
@@ -831,7 +841,7 @@ define([
                 listTitle = currentOption.name;
               }
             }));
-          } 
+          }
           else if (currentKey.attributes[titleField]) {
             listTitle = currentKey.attributes[titleField].toString();
           } else {
@@ -909,10 +919,10 @@ define([
       array.forEach(_formLayer.fields, function (currentField) {
         if (titleField) {
           if (currentField.name.toLowerCase() === titleField.toLowerCase()) {
-            if (currentField.type === "esriFieldTypeDate") {              
+            if (currentField.type === "esriFieldTypeDate") {
               listTitle = new Date(parseInt(listTitle, 10)).toLocaleString();
               if (listItem) {
-                domAttr.set(listItem, "innerHTML", listTitle ? listTitle : nls.viewer.unavailableTitleText);
+                domAttr.set(listItem, "innerHTML", listTitle ? sanitizer.sanitize(listTitle) : nls.viewer.unavailableTitleText);
               }
             } else {
               if(_formLayer.typeIdField && currentField.name === _formLayer.typeIdField){
@@ -932,7 +942,7 @@ define([
                 listTitle = nls.viewer.unavailableTitleText;
               }
               if (listItem) {
-                domAttr.set(listItem, "innerHTML", listTitle);
+                domAttr.set(listItem, "innerHTML", sanitizer.sanitize(listTitle));
               }
             }
           } else if (listItem && !listTitle) {
@@ -943,7 +953,7 @@ define([
         }
         //setting the title for feature Details Container
         if (isPanelTitle) {
-          domAttr.set(dom.byId("panelTitle"), "innerHTML", listTitle ? listTitle : nls.viewer.unavailableTitleText);
+          domAttr.set(dom.byId("panelTitle"), "innerHTML", listTitle ? sanitizer.sanitize(listTitle) : nls.viewer.unavailableTitleText);
         }
       });
     },
@@ -1215,7 +1225,7 @@ define([
                   attributeValue = currentOption.name;
                 }
               }));
-            } 
+            }
             return true;
           }
         }));
@@ -1223,11 +1233,11 @@ define([
           fieldRow = domConstruct.create("tr", {}, dom.byId("featureDetailsBody"));
           fieldKeyTD = domConstruct.create("td", {
             className: "drag-cursor",
-            innerHTML: currentfield.label || currentfield.fieldName
+            innerHTML: sanitizer.sanitize(currentfield.label || currentfield.fieldName)
           }, fieldRow);
           fieldAttrTD = domConstruct.create("td", {
             className: "drag-cursor",
-            innerHTML: attributeValue
+            innerHTML: sanitizer.sanitize(attributeValue)
           }, fieldRow);
           domStyle.set(dom.byId("featureDetailsContainer"), "display", "block");
         }

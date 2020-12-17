@@ -1,8 +1,13 @@
-// Simplex 3.3.5
+// Simplex 3.4.1
 // Bootswatch
 // -----------------------------------------------------
 
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
+@web-font-path: "https://fonts.googleapis.com/css?family=Open+Sans:400,700";
+
+.web-font(@path) {
+  @import (css) url("@{path}");
+}
+.web-font(@web-font-path);
 
 .btn-shadow(@color) {
   #gradient > .vertical-three-colors(lighten(@color, 3%), @color, 6%, darken(@color, 3%));

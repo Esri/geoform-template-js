@@ -1,6 +1,8 @@
 /*global $,define,document,require,moment */
 /*jslint sloppy:true,nomen:true */
 define([
+    "Sanitizer",
+    "application/sanitizerConfig",
     "dojo/_base/declare",
     "dojo/_base/kernel",
     "dojo/_base/lang",
@@ -41,9 +43,10 @@ define([
     "vendor/usng",
     "dijit/a11yclick",
     "dojo/NodeList-traverse",
-    "application/wrapper/main-jquery-deps",
     "dojo/domReady!"
 ], function (
+  Sanitizer,
+  sanitizerConfig,
   declare,
   kernel,
   lang,
@@ -67,6 +70,7 @@ define([
   userTemplate,
   nls, ProjectParameters, webMercatorUtils, Point, GraphicsLayer, ShareModal, localStorageHelper, Graphic, PictureMarkerSymbol, editToolbar, InfoTemplate, Popup, theme, pushpins, SearchSources, usng, a11yclick) {
 
+  var sanitizer = new Sanitizer(sanitizerConfig, true);
   var NORTHING_OFFSET = 10000000.0; // (meters)
 
   return declare([], {
@@ -89,41 +93,42 @@ define([
     dateFormat: "LLL",
 
     startup: function (config, appResponse, isPreview, node) {
+      require(["application/wrapper/main-jquery-deps"], lang.hitch(this, function(){
+        document.documentElement.lang = kernel.locale;
 
-      document.documentElement.lang = kernel.locale;
-
-      this._appResponse = appResponse;
-      var localStorageSupport = new localStorageHelper();
-      if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
-        config = JSON.parse(localStorage.getItem("geoform_config"));
-        localStorage.clear();
-      }
-      // config will contain application and user defined info for the template such as i18n strings, the web map id
-      // and application id
-      // any url parameters and any application specific configuration information.
-      if (config) {
-        this.config = config;
-        // create localstorage helper
-        this.localStorageSupport = new localStorageHelper();
-        // modal i18n
-        var modalTemplateSub = string.substitute(modalTemplate, {
-          id: "myModal",
-          title: "",
-          labelId: "myModalLabel",
-          close: nls.user.close
-        });
-        // place modal code
-        domConstruct.place(modalTemplateSub, document.body, 'last');
-        //supply either the webmap id or, if available, the item info
-        if (isPreview) {
-          this._initPreview(node);
-        } else {
-          this._init();
+        this._appResponse = appResponse;
+        var localStorageSupport = new localStorageHelper();
+        if (localStorageSupport.supportsStorage() && localStorage.getItem("geoform_config")) {
+          config = JSON.parse(localStorage.getItem("geoform_config"));
+          localStorage.clear();
         }
-      } else {
-        var error = new Error("Main:: Config is not defined");
-        this.reportError(error);
-      }
+        // config will contain application and user defined info for the template such as i18n strings, the web map id
+        // and application id
+        // any url parameters and any application specific configuration information.
+        if (config) {
+          this.config = config;
+          // create localstorage helper
+          this.localStorageSupport = new localStorageHelper();
+          // modal i18n
+          var modalTemplateSub = string.substitute(modalTemplate, {
+            id: "myModal",
+            title: "",
+            labelId: "myModalLabel",
+            close: nls.user.close
+          });
+          // place modal code
+          domConstruct.place(modalTemplateSub, document.body, 'last');
+          //supply either the webmap id or, if available, the item info
+          if (isPreview) {
+            this._initPreview(node);
+          } else {
+            this._init();
+          }
+        } else {
+          var error = new Error("Main:: Config is not defined");
+          this.reportError(error);
+        }
+      }));
     },
 
     _loadCSS: function () {
@@ -450,13 +455,13 @@ define([
       }
       // set title
       if (appConfigurations.Title) {
-        appTitleNode.innerHTML = appConfigurations.Title;
+        appTitleNode.innerHTML = sanitizer.sanitize(appConfigurations.Title);
       } else {
         domClass.add(appTitleNode, "hide");
       }
       // set description
       if (appConfigurations.Description) {
-        appDescNode.innerHTML = appConfigurations.Description;
+        appDescNode.innerHTML = sanitizer.sanitize(appConfigurations.Description);
       } else {
         domClass.add(appDescNode, "hide");
       }
@@ -1541,8 +1546,8 @@ define([
         this._setLayerDefaults();
         // set configuration
         this._setAppConfigurations(this.config.details);
-        domAttr.set(dom.byId('submitButton'), "innerHTML", this.config.submitButtonText ? this.config.submitButtonText : nls.user.submitButtonText);
-        domAttr.set(dom.byId('viewSubmissionsButton'), "innerHTML", this.config.viewSubmissionsText ? this.config.viewSubmissionsText : nls.user.btnViewSubmissions);
+        domAttr.set(dom.byId('submitButton'), "innerHTML", this.config.submitButtonText ? sanitizer.sanitize(this.config.submitButtonText) : nls.user.submitButtonText);
+        domAttr.set(dom.byId('viewSubmissionsButton'), "innerHTML", this.config.viewSubmissionsText ? sanitizer.sanitize(this.config.viewSubmissionsText) : nls.user.btnViewSubmissions);
         // window title
         if (this.config.details && this.config.details.Title) {
           window.document.title = this.config.details.Title;
@@ -2627,7 +2632,7 @@ define([
         className: "btn btn-default pull-left",
         href: "#",
         id: "viewSubmissionsOption",
-        innerHTML: this.config.viewSubmissionsText ? this.config.viewSubmissionsText : nls.user.btnViewSubmissions
+        innerHTML: this.config.viewSubmissionsText ? sanitizer.sanitize(this.config.viewSubmissionsText) : nls.user.btnViewSubmissions
       }, query(".modal-footer")[0]);
       if (this.config.disableViewer) {
         domClass.add(dom.byId("viewSubmissionsOption"), "hidden");

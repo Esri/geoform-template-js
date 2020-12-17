@@ -34,12 +34,12 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://js.arcgis.com/3.33/esri/css/esri.css"
+      href="https://js.arcgis.com/3.35/esri/css/esri.css"
     />
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://js.arcgis.com/3.33/dijit/themes/claro/claro.css"
+      href="https://js.arcgis.com/3.35/dijit/themes/claro/claro.css"
     />
     <link
       rel="stylesheet"
@@ -76,6 +76,16 @@
       </div>
     </div>
     <div id="fullscreen_container" class="fullscreen-container"></div>
+    <div id="geoform-ie-message" class="container hidden">
+      <div class="row">
+        <div class="col-md-12 col-lg-10 col-lg-offset-1" style="margin-top: 20px;">
+          <div class="alert alert-warning alert-dismissible" role="alert">
+            <button id="geoform-ie-message-close" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+            <div id="geoform-ie-message-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="parentContainter" class="app-content"></div>
     <script type="text/javascript">
       var webgl = location.search.match(/webgl=([\w-]+)/)
@@ -112,6 +122,11 @@
             location: package_path + "/js/vendor",
           },
           {
+            name: "Sanitizer",
+            location: package_path + "/js/vendor/sanitizer",
+            main: "arcgis-html-sanitizer.min"
+          },
+          {
             name: "views",
             location: package_path + "/views",
           },
@@ -122,7 +137,7 @@
         dojoConfig.locale = RegExp.$1;
       }
     </script>
-    <script type="text/javascript" src="https://js.arcgis.com/3.33"></script>
+    <script type="text/javascript" src="https://js.arcgis.com/3.35"></script>
     <script
       type="text/javascript"
       src="js/vendor/offline/offline.min.js"
@@ -144,6 +159,30 @@
         // create my main application. Start placing your logic in the main.js file.
         myTemplate.startup().then(
           function (config) {
+            if (config && config.isIE) {
+              var containerId = "geoform-ie-message";
+              var closeId = containerId + "-close";
+              var textId = containerId + "-text";
+
+              var hide = localStorage.getItem(containerId) || false;
+              if (!hide) {
+                var englishMsg = "You are using a browser that is deprecated. Some parts of this application may not work optimally or at all in this browser. Support for this browser will be discontinued in the future. Please use the latest versions of Google Chrome, Mozilla Firefox, Apple Safari, or Microsoft Edge. For more information on browser support, see our documentation. Provide your feedback through";
+                var notificationMessage = englishMsg + "<a href='https://community.esri.com/community/gis/web-gis/arcgisonline'> GeoNet, the Esri Community </a>";
+
+                var messageNode = document.getElementById(containerId);
+                var closeNode = document.getElementById(closeId);
+                var textNode = document.getElementById(textId);
+
+                closeNode.setAttribute("aria-label", config.i18n.user.close);
+
+                messageNode.classList.remove("hidden");
+                textNode.innerHTML = notificationMessage;
+                closeNode.addEventListener("click", function () {
+                  messageNode.classList.add("hidden");
+                  localStorage.setItem(containerId, true);
+                });
+              }
+            }
             //The config object contains the following properties: helper services, (optionally)
             //i18n, appid, webmap and any custom values defined by the application.
             //In this example we have one called theme.
@@ -169,7 +208,12 @@
           },
           function (error) {
             // something went wrong. Let's report it.
-            myApp.reportError(error);
+            if (error && error.error && error.error === "application:origin-other") {
+              //display short org error
+              document.location.href = "../shared/origin/index.html?appUrl=" + error.appUrl;
+            } else {
+              myApp.reportError(error);
+            }
           }
         );
       });

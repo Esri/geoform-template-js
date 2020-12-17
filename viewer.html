@@ -33,12 +33,12 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://js.arcgis.com/3.33/esri/css/esri.css"
+      href="https://js.arcgis.com/3.35/esri/css/esri.css"
     />
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://js.arcgis.com/3.33/dijit/themes/claro/claro.css"
+      href="https://js.arcgis.com/3.35/dijit/themes/claro/claro.css"
     />
     <link
       rel="stylesheet"
@@ -105,6 +105,11 @@
             location: package_path + "/js/vendor",
           },
           {
+            name: "Sanitizer",
+            location: package_path + "/js/vendor/sanitizer",
+            main: "arcgis-html-sanitizer.min"
+          },
+          {
             name: "views",
             location: package_path + "/views",
           },
@@ -116,7 +121,7 @@
       }
     </script>
     <link href="css/viewer.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="https://js.arcgis.com/3.33"></script>
+    <script type="text/javascript" src="https://js.arcgis.com/3.35"></script>
     <script type="text/javascript">
       require([
         "config/templateConfig",
@@ -142,7 +147,12 @@
           },
           function (error) {
             // something went wrong. Let's report it.
-            myApp._reportError(error);
+            if (error && error.error && error.error === "application:origin-other") {
+              //display short org error
+              document.location.href = "../shared/origin/index.html?appUrl=" + error.appUrl;
+            } else {
+              myApp.reportError(error);
+            }
           }
         );
       });
